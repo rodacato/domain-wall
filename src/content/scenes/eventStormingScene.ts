@@ -1,6 +1,7 @@
 import type { ConceptId, ModuleId } from "../../domain/course/ConceptId";
 import type { PackIndex } from "../../domain/pack/PackIndex";
 import { listAllNotes, notesOfKind, type NoteId, type NoteKind } from "../../domain/wall/Note";
+import { cameraTourOfLayer } from "../../domain/wall/cameraTour";
 import type { Scene, SceneStep } from "../../domain/wall/Scene";
 
 const MODULE: ModuleId = "event-storming" as ModuleId;
@@ -22,7 +23,7 @@ function layerStep(
     commands: [
       { kind: "placeNotes", ids: notesOfKind(index, layer) },
       ...extra,
-      { kind: "focusCamera", target: { kind: "layer", layer } },
+      { kind: "focusCamera", target: cameraTourOfLayer(index, layer) },
     ],
   };
 }

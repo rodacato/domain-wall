@@ -1,0 +1,32 @@
+{
+  "rail": {
+    "title": "Course",
+    "soon": "Coming soon"
+  },
+  "player": {
+    "previous": "Previous step",
+    "next": "Next step",
+    "position": "Step {current} of {total}",
+    "restart": "Start over"
+  },
+  "narration": {
+    "functionalPerspective": "Functional perspective",
+    "concept": "Concept"
+  },
+  "term": {
+    "neutralHint": "Which meaning?",
+    "fieldsTitle": "What matters here"
+  },
+  "legend": {
+    "event": "Domain event",
+    "command": "Command",
+    "actor": "Actor",
+    "policy": "Policy",
+    "externalSystem": "External system",
+    "readModel": "Read model",
+    "aggregate": "Aggregate"
+  },
+  "language": {
+    "label": "Language"
+  }
+}

@@ -25,13 +25,9 @@ export function wallBeforeScene(scene: Scene): WallState {
   return applyWallCommands(EMPTY_WALL, scene.prelude);
 }
 
-/** The wall as it looks right after the given step (0-based), starting from `start`. This is what makes the scrubber possible. */
-export function wallAfterStep(
-  scene: Scene,
-  stepIndex: number,
-  start: WallState = EMPTY_WALL,
-): WallState {
+/** The wall as it looks right after the given step (0-based), counting from the scene's prelude. This is what makes the scrubber possible. */
+export function wallAfterStep(scene: Scene, stepIndex: number): WallState {
   return scene.steps
     .slice(0, stepIndex + 1)
-    .reduce((state, step) => applyWallCommands(state, step.commands), start);
+    .reduce((state, step) => applyWallCommands(state, step.commands), wallBeforeScene(scene));
 }

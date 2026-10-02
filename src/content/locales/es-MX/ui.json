@@ -1,0 +1,32 @@
+{
+  "rail": {
+    "title": "Curso",
+    "soon": "Próximamente"
+  },
+  "player": {
+    "previous": "Paso anterior",
+    "next": "Siguiente paso",
+    "position": "Paso {current} de {total}",
+    "restart": "Volver a empezar"
+  },
+  "narration": {
+    "functionalPerspective": "Perspectiva funcional",
+    "concept": "Concepto"
+  },
+  "term": {
+    "neutralHint": "¿Cuál significado?",
+    "fieldsTitle": "Lo que importa aquí"
+  },
+  "legend": {
+    "event": "Evento de dominio",
+    "command": "Comando",
+    "actor": "Actor",
+    "policy": "Política",
+    "externalSystem": "Sistema externo",
+    "readModel": "Modelo de lectura",
+    "aggregate": "Agregado"
+  },
+  "language": {
+    "label": "Idioma"
+  }
+}

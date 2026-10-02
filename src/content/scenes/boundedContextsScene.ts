@@ -13,11 +13,12 @@ const conceptId = (id: string): ConceptId => id as ConceptId;
 export function buildBoundedContextsScene(index: PackIndex): Scene {
   const { contexts, ambiguousTerm } = index.pack;
 
-  const boundarySteps: SceneStep[] = contexts.map((context) => ({
+  const boundarySteps: SceneStep[] = contexts.map((context, position) => ({
     id: `boundary-${context.codeName}`,
     concept: conceptId("context.bounded-context"),
     dialogue: null,
     commands: [
+      ...(position === 0 ? ([{ kind: "hideTerm" }] as const) : []),
       { kind: "drawBoundary", context: context.codeName },
       { kind: "focusCamera", target: { kind: "context", context: context.codeName } },
     ],

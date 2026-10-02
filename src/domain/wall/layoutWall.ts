@@ -24,7 +24,8 @@ const REGIONS_PER_ROW = 2;
 /** Vertical bands, top to bottom: read models, issuers, commands, events, aggregate lanes. */
 const BAND_Y = { readModel: 0, issuer: 150, command: 290, event: 430, aggregate: 580 } as const;
 const AGGREGATE_LANE_HEIGHT = 150;
-const REGION_HEADER = 70;
+/** Room above each region for its name and for the floating term note. */
+const REGION_HEADER = 260;
 
 interface Column {
   readonly eventName: string | null;

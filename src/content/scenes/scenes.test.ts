@@ -92,6 +92,12 @@ describe("the bounded contexts scene", () => {
     expect(start.notes).toHaveLength(listAllNotes(index).length);
   });
 
+  it("keeps the prelude's notes through every step, as the scrubber replays them", () => {
+    for (const [position] of scene.steps.entries()) {
+      expect(wallAfterStep(scene, position).notes).toHaveLength(listAllNotes(index).length);
+    }
+  });
+
   it("regroups by context and then draws every boundary", () => {
     const end = wallAfterStep(scene, lastStep(scene));
 

@@ -20,7 +20,9 @@ export type CameraTarget =
   | { readonly kind: "overview" }
   | { readonly kind: "layer"; readonly layer: NoteKind }
   | { readonly kind: "context"; readonly context: string }
-  | { readonly kind: "notes"; readonly ids: readonly NoteId[] };
+  | { readonly kind: "notes"; readonly ids: readonly NoteId[] }
+  /** The camera visits each stop in turn, so a long timeline can be read at a legible scale. */
+  | { readonly kind: "tour"; readonly stops: readonly CameraTarget[] };
 
 /** The floating note of the ambiguous term; its face depends on the context it currently sits in. */
 export interface TermNoteState {
