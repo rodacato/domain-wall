@@ -17,7 +17,9 @@ Templates and generated tests use only what those runtimes ship:
   dry-monads 1.6 and dry-validation 1.10, the versions that resolve on Ruby 3.0.
 - Python: 3.10-compatible syntax and `unittest`.
 - TypeScript: 5.0-compatible syntax; tests use a small harness shipped with the generated code
-  instead of Vitest. The repository's CI runs the same harness.
+  instead of Vitest. Because Piston compiles with a bare `tsc` (ES5 library, no Node types), every
+  generated file begins with `/// <reference lib="es2022" />`, the harness declares `process`
+  itself, and files are sent without extension. The repository's CI runs the same harness.
 
 CI runs the generated code on the same major versions (Ruby 3.0, Python 3.10, Node with TypeScript
 5.0) so that passing CI means passing in Dojo.
@@ -26,4 +28,5 @@ CI runs the generated code on the same major versions (Ruby 3.0, Python 3.10, No
 
 - Generated code never uses newer language features, even where they would read better.
 - Raising the baseline later is a template change plus a Dojo runtime bump.
-- Ruby with dry-rb additionally needs the gems installed in the Piston image.
+- Ruby with dry-rb additionally needs the gems installed in Piston's Ruby package directory and two
+  lines in its `.env`; the procedure is in `docs/spikes/dry-rb-in-dojo-piston.md`.

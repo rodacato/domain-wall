@@ -55,10 +55,10 @@ dry-schema 1.13.4, and an `Order` aggregate built from `Dry::Struct` with a `Res
 
 **Shipping the gems inside each Piston request does not work.** Piston parses request bodies with
 `body_parser.json()` and no limit option (`api/src/index.js`), which defaults to 100 KB, while the
-dry-rb gems and their dependencies are several MB. The gems must be installed in the Piston image
-instead. This is a Dojo-side change (a custom image layer, which Dojo's script already anticipates
-for newer runtimes) and does not block the course: until then Ruby with dry-rb is generated,
-displayed and verified in this repository's CI, and executed only where those gems exist.
+dry-rb gems and their dependencies are several MB. The gems are instead installed
+into the Ruby package directory on Piston's volume, which was verified end to end; see
+`dry-rb-in-dojo-piston.md`. Until Dojo provisions them, Ruby with dry-rb is generated, displayed
+and verified in this repository's CI, and executed only where those gems exist.
 
 ## 3. Structured output from an LLM
 
