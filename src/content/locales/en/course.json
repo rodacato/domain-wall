@@ -1,0 +1,246 @@
+{
+  "modules": {
+    "why-ddd": {
+      "title": "Why DDD",
+      "objective": "Explain why changing an anemic model keeps getting more expensive and how a rich model contains the cost."
+    },
+    "ubiquitous-language": {
+      "title": "Ubiquitous language",
+      "objective": "Spot ambiguous terms and agree on one vocabulary that experts and code use alike."
+    },
+    "event-storming": {
+      "title": "Event Storming",
+      "objective": "Discover a domain by ordering events in time and adding commands, actors, policies, systems, read models and aggregates."
+    },
+    "bounded-contexts": {
+      "title": "Bounded contexts",
+      "objective": "Draw context boundaries and justify where a model stops being valid."
+    },
+    "context-map": {
+      "title": "Context map",
+      "objective": "Choose and justify a relationship pattern between contexts, including an anticorruption layer against an external system."
+    },
+    "subdomains": {
+      "title": "Subdomains",
+      "objective": "Classify subdomains as core, supporting or generic and decide where to invest effort."
+    },
+    "tactical-building-blocks": {
+      "title": "Tactical building blocks",
+      "objective": "Model with value objects, entities and aggregates that protect their invariants, and expose events, repositories, factories and services."
+    },
+    "functional-modeling": {
+      "title": "Functional modeling",
+      "objective": "Express the domain with constrained types, states as types, workflows as pipelines and errors as values, and compare it with the classic approach."
+    },
+    "architecture": {
+      "title": "Architecture around the domain",
+      "objective": "Isolate the domain with ports and adapters and justify the dependency rule."
+    },
+    "evolution": {
+      "title": "Evolution",
+      "objective": "Refactor toward deeper understanding when a new requirement arrives and recognize implicit concepts."
+    }
+  },
+  "concepts": {
+    "why.ball-of-mud": {
+      "title": "Big ball of mud",
+      "summary": "A system without clear structure where everything depends on everything and nobody dares to touch anything."
+    },
+    "why.anemic-model": {
+      "title": "Anemic model",
+      "summary": "Objects that only hold data while business rules are scattered across services and screens."
+    },
+    "why.cost-of-change": {
+      "title": "Cost of change",
+      "summary": "How many places must be touched to apply a business change and how easy it is to miss one."
+    },
+    "why.model-driven": {
+      "title": "Model-driven design",
+      "summary": "Letting the code express the business model and not the other way around: model and code evolve together."
+    },
+    "lang.ubiquitous-language": {
+      "title": "Ubiquitous language",
+      "summary": "A shared language born from conversations with experts that appears the same on boards, docs and code."
+    },
+    "lang.glossary": {
+      "title": "Living glossary",
+      "summary": "The list of domain terms with their meaning, growing and being corrected with every conversation."
+    },
+    "lang.ambiguity": {
+      "title": "Ambiguity",
+      "summary": "One word with different meanings depending on who uses it; it is flagged and resolved, not ignored."
+    },
+    "storm.events": {
+      "title": "Domain events",
+      "summary": "Facts that already happened, written in the past tense, forming the business timeline (orange)."
+    },
+    "storm.commands": {
+      "title": "Commands",
+      "summary": "Decisions or intentions that cause events; some are refused by the business (blue)."
+    },
+    "storm.actors": {
+      "title": "Actors",
+      "summary": "The people or roles who issue the commands (pale yellow)."
+    },
+    "storm.policies": {
+      "title": "Policies",
+      "summary": "Reactive rules of the form “whenever X happens, then do Y” (lilac)."
+    },
+    "storm.external-systems": {
+      "title": "External systems",
+      "summary": "Services outside the domain that receive or emit commands and events (pink)."
+    },
+    "storm.read-models": {
+      "title": "Read models",
+      "summary": "The information a person needs to see to decide their next command (green)."
+    },
+    "storm.aggregates": {
+      "title": "Aggregates",
+      "summary": "What receives a command, protects its rules and produces events (large yellow)."
+    },
+    "context.bounded-context": {
+      "title": "Bounded context",
+      "summary": "A boundary inside which a model and its language have a single coherent meaning."
+    },
+    "context.term-translation": {
+      "title": "The term that changes",
+      "summary": "Crossing a boundary, the same word becomes another concept with other data and other rules."
+    },
+    "map.context-map": {
+      "title": "Context map",
+      "summary": "The picture of how contexts relate and who depends on whom."
+    },
+    "map.customer-supplier": {
+      "title": "Customer / Supplier",
+      "summary": "Upstream and downstream coordinate: the customer can ask the supplier for changes."
+    },
+    "map.conformist": {
+      "title": "Conformist",
+      "summary": "The downstream accepts the upstream's model as is because it cannot influence it."
+    },
+    "map.anticorruption-layer": {
+      "title": "Anticorruption layer",
+      "summary": "A translation at the boundary that keeps the foreign model from contaminating your own."
+    },
+    "map.open-host-service": {
+      "title": "Open Host Service",
+      "summary": "A context exposes an open, stable service for many to consume."
+    },
+    "map.published-language": {
+      "title": "Published language",
+      "summary": "A well-documented format for exchanging information between contexts."
+    },
+    "map.shared-kernel": {
+      "title": "Shared kernel",
+      "summary": "Two contexts share a subset of the model and commit to changing it together."
+    },
+    "map.partnership": {
+      "title": "Partnership",
+      "summary": "Two teams succeed or fail together and coordinate their changes."
+    },
+    "map.separate-ways": {
+      "title": "Separate ways",
+      "summary": "Two contexts decide not to integrate because the cost outweighs the benefit."
+    },
+    "strategy.core-domain": {
+      "title": "Core domain",
+      "summary": "What sets the business apart from others and deserves the best model and the best team."
+    },
+    "strategy.supporting-subdomain": {
+      "title": "Supporting subdomain",
+      "summary": "Needed to operate but not a differentiator; built simply and to measure."
+    },
+    "strategy.generic-subdomain": {
+      "title": "Generic subdomain",
+      "summary": "A problem solved the same way for everyone; better to buy or reuse than to invent."
+    },
+    "strategy.investment": {
+      "title": "Where to invest",
+      "summary": "Allocating effort by strategic value: build, buy or outsource."
+    },
+    "tactical.value-object": {
+      "title": "Value object",
+      "summary": "A value defined by its attributes, immutable and valid from the moment it exists."
+    },
+    "tactical.entity": {
+      "title": "Entity",
+      "summary": "An object with its own identity that persists as its attributes change."
+    },
+    "tactical.aggregate": {
+      "title": "Aggregate",
+      "summary": "A group of objects treated as a unit of consistency, with a root as the only way in."
+    },
+    "tactical.invariant": {
+      "title": "Invariant",
+      "summary": "A rule that must always hold; the aggregate rejects any command that would break it."
+    },
+    "tactical.domain-event": {
+      "title": "Domain event",
+      "summary": "The record of something relevant that happened, published by the aggregate so others can react."
+    },
+    "tactical.repository": {
+      "title": "Repository",
+      "summary": "A collection of aggregates that hides how and where they are stored."
+    },
+    "tactical.factory": {
+      "title": "Factory",
+      "summary": "What creates complex objects already valid, so the rest need not know the details."
+    },
+    "tactical.domain-service": {
+      "title": "Domain service",
+      "summary": "A business operation that does not naturally belong to any aggregate."
+    },
+    "tactical.application-service": {
+      "title": "Application service",
+      "summary": "Orchestrates a use case: loads aggregates, gives them orders and saves the result, holding no rules."
+    },
+    "functional.constrained-types": {
+      "title": "Constrained types",
+      "summary": "Small types that only admit legal values, built with a constructor that can fail."
+    },
+    "functional.states-as-types": {
+      "title": "States as types",
+      "summary": "Each lifecycle state is a distinct type with exactly the data that belongs to it."
+    },
+    "functional.illegal-states": {
+      "title": "Making illegal states unrepresentable",
+      "summary": "Designing types so that an invalid state cannot even be written."
+    },
+    "functional.pipeline": {
+      "title": "Workflows as pipelines",
+      "summary": "A business process as a chain of stages where each transforms the previous one's type."
+    },
+    "functional.errors-as-values": {
+      "title": "Errors as values",
+      "summary": "Expected failures are returned as results that must be handled, not as surprise exceptions."
+    },
+    "architecture.layers": {
+      "title": "Layers",
+      "summary": "Separating the domain from the interface, application and infrastructure so each changes for its own reason."
+    },
+    "architecture.hexagonal": {
+      "title": "Hexagonal architecture",
+      "summary": "The domain at the center and everything else connected through ports."
+    },
+    "architecture.ports-adapters": {
+      "title": "Ports and adapters",
+      "summary": "A port is what the domain needs; an adapter is a concrete way to provide it."
+    },
+    "architecture.dependency-rule": {
+      "title": "Dependency rule",
+      "summary": "Dependencies always point toward the domain, never the other way around."
+    },
+    "evolution.implicit-concepts": {
+      "title": "Implicit concepts",
+      "summary": "Something everyone mentions but the model never named, showing up as patches and exceptions."
+    },
+    "evolution.refactoring-toward-insight": {
+      "title": "Refactoring toward deeper insight",
+      "summary": "Changing the model not just to add a feature but because we now understand the business better."
+    },
+    "evolution.breakthrough": {
+      "title": "A breakthrough",
+      "summary": "The moment a new concept suddenly simplifies many rules that seemed separate."
+    }
+  }
+}

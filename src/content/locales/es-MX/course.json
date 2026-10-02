@@ -1,0 +1,246 @@
+{
+  "modules": {
+    "why-ddd": {
+      "title": "Por qué DDD",
+      "objective": "Explicar por qué cambiar un modelo anémico se vuelve cada vez más caro y cómo un modelo rico contiene el costo."
+    },
+    "ubiquitous-language": {
+      "title": "Lenguaje ubicuo",
+      "objective": "Detectar términos ambiguos y acordar un vocabulario único que usen por igual los expertos y el código."
+    },
+    "event-storming": {
+      "title": "Event Storming",
+      "objective": "Descubrir un dominio ordenando eventos en el tiempo y sumando comandos, actores, políticas, sistemas, modelos de lectura y agregados."
+    },
+    "bounded-contexts": {
+      "title": "Contextos acotados",
+      "objective": "Trazar fronteras de contexto y justificar dónde un modelo deja de valer."
+    },
+    "context-map": {
+      "title": "Mapa de contextos",
+      "objective": "Elegir y justificar un patrón de relación entre contextos, incluida una capa anticorrupción frente a un sistema externo."
+    },
+    "subdomains": {
+      "title": "Subdominios",
+      "objective": "Clasificar subdominios como core, de soporte o genéricos y decidir dónde invertir el esfuerzo."
+    },
+    "tactical-building-blocks": {
+      "title": "Bloques tácticos",
+      "objective": "Modelar con value objects, entidades y agregados que protegen sus invariantes, y exponer eventos, repositorios, fábricas y servicios."
+    },
+    "functional-modeling": {
+      "title": "Modelado funcional",
+      "objective": "Expresar el dominio con tipos restringidos, estados como tipos, workflows como pipelines y errores como valores, y compararlo con el enfoque clásico."
+    },
+    "architecture": {
+      "title": "Arquitectura alrededor del dominio",
+      "objective": "Aislar el dominio con puertos y adaptadores y justificar la regla de dependencia."
+    },
+    "evolution": {
+      "title": "Evolución",
+      "objective": "Refactorizar hacia una comprensión más profunda cuando llega un requisito nuevo y reconocer conceptos implícitos."
+    }
+  },
+  "concepts": {
+    "why.ball-of-mud": {
+      "title": "Bola de lodo",
+      "summary": "Un sistema sin estructura clara donde todo depende de todo y nadie se atreve a tocar nada."
+    },
+    "why.anemic-model": {
+      "title": "Modelo anémico",
+      "summary": "Objetos que solo guardan datos mientras las reglas de negocio se reparten por servicios y pantallas."
+    },
+    "why.cost-of-change": {
+      "title": "Costo del cambio",
+      "summary": "Cuántos lugares hay que tocar para aplicar un cambio de negocio y qué tan fácil es olvidar uno."
+    },
+    "why.model-driven": {
+      "title": "Diseño guiado por el modelo",
+      "summary": "Que el código exprese el modelo del negocio y no al revés: modelo y código evolucionan juntos."
+    },
+    "lang.ubiquitous-language": {
+      "title": "Lenguaje ubicuo",
+      "summary": "Un idioma compartido, nacido de las conversaciones con los expertos, que aparece igual en tableros, docs y código."
+    },
+    "lang.glossary": {
+      "title": "Glosario vivo",
+      "summary": "La lista de términos del dominio con su significado, que crece y se corrige con cada conversación."
+    },
+    "lang.ambiguity": {
+      "title": "Ambigüedad",
+      "summary": "Una misma palabra con significados distintos según quién la use; se marca y se resuelve, no se ignora."
+    },
+    "storm.events": {
+      "title": "Eventos de dominio",
+      "summary": "Hechos que ya ocurrieron, escritos en pasado, que forman la línea de tiempo del negocio (naranja)."
+    },
+    "storm.commands": {
+      "title": "Comandos",
+      "summary": "Decisiones o intenciones que provocan eventos; algunos las rechaza el negocio (azul)."
+    },
+    "storm.actors": {
+      "title": "Actores",
+      "summary": "Las personas o roles que emiten los comandos (amarillo pálido)."
+    },
+    "storm.policies": {
+      "title": "Políticas",
+      "summary": "Reglas reactivas del tipo «cuando ocurre X, entonces hacer Y» (lila)."
+    },
+    "storm.external-systems": {
+      "title": "Sistemas externos",
+      "summary": "Servicios fuera del dominio que reciben o emiten comandos y eventos (rosa)."
+    },
+    "storm.read-models": {
+      "title": "Modelos de lectura",
+      "summary": "La información que una persona necesita ver para decidir su siguiente comando (verde)."
+    },
+    "storm.aggregates": {
+      "title": "Agregados",
+      "summary": "Lo que recibe un comando, protege sus reglas y produce eventos (amarillo grande)."
+    },
+    "context.bounded-context": {
+      "title": "Contexto acotado",
+      "summary": "Una frontera dentro de la cual un modelo y su lenguaje tienen un solo significado coherente."
+    },
+    "context.term-translation": {
+      "title": "El término que cambia",
+      "summary": "Al cruzar una frontera, la misma palabra se vuelve otro concepto con otros datos y otras reglas."
+    },
+    "map.context-map": {
+      "title": "Mapa de contextos",
+      "summary": "El dibujo de cómo se relacionan los contextos y quién depende de quién."
+    },
+    "map.customer-supplier": {
+      "title": "Customer / Supplier",
+      "summary": "Upstream y downstream se coordinan: el cliente puede pedir cambios al proveedor."
+    },
+    "map.conformist": {
+      "title": "Conformista",
+      "summary": "El downstream acepta el modelo del upstream tal cual porque no puede influir en él."
+    },
+    "map.anticorruption-layer": {
+      "title": "Capa anticorrupción",
+      "summary": "Una traducción en la frontera que impide que el modelo ajeno contamine el propio."
+    },
+    "map.open-host-service": {
+      "title": "Open Host Service",
+      "summary": "Un contexto expone un servicio abierto y estable para que muchos lo consuman."
+    },
+    "map.published-language": {
+      "title": "Lenguaje publicado",
+      "summary": "Un formato bien documentado para intercambiar información entre contextos."
+    },
+    "map.shared-kernel": {
+      "title": "Núcleo compartido",
+      "summary": "Dos contextos comparten un subconjunto del modelo y se comprometen a cambiarlo juntos."
+    },
+    "map.partnership": {
+      "title": "Alianza",
+      "summary": "Dos equipos tienen éxito o fracasan juntos y coordinan sus cambios."
+    },
+    "map.separate-ways": {
+      "title": "Caminos separados",
+      "summary": "Dos contextos deciden no integrarse porque el costo supera el beneficio."
+    },
+    "strategy.core-domain": {
+      "title": "Dominio core",
+      "summary": "Lo que diferencia al negocio de los demás y merece el mejor modelo y el mejor equipo."
+    },
+    "strategy.supporting-subdomain": {
+      "title": "Subdominio de soporte",
+      "summary": "Necesario para operar, pero no diferenciador; se construye sencillo y a la medida."
+    },
+    "strategy.generic-subdomain": {
+      "title": "Subdominio genérico",
+      "summary": "Un problema resuelto igual para todos; conviene comprar o reutilizar en vez de inventar."
+    },
+    "strategy.investment": {
+      "title": "Dónde invertir",
+      "summary": "Repartir esfuerzo según el valor estratégico: construir, comprar o delegar."
+    },
+    "tactical.value-object": {
+      "title": "Value object",
+      "summary": "Un valor definido por sus atributos, inmutable y válido desde que existe."
+    },
+    "tactical.entity": {
+      "title": "Entidad",
+      "summary": "Un objeto con identidad propia que se mantiene aunque cambien sus atributos."
+    },
+    "tactical.aggregate": {
+      "title": "Agregado",
+      "summary": "Un grupo de objetos que se trata como una unidad de consistencia, con una raíz que es la única puerta de entrada."
+    },
+    "tactical.invariant": {
+      "title": "Invariante",
+      "summary": "Una regla que siempre debe cumplirse; el agregado rechaza todo comando que la rompería."
+    },
+    "tactical.domain-event": {
+      "title": "Evento de dominio",
+      "summary": "El registro de algo relevante que pasó, publicado por el agregado para que otros reaccionen."
+    },
+    "tactical.repository": {
+      "title": "Repositorio",
+      "summary": "Una colección de agregados que oculta cómo y dónde se guardan."
+    },
+    "tactical.factory": {
+      "title": "Fábrica",
+      "summary": "Quien crea objetos complejos ya válidos, para que el resto no conozca los detalles."
+    },
+    "tactical.domain-service": {
+      "title": "Servicio de dominio",
+      "summary": "Una operación del negocio que no pertenece naturalmente a ningún agregado."
+    },
+    "tactical.application-service": {
+      "title": "Servicio de aplicación",
+      "summary": "Orquesta un caso de uso: carga agregados, les da órdenes y guarda el resultado, sin contener reglas."
+    },
+    "functional.constrained-types": {
+      "title": "Tipos restringidos",
+      "summary": "Tipos pequeños que solo admiten valores legales, creados con un constructor que puede fallar."
+    },
+    "functional.states-as-types": {
+      "title": "Estados como tipos",
+      "summary": "Cada estado del ciclo de vida es un tipo distinto con exactamente los datos que le corresponden."
+    },
+    "functional.illegal-states": {
+      "title": "Estados ilegales irrepresentables",
+      "summary": "Diseñar los tipos para que un estado inválido ni siquiera se pueda escribir."
+    },
+    "functional.pipeline": {
+      "title": "Workflows como pipelines",
+      "summary": "Un proceso de negocio como una cadena de etapas donde cada una transforma el tipo de la anterior."
+    },
+    "functional.errors-as-values": {
+      "title": "Errores como valores",
+      "summary": "Los fallos esperados se devuelven como resultados que hay que manejar, no como excepciones sorpresa."
+    },
+    "architecture.layers": {
+      "title": "Capas",
+      "summary": "Separar el dominio de la interfaz, la aplicación y la infraestructura para que cada cosa cambie por su razón."
+    },
+    "architecture.hexagonal": {
+      "title": "Arquitectura hexagonal",
+      "summary": "El dominio en el centro y todo lo demás conectado a través de puertos."
+    },
+    "architecture.ports-adapters": {
+      "title": "Puertos y adaptadores",
+      "summary": "Un puerto es lo que el dominio necesita; un adaptador es una forma concreta de dárselo."
+    },
+    "architecture.dependency-rule": {
+      "title": "Regla de dependencia",
+      "summary": "Las dependencias apuntan siempre hacia el dominio, nunca al revés."
+    },
+    "evolution.implicit-concepts": {
+      "title": "Conceptos implícitos",
+      "summary": "Algo que todos mencionan pero el modelo nunca nombró, y que aparece como parches y excepciones."
+    },
+    "evolution.refactoring-toward-insight": {
+      "title": "Refactorizar hacia una comprensión más profunda",
+      "summary": "Cambiar el modelo no solo para añadir una función, sino porque ahora entendemos mejor el negocio."
+    },
+    "evolution.breakthrough": {
+      "title": "Un avance",
+      "summary": "El momento en que un concepto nuevo simplifica de golpe muchas reglas que parecían separadas."
+    }
+  }
+}

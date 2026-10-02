@@ -1,0 +1,446 @@
+{
+  "modules": [
+    {
+      "id": "why-ddd",
+      "number": 1,
+      "concepts": [
+        {
+          "id": "why.ball-of-mud",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "why.anemic-model",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "why.cost-of-change",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "why.model-driven",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        }
+      ],
+      "interactions": ["costOfChangePropagation", "beforeAfter"],
+      "exercises": ["locateTheRule"],
+      "references": [
+        {
+          "source": "evans-blue-book",
+          "chapters": [1, 3]
+        },
+        {
+          "source": "wlaschin",
+          "chapters": [1]
+        }
+      ]
+    },
+    {
+      "id": "ubiquitous-language",
+      "number": 2,
+      "concepts": [
+        {
+          "id": "lang.ubiquitous-language",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "lang.glossary",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "lang.ambiguity",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        }
+      ],
+      "interactions": ["glossaryBuilding"],
+      "exercises": ["classifyPhrases"],
+      "references": [
+        {
+          "source": "evans-blue-book",
+          "chapters": [2]
+        },
+        {
+          "source": "wlaschin",
+          "chapters": [2]
+        }
+      ]
+    },
+    {
+      "id": "event-storming",
+      "number": 3,
+      "concepts": [
+        {
+          "id": "storm.events",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "storm.commands",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "storm.actors",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "storm.policies",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "storm.external-systems",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "storm.read-models",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "storm.aggregates",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        }
+      ],
+      "interactions": ["eventTimeline"],
+      "exercises": ["orderEvents"],
+      "references": [
+        {
+          "source": "brandolini",
+          "chapters": []
+        },
+        {
+          "source": "wlaschin",
+          "chapters": [2]
+        },
+        {
+          "source": "vernon",
+          "chapters": [2]
+        }
+      ]
+    },
+    {
+      "id": "bounded-contexts",
+      "number": 4,
+      "concepts": [
+        {
+          "id": "context.bounded-context",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "context.term-translation",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        }
+      ],
+      "interactions": ["termTransformation"],
+      "exercises": ["assignNotesToContexts"],
+      "references": [
+        {
+          "source": "evans-blue-book",
+          "chapters": [14]
+        },
+        {
+          "source": "vernon",
+          "chapters": [2]
+        }
+      ]
+    },
+    {
+      "id": "context-map",
+      "number": 5,
+      "concepts": [
+        {
+          "id": "map.context-map",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "map.customer-supplier",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "map.conformist",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "map.anticorruption-layer",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "map.open-host-service",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "map.published-language",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "map.shared-kernel",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "map.partnership",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "map.separate-ways",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        }
+      ],
+      "interactions": ["contextMapAnimation"],
+      "exercises": ["implementAntiCorruptionLayer"],
+      "references": [
+        {
+          "source": "evans-blue-book",
+          "chapters": [14]
+        },
+        {
+          "source": "vernon",
+          "chapters": [3, 13]
+        }
+      ]
+    },
+    {
+      "id": "subdomains",
+      "number": 6,
+      "concepts": [
+        {
+          "id": "strategy.core-domain",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "strategy.supporting-subdomain",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "strategy.generic-subdomain",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "strategy.investment",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        }
+      ],
+      "interactions": ["subdomainBubbles"],
+      "exercises": ["classifySubdomains"],
+      "references": [
+        {
+          "source": "evans-blue-book",
+          "chapters": [15]
+        },
+        {
+          "source": "vernon",
+          "chapters": [2]
+        }
+      ]
+    },
+    {
+      "id": "tactical-building-blocks",
+      "number": 7,
+      "concepts": [
+        {
+          "id": "tactical.value-object",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": true
+        },
+        {
+          "id": "tactical.entity",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": true
+        },
+        {
+          "id": "tactical.aggregate",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": true
+        },
+        {
+          "id": "tactical.invariant",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": true
+        },
+        {
+          "id": "tactical.domain-event",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": true
+        },
+        {
+          "id": "tactical.repository",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "tactical.factory",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "tactical.domain-service",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "tactical.application-service",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        }
+      ],
+      "interactions": ["semanticZoom", "invariantBreaker", "beforeAfter"],
+      "exercises": ["implementTheRule"],
+      "references": [
+        {
+          "source": "evans-blue-book",
+          "chapters": [5, 6]
+        },
+        {
+          "source": "vernon",
+          "chapters": [5, 6, 7, 8, 10, 11, 12]
+        },
+        {
+          "source": "evans-reference",
+          "chapters": []
+        }
+      ]
+    },
+    {
+      "id": "functional-modeling",
+      "number": 8,
+      "concepts": [
+        {
+          "id": "functional.constrained-types",
+          "perspective": "functional",
+          "variesByProgrammingLanguage": true
+        },
+        {
+          "id": "functional.states-as-types",
+          "perspective": "functional",
+          "variesByProgrammingLanguage": true
+        },
+        {
+          "id": "functional.illegal-states",
+          "perspective": "functional",
+          "variesByProgrammingLanguage": true
+        },
+        {
+          "id": "functional.pipeline",
+          "perspective": "functional",
+          "variesByProgrammingLanguage": true
+        },
+        {
+          "id": "functional.errors-as-values",
+          "perspective": "functional",
+          "variesByProgrammingLanguage": true
+        }
+      ],
+      "interactions": ["functionalPipeline", "beforeAfter"],
+      "exercises": ["addPipelineStage"],
+      "references": [
+        {
+          "source": "wlaschin",
+          "chapters": [4, 5, 6, 7, 9, 10]
+        }
+      ]
+    },
+    {
+      "id": "architecture",
+      "number": 9,
+      "concepts": [
+        {
+          "id": "architecture.layers",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "architecture.hexagonal",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "architecture.ports-adapters",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "architecture.dependency-rule",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        }
+      ],
+      "interactions": ["adapterSwap"],
+      "exercises": ["implementRepositoryAdapter"],
+      "references": [
+        {
+          "source": "evans-blue-book",
+          "chapters": [4]
+        },
+        {
+          "source": "vernon",
+          "chapters": [4]
+        },
+        {
+          "source": "wlaschin",
+          "chapters": [3]
+        },
+        {
+          "source": "cockburn",
+          "chapters": []
+        }
+      ]
+    },
+    {
+      "id": "evolution",
+      "number": 10,
+      "concepts": [
+        {
+          "id": "evolution.implicit-concepts",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "evolution.refactoring-toward-insight",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        },
+        {
+          "id": "evolution.breakthrough",
+          "perspective": "classic",
+          "variesByProgrammingLanguage": false
+        }
+      ],
+      "interactions": ["evolutionDiff"],
+      "exercises": ["implementTheChange"],
+      "references": [
+        {
+          "source": "evans-blue-book",
+          "chapters": [8, 9, 13]
+        },
+        {
+          "source": "wlaschin",
+          "chapters": [12]
+        }
+      ]
+    }
+  ]
+}
