@@ -1,6 +1,6 @@
 # 7. Generated code targets the runtimes Dojo's Piston provides
 
-Status: proposed
+Status: accepted
 
 ## Context
 
