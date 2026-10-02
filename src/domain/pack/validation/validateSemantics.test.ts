@@ -251,6 +251,20 @@ const brokenPacks: readonly {
     },
   },
   {
+    ruleId: "S22",
+    breakage: "an event payload field cannot be resolved when the event is emitted",
+    mutate: (pack) => {
+      required(
+        pack.events.find((event) => event.codeName === "OrderPlaced"),
+        "OrderPlaced",
+      ).payload.push({
+        codeName: "mystery" as never,
+        label: { "es-MX": "Misterio", en: "Mystery" },
+        type: { kind: "primitive", name: "string" },
+      });
+    },
+  },
+  {
     ruleId: "S21",
     breakage: "a guard reads an argument the command does not have",
     mutate: (pack) => {

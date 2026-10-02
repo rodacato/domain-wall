@@ -8,6 +8,7 @@ import { changeScenariosApplyCleanly } from "./rules/changeScenariosApplyCleanly
 import { codeNamesAreUnique } from "./rules/codeNamesAreUnique";
 import { contextMapIsRich } from "./rules/contextMapIsRich";
 import { dialoguesAreCoherent } from "./rules/dialoguesAreCoherent";
+import { eventPayloadsAreResolvable } from "./rules/eventPayloadsAreResolvable";
 import { eventStormingIsCoherent } from "./rules/eventStormingIsCoherent";
 import { everythingIsUsed } from "./rules/everythingIsUsed";
 import { expressionsAreWellScoped } from "./rules/expressionsAreWellScoped";
@@ -46,6 +47,7 @@ export const CONTENT_RULES: readonly SemanticRule[] = [
   generatedNamesAreSafe,
   localizedTextIsComplete,
   eventStormingIsCoherent,
+  eventPayloadsAreResolvable,
   contextMapIsRich,
   antiCorruptionLayerIsComplete,
   workflowIsConsistent,
