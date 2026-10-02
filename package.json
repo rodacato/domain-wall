@@ -1,0 +1,36 @@
+{
+  "name": "domain-wall",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Muro: an interactive Domain-Driven Design course taught on an animated Event Storming wall.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check:architecture": "depcruise src scripts --config .dependency-cruiser.cjs",
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm check:architecture && pnpm test"
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.3",
+    "dependency-cruiser": "^18.5.0",
+    "eslint": "^10.11.0",
+    "prettier": "^3.9.9",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "typescript-eslint": "^8.71.0",
+    "vitest": "^5.0.3"
+  },
+  "packageManager": "pnpm@12.4.1"
+}
