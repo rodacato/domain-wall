@@ -16,7 +16,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check:architecture": "depcruise src scripts --config .dependency-cruiser.cjs",
-    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm check:architecture && pnpm test"
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm check:architecture && pnpm test && pnpm validate:packs",
+    "validate:packs": "tsx scripts/validate-packs.ts"
   },
   "dependencies": {
     "zod": "^4.6.5"
@@ -28,7 +29,7 @@
     "eslint": "^10.11.0",
     "prettier": "^3.9.9",
     "tsx": "^4.23.15",
-    "typescript": "^7.0.2",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.0",
     "vitest": "^5.0.3"
   },

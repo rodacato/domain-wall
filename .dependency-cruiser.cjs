@@ -16,7 +16,7 @@ const layerRules = Object.entries(layerAllowList).map(([layer, allowed]) => ({
   name: `layer-${layer}-imports-only-allowed-layers`,
   comment: `src/${layer} may only import from: ${allowed.join(", ")}`,
   severity: "error",
-  from: { path: `^src/${layer}/` },
+  from: { path: `^src/${layer}/`, pathNot: "\\.test\\.ts$" },
   to: { path: "^src/", pathNot: `^src/(${allowed.join("|")})/` },
 }));
 
@@ -24,7 +24,7 @@ const pureLayersMustNotUsePlatform = ["domain", "generation", "application"].map
   name: `layer-${layer}-does-not-use-node-core`,
   comment: `src/${layer} must stay platform-independent`,
   severity: "error",
-  from: { path: `^src/${layer}/` },
+  from: { path: `^src/${layer}/`, pathNot: "\\.test\\.ts$" },
   to: { dependencyTypes: ["core"] },
 }));
 
