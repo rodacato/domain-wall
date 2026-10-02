@@ -1,6 +1,6 @@
 # Muro — Propuesta de producto, contrato y arquitectura
 
-> Estado: **borrador para aprobación** (no hay código todavía).
+> Estado: propuesta aprobada; la implementación va en la Fase 1. Los hallazgos de los spikes (versiones de runtime de Dojo, tamaños de gramáticas, límites de esquemas) están en `docs/spikes/phase-1-spikes.md` y ajustan §3.3 (frameworks de test) y §4 (ejecución).
 > Convención: este documento está en español porque es una conversación contigo; todo lo que entre al repositorio (código, ADRs, commits, docs técnicas) irá en inglés.
 
 ---

@@ -11,7 +11,7 @@ sandboxed Piston with these languages.
 ## Decision
 
 The `CodeRunner` port has two adapters in v1: a local syntax checker (tree-sitter compiled to
-wasm, loaded on demand) and a host adapter that requests execution from the parent page over
+wasm, loaded on demand; see the phase 1 spike for sizes) and a host adapter that requests execution from the parent page over
 `postMessage`. A run outcome is a discriminated union: `Executed` (real test results) or
 `SyntaxChecked` (tests not executed). The UI never reports a pass for a syntax-only check.
 
@@ -20,3 +20,5 @@ wasm, loaded on demand) and a host adapter that requests execution from the pare
 - Standalone exercises are validated for syntax and structure; real test execution requires the host.
 - Interactive wall demonstrations use the reference interpreter (ADR 4), which is semantic.
 - Heavy in-browser runtimes can be added later as another adapter without touching the domain.
+
+- Which language versions and test tools generated code may use is decided in ADR 7.

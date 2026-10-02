@@ -1,0 +1,12 @@
+{
+  "app": {
+    "name": "Muro",
+    "tagline": "Domain-Driven Design on an Event Storming wall"
+  },
+  "programmingLanguage": {
+    "typescript": "TypeScript",
+    "python": "Python",
+    "ruby": "Ruby",
+    "ruby-dry": "Ruby with dry-rb"
+  }
+}

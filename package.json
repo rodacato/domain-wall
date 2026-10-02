@@ -16,8 +16,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check:architecture": "depcruise src scripts --config .dependency-cruiser.cjs",
-    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm check:architecture && pnpm test && pnpm validate:packs",
-    "validate:packs": "tsx scripts/validate-packs.ts"
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm check:architecture && pnpm test && pnpm validate:packs && pnpm check:translations",
+    "validate:packs": "tsx scripts/validate-packs.ts",
+    "check:translations": "tsx scripts/check-translations.ts"
   },
   "dependencies": {
     "zod": "^4.6.5"

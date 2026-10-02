@@ -22,3 +22,4 @@ jobs:
       - run: pnpm check:architecture
       - run: pnpm test
       - run: pnpm validate:packs
+      - run: pnpm check:translations
