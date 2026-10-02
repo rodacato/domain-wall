@@ -1,0 +1,391 @@
+{
+  "aggregates": [
+    {
+      "codeName": "Invoice",
+      "label": {
+        "es-MX": "Factura",
+        "en": "Invoice"
+      },
+      "description": {
+        "es-MX": "La factura electrónica (CFDI) de un pedido pagado.",
+        "en": "The electronic invoice (CFDI) of a paid order."
+      },
+      "context": "Invoicing",
+      "identity": "invoiceId",
+      "fields": [
+        {
+          "codeName": "invoiceId",
+          "label": {
+            "es-MX": "Factura",
+            "en": "Invoice"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "InvoiceId"
+          }
+        },
+        {
+          "codeName": "orderId",
+          "label": {
+            "es-MX": "Pedido",
+            "en": "Order"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "OrderId"
+          }
+        },
+        {
+          "codeName": "taxId",
+          "label": {
+            "es-MX": "RFC",
+            "en": "Tax ID"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "TaxId"
+            }
+          }
+        },
+        {
+          "codeName": "paymentMethod",
+          "label": {
+            "es-MX": "Forma de pago",
+            "en": "Payment method"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "PaymentMethod"
+            }
+          }
+        },
+        {
+          "codeName": "items",
+          "label": {
+            "es-MX": "Conceptos",
+            "en": "Items"
+          },
+          "type": {
+            "kind": "list",
+            "of": {
+              "kind": "valueObject",
+              "ref": "TaxableItem"
+            }
+          }
+        },
+        {
+          "codeName": "total",
+          "label": {
+            "es-MX": "Total",
+            "en": "Total"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "Money"
+            }
+          }
+        }
+      ],
+      "derived": [],
+      "entities": [],
+      "states": [
+        {
+          "codeName": "Draft",
+          "label": {
+            "es-MX": "Borrador",
+            "en": "Draft"
+          },
+          "description": {
+            "es-MX": "La factura existe pero aún no se solicita.",
+            "en": "The invoice exists but has not been requested yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Requested",
+          "label": {
+            "es-MX": "Solicitada",
+            "en": "Requested"
+          },
+          "description": {
+            "es-MX": "Enviada al SAT, esperando respuesta.",
+            "en": "Sent to the tax authority, awaiting a response."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Stamped",
+          "label": {
+            "es-MX": "Timbrada",
+            "en": "Stamped"
+          },
+          "description": {
+            "es-MX": "El SAT la timbró y devolvió su folio.",
+            "en": "The tax authority stamped it and returned its folio."
+          },
+          "terminal": false,
+          "data": [
+            {
+              "codeName": "fiscalFolio",
+              "label": {
+                "es-MX": "Folio fiscal",
+                "en": "Fiscal folio"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "FiscalFolio"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Rejected",
+          "label": {
+            "es-MX": "Rechazada",
+            "en": "Rejected"
+          },
+          "description": {
+            "es-MX": "El SAT la rechazó.",
+            "en": "The tax authority rejected it."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "rejectionReason",
+              "label": {
+                "es-MX": "Motivo de rechazo",
+                "en": "Rejection reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "RejectionReason"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Cancelled",
+          "label": {
+            "es-MX": "Cancelada",
+            "en": "Cancelled"
+          },
+          "description": {
+            "es-MX": "Se canceló después de timbrarla.",
+            "en": "Cancelled after being stamped."
+          },
+          "terminal": true,
+          "data": []
+        }
+      ],
+      "initialState": "Draft",
+      "rules": [
+        {
+          "codeName": "InvoiceMustHaveItems",
+          "label": {
+            "es-MX": "La factura debe tener conceptos",
+            "en": "The invoice must have items"
+          },
+          "description": {
+            "es-MX": "No se factura nada si no hay conceptos.",
+            "en": "Nothing is invoiced without items."
+          },
+          "predicate": {
+            "kind": "notEmpty",
+            "value": {
+              "op": "arg",
+              "name": "items"
+            }
+          },
+          "message": {
+            "es-MX": "Una factura necesita al menos un concepto.",
+            "en": "An invoice needs at least one item."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "RequestInvoice",
+              "args": {}
+            }
+          }
+        },
+        {
+          "codeName": "InvoiceTotalMustMatchItems",
+          "label": {
+            "es-MX": "El total debe coincidir con los conceptos",
+            "en": "The total must match the items"
+          },
+          "description": {
+            "es-MX": "El SAT rechaza facturas cuyo total no suma sus conceptos.",
+            "en": "The tax authority rejects invoices whose total does not add up from their items."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "total"
+            },
+            "operator": "==",
+            "right": {
+              "op": "sumOf",
+              "collection": {
+                "op": "arg",
+                "name": "items"
+              },
+              "term": {
+                "op": "arithmetic",
+                "operator": "multiply",
+                "left": {
+                  "op": "field",
+                  "name": "quantity"
+                },
+                "right": {
+                  "op": "field",
+                  "name": "unitPrice"
+                }
+              }
+            }
+          },
+          "message": {
+            "es-MX": "El total de la factura debe ser la suma de sus conceptos.",
+            "en": "The invoice total must be the sum of its items."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "RequestInvoice",
+              "args": {
+                "items": [
+                  {
+                    "description": "Black clay vase",
+                    "satProductCode": "01010101",
+                    "quantity": 1,
+                    "unitPrice": 45000
+                  }
+                ],
+                "total": 1
+              }
+            }
+          }
+        }
+      ],
+      "invariants": [],
+      "transitions": [
+        {
+          "command": "RequestInvoice",
+          "from": ["Draft"],
+          "to": "Requested",
+          "guards": ["InvoiceMustHaveItems", "InvoiceTotalMustMatchItems"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "taxId",
+              "value": {
+                "op": "arg",
+                "name": "taxId"
+              }
+            },
+            {
+              "op": "set",
+              "field": "paymentMethod",
+              "value": {
+                "op": "arg",
+                "name": "paymentMethod"
+              }
+            },
+            {
+              "op": "set",
+              "field": "items",
+              "value": {
+                "op": "arg",
+                "name": "items"
+              }
+            },
+            {
+              "op": "set",
+              "field": "total",
+              "value": {
+                "op": "arg",
+                "name": "total"
+              }
+            }
+          ],
+          "emits": ["InvoiceRequested"]
+        },
+        {
+          "command": "StampInvoice",
+          "from": ["Requested"],
+          "to": "Stamped",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "fiscalFolio",
+              "value": {
+                "op": "arg",
+                "name": "fiscalFolio"
+              }
+            }
+          ],
+          "emits": ["InvoiceStamped"]
+        },
+        {
+          "command": "RejectInvoice",
+          "from": ["Requested"],
+          "to": "Rejected",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "rejectionReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["InvoiceRejected"]
+        },
+        {
+          "command": "CancelInvoice",
+          "from": ["Stamped"],
+          "to": "Cancelled",
+          "guards": [],
+          "effects": [],
+          "emits": ["InvoiceCancelled"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "RequestInvoice",
+          "args": {
+            "items": [
+              {
+                "description": "Black clay vase",
+                "satProductCode": "01010101",
+                "quantity": 2,
+                "unitPrice": 45000
+              }
+            ],
+            "total": 90000
+          }
+        },
+        {
+          "command": "StampInvoice",
+          "args": {}
+        },
+        {
+          "command": "CancelInvoice",
+          "args": {}
+        }
+      ]
+    }
+  ]
+}

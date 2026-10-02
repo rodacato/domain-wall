@@ -1,0 +1,599 @@
+{
+  "aggregates": [
+    {
+      "codeName": "Order",
+      "label": {
+        "es-MX": "Pedido",
+        "en": "Order"
+      },
+      "description": {
+        "es-MX": "La compra de una o más piezas por parte de un comprador, desde que la arma hasta que la recibe.",
+        "en": "A buyer's purchase of one or more pieces, from building it until receiving it."
+      },
+      "context": "Ordering",
+      "identity": "orderId",
+      "fields": [
+        {
+          "codeName": "orderId",
+          "label": {
+            "es-MX": "Pedido",
+            "en": "Order"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "OrderId"
+          }
+        },
+        {
+          "codeName": "buyerId",
+          "label": {
+            "es-MX": "Comprador",
+            "en": "Buyer"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "BuyerId"
+          }
+        },
+        {
+          "codeName": "lines",
+          "label": {
+            "es-MX": "Piezas del pedido",
+            "en": "Order lines"
+          },
+          "type": {
+            "kind": "list",
+            "of": {
+              "kind": "entity",
+              "ref": "OrderLine"
+            }
+          }
+        },
+        {
+          "codeName": "shippingAddress",
+          "label": {
+            "es-MX": "Dirección de envío",
+            "en": "Shipping address"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "Address"
+            }
+          }
+        }
+      ],
+      "derived": [
+        {
+          "codeName": "total",
+          "label": {
+            "es-MX": "Total",
+            "en": "Total"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          },
+          "expression": {
+            "op": "sumOf",
+            "collection": {
+              "op": "field",
+              "name": "lines"
+            },
+            "term": {
+              "op": "field",
+              "name": "subtotal"
+            }
+          }
+        }
+      ],
+      "entities": [
+        {
+          "codeName": "OrderLine",
+          "label": {
+            "es-MX": "Línea del pedido",
+            "en": "Order line"
+          },
+          "description": {
+            "es-MX": "Una pieza del pedido, con la cantidad y el precio que tenía al momento de comprarla.",
+            "en": "A piece in the order, with the quantity and the price it had when it was bought."
+          },
+          "identity": "listingId",
+          "fields": [
+            {
+              "codeName": "listingId",
+              "label": {
+                "es-MX": "Ficha",
+                "en": "Listing"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ListingId"
+              }
+            },
+            {
+              "codeName": "quantity",
+              "label": {
+                "es-MX": "Cantidad",
+                "en": "Quantity"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "Quantity"
+              }
+            },
+            {
+              "codeName": "unitPrice",
+              "label": {
+                "es-MX": "Precio unitario",
+                "en": "Unit price"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "Money"
+              }
+            }
+          ],
+          "derived": [
+            {
+              "codeName": "subtotal",
+              "label": {
+                "es-MX": "Subtotal",
+                "en": "Subtotal"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "Money"
+              },
+              "expression": {
+                "op": "arithmetic",
+                "operator": "multiply",
+                "left": {
+                  "op": "field",
+                  "name": "unitPrice"
+                },
+                "right": {
+                  "op": "field",
+                  "name": "quantity"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "states": [
+        {
+          "codeName": "Draft",
+          "label": {
+            "es-MX": "Borrador",
+            "en": "Draft"
+          },
+          "description": {
+            "es-MX": "El comprador todavía arma el pedido.",
+            "en": "The buyer is still building the order."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Placed",
+          "label": {
+            "es-MX": "Realizado",
+            "en": "Placed"
+          },
+          "description": {
+            "es-MX": "El pedido está confirmado y espera el pago.",
+            "en": "The order is confirmed and awaiting payment."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Paid",
+          "label": {
+            "es-MX": "Pagado",
+            "en": "Paid"
+          },
+          "description": {
+            "es-MX": "El pago llegó completo.",
+            "en": "The full payment arrived."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Shipped",
+          "label": {
+            "es-MX": "Enviado",
+            "en": "Shipped"
+          },
+          "description": {
+            "es-MX": "El pedido ya va en camino.",
+            "en": "The order is on its way."
+          },
+          "terminal": false,
+          "data": [
+            {
+              "codeName": "trackingNumber",
+              "label": {
+                "es-MX": "Número de guía",
+                "en": "Tracking number"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "TrackingNumber"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Delivered",
+          "label": {
+            "es-MX": "Entregado",
+            "en": "Delivered"
+          },
+          "description": {
+            "es-MX": "El comprador recibió su pedido.",
+            "en": "The buyer received the order."
+          },
+          "terminal": true,
+          "data": []
+        },
+        {
+          "codeName": "Cancelled",
+          "label": {
+            "es-MX": "Cancelado",
+            "en": "Cancelled"
+          },
+          "description": {
+            "es-MX": "El pedido se canceló.",
+            "en": "The order was cancelled."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "cancellationReason",
+              "label": {
+                "es-MX": "Motivo de cancelación",
+                "en": "Cancellation reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "CancellationReason"
+              }
+            }
+          ]
+        }
+      ],
+      "initialState": "Draft",
+      "rules": [
+        {
+          "codeName": "OrderMustHaveLines",
+          "label": {
+            "es-MX": "El pedido debe tener piezas",
+            "en": "The order must have pieces"
+          },
+          "description": {
+            "es-MX": "No se puede realizar un pedido vacío.",
+            "en": "An empty order cannot be placed."
+          },
+          "predicate": {
+            "kind": "notEmpty",
+            "value": {
+              "op": "field",
+              "name": "lines"
+            }
+          },
+          "message": {
+            "es-MX": "Un pedido necesita al menos una pieza.",
+            "en": "An order needs at least one piece."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "PlaceOrder",
+              "args": {}
+            }
+          }
+        },
+        {
+          "codeName": "ShippingAddressRequired",
+          "label": {
+            "es-MX": "El pedido debe tener dirección de envío",
+            "en": "The order must have a shipping address"
+          },
+          "description": {
+            "es-MX": "Sin dirección no sabemos adónde enviar.",
+            "en": "Without an address we do not know where to ship."
+          },
+          "predicate": {
+            "kind": "present",
+            "value": {
+              "op": "field",
+              "name": "shippingAddress"
+            }
+          },
+          "message": {
+            "es-MX": "Falta la dirección de envío.",
+            "en": "The shipping address is missing."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "AddOrderLine",
+                "args": {
+                  "quantity": 2,
+                  "unitPrice": 45000
+                }
+              }
+            ],
+            "when": {
+              "command": "PlaceOrder",
+              "args": {}
+            }
+          }
+        },
+        {
+          "codeName": "PaymentMustMatchTotal",
+          "label": {
+            "es-MX": "El pago debe ser igual al total",
+            "en": "The payment must equal the total"
+          },
+          "description": {
+            "es-MX": "Solo se acepta el pago exacto del pedido.",
+            "en": "Only the exact payment of the order is accepted."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "amount"
+            },
+            "operator": "==",
+            "right": {
+              "op": "field",
+              "name": "total"
+            }
+          },
+          "message": {
+            "es-MX": "El pago debe ser igual al total del pedido.",
+            "en": "The payment must equal the order total."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "AddOrderLine",
+                "args": {
+                  "quantity": 2,
+                  "unitPrice": 45000
+                }
+              },
+              {
+                "command": "SetShippingAddress",
+                "args": {}
+              },
+              {
+                "command": "PlaceOrder",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "ConfirmPayment",
+              "args": {
+                "amount": 1
+              }
+            }
+          }
+        },
+        {
+          "codeName": "OrderLinesWithinLimit",
+          "label": {
+            "es-MX": "El pedido tiene un máximo de piezas",
+            "en": "The order has a maximum number of pieces"
+          },
+          "description": {
+            "es-MX": "Un pedido admite hasta 5 piezas distintas, porque el envío se consolida en un solo bulto.",
+            "en": "An order holds up to 5 different pieces, because shipping is consolidated into a single parcel."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "count",
+              "collection": {
+                "op": "field",
+                "name": "lines"
+              }
+            },
+            "operator": "<=",
+            "right": {
+              "op": "literal",
+              "value": 5
+            }
+          },
+          "message": {
+            "es-MX": "Un pedido admite como máximo 5 piezas distintas.",
+            "en": "An order can hold at most 5 different pieces."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "AddOrderLine",
+                "args": {}
+              },
+              {
+                "command": "AddOrderLine",
+                "args": {}
+              },
+              {
+                "command": "AddOrderLine",
+                "args": {}
+              },
+              {
+                "command": "AddOrderLine",
+                "args": {}
+              },
+              {
+                "command": "AddOrderLine",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "AddOrderLine",
+              "args": {}
+            }
+          }
+        }
+      ],
+      "invariants": ["OrderLinesWithinLimit"],
+      "transitions": [
+        {
+          "command": "AddOrderLine",
+          "from": ["Draft"],
+          "to": "Draft",
+          "guards": [],
+          "effects": [
+            {
+              "op": "append",
+              "field": "lines",
+              "value": {
+                "op": "construct",
+                "type": "OrderLine",
+                "fields": [
+                  {
+                    "name": "listingId",
+                    "value": {
+                      "op": "arg",
+                      "name": "listingId"
+                    }
+                  },
+                  {
+                    "name": "quantity",
+                    "value": {
+                      "op": "arg",
+                      "name": "quantity"
+                    }
+                  },
+                  {
+                    "name": "unitPrice",
+                    "value": {
+                      "op": "arg",
+                      "name": "unitPrice"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "emits": ["OrderLineAdded"]
+        },
+        {
+          "command": "SetShippingAddress",
+          "from": ["Draft"],
+          "to": "Draft",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "shippingAddress",
+              "value": {
+                "op": "arg",
+                "name": "address"
+              }
+            }
+          ],
+          "emits": ["ShippingAddressSet"]
+        },
+        {
+          "command": "PlaceOrder",
+          "from": ["Draft"],
+          "to": "Placed",
+          "guards": ["OrderMustHaveLines", "ShippingAddressRequired"],
+          "effects": [],
+          "emits": ["OrderPlaced"]
+        },
+        {
+          "command": "ConfirmPayment",
+          "from": ["Placed"],
+          "to": "Paid",
+          "guards": ["PaymentMustMatchTotal"],
+          "effects": [],
+          "emits": ["PaymentConfirmed"]
+        },
+        {
+          "command": "MarkOrderShipped",
+          "from": ["Paid"],
+          "to": "Shipped",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "trackingNumber",
+              "value": {
+                "op": "arg",
+                "name": "trackingNumber"
+              }
+            }
+          ],
+          "emits": ["OrderShipped"]
+        },
+        {
+          "command": "MarkOrderDelivered",
+          "from": ["Shipped"],
+          "to": "Delivered",
+          "guards": [],
+          "effects": [],
+          "emits": ["OrderDelivered"]
+        },
+        {
+          "command": "CancelOrder",
+          "from": ["Draft", "Placed", "Paid"],
+          "to": "Cancelled",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "cancellationReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["OrderCancelled"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "AddOrderLine",
+          "args": {
+            "quantity": 2,
+            "unitPrice": 45000
+          }
+        },
+        {
+          "command": "SetShippingAddress",
+          "args": {}
+        },
+        {
+          "command": "PlaceOrder",
+          "args": {}
+        },
+        {
+          "command": "ConfirmPayment",
+          "args": {
+            "amount": 90000
+          }
+        },
+        {
+          "command": "MarkOrderShipped",
+          "args": {}
+        },
+        {
+          "command": "MarkOrderDelivered",
+          "args": {}
+        }
+      ]
+    }
+  ]
+}

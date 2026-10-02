@@ -1,0 +1,905 @@
+{
+  "valueObjects": [
+    {
+      "kind": "scalar",
+      "codeName": "OrderId",
+      "label": {
+        "es-MX": "Pedido",
+        "en": "Order"
+      },
+      "description": {
+        "es-MX": "Identificador de un pedido.",
+        "en": "Identifier of an order."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "ord_[a-z0-9]{8}",
+          "errorCode": "OrderIdMalformed",
+          "message": {
+            "es-MX": "El identificador de pedido debe empezar con ord_ seguido de 8 caracteres.",
+            "en": "The order identifier must start with ord_ followed by 8 characters."
+          },
+          "invalidExamples": ["ORD_12345678", "ord_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["ord_7k2m9x1q"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "BuyerId",
+      "label": {
+        "es-MX": "Comprador",
+        "en": "Buyer"
+      },
+      "description": {
+        "es-MX": "Identificador de un comprador.",
+        "en": "Identifier of a buyer."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "buy_[a-z0-9]{8}",
+          "errorCode": "BuyerIdMalformed",
+          "message": {
+            "es-MX": "El identificador de comprador debe empezar con buy_ seguido de 8 caracteres.",
+            "en": "The buyer identifier must start with buy_ followed by 8 characters."
+          },
+          "invalidExamples": ["BUY_12345678", "buy_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["buy_4h8d2n6w"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ArtisanId",
+      "label": {
+        "es-MX": "Artesano",
+        "en": "Artisan"
+      },
+      "description": {
+        "es-MX": "Identificador de un artesano.",
+        "en": "Identifier of an artisan."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "art_[a-z0-9]{8}",
+          "errorCode": "ArtisanIdMalformed",
+          "message": {
+            "es-MX": "El identificador de artesano debe empezar con art_ seguido de 8 caracteres.",
+            "en": "The artisan identifier must start with art_ followed by 8 characters."
+          },
+          "invalidExamples": ["ART_12345678", "art_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["art_9q3t5v7c"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ListingId",
+      "label": {
+        "es-MX": "Ficha",
+        "en": "Listing"
+      },
+      "description": {
+        "es-MX": "Identificador de una ficha de producto.",
+        "en": "Identifier of a product listing."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "lst_[a-z0-9]{8}",
+          "errorCode": "ListingIdMalformed",
+          "message": {
+            "es-MX": "El identificador de ficha debe empezar con lst_ seguido de 8 caracteres.",
+            "en": "The listing identifier must start with lst_ followed by 8 characters."
+          },
+          "invalidExamples": ["LST_12345678", "lst_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["lst_2b6f8j1k"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ShipmentId",
+      "label": {
+        "es-MX": "Envío",
+        "en": "Shipment"
+      },
+      "description": {
+        "es-MX": "Identificador de un envío.",
+        "en": "Identifier of a shipment."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "shp_[a-z0-9]{8}",
+          "errorCode": "ShipmentIdMalformed",
+          "message": {
+            "es-MX": "El identificador de envío debe empezar con shp_ seguido de 8 caracteres.",
+            "en": "The shipment identifier must start with shp_ followed by 8 characters."
+          },
+          "invalidExamples": ["SHP_12345678", "shp_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["shp_5m1r3z9x"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ParcelId",
+      "label": {
+        "es-MX": "Bulto",
+        "en": "Parcel"
+      },
+      "description": {
+        "es-MX": "Identificador de un bulto.",
+        "en": "Identifier of a parcel."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "pcl_[a-z0-9]{8}",
+          "errorCode": "ParcelIdMalformed",
+          "message": {
+            "es-MX": "El identificador de bulto debe empezar con pcl_ seguido de 8 caracteres.",
+            "en": "The parcel identifier must start with pcl_ followed by 8 characters."
+          },
+          "invalidExamples": ["PCL_12345678", "pcl_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["pcl_8w4y6e2l"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "InvoiceId",
+      "label": {
+        "es-MX": "Factura",
+        "en": "Invoice"
+      },
+      "description": {
+        "es-MX": "Identificador de una factura.",
+        "en": "Identifier of an invoice."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "inv_[a-z0-9]{8}",
+          "errorCode": "InvoiceIdMalformed",
+          "message": {
+            "es-MX": "El identificador de factura debe empezar con inv_ seguido de 8 caracteres.",
+            "en": "The invoice identifier must start with inv_ followed by 8 characters."
+          },
+          "invalidExamples": ["INV_12345678", "inv_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["inv_3c7g1p5s"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "Money",
+      "label": {
+        "es-MX": "Dinero",
+        "en": "Money"
+      },
+      "description": {
+        "es-MX": "Un monto en centavos de peso mexicano, nunca negativo.",
+        "en": "An amount in Mexican peso cents, never negative."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 0,
+          "errorCode": "MoneyCannotBeNegative",
+          "message": {
+            "es-MX": "El monto no puede ser negativo.",
+            "en": "The amount cannot be negative."
+          },
+          "invalidExamples": [-1, -500]
+        }
+      ],
+      "examples": {
+        "valid": [45000, 120000]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "Quantity",
+      "label": {
+        "es-MX": "Cantidad",
+        "en": "Quantity"
+      },
+      "description": {
+        "es-MX": "Cuántas unidades de una pieza: entre 1 y 99.",
+        "en": "How many units of a piece: between 1 and 99."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 1,
+          "errorCode": "QuantityMustBePositive",
+          "message": {
+            "es-MX": "La cantidad debe ser al menos 1.",
+            "en": "The quantity must be at least 1."
+          },
+          "invalidExamples": [0, -3]
+        },
+        {
+          "kind": "max",
+          "value": 99,
+          "errorCode": "QuantityTooLarge",
+          "message": {
+            "es-MX": "La cantidad no puede pasar de 99.",
+            "en": "The quantity cannot exceed 99."
+          },
+          "invalidExamples": [100]
+        }
+      ],
+      "examples": {
+        "valid": [1, 2, 10]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "WeightGrams",
+      "label": {
+        "es-MX": "Peso en gramos",
+        "en": "Weight in grams"
+      },
+      "description": {
+        "es-MX": "El peso de un bulto en gramos; siempre positivo.",
+        "en": "The weight of a parcel in grams; always positive."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 1,
+          "errorCode": "WeightMustBePositive",
+          "message": {
+            "es-MX": "El peso debe ser mayor a cero.",
+            "en": "The weight must be greater than zero."
+          },
+          "invalidExamples": [0, -10]
+        }
+      ],
+      "examples": {
+        "valid": [1500, 800]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "PostalCode",
+      "label": {
+        "es-MX": "Código postal",
+        "en": "Postal code"
+      },
+      "description": {
+        "es-MX": "Código postal mexicano de cinco dígitos.",
+        "en": "Five-digit Mexican postal code."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[0-9]{5}",
+          "errorCode": "PostalCodeMalformed",
+          "message": {
+            "es-MX": "El código postal debe tener 5 dígitos.",
+            "en": "The postal code must have 5 digits."
+          },
+          "invalidExamples": ["1234", "ABCDE", "123456"]
+        }
+      ],
+      "examples": {
+        "valid": ["68000", "06600"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "StreetLine",
+      "label": {
+        "es-MX": "Calle y número",
+        "en": "Street and number"
+      },
+      "description": {
+        "es-MX": "Calle y número de una dirección.",
+        "en": "Street and number of an address."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 3,
+          "errorCode": "StreetLineTooShort",
+          "message": {
+            "es-MX": "La calle y número deben tener al menos 3 caracteres.",
+            "en": "The street and number must have at least 3 characters."
+          },
+          "invalidExamples": ["aa"]
+        }
+      ],
+      "examples": {
+        "valid": ["Calle Macedonio Alcalá 407"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "CityName",
+      "label": {
+        "es-MX": "Ciudad",
+        "en": "City"
+      },
+      "description": {
+        "es-MX": "Nombre de una ciudad o municipio.",
+        "en": "Name of a city or municipality."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 2,
+          "errorCode": "CityNameTooShort",
+          "message": {
+            "es-MX": "La ciudad debe tener al menos 2 caracteres.",
+            "en": "The city must have at least 2 characters."
+          },
+          "invalidExamples": ["a"]
+        }
+      ],
+      "examples": {
+        "valid": ["Oaxaca de Juárez"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "StateName",
+      "label": {
+        "es-MX": "Estado",
+        "en": "State"
+      },
+      "description": {
+        "es-MX": "Nombre de un estado de la república.",
+        "en": "Name of a Mexican state."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 2,
+          "errorCode": "StateNameTooShort",
+          "message": {
+            "es-MX": "El estado debe tener al menos 2 caracteres.",
+            "en": "The state must have at least 2 characters."
+          },
+          "invalidExamples": ["a"]
+        }
+      ],
+      "examples": {
+        "valid": ["Oaxaca"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "PhotoUrl",
+      "label": {
+        "es-MX": "Dirección de la foto",
+        "en": "Photo URL"
+      },
+      "description": {
+        "es-MX": "Dirección https de una foto de la pieza.",
+        "en": "The https address of a photo of the piece."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "https://[^ ]+",
+          "errorCode": "PhotoUrlMalformed",
+          "message": {
+            "es-MX": "La foto debe tener una dirección https.",
+            "en": "The photo must have an https address."
+          },
+          "invalidExamples": ["http://cdn.example.com/a.jpg", "foto.jpg"]
+        }
+      ],
+      "examples": {
+        "valid": ["https://cdn.hechoamano.example/photos/black-clay-vase.jpg"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "TrackingNumber",
+      "label": {
+        "es-MX": "Número de guía",
+        "en": "Tracking number"
+      },
+      "description": {
+        "es-MX": "Guía de la paquetería: de 10 a 20 letras mayúsculas o dígitos.",
+        "en": "Carrier tracking number: 10 to 20 uppercase letters or digits."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[A-Z0-9]{10,20}",
+          "errorCode": "TrackingNumberMalformed",
+          "message": {
+            "es-MX": "La guía debe tener de 10 a 20 letras mayúsculas o dígitos.",
+            "en": "The tracking number must have 10 to 20 uppercase letters or digits."
+          },
+          "invalidExamples": ["mx123", "SHORT", "lowercase12345"]
+        }
+      ],
+      "examples": {
+        "valid": ["MX48201937465"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "CancellationReason",
+      "label": {
+        "es-MX": "Motivo de cancelación",
+        "en": "Cancellation reason"
+      },
+      "description": {
+        "es-MX": "Por qué se canceló un pedido.",
+        "en": "Why an order was cancelled."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 3,
+          "errorCode": "CancellationReasonTooShort",
+          "message": {
+            "es-MX": "El motivo debe tener al menos 3 caracteres.",
+            "en": "The reason must have at least 3 characters."
+          },
+          "invalidExamples": ["aa"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 200,
+          "errorCode": "CancellationReasonTooLong",
+          "message": {
+            "es-MX": "El motivo no puede pasar de 200 caracteres.",
+            "en": "The reason cannot exceed 200 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["Buyer changed their mind"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "RejectionReason",
+      "label": {
+        "es-MX": "Motivo de rechazo",
+        "en": "Rejection reason"
+      },
+      "description": {
+        "es-MX": "Por qué el SAT rechazó una factura.",
+        "en": "Why the tax authority rejected an invoice."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 3,
+          "errorCode": "RejectionReasonTooShort",
+          "message": {
+            "es-MX": "El motivo debe tener al menos 3 caracteres.",
+            "en": "The reason must have at least 3 characters."
+          },
+          "invalidExamples": ["aa"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 200,
+          "errorCode": "RejectionReasonTooLong",
+          "message": {
+            "es-MX": "El motivo no puede pasar de 200 caracteres.",
+            "en": "The reason cannot exceed 200 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["Receiver tax ID does not exist"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "TaxId",
+      "label": {
+        "es-MX": "RFC",
+        "en": "Tax ID"
+      },
+      "description": {
+        "es-MX": "Registro Federal de Contribuyentes: 3 o 4 letras, 6 dígitos de fecha y 3 caracteres de homoclave.",
+        "en": "Mexican taxpayer ID: 3 or 4 letters, 6 date digits and a 3-character suffix."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[A-Z&]{3,4}[0-9]{6}[A-Z0-9]{3}",
+          "errorCode": "TaxIdMalformed",
+          "message": {
+            "es-MX": "El RFC no tiene el formato correcto.",
+            "en": "The tax ID does not have the right format."
+          },
+          "invalidExamples": ["xaxx010101000", "123", "ABC12"]
+        }
+      ],
+      "examples": {
+        "valid": ["XAXX010101000"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "FiscalFolio",
+      "label": {
+        "es-MX": "Folio fiscal",
+        "en": "Fiscal folio"
+      },
+      "description": {
+        "es-MX": "El UUID que el SAT asigna a una factura timbrada.",
+        "en": "The UUID the tax authority assigns to a stamped invoice."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}",
+          "errorCode": "FiscalFolioMalformed",
+          "message": {
+            "es-MX": "El folio fiscal debe ser un UUID en mayúsculas.",
+            "en": "The fiscal folio must be an uppercase UUID."
+          },
+          "invalidExamples": ["not-a-folio", "6f9619ff-8b86-d011-b42d-00c04fc964ff"]
+        }
+      ],
+      "examples": {
+        "valid": ["6F9619FF-8B86-D011-B42D-00C04FC964FF"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "SatProductCode",
+      "label": {
+        "es-MX": "Clave de producto del SAT",
+        "en": "SAT product code"
+      },
+      "description": {
+        "es-MX": "Clave de ocho dígitos del catálogo del SAT.",
+        "en": "Eight-digit code from the tax authority's catalog."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[0-9]{8}",
+          "errorCode": "SatProductCodeMalformed",
+          "message": {
+            "es-MX": "La clave del SAT debe tener 8 dígitos.",
+            "en": "The SAT code must have 8 digits."
+          },
+          "invalidExamples": ["1234", "ABCDEFGH"]
+        }
+      ],
+      "examples": {
+        "valid": ["01010101"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ItemDescription",
+      "label": {
+        "es-MX": "Descripción del concepto",
+        "en": "Item description"
+      },
+      "description": {
+        "es-MX": "Qué se está facturando.",
+        "en": "What is being invoiced."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 1,
+          "errorCode": "ItemDescriptionEmpty",
+          "message": {
+            "es-MX": "La descripción no puede estar vacía.",
+            "en": "The description cannot be empty."
+          },
+          "invalidExamples": [""]
+        },
+        {
+          "kind": "maxLength",
+          "value": 120,
+          "errorCode": "ItemDescriptionTooLong",
+          "message": {
+            "es-MX": "La descripción no puede pasar de 120 caracteres.",
+            "en": "The description cannot exceed 120 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["Black clay vase"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ListingTitle",
+      "label": {
+        "es-MX": "Título de la ficha",
+        "en": "Listing title"
+      },
+      "description": {
+        "es-MX": "El nombre con el que se publica una pieza.",
+        "en": "The name under which a piece is published."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 3,
+          "errorCode": "ListingTitleTooShort",
+          "message": {
+            "es-MX": "El título debe tener al menos 3 caracteres.",
+            "en": "The title must have at least 3 characters."
+          },
+          "invalidExamples": ["ab"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 80,
+          "errorCode": "ListingTitleTooLong",
+          "message": {
+            "es-MX": "El título no puede pasar de 80 caracteres.",
+            "en": "The title cannot exceed 80 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["Black clay vase from San Bartolo"]
+      }
+    },
+    {
+      "kind": "record",
+      "codeName": "Address",
+      "label": {
+        "es-MX": "Dirección",
+        "en": "Address"
+      },
+      "description": {
+        "es-MX": "Dónde se entrega un envío.",
+        "en": "Where a shipment is delivered."
+      },
+      "fields": [
+        {
+          "codeName": "street",
+          "label": {
+            "es-MX": "Calle",
+            "en": "Street"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StreetLine"
+          }
+        },
+        {
+          "codeName": "city",
+          "label": {
+            "es-MX": "Ciudad",
+            "en": "City"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CityName"
+          }
+        },
+        {
+          "codeName": "state",
+          "label": {
+            "es-MX": "Estado",
+            "en": "State"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StateName"
+          }
+        },
+        {
+          "codeName": "postalCode",
+          "label": {
+            "es-MX": "Código postal",
+            "en": "Postal code"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PostalCode"
+          }
+        }
+      ],
+      "examples": {
+        "valid": [
+          {
+            "street": "Calle Macedonio Alcalá 407",
+            "city": "Oaxaca de Juárez",
+            "state": "Oaxaca",
+            "postalCode": "68000"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "record",
+      "codeName": "TaxableItem",
+      "label": {
+        "es-MX": "Concepto facturable",
+        "en": "Taxable item"
+      },
+      "description": {
+        "es-MX": "Una línea de la factura tal como la entiende Facturación.",
+        "en": "A line of the invoice as Invoicing understands it."
+      },
+      "fields": [
+        {
+          "codeName": "description",
+          "label": {
+            "es-MX": "Descripción",
+            "en": "Description"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ItemDescription"
+          }
+        },
+        {
+          "codeName": "satProductCode",
+          "label": {
+            "es-MX": "Clave SAT",
+            "en": "SAT product code"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "SatProductCode"
+          }
+        },
+        {
+          "codeName": "quantity",
+          "label": {
+            "es-MX": "Cantidad",
+            "en": "Quantity"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Quantity"
+          }
+        },
+        {
+          "codeName": "unitPrice",
+          "label": {
+            "es-MX": "Precio unitario",
+            "en": "Unit price"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ],
+      "examples": {
+        "valid": [
+          {
+            "description": "Black clay vase",
+            "satProductCode": "01010101",
+            "quantity": 1,
+            "unitPrice": 45000
+          }
+        ]
+      }
+    },
+    {
+      "kind": "enum",
+      "codeName": "ShippingService",
+      "label": {
+        "es-MX": "Servicio de envío",
+        "en": "Shipping service"
+      },
+      "description": {
+        "es-MX": "Qué tan rápido viaja el bulto.",
+        "en": "How fast the parcel travels."
+      },
+      "members": [
+        {
+          "codeName": "Standard",
+          "label": {
+            "es-MX": "Estándar",
+            "en": "Standard"
+          }
+        },
+        {
+          "codeName": "Express",
+          "label": {
+            "es-MX": "Exprés",
+            "en": "Express"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "enum",
+      "codeName": "PaymentMethod",
+      "label": {
+        "es-MX": "Forma de pago",
+        "en": "Payment method"
+      },
+      "description": {
+        "es-MX": "Cómo pagó el comprador.",
+        "en": "How the buyer paid."
+      },
+      "members": [
+        {
+          "codeName": "Card",
+          "label": {
+            "es-MX": "Tarjeta",
+            "en": "Card"
+          }
+        },
+        {
+          "codeName": "Transfer",
+          "label": {
+            "es-MX": "Transferencia",
+            "en": "Transfer"
+          }
+        },
+        {
+          "codeName": "Cash",
+          "label": {
+            "es-MX": "Efectivo",
+            "en": "Cash"
+          }
+        }
+      ]
+    }
+  ]
+}

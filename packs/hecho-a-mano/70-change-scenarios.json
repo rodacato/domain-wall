@@ -1,0 +1,391 @@
+{
+  "changeScenarios": {
+    "businessChange": {
+      "story": {
+        "es-MX": "Cambio del negocio: un pedido que ya está pagado ya no puede cancelarse, porque el artesano ya compró los materiales.",
+        "en": "Business change: an order that is already paid can no longer be cancelled, because the artisan has already bought the materials."
+      },
+      "patch": [
+        {
+          "op": "restrictTransition",
+          "aggregate": "Order",
+          "command": "CancelOrder",
+          "removeFrom": ["Paid"]
+        }
+      ]
+    },
+    "evolution": {
+      "story": {
+        "es-MX": "Piezas por encargo: después del pago, el artesano produce la pieza (máximo 30 días) antes de poder enviarla.",
+        "en": "Made-to-order pieces: after payment, the artisan produces the piece (30 days at most) before it can be shipped."
+      },
+      "patch": [
+        {
+          "op": "addValueObject",
+          "valueObject": {
+            "kind": "scalar",
+            "codeName": "ProductionDays",
+            "label": {
+              "es-MX": "Días de producción",
+              "en": "Production days"
+            },
+            "description": {
+              "es-MX": "Cuántos días promete el artesano para hacer la pieza.",
+              "en": "How many days the artisan promises to make the piece."
+            },
+            "base": "integer",
+            "constraints": [
+              {
+                "kind": "min",
+                "value": 1,
+                "errorCode": "ProductionDaysMustBePositive",
+                "message": {
+                  "es-MX": "Los días de producción deben ser al menos 1.",
+                  "en": "Production days must be at least 1."
+                },
+                "invalidExamples": [0, -2]
+              }
+            ],
+            "examples": {
+              "valid": [14, 30]
+            }
+          }
+        },
+        {
+          "op": "addEvent",
+          "event": {
+            "codeName": "OrderProductionStarted",
+            "label": {
+              "es-MX": "Producción iniciada",
+              "en": "Production started"
+            },
+            "description": {
+              "es-MX": "El artesano empezó a hacer la pieza encargada.",
+              "en": "The artisan started making the ordered piece."
+            },
+            "context": "Ordering",
+            "sequence": 6.1,
+            "payload": [
+              {
+                "codeName": "orderId",
+                "label": {
+                  "es-MX": "Pedido",
+                  "en": "Order"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "OrderId"
+                }
+              },
+              {
+                "codeName": "productionDays",
+                "label": {
+                  "es-MX": "Días de producción",
+                  "en": "Production days"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "ProductionDays"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addEvent",
+          "event": {
+            "codeName": "OrderReadyToShip",
+            "label": {
+              "es-MX": "Pedido listo para enviar",
+              "en": "Order ready to ship"
+            },
+            "description": {
+              "es-MX": "La pieza ya está hecha y puede despacharse.",
+              "en": "The piece is made and can be dispatched."
+            },
+            "context": "Ordering",
+            "sequence": 6.2,
+            "payload": [
+              {
+                "codeName": "orderId",
+                "label": {
+                  "es-MX": "Pedido",
+                  "en": "Order"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "OrderId"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addCommand",
+          "command": {
+            "codeName": "StartProduction",
+            "label": {
+              "es-MX": "Iniciar producción",
+              "en": "Start production"
+            },
+            "description": {
+              "es-MX": "El artesano empieza a producir la pieza y promete un plazo.",
+              "en": "The artisan starts producing the piece and promises a deadline."
+            },
+            "context": "Ordering",
+            "issuedBy": {
+              "kind": "actor",
+              "ref": "Artisan"
+            },
+            "handledBy": "Order",
+            "params": [
+              {
+                "codeName": "productionDays",
+                "label": {
+                  "es-MX": "Días de producción",
+                  "en": "Production days"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "ProductionDays"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addCommand",
+          "command": {
+            "codeName": "FinishProduction",
+            "label": {
+              "es-MX": "Terminar producción",
+              "en": "Finish production"
+            },
+            "description": {
+              "es-MX": "El artesano termina la pieza.",
+              "en": "The artisan finishes the piece."
+            },
+            "context": "Ordering",
+            "issuedBy": {
+              "kind": "actor",
+              "ref": "Artisan"
+            },
+            "handledBy": "Order",
+            "params": []
+          }
+        },
+        {
+          "op": "addState",
+          "aggregate": "Order",
+          "state": {
+            "codeName": "InProduction",
+            "label": {
+              "es-MX": "En producción",
+              "en": "In production"
+            },
+            "description": {
+              "es-MX": "El artesano está haciendo la pieza.",
+              "en": "The artisan is making the piece."
+            },
+            "terminal": false,
+            "data": [
+              {
+                "codeName": "productionDays",
+                "label": {
+                  "es-MX": "Días de producción",
+                  "en": "Production days"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "ProductionDays"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addState",
+          "aggregate": "Order",
+          "state": {
+            "codeName": "ReadyToShip",
+            "label": {
+              "es-MX": "Listo para enviar",
+              "en": "Ready to ship"
+            },
+            "description": {
+              "es-MX": "La pieza está hecha y espera despacho.",
+              "en": "The piece is made and awaits dispatch."
+            },
+            "terminal": false,
+            "data": []
+          }
+        },
+        {
+          "op": "addRule",
+          "aggregate": "Order",
+          "rule": {
+            "codeName": "ProductionPromiseWithinLimit",
+            "label": {
+              "es-MX": "El plazo de producción tiene un máximo",
+              "en": "The production deadline has a maximum"
+            },
+            "description": {
+              "es-MX": "Hecho a Mano promete como máximo 30 días de producción.",
+              "en": "Made by Hand promises at most 30 days of production."
+            },
+            "predicate": {
+              "kind": "compare",
+              "left": {
+                "op": "arg",
+                "name": "productionDays"
+              },
+              "operator": "<=",
+              "right": {
+                "op": "literal",
+                "value": 30
+              }
+            },
+            "message": {
+              "es-MX": "El plazo de producción no puede pasar de 30 días.",
+              "en": "The production deadline cannot exceed 30 days."
+            },
+            "violation": {
+              "given": [
+                {
+                  "command": "AddOrderLine",
+                  "args": {
+                    "quantity": 1,
+                    "unitPrice": 45000
+                  }
+                },
+                {
+                  "command": "SetShippingAddress",
+                  "args": {}
+                },
+                {
+                  "command": "PlaceOrder",
+                  "args": {}
+                },
+                {
+                  "command": "ConfirmPayment",
+                  "args": {
+                    "amount": 45000
+                  }
+                }
+              ],
+              "when": {
+                "command": "StartProduction",
+                "args": {
+                  "productionDays": 31
+                }
+              }
+            }
+          }
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "Order",
+          "transition": {
+            "command": "StartProduction",
+            "from": ["Paid"],
+            "to": "InProduction",
+            "guards": ["ProductionPromiseWithinLimit"],
+            "effects": [
+              {
+                "op": "set",
+                "field": "productionDays",
+                "value": {
+                  "op": "arg",
+                  "name": "productionDays"
+                }
+              }
+            ],
+            "emits": ["OrderProductionStarted"]
+          }
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "Order",
+          "transition": {
+            "command": "FinishProduction",
+            "from": ["InProduction"],
+            "to": "ReadyToShip",
+            "guards": [],
+            "effects": [],
+            "emits": ["OrderReadyToShip"]
+          }
+        },
+        {
+          "op": "restrictTransition",
+          "aggregate": "Order",
+          "command": "MarkOrderShipped",
+          "removeFrom": ["Paid"]
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "Order",
+          "transition": {
+            "command": "MarkOrderShipped",
+            "from": ["ReadyToShip"],
+            "to": "Shipped",
+            "guards": [],
+            "effects": [
+              {
+                "op": "set",
+                "field": "trackingNumber",
+                "value": {
+                  "op": "arg",
+                  "name": "trackingNumber"
+                }
+              }
+            ],
+            "emits": ["OrderShipped"]
+          }
+        },
+        {
+          "op": "replaceWalkthrough",
+          "aggregate": "Order",
+          "walkthrough": [
+            {
+              "command": "AddOrderLine",
+              "args": {
+                "quantity": 1,
+                "unitPrice": 45000
+              }
+            },
+            {
+              "command": "SetShippingAddress",
+              "args": {}
+            },
+            {
+              "command": "PlaceOrder",
+              "args": {}
+            },
+            {
+              "command": "ConfirmPayment",
+              "args": {
+                "amount": 45000
+              }
+            },
+            {
+              "command": "StartProduction",
+              "args": {}
+            },
+            {
+              "command": "FinishProduction",
+              "args": {}
+            },
+            {
+              "command": "MarkOrderShipped",
+              "args": {}
+            },
+            {
+              "command": "MarkOrderDelivered",
+              "args": {}
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

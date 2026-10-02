@@ -1,0 +1,294 @@
+{
+  "dialogues": {
+    "whyDdd.change": [
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "Equipo, llegó un cambio: ya no queremos cancelar pedidos que ya están pagados. El artesano ya compró los materiales.",
+          "en": "Team, a change just came in: we no longer cancel orders that are already paid. The artisan has already bought the materials."
+        }
+      },
+      {
+        "speaker": "Lupe",
+        "text": {
+          "es-MX": "Exacto. Si cancelan después de pagar, yo pierdo el barro y el tiempo. Ese pedido ya es mío.",
+          "en": "Exactly. If they cancel after paying, I lose the clay and my time. That order is already mine."
+        }
+      },
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "Suena a una sola regla. Veamos en cuántos lugares del código tenemos que tocar para cambiarla.",
+          "en": "That sounds like a single rule. Let's see how many places in the code we have to touch to change it."
+        }
+      }
+    ],
+    "ubiquity.intro": [
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "Antes de escribir código, hablemos igual. Lupe, ¿cómo le dices a lo que compra alguien?",
+          "en": "Before writing code, let's speak the same language. Lupe, what do you call what someone buys?"
+        }
+      },
+      {
+        "speaker": "Lupe",
+        "text": {
+          "es-MX": "Un pedido. Cuando alguien me manda un {{term:Order}}, sé que hay piezas, una dirección y un pago.",
+          "en": "An order. When someone sends me an {{term:Order}}, I know there are pieces, an address and a payment."
+        }
+      },
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "Perfecto. Esa palabra va al glosario y la usaremos igual en las conversaciones, en los tableros y en el código.",
+          "en": "Perfect. That word goes into the glossary and we will use it the same way in conversations, on boards and in code."
+        }
+      }
+    ],
+    "ubiquity.ambiguity": [
+      {
+        "speaker": "Marcos",
+        "text": {
+          "es-MX": "Cuando yo digo «producto», hablo de la caja que sale por la puerta, con peso y medidas.",
+          "en": "When I say “product”, I mean the box going out the door, with weight and dimensions."
+        }
+      },
+      {
+        "speaker": "Lupe",
+        "text": {
+          "es-MX": "Pues para mí un «producto» es la pieza que hago, con sus fotos y su historia.",
+          "en": "For me a “product” is the piece I make, with its photos and its story."
+        }
+      },
+      {
+        "speaker": "Reyna",
+        "text": {
+          "es-MX": "Y para mí es un concepto de la factura, con su clave del SAT. Tres personas, tres significados.",
+          "en": "And for me it is an invoice line, with its SAT code. Three people, three meanings."
+        }
+      },
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "Una misma palabra con significados distintos: eso es una ambigüedad. La resolveremos separando contextos.",
+          "en": "One word with different meanings: that is an ambiguity. We will resolve it by separating contexts."
+        }
+      }
+    ],
+    "storming.kickoff": [
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "Vamos a contar la historia de un pedido con eventos: cosas que ya pasaron, escritas en pasado, en naranja.",
+          "en": "Let's tell the story of an order through events: things that already happened, written in the past tense, in orange."
+        }
+      },
+      {
+        "speaker": "Lupe",
+        "text": {
+          "es-MX": "Primero publico mi pieza: {{term:ListingPublished}}. Luego alguien la compra: {{term:OrderPlaced}}.",
+          "en": "First I publish my piece: {{term:ListingPublished}}. Then someone buys it: {{term:OrderPlaced}}."
+        }
+      },
+      {
+        "speaker": "Marcos",
+        "text": {
+          "es-MX": "Y cuando el pago se confirma empiezo yo: {{term:PaymentConfirmed}} dispara el envío.",
+          "en": "And once payment is confirmed I start: {{term:PaymentConfirmed}} triggers the shipment."
+        }
+      }
+    ],
+    "storming.commands": [
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "Cada evento nace de una decisión. ¿Qué pidió alguien para que ocurriera {{term:OrderPlaced}}?",
+          "en": "Every event comes from a decision. What did someone ask for so that {{term:OrderPlaced}} could happen?"
+        }
+      },
+      {
+        "speaker": "Lupe",
+        "text": {
+          "es-MX": "El comprador pide {{term:PlaceOrder}}, pero solo si el pedido tiene piezas y una dirección de envío.",
+          "en": "The buyer issues {{term:PlaceOrder}}, but only if the order has pieces and a shipping address."
+        }
+      },
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "Esa condición es una regla del dominio. La vamos a guardar en el agregado, no en la pantalla.",
+          "en": "That condition is a domain rule. We will keep it in the aggregate, not on the screen."
+        }
+      }
+    ],
+    "contexts.split": [
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "Ya vimos que «producto» significa varias cosas. Dibujemos fronteras: dentro de cada una, la palabra tiene un solo significado.",
+          "en": "We saw that “product” means several things. Let's draw boundaries: inside each one, the word has a single meaning."
+        }
+      },
+      {
+        "speaker": "Marcos",
+        "text": {
+          "es-MX": "Entonces en {{term:Shipping}} un producto es un {{term:Parcel}}: peso y destino, y nada más.",
+          "en": "So in {{term:Shipping}} a product is a {{term:Parcel}}: weight and destination, nothing else."
+        }
+      },
+      {
+        "speaker": "Reyna",
+        "text": {
+          "es-MX": "Y en {{term:Invoicing}} es un {{term:TaxableItem}}, con descripción, clave del SAT y precio.",
+          "en": "And in {{term:Invoicing}} it is a {{term:TaxableItem}}, with a description, a SAT code and a price."
+        }
+      }
+    ],
+    "contexts.mapping": [
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "¿Cómo se hablan los contextos? {{term:Catalog}} publica fichas y {{term:Ordering}} las consume.",
+          "en": "How do the contexts talk to each other? {{term:Catalog}} publishes listings and {{term:Ordering}} consumes them."
+        }
+      },
+      {
+        "speaker": "Reyna",
+        "text": {
+          "es-MX": "Con el SAT no hay negociación: su formato es el que es. Necesitamos una capa que traduzca para que su modelo no contamine el nuestro.",
+          "en": "There is no negotiating with the tax authority: their format is what it is. We need a layer that translates so their model does not leak into ours."
+        }
+      },
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "Eso es una capa anticorrupción: traducimos en la frontera y nuestro dominio sigue hablando su propio idioma.",
+          "en": "That is an anticorruption layer: we translate at the border and our domain keeps speaking its own language."
+        }
+      }
+    ],
+    "subdomains.focus": [
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "No todo merece el mismo esfuerzo. Lupe, ¿qué nos hace distintos de otro marketplace?",
+          "en": "Not everything deserves the same effort. Lupe, what makes us different from another marketplace?"
+        }
+      },
+      {
+        "speaker": "Lupe",
+        "text": {
+          "es-MX": "Que cada pieza es única y el comprador trata directo con quien la hizo. Eso no lo tiene nadie.",
+          "en": "That every piece is unique and buyers deal directly with the person who made it. Nobody else has that."
+        }
+      },
+      {
+        "speaker": "Reyna",
+        "text": {
+          "es-MX": "Facturar, en cambio, funciona igual para todos los negocios. Ahí conviene no inventar nada.",
+          "en": "Invoicing, on the other hand, works the same for every business. There it pays not to invent anything."
+        }
+      }
+    ],
+    "tactical.aggregate": [
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "Veamos el {{term:Order}}. ¿Qué nunca debería poder pasar con un pedido?",
+          "en": "Let's look at the {{term:Order}}. What should never be possible with an order?"
+        }
+      },
+      {
+        "speaker": "Lupe",
+        "text": {
+          "es-MX": "Que alguien pague una cantidad distinta al total, o que cancelen algo que ya salió de mi taller.",
+          "en": "That someone pays a different amount than the total, or that they cancel something that already left my workshop."
+        }
+      },
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "Esas son invariantes. El agregado las protege: cualquier comando que las rompa se rechaza con un error claro.",
+          "en": "Those are invariants. The aggregate protects them: any command that breaks them is rejected with a clear error."
+        }
+      }
+    ],
+    "functional.pipeline": [
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "Mira la compra como una línea de ensamblaje: validar, calcular el total, cobrar y guardar.",
+          "en": "Look at checkout as an assembly line: validate, compute the total, charge and save."
+        }
+      },
+      {
+        "speaker": "Marcos",
+        "text": {
+          "es-MX": "Y si el cobro falla, el pedido no sigue por la línea principal: se desvía.",
+          "en": "And if the charge fails, the order does not continue on the main line: it gets diverted."
+        }
+      },
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "Exacto. Cada etapa recibe un tipo y devuelve otro, y los errores son valores, no sorpresas.",
+          "en": "Exactly. Each stage takes one type and returns another, and errors are values, not surprises."
+        }
+      }
+    ],
+    "architecture.ports": [
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "El dominio no debe saber si guardamos en una base de datos o en memoria. Solo pide «guarda este pedido».",
+          "en": "The domain must not know whether we store in a database or in memory. It only asks “save this order”."
+        }
+      },
+      {
+        "speaker": "Marcos",
+        "text": {
+          "es-MX": "Entonces el cobro y la paquetería también son puertos, y cada proveedor es un adaptador que se puede cambiar.",
+          "en": "So payments and the carrier are ports too, and each provider is an adapter you can swap."
+        }
+      },
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "Y las dependencias apuntan hacia el dominio, nunca al revés.",
+          "en": "And dependencies point toward the domain, never the other way around."
+        }
+      }
+    ],
+    "evolution.request": [
+      {
+        "speaker": "Lupe",
+        "text": {
+          "es-MX": "Tengo un problema: muchos clientes quieren piezas por encargo. Yo no las tengo hechas; las hago después de que pagan.",
+          "en": "I have a problem: many customers want made-to-order pieces. I do not have them ready; I make them after they pay."
+        }
+      },
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "Entonces entre «pagado» y «enviado» falta un paso que el modelo nunca nombró: la producción.",
+          "en": "So between “paid” and “shipped” there is a step the model never named: production."
+        }
+      },
+      {
+        "speaker": "Lupe",
+        "text": {
+          "es-MX": "Eso. Y prometo máximo 30 días.",
+          "en": "Right. And I promise 30 days at most."
+        }
+      },
+      {
+        "speaker": "Sofia",
+        "text": {
+          "es-MX": "Un concepto implícito que ahora hacemos explícito. Refactoricemos el pedido.",
+          "en": "An implicit concept we now make explicit. Let's refactor the order."
+        }
+      }
+    ]
+  }
+}

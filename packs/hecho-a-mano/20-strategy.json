@@ -1,0 +1,283 @@
+{
+  "contexts": [
+    {
+      "codeName": "Catalog",
+      "label": {
+        "es-MX": "Catálogo",
+        "en": "Catalog"
+      },
+      "description": {
+        "es-MX": "Donde los artesanos publican sus piezas.",
+        "en": "Where artisans publish their pieces."
+      },
+      "subdomain": {
+        "type": "core",
+        "rationale": {
+          "es-MX": "La curaduría de piezas únicas y el trato directo con el artesano nos diferencia de otros marketplaces.",
+          "en": "Curating unique pieces and dealing directly with the artisan is what sets us apart from other marketplaces."
+        }
+      }
+    },
+    {
+      "codeName": "Ordering",
+      "label": {
+        "es-MX": "Pedidos",
+        "en": "Ordering"
+      },
+      "description": {
+        "es-MX": "Desde que alguien arma su compra hasta que la recibe.",
+        "en": "From the moment someone builds a purchase until they receive it."
+      },
+      "subdomain": {
+        "type": "core",
+        "rationale": {
+          "es-MX": "Prometer, cobrar y cumplir pedidos hechos a mano es el corazón de la experiencia de compra.",
+          "en": "Promising, charging and fulfilling handmade orders is the heart of the buying experience."
+        }
+      }
+    },
+    {
+      "codeName": "Shipping",
+      "label": {
+        "es-MX": "Envíos",
+        "en": "Shipping"
+      },
+      "description": {
+        "es-MX": "Cómo sale cada bulto del taller hasta la puerta del comprador.",
+        "en": "How each parcel travels from the workshop to the buyer's door."
+      },
+      "subdomain": {
+        "type": "supporting",
+        "rationale": {
+          "es-MX": "Hay que enviar bien, pero usamos paqueterías estándar y eso no nos diferencia.",
+          "en": "We must ship well, but we use standard carriers and that does not set us apart."
+        }
+      }
+    },
+    {
+      "codeName": "Invoicing",
+      "label": {
+        "es-MX": "Facturación",
+        "en": "Invoicing"
+      },
+      "description": {
+        "es-MX": "Facturas electrónicas ante el SAT.",
+        "en": "Electronic invoices for the tax authority."
+      },
+      "subdomain": {
+        "type": "generic",
+        "rationale": {
+          "es-MX": "Facturar es una obligación igual para todos los negocios; conviene aislarla y no inventarla.",
+          "en": "Invoicing is the same obligation for every business; it is better to isolate it than to invent it."
+        }
+      }
+    }
+  ],
+  "contextRelations": [
+    {
+      "type": "upstreamDownstream",
+      "upstream": "Catalog",
+      "downstream": "Ordering",
+      "upstreamRoles": ["OpenHostService", "PublishedLanguage"],
+      "downstreamRoles": [],
+      "customerSupplier": true,
+      "via": ["ListingPublished"],
+      "description": {
+        "es-MX": "El Catálogo publica un lenguaje estable de fichas y Pedidos lo consume; Pedidos puede pedirle cambios.",
+        "en": "Catalog publishes a stable listing language and Ordering consumes it; Ordering can ask it for changes."
+      }
+    },
+    {
+      "type": "partnership",
+      "a": "Ordering",
+      "b": "Shipping",
+      "shared": [],
+      "description": {
+        "es-MX": "Pedidos y Envíos avanzan juntos: cada uno reacciona a los eventos del otro y se coordinan sus cambios.",
+        "en": "Ordering and Shipping move together: each reacts to the other's events and they coordinate their changes."
+      }
+    },
+    {
+      "type": "upstreamDownstream",
+      "upstream": "Ordering",
+      "downstream": "Invoicing",
+      "upstreamRoles": ["PublishedLanguage"],
+      "downstreamRoles": [],
+      "customerSupplier": true,
+      "via": ["PaymentConfirmed"],
+      "description": {
+        "es-MX": "Facturación recibe los pedidos pagados y puede pedir a Pedidos los datos que le falten.",
+        "en": "Invoicing receives paid orders and can ask Ordering for any data it is missing."
+      }
+    },
+    {
+      "type": "separateWays",
+      "a": "Catalog",
+      "b": "Invoicing",
+      "description": {
+        "es-MX": "El Catálogo y Facturación no necesitan hablarse: cada uno sigue su camino.",
+        "en": "Catalog and Invoicing do not need to talk to each other: each goes its own way."
+      }
+    }
+  ],
+  "ambiguousTerm": {
+    "codeName": "Product",
+    "label": {
+      "es-MX": "Producto",
+      "en": "Product"
+    },
+    "meanings": [
+      {
+        "context": "Catalog",
+        "concept": "Listing",
+        "definition": {
+          "es-MX": "La ficha que publica el artesano: título, fotos, precio y la historia de la pieza.",
+          "en": "The listing the artisan publishes: title, photos, price and the story of the piece."
+        },
+        "showcaseFields": ["photos", "price"]
+      },
+      {
+        "context": "Ordering",
+        "concept": "OrderLine",
+        "definition": {
+          "es-MX": "Una línea del pedido: qué pieza, cuántas y a qué precio quedó al comprar.",
+          "en": "An order line: which piece, how many and at what price it was bought."
+        },
+        "showcaseFields": ["listingId", "quantity", "unitPrice"]
+      },
+      {
+        "context": "Shipping",
+        "concept": "Parcel",
+        "definition": {
+          "es-MX": "Un bulto por enviar: solo importan su peso y su destino.",
+          "en": "A parcel to ship: only its weight and destination matter."
+        },
+        "showcaseFields": ["parcelId", "weightGrams"]
+      },
+      {
+        "context": "Invoicing",
+        "concept": "TaxableItem",
+        "definition": {
+          "es-MX": "Un concepto de la factura: descripción, clave del SAT, cantidad y precio unitario.",
+          "en": "An invoice item: description, SAT code, quantity and unit price."
+        },
+        "showcaseFields": ["description", "satProductCode", "quantity", "unitPrice"]
+      }
+    ]
+  },
+  "antiCorruptionLayer": {
+    "context": "Invoicing",
+    "externalSystem": "SatStampingService",
+    "domainType": "Invoice",
+    "externalRoot": "TaxInvoiceDocument",
+    "externalTypes": [
+      {
+        "codeName": "TaxInvoiceDocument",
+        "label": {
+          "es-MX": "Comprobante fiscal (CFDI)",
+          "en": "Tax invoice document (CFDI)"
+        },
+        "description": {
+          "es-MX": "El documento que exige el SAT, con sus nombres y formatos propios.",
+          "en": "The document the tax authority requires, with its own names and formats."
+        },
+        "wireName": "cfdi:Comprobante",
+        "fields": [
+          {
+            "codeName": "version",
+            "label": {
+              "es-MX": "Versión",
+              "en": "Version"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "Version"
+          },
+          {
+            "codeName": "currency",
+            "label": {
+              "es-MX": "Moneda",
+              "en": "Currency"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "Moneda"
+          },
+          {
+            "codeName": "paymentForm",
+            "label": {
+              "es-MX": "Forma de pago (SAT)",
+              "en": "Payment form (SAT)"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "FormaPago"
+          },
+          {
+            "codeName": "receiverTaxId",
+            "label": {
+              "es-MX": "RFC del receptor",
+              "en": "Receiver tax ID"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "Receptor/Rfc"
+          },
+          {
+            "codeName": "total",
+            "label": {
+              "es-MX": "Total",
+              "en": "Total"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "Total"
+          }
+        ]
+      }
+    ],
+    "translation": [
+      {
+        "op": "constant",
+        "externalField": "version",
+        "value": "4.0"
+      },
+      {
+        "op": "constant",
+        "externalField": "currency",
+        "value": "MXN"
+      },
+      {
+        "op": "mapCode",
+        "domainField": "paymentMethod",
+        "externalField": "paymentForm",
+        "table": {
+          "Card": "04",
+          "Transfer": "03",
+          "Cash": "01"
+        }
+      },
+      {
+        "op": "rename",
+        "domainField": "taxId",
+        "externalField": "receiverTaxId"
+      },
+      {
+        "op": "format",
+        "domainField": "total",
+        "externalField": "total",
+        "format": "minorUnitsToDecimalString"
+      }
+    ]
+  }
+}

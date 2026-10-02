@@ -1,0 +1,350 @@
+{
+  "aggregates": [
+    {
+      "codeName": "Listing",
+      "label": {
+        "es-MX": "Ficha de producto",
+        "en": "Listing"
+      },
+      "description": {
+        "es-MX": "La ficha con la que un artesano presenta una pieza: título, fotos y precio.",
+        "en": "The page with which an artisan presents a piece: title, photos and price."
+      },
+      "context": "Catalog",
+      "identity": "listingId",
+      "fields": [
+        {
+          "codeName": "listingId",
+          "label": {
+            "es-MX": "Ficha",
+            "en": "Listing"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ListingId"
+          }
+        },
+        {
+          "codeName": "artisanId",
+          "label": {
+            "es-MX": "Artesano",
+            "en": "Artisan"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ArtisanId"
+          }
+        },
+        {
+          "codeName": "title",
+          "label": {
+            "es-MX": "Título",
+            "en": "Title"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ListingTitle"
+          }
+        },
+        {
+          "codeName": "photos",
+          "label": {
+            "es-MX": "Fotos",
+            "en": "Photos"
+          },
+          "type": {
+            "kind": "list",
+            "of": {
+              "kind": "valueObject",
+              "ref": "PhotoUrl"
+            }
+          }
+        },
+        {
+          "codeName": "price",
+          "label": {
+            "es-MX": "Precio",
+            "en": "Price"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "Money"
+            }
+          }
+        }
+      ],
+      "derived": [],
+      "entities": [],
+      "states": [
+        {
+          "codeName": "Draft",
+          "label": {
+            "es-MX": "Borrador",
+            "en": "Draft"
+          },
+          "description": {
+            "es-MX": "El artesano todavía prepara la ficha.",
+            "en": "The artisan is still preparing the listing."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Published",
+          "label": {
+            "es-MX": "Publicada",
+            "en": "Published"
+          },
+          "description": {
+            "es-MX": "Visible para los compradores.",
+            "en": "Visible to buyers."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Paused",
+          "label": {
+            "es-MX": "Pausada",
+            "en": "Paused"
+          },
+          "description": {
+            "es-MX": "Oculta de forma temporal.",
+            "en": "Temporarily hidden."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Retired",
+          "label": {
+            "es-MX": "Retirada",
+            "en": "Retired"
+          },
+          "description": {
+            "es-MX": "Fuera del catálogo para siempre.",
+            "en": "Out of the catalog for good."
+          },
+          "terminal": true,
+          "data": []
+        }
+      ],
+      "initialState": "Draft",
+      "rules": [
+        {
+          "codeName": "ListingMustHavePhotos",
+          "label": {
+            "es-MX": "La ficha debe tener fotos",
+            "en": "The listing must have photos"
+          },
+          "description": {
+            "es-MX": "Una pieza sin fotos no se puede publicar.",
+            "en": "A piece without photos cannot be published."
+          },
+          "predicate": {
+            "kind": "notEmpty",
+            "value": {
+              "op": "field",
+              "name": "photos"
+            }
+          },
+          "message": {
+            "es-MX": "Una ficha necesita al menos una foto para publicarse.",
+            "en": "A listing needs at least one photo to be published."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "PublishListing",
+              "args": {}
+            }
+          }
+        },
+        {
+          "codeName": "ListingPriceMustBePositive",
+          "label": {
+            "es-MX": "El precio debe ser mayor a cero",
+            "en": "The price must be greater than zero"
+          },
+          "description": {
+            "es-MX": "No se publican piezas gratis.",
+            "en": "Pieces are not published for free."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "price"
+            },
+            "operator": ">",
+            "right": {
+              "op": "literal",
+              "value": 0
+            }
+          },
+          "message": {
+            "es-MX": "El precio debe ser mayor a cero.",
+            "en": "The price must be greater than zero."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "AddPhoto",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "PublishListing",
+              "args": {
+                "price": 0
+              }
+            }
+          }
+        },
+        {
+          "codeName": "ListingPhotosWithinLimit",
+          "label": {
+            "es-MX": "La ficha tiene un máximo de fotos",
+            "en": "The listing has a maximum number of photos"
+          },
+          "description": {
+            "es-MX": "Una ficha admite hasta 5 fotos.",
+            "en": "A listing holds up to 5 photos."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "count",
+              "collection": {
+                "op": "field",
+                "name": "photos"
+              }
+            },
+            "operator": "<=",
+            "right": {
+              "op": "literal",
+              "value": 5
+            }
+          },
+          "message": {
+            "es-MX": "Una ficha admite como máximo 5 fotos.",
+            "en": "A listing can hold at most 5 photos."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "AddPhoto",
+                "args": {}
+              },
+              {
+                "command": "AddPhoto",
+                "args": {}
+              },
+              {
+                "command": "AddPhoto",
+                "args": {}
+              },
+              {
+                "command": "AddPhoto",
+                "args": {}
+              },
+              {
+                "command": "AddPhoto",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "AddPhoto",
+              "args": {}
+            }
+          }
+        }
+      ],
+      "invariants": ["ListingPhotosWithinLimit"],
+      "transitions": [
+        {
+          "command": "AddPhoto",
+          "from": ["Draft"],
+          "to": "Draft",
+          "guards": [],
+          "effects": [
+            {
+              "op": "append",
+              "field": "photos",
+              "value": {
+                "op": "arg",
+                "name": "photoUrl"
+              }
+            }
+          ],
+          "emits": ["ListingPhotoAdded"]
+        },
+        {
+          "command": "PublishListing",
+          "from": ["Draft"],
+          "to": "Published",
+          "guards": ["ListingMustHavePhotos", "ListingPriceMustBePositive"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "price",
+              "value": {
+                "op": "arg",
+                "name": "price"
+              }
+            }
+          ],
+          "emits": ["ListingPublished"]
+        },
+        {
+          "command": "PauseListing",
+          "from": ["Published"],
+          "to": "Paused",
+          "guards": [],
+          "effects": [],
+          "emits": ["ListingPaused"]
+        },
+        {
+          "command": "ResumeListing",
+          "from": ["Paused"],
+          "to": "Published",
+          "guards": [],
+          "effects": [],
+          "emits": ["ListingPublished"]
+        },
+        {
+          "command": "RetireListing",
+          "from": ["Draft", "Published", "Paused"],
+          "to": "Retired",
+          "guards": [],
+          "effects": [],
+          "emits": ["ListingRetired"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "AddPhoto",
+          "args": {}
+        },
+        {
+          "command": "PublishListing",
+          "args": {}
+        },
+        {
+          "command": "PauseListing",
+          "args": {}
+        },
+        {
+          "command": "ResumeListing",
+          "args": {}
+        },
+        {
+          "command": "RetireListing",
+          "args": {}
+        }
+      ]
+    }
+  ]
+}

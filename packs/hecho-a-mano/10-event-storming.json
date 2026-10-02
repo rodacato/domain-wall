@@ -1,0 +1,1515 @@
+{
+  "experts": [
+    {
+      "codeName": "Lupe",
+      "name": "Lupe Hernández",
+      "role": {
+        "es-MX": "Artesana ceramista de Oaxaca",
+        "en": "Ceramic artisan from Oaxaca"
+      },
+      "avatarSeed": "lupe"
+    },
+    {
+      "codeName": "Marcos",
+      "name": "Marcos Ibarra",
+      "role": {
+        "es-MX": "Coordinador de envíos",
+        "en": "Shipping coordinator"
+      },
+      "avatarSeed": "marcos"
+    },
+    {
+      "codeName": "Reyna",
+      "name": "Reyna Salgado",
+      "role": {
+        "es-MX": "Contadora fiscal",
+        "en": "Tax accountant"
+      },
+      "avatarSeed": "reyna"
+    },
+    {
+      "codeName": "Sofia",
+      "name": "Sofía Rangel",
+      "role": {
+        "es-MX": "Líder técnica del marketplace",
+        "en": "Marketplace tech lead"
+      },
+      "avatarSeed": "sofia"
+    }
+  ],
+  "actors": [
+    {
+      "codeName": "Buyer",
+      "label": {
+        "es-MX": "Comprador",
+        "en": "Buyer"
+      },
+      "description": {
+        "es-MX": "Persona que busca y compra piezas hechas a mano.",
+        "en": "Person who browses and buys handmade pieces."
+      }
+    },
+    {
+      "codeName": "Artisan",
+      "label": {
+        "es-MX": "Artesano",
+        "en": "Artisan"
+      },
+      "description": {
+        "es-MX": "Quien hace las piezas y las publica en el catálogo.",
+        "en": "The maker who creates the pieces and lists them in the catalog."
+      }
+    },
+    {
+      "codeName": "Curator",
+      "label": {
+        "es-MX": "Curador",
+        "en": "Curator"
+      },
+      "description": {
+        "es-MX": "Persona del equipo que cuida la calidad del catálogo.",
+        "en": "Team member who looks after the quality of the catalog."
+      }
+    },
+    {
+      "codeName": "Accountant",
+      "label": {
+        "es-MX": "Contabilidad",
+        "en": "Accounting"
+      },
+      "description": {
+        "es-MX": "Equipo que se encarga de las facturas y el SAT.",
+        "en": "The team that handles invoices and the tax authority."
+      }
+    }
+  ],
+  "externalSystems": [
+    {
+      "codeName": "PaymentGateway",
+      "label": {
+        "es-MX": "Pasarela de pagos",
+        "en": "Payment gateway"
+      },
+      "description": {
+        "es-MX": "Servicio externo que cobra a la tarjeta del comprador.",
+        "en": "External service that charges the buyer's card."
+      }
+    },
+    {
+      "codeName": "CarrierApi",
+      "label": {
+        "es-MX": "API de la paquetería",
+        "en": "Carrier API"
+      },
+      "description": {
+        "es-MX": "Servicio de la paquetería que reporta el estado de cada envío.",
+        "en": "The carrier's service that reports the status of each shipment."
+      }
+    },
+    {
+      "codeName": "SatStampingService",
+      "label": {
+        "es-MX": "Timbrado del SAT",
+        "en": "SAT stamping service"
+      },
+      "description": {
+        "es-MX": "Servicio fiscal que timbra las facturas electrónicas (CFDI).",
+        "en": "Tax service that stamps electronic invoices (CFDI)."
+      }
+    }
+  ],
+  "events": [
+    {
+      "codeName": "ListingPhotoAdded",
+      "label": {
+        "es-MX": "Foto agregada a la ficha",
+        "en": "Photo added to the listing"
+      },
+      "description": {
+        "es-MX": "El artesano sumó una foto a su ficha de producto.",
+        "en": "The artisan added a photo to the listing."
+      },
+      "context": "Catalog",
+      "sequence": 1,
+      "payload": [
+        {
+          "codeName": "listingId",
+          "label": {
+            "es-MX": "Ficha",
+            "en": "Listing"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ListingId"
+          }
+        },
+        {
+          "codeName": "photoUrl",
+          "label": {
+            "es-MX": "Foto",
+            "en": "Photo"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PhotoUrl"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ListingPublished",
+      "label": {
+        "es-MX": "Ficha publicada",
+        "en": "Listing published"
+      },
+      "description": {
+        "es-MX": "La ficha quedó visible para los compradores.",
+        "en": "The listing became visible to buyers."
+      },
+      "context": "Catalog",
+      "sequence": 2,
+      "payload": [
+        {
+          "codeName": "listingId",
+          "label": {
+            "es-MX": "Ficha",
+            "en": "Listing"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ListingId"
+          }
+        },
+        {
+          "codeName": "price",
+          "label": {
+            "es-MX": "Precio",
+            "en": "Price"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "OrderLineAdded",
+      "label": {
+        "es-MX": "Pieza agregada al pedido",
+        "en": "Piece added to the order"
+      },
+      "description": {
+        "es-MX": "El comprador sumó una pieza a su pedido.",
+        "en": "The buyer added a piece to their order."
+      },
+      "context": "Ordering",
+      "sequence": 3,
+      "payload": [
+        {
+          "codeName": "orderId",
+          "label": {
+            "es-MX": "Pedido",
+            "en": "Order"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "OrderId"
+          }
+        },
+        {
+          "codeName": "listingId",
+          "label": {
+            "es-MX": "Ficha",
+            "en": "Listing"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ListingId"
+          }
+        },
+        {
+          "codeName": "quantity",
+          "label": {
+            "es-MX": "Cantidad",
+            "en": "Quantity"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Quantity"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ShippingAddressSet",
+      "label": {
+        "es-MX": "Dirección de envío indicada",
+        "en": "Shipping address set"
+      },
+      "description": {
+        "es-MX": "El comprador indicó adónde enviar el pedido.",
+        "en": "The buyer said where to ship the order."
+      },
+      "context": "Ordering",
+      "sequence": 4,
+      "payload": [
+        {
+          "codeName": "orderId",
+          "label": {
+            "es-MX": "Pedido",
+            "en": "Order"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "OrderId"
+          }
+        },
+        {
+          "codeName": "address",
+          "label": {
+            "es-MX": "Dirección",
+            "en": "Address"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Address"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "OrderPlaced",
+      "label": {
+        "es-MX": "Pedido realizado",
+        "en": "Order placed"
+      },
+      "description": {
+        "es-MX": "El comprador confirmó su pedido y falta pagarlo.",
+        "en": "The buyer confirmed the order and it is waiting for payment."
+      },
+      "context": "Ordering",
+      "sequence": 5,
+      "payload": [
+        {
+          "codeName": "orderId",
+          "label": {
+            "es-MX": "Pedido",
+            "en": "Order"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "OrderId"
+          }
+        },
+        {
+          "codeName": "total",
+          "label": {
+            "es-MX": "Total",
+            "en": "Total"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PaymentConfirmed",
+      "label": {
+        "es-MX": "Pago confirmado",
+        "en": "Payment confirmed"
+      },
+      "description": {
+        "es-MX": "La pasarela confirmó que el pago llegó completo.",
+        "en": "The gateway confirmed that the full payment arrived."
+      },
+      "context": "Ordering",
+      "sequence": 6,
+      "payload": [
+        {
+          "codeName": "orderId",
+          "label": {
+            "es-MX": "Pedido",
+            "en": "Order"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "OrderId"
+          }
+        },
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ShipmentScheduled",
+      "label": {
+        "es-MX": "Envío programado",
+        "en": "Shipment scheduled"
+      },
+      "description": {
+        "es-MX": "Se reservó el envío con destino y bulto definidos.",
+        "en": "The shipment was booked with destination and parcel defined."
+      },
+      "context": "Shipping",
+      "sequence": 7,
+      "payload": [
+        {
+          "codeName": "shipmentId",
+          "label": {
+            "es-MX": "Envío",
+            "en": "Shipment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ShipmentId"
+          }
+        },
+        {
+          "codeName": "orderId",
+          "label": {
+            "es-MX": "Pedido",
+            "en": "Order"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "OrderId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "InvoiceRequested",
+      "label": {
+        "es-MX": "Factura solicitada",
+        "en": "Invoice requested"
+      },
+      "description": {
+        "es-MX": "Se pidió la factura del pedido pagado.",
+        "en": "The invoice for the paid order was requested."
+      },
+      "context": "Invoicing",
+      "sequence": 8,
+      "payload": [
+        {
+          "codeName": "invoiceId",
+          "label": {
+            "es-MX": "Factura",
+            "en": "Invoice"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "InvoiceId"
+          }
+        },
+        {
+          "codeName": "orderId",
+          "label": {
+            "es-MX": "Pedido",
+            "en": "Order"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "OrderId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ShipmentDispatched",
+      "label": {
+        "es-MX": "Envío despachado",
+        "en": "Shipment dispatched"
+      },
+      "description": {
+        "es-MX": "El bulto salió con la paquetería y ya tiene guía.",
+        "en": "The parcel left with the carrier and has a tracking number."
+      },
+      "context": "Shipping",
+      "sequence": 9,
+      "payload": [
+        {
+          "codeName": "shipmentId",
+          "label": {
+            "es-MX": "Envío",
+            "en": "Shipment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ShipmentId"
+          }
+        },
+        {
+          "codeName": "trackingNumber",
+          "label": {
+            "es-MX": "Número de guía",
+            "en": "Tracking number"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TrackingNumber"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "OrderShipped",
+      "label": {
+        "es-MX": "Pedido enviado",
+        "en": "Order shipped"
+      },
+      "description": {
+        "es-MX": "El pedido refleja que ya va en camino.",
+        "en": "The order reflects that it is on its way."
+      },
+      "context": "Ordering",
+      "sequence": 10,
+      "payload": [
+        {
+          "codeName": "orderId",
+          "label": {
+            "es-MX": "Pedido",
+            "en": "Order"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "OrderId"
+          }
+        },
+        {
+          "codeName": "trackingNumber",
+          "label": {
+            "es-MX": "Número de guía",
+            "en": "Tracking number"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TrackingNumber"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "InvoiceStamped",
+      "label": {
+        "es-MX": "Factura timbrada",
+        "en": "Invoice stamped"
+      },
+      "description": {
+        "es-MX": "El SAT timbró la factura y devolvió su folio fiscal.",
+        "en": "The tax authority stamped the invoice and returned its fiscal folio."
+      },
+      "context": "Invoicing",
+      "sequence": 11,
+      "payload": [
+        {
+          "codeName": "invoiceId",
+          "label": {
+            "es-MX": "Factura",
+            "en": "Invoice"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "InvoiceId"
+          }
+        },
+        {
+          "codeName": "fiscalFolio",
+          "label": {
+            "es-MX": "Folio fiscal",
+            "en": "Fiscal folio"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "FiscalFolio"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ShipmentDelivered",
+      "label": {
+        "es-MX": "Envío entregado",
+        "en": "Shipment delivered"
+      },
+      "description": {
+        "es-MX": "La paquetería confirmó la entrega.",
+        "en": "The carrier confirmed delivery."
+      },
+      "context": "Shipping",
+      "sequence": 12,
+      "payload": [
+        {
+          "codeName": "shipmentId",
+          "label": {
+            "es-MX": "Envío",
+            "en": "Shipment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ShipmentId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "OrderDelivered",
+      "label": {
+        "es-MX": "Pedido entregado",
+        "en": "Order delivered"
+      },
+      "description": {
+        "es-MX": "El pedido llegó a manos del comprador.",
+        "en": "The order reached the buyer."
+      },
+      "context": "Ordering",
+      "sequence": 13,
+      "payload": [
+        {
+          "codeName": "orderId",
+          "label": {
+            "es-MX": "Pedido",
+            "en": "Order"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "OrderId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "InvoiceRejected",
+      "label": {
+        "es-MX": "Factura rechazada",
+        "en": "Invoice rejected"
+      },
+      "description": {
+        "es-MX": "El SAT rechazó la factura por un problema en los datos.",
+        "en": "The tax authority rejected the invoice because of a data problem."
+      },
+      "context": "Invoicing",
+      "sequence": 14,
+      "payload": [
+        {
+          "codeName": "invoiceId",
+          "label": {
+            "es-MX": "Factura",
+            "en": "Invoice"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "InvoiceId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RejectionReason"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "OrderCancelled",
+      "label": {
+        "es-MX": "Pedido cancelado",
+        "en": "Order cancelled"
+      },
+      "description": {
+        "es-MX": "El pedido se canceló antes de enviarse.",
+        "en": "The order was cancelled before shipping."
+      },
+      "context": "Ordering",
+      "sequence": 15,
+      "payload": [
+        {
+          "codeName": "orderId",
+          "label": {
+            "es-MX": "Pedido",
+            "en": "Order"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "OrderId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CancellationReason"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ListingPaused",
+      "label": {
+        "es-MX": "Ficha pausada",
+        "en": "Listing paused"
+      },
+      "description": {
+        "es-MX": "El artesano ocultó temporalmente su ficha.",
+        "en": "The artisan temporarily hid the listing."
+      },
+      "context": "Catalog",
+      "sequence": 16,
+      "payload": [
+        {
+          "codeName": "listingId",
+          "label": {
+            "es-MX": "Ficha",
+            "en": "Listing"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ListingId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ListingRetired",
+      "label": {
+        "es-MX": "Ficha retirada",
+        "en": "Listing retired"
+      },
+      "description": {
+        "es-MX": "La ficha salió del catálogo de forma definitiva.",
+        "en": "The listing left the catalog for good."
+      },
+      "context": "Catalog",
+      "sequence": 17,
+      "payload": [
+        {
+          "codeName": "listingId",
+          "label": {
+            "es-MX": "Ficha",
+            "en": "Listing"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ListingId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "InvoiceCancelled",
+      "label": {
+        "es-MX": "Factura cancelada",
+        "en": "Invoice cancelled"
+      },
+      "description": {
+        "es-MX": "Contabilidad canceló una factura ya timbrada.",
+        "en": "Accounting cancelled an already stamped invoice."
+      },
+      "context": "Invoicing",
+      "sequence": 18,
+      "payload": [
+        {
+          "codeName": "invoiceId",
+          "label": {
+            "es-MX": "Factura",
+            "en": "Invoice"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "InvoiceId"
+          }
+        }
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "codeName": "AddPhoto",
+      "label": {
+        "es-MX": "Agregar foto",
+        "en": "Add photo"
+      },
+      "description": {
+        "es-MX": "Sumar una foto a la ficha.",
+        "en": "Add a photo to the listing."
+      },
+      "context": "Catalog",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Artisan"
+      },
+      "handledBy": "Listing",
+      "params": [
+        {
+          "codeName": "photoUrl",
+          "label": {
+            "es-MX": "Foto",
+            "en": "Photo"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PhotoUrl"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PublishListing",
+      "label": {
+        "es-MX": "Publicar ficha",
+        "en": "Publish listing"
+      },
+      "description": {
+        "es-MX": "Hacer visible la ficha con su precio.",
+        "en": "Make the listing visible with its price."
+      },
+      "context": "Catalog",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Artisan"
+      },
+      "handledBy": "Listing",
+      "params": [
+        {
+          "codeName": "price",
+          "label": {
+            "es-MX": "Precio",
+            "en": "Price"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PauseListing",
+      "label": {
+        "es-MX": "Pausar ficha",
+        "en": "Pause listing"
+      },
+      "description": {
+        "es-MX": "Ocultar la ficha por un tiempo.",
+        "en": "Hide the listing for a while."
+      },
+      "context": "Catalog",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Artisan"
+      },
+      "handledBy": "Listing",
+      "params": []
+    },
+    {
+      "codeName": "ResumeListing",
+      "label": {
+        "es-MX": "Reanudar ficha",
+        "en": "Resume listing"
+      },
+      "description": {
+        "es-MX": "Volver a mostrar una ficha pausada.",
+        "en": "Show a paused listing again."
+      },
+      "context": "Catalog",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Artisan"
+      },
+      "handledBy": "Listing",
+      "params": []
+    },
+    {
+      "codeName": "RetireListing",
+      "label": {
+        "es-MX": "Retirar ficha",
+        "en": "Retire listing"
+      },
+      "description": {
+        "es-MX": "Sacar la ficha del catálogo para siempre.",
+        "en": "Take the listing out of the catalog for good."
+      },
+      "context": "Catalog",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Curator"
+      },
+      "handledBy": "Listing",
+      "params": []
+    },
+    {
+      "codeName": "AddOrderLine",
+      "label": {
+        "es-MX": "Agregar pieza al pedido",
+        "en": "Add piece to the order"
+      },
+      "description": {
+        "es-MX": "Sumar una pieza, con su cantidad y precio, al pedido.",
+        "en": "Add a piece, with quantity and price, to the order."
+      },
+      "context": "Ordering",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Buyer"
+      },
+      "handledBy": "Order",
+      "params": [
+        {
+          "codeName": "listingId",
+          "label": {
+            "es-MX": "Ficha",
+            "en": "Listing"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ListingId"
+          }
+        },
+        {
+          "codeName": "quantity",
+          "label": {
+            "es-MX": "Cantidad",
+            "en": "Quantity"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Quantity"
+          }
+        },
+        {
+          "codeName": "unitPrice",
+          "label": {
+            "es-MX": "Precio unitario",
+            "en": "Unit price"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "SetShippingAddress",
+      "label": {
+        "es-MX": "Indicar dirección de envío",
+        "en": "Set shipping address"
+      },
+      "description": {
+        "es-MX": "Decir adónde se envía el pedido.",
+        "en": "Say where the order is shipped."
+      },
+      "context": "Ordering",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Buyer"
+      },
+      "handledBy": "Order",
+      "params": [
+        {
+          "codeName": "address",
+          "label": {
+            "es-MX": "Dirección",
+            "en": "Address"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Address"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PlaceOrder",
+      "label": {
+        "es-MX": "Realizar pedido",
+        "en": "Place order"
+      },
+      "description": {
+        "es-MX": "Confirmar el pedido para pasar al pago.",
+        "en": "Confirm the order to move on to payment."
+      },
+      "context": "Ordering",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Buyer"
+      },
+      "handledBy": "Order",
+      "params": []
+    },
+    {
+      "codeName": "ConfirmPayment",
+      "label": {
+        "es-MX": "Confirmar pago",
+        "en": "Confirm payment"
+      },
+      "description": {
+        "es-MX": "Registrar que el pago llegó.",
+        "en": "Record that the payment arrived."
+      },
+      "context": "Ordering",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "PaymentGateway"
+      },
+      "handledBy": "Order",
+      "params": [
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "MarkOrderShipped",
+      "label": {
+        "es-MX": "Marcar pedido como enviado",
+        "en": "Mark order as shipped"
+      },
+      "description": {
+        "es-MX": "Reflejar en el pedido que ya salió su envío.",
+        "en": "Reflect on the order that its shipment has left."
+      },
+      "context": "Ordering",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "MarkShippedWhenDispatched"
+      },
+      "handledBy": "Order",
+      "params": [
+        {
+          "codeName": "trackingNumber",
+          "label": {
+            "es-MX": "Número de guía",
+            "en": "Tracking number"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TrackingNumber"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "MarkOrderDelivered",
+      "label": {
+        "es-MX": "Marcar pedido como entregado",
+        "en": "Mark order as delivered"
+      },
+      "description": {
+        "es-MX": "Reflejar en el pedido que ya se entregó.",
+        "en": "Reflect on the order that it was delivered."
+      },
+      "context": "Ordering",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "MarkDeliveredWhenDelivered"
+      },
+      "handledBy": "Order",
+      "params": []
+    },
+    {
+      "codeName": "CancelOrder",
+      "label": {
+        "es-MX": "Cancelar pedido",
+        "en": "Cancel order"
+      },
+      "description": {
+        "es-MX": "Cancelar el pedido indicando el motivo.",
+        "en": "Cancel the order giving a reason."
+      },
+      "context": "Ordering",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Buyer"
+      },
+      "handledBy": "Order",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CancellationReason"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ScheduleShipment",
+      "label": {
+        "es-MX": "Programar envío",
+        "en": "Schedule shipment"
+      },
+      "description": {
+        "es-MX": "Reservar el envío con su destino y bulto.",
+        "en": "Book the shipment with its destination and parcel."
+      },
+      "context": "Shipping",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "ArrangeShipmentWhenPaid"
+      },
+      "handledBy": "Shipment",
+      "params": [
+        {
+          "codeName": "destination",
+          "label": {
+            "es-MX": "Destino",
+            "en": "Destination"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Address"
+          }
+        },
+        {
+          "codeName": "parcelId",
+          "label": {
+            "es-MX": "Bulto",
+            "en": "Parcel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ParcelId"
+          }
+        },
+        {
+          "codeName": "weightGrams",
+          "label": {
+            "es-MX": "Peso en gramos",
+            "en": "Weight in grams"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "WeightGrams"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DispatchShipment",
+      "label": {
+        "es-MX": "Despachar envío",
+        "en": "Dispatch shipment"
+      },
+      "description": {
+        "es-MX": "Entregar el bulto a la paquetería y registrar su guía.",
+        "en": "Hand the parcel to the carrier and record its tracking number."
+      },
+      "context": "Shipping",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Artisan"
+      },
+      "handledBy": "Shipment",
+      "params": [
+        {
+          "codeName": "trackingNumber",
+          "label": {
+            "es-MX": "Número de guía",
+            "en": "Tracking number"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TrackingNumber"
+          }
+        },
+        {
+          "codeName": "service",
+          "label": {
+            "es-MX": "Servicio",
+            "en": "Service"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ShippingService"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ConfirmDelivery",
+      "label": {
+        "es-MX": "Confirmar entrega",
+        "en": "Confirm delivery"
+      },
+      "description": {
+        "es-MX": "Registrar que la paquetería entregó el bulto.",
+        "en": "Record that the carrier delivered the parcel."
+      },
+      "context": "Shipping",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "CarrierApi"
+      },
+      "handledBy": "Shipment",
+      "params": []
+    },
+    {
+      "codeName": "RequestInvoice",
+      "label": {
+        "es-MX": "Solicitar factura",
+        "en": "Request invoice"
+      },
+      "description": {
+        "es-MX": "Pedir la factura con RFC, conceptos y total.",
+        "en": "Request the invoice with tax ID, items and total."
+      },
+      "context": "Invoicing",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "RequestInvoiceWhenPaid"
+      },
+      "handledBy": "Invoice",
+      "params": [
+        {
+          "codeName": "taxId",
+          "label": {
+            "es-MX": "RFC",
+            "en": "Tax ID"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TaxId"
+          }
+        },
+        {
+          "codeName": "paymentMethod",
+          "label": {
+            "es-MX": "Forma de pago",
+            "en": "Payment method"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PaymentMethod"
+          }
+        },
+        {
+          "codeName": "items",
+          "label": {
+            "es-MX": "Conceptos",
+            "en": "Items"
+          },
+          "type": {
+            "kind": "list",
+            "of": {
+              "kind": "valueObject",
+              "ref": "TaxableItem"
+            }
+          }
+        },
+        {
+          "codeName": "total",
+          "label": {
+            "es-MX": "Total",
+            "en": "Total"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "StampInvoice",
+      "label": {
+        "es-MX": "Timbrar factura",
+        "en": "Stamp invoice"
+      },
+      "description": {
+        "es-MX": "Registrar el folio fiscal que devolvió el SAT.",
+        "en": "Record the fiscal folio returned by the tax authority."
+      },
+      "context": "Invoicing",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "SatStampingService"
+      },
+      "handledBy": "Invoice",
+      "params": [
+        {
+          "codeName": "fiscalFolio",
+          "label": {
+            "es-MX": "Folio fiscal",
+            "en": "Fiscal folio"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "FiscalFolio"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RejectInvoice",
+      "label": {
+        "es-MX": "Rechazar factura",
+        "en": "Reject invoice"
+      },
+      "description": {
+        "es-MX": "Registrar que el SAT rechazó la factura.",
+        "en": "Record that the tax authority rejected the invoice."
+      },
+      "context": "Invoicing",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "SatStampingService"
+      },
+      "handledBy": "Invoice",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RejectionReason"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CancelInvoice",
+      "label": {
+        "es-MX": "Cancelar factura",
+        "en": "Cancel invoice"
+      },
+      "description": {
+        "es-MX": "Cancelar una factura ya timbrada.",
+        "en": "Cancel an already stamped invoice."
+      },
+      "context": "Invoicing",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Accountant"
+      },
+      "handledBy": "Invoice",
+      "params": []
+    }
+  ],
+  "policies": [
+    {
+      "codeName": "ArrangeShipmentWhenPaid",
+      "label": {
+        "es-MX": "Cuando se paga, programar el envío",
+        "en": "When paid, schedule the shipment"
+      },
+      "description": {
+        "es-MX": "Apenas se confirma el pago, Envíos reserva la paquetería.",
+        "en": "As soon as payment is confirmed, Shipping books the carrier."
+      },
+      "context": "Shipping",
+      "when": "PaymentConfirmed",
+      "then": "ScheduleShipment"
+    },
+    {
+      "codeName": "MarkShippedWhenDispatched",
+      "label": {
+        "es-MX": "Cuando sale el envío, marcar el pedido como enviado",
+        "en": "When the shipment leaves, mark the order as shipped"
+      },
+      "description": {
+        "es-MX": "El pedido sigue el avance real del envío.",
+        "en": "The order follows the real progress of the shipment."
+      },
+      "context": "Ordering",
+      "when": "ShipmentDispatched",
+      "then": "MarkOrderShipped"
+    },
+    {
+      "codeName": "MarkDeliveredWhenDelivered",
+      "label": {
+        "es-MX": "Cuando se entrega, marcar el pedido como entregado",
+        "en": "When delivered, mark the order as delivered"
+      },
+      "description": {
+        "es-MX": "El pedido se cierra cuando la entrega se confirma.",
+        "en": "The order closes when delivery is confirmed."
+      },
+      "context": "Ordering",
+      "when": "ShipmentDelivered",
+      "then": "MarkOrderDelivered"
+    },
+    {
+      "codeName": "RequestInvoiceWhenPaid",
+      "label": {
+        "es-MX": "Cuando se paga, solicitar la factura",
+        "en": "When paid, request the invoice"
+      },
+      "description": {
+        "es-MX": "Cada pedido pagado genera su solicitud de factura.",
+        "en": "Every paid order generates its invoice request."
+      },
+      "context": "Invoicing",
+      "when": "PaymentConfirmed",
+      "then": "RequestInvoice"
+    }
+  ],
+  "readModels": [
+    {
+      "codeName": "PublishedListings",
+      "label": {
+        "es-MX": "Fichas publicadas",
+        "en": "Published listings"
+      },
+      "description": {
+        "es-MX": "Lo que ve el comprador al explorar el catálogo.",
+        "en": "What the buyer sees when browsing the catalog."
+      },
+      "context": "Catalog",
+      "fields": [
+        {
+          "codeName": "listingId",
+          "label": {
+            "es-MX": "Ficha",
+            "en": "Listing"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ListingId"
+          }
+        },
+        {
+          "codeName": "price",
+          "label": {
+            "es-MX": "Precio",
+            "en": "Price"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "Money"
+            }
+          }
+        }
+      ],
+      "fedBy": ["ListingPublished", "ListingPaused", "ListingRetired"],
+      "usedBy": ["Buyer"]
+    },
+    {
+      "codeName": "OrderTracker",
+      "label": {
+        "es-MX": "Seguimiento del pedido",
+        "en": "Order tracker"
+      },
+      "description": {
+        "es-MX": "La pantalla con el avance de un pedido.",
+        "en": "The screen showing the progress of an order."
+      },
+      "context": "Ordering",
+      "fields": [
+        {
+          "codeName": "orderId",
+          "label": {
+            "es-MX": "Pedido",
+            "en": "Order"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "OrderId"
+          }
+        },
+        {
+          "codeName": "total",
+          "label": {
+            "es-MX": "Total",
+            "en": "Total"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        },
+        {
+          "codeName": "trackingNumber",
+          "label": {
+            "es-MX": "Número de guía",
+            "en": "Tracking number"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "TrackingNumber"
+            }
+          }
+        }
+      ],
+      "fedBy": ["OrderPlaced", "PaymentConfirmed", "OrderShipped", "OrderDelivered"],
+      "usedBy": ["Buyer", "Artisan"]
+    },
+    {
+      "codeName": "InvoiceStatusBoard",
+      "label": {
+        "es-MX": "Tablero de facturas",
+        "en": "Invoice status board"
+      },
+      "description": {
+        "es-MX": "Cómo van las facturas ante el SAT.",
+        "en": "How invoices stand with the tax authority."
+      },
+      "context": "Invoicing",
+      "fields": [
+        {
+          "codeName": "invoiceId",
+          "label": {
+            "es-MX": "Factura",
+            "en": "Invoice"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "InvoiceId"
+          }
+        },
+        {
+          "codeName": "orderId",
+          "label": {
+            "es-MX": "Pedido",
+            "en": "Order"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "OrderId"
+          }
+        }
+      ],
+      "fedBy": ["InvoiceRequested", "InvoiceStamped", "InvoiceRejected"],
+      "usedBy": ["Accountant"]
+    }
+  ]
+}

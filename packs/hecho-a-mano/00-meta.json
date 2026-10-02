@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "meta": {
+    "packId": "hecho-a-mano",
+    "origin": "handcrafted",
+    "locales": ["es-MX", "en"],
+    "generation": null
+  },
+  "business": {
+    "codeName": "HandmadeMarketplace",
+    "name": {
+      "es-MX": "Hecho a Mano",
+      "en": "Made by Hand"
+    },
+    "description": {
+      "es-MX": "Un marketplace de artesanos mexicanos: cada pieza se hace a mano y se vende directamente a quien la compra.",
+      "en": "A marketplace of Mexican artisans: every piece is made by hand and sold directly to the person who buys it."
+    }
+  }
+}

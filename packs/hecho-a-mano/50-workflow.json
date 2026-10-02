@@ -1,0 +1,316 @@
+{
+  "workflow": {
+    "codeName": "CheckoutWorkflow",
+    "label": {
+      "es-MX": "Flujo de compra",
+      "en": "Checkout workflow"
+    },
+    "description": {
+      "es-MX": "La compra vista como una línea de ensamblaje: validar, calcular el total, cobrar y guardar el pedido.",
+      "en": "Checkout seen as an assembly line: validate, compute the total, charge and save the order."
+    },
+    "trigger": "PlaceOrder",
+    "intermediateTypes": [
+      {
+        "codeName": "UnvalidatedCheckout",
+        "extends": null,
+        "fields": [
+          {
+            "codeName": "buyerId",
+            "label": {
+              "es-MX": "Comprador",
+              "en": "Buyer"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "listingId",
+            "label": {
+              "es-MX": "Ficha",
+              "en": "Listing"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "quantity",
+            "label": {
+              "es-MX": "Cantidad",
+              "en": "Quantity"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "integer"
+            }
+          },
+          {
+            "codeName": "unitPrice",
+            "label": {
+              "es-MX": "Precio unitario",
+              "en": "Unit price"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "integer"
+            }
+          },
+          {
+            "codeName": "postalCode",
+            "label": {
+              "es-MX": "Código postal",
+              "en": "Postal code"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "ValidatedCheckout",
+        "extends": null,
+        "fields": [
+          {
+            "codeName": "buyerId",
+            "label": {
+              "es-MX": "Comprador",
+              "en": "Buyer"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "BuyerId"
+            }
+          },
+          {
+            "codeName": "listingId",
+            "label": {
+              "es-MX": "Ficha",
+              "en": "Listing"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "ListingId"
+            }
+          },
+          {
+            "codeName": "quantity",
+            "label": {
+              "es-MX": "Cantidad",
+              "en": "Quantity"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "Quantity"
+            }
+          },
+          {
+            "codeName": "unitPrice",
+            "label": {
+              "es-MX": "Precio unitario",
+              "en": "Unit price"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "Money"
+            }
+          },
+          {
+            "codeName": "postalCode",
+            "label": {
+              "es-MX": "Código postal",
+              "en": "Postal code"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "PostalCode"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "PricedCheckout",
+        "extends": "ValidatedCheckout",
+        "fields": [
+          {
+            "codeName": "total",
+            "label": {
+              "es-MX": "Total",
+              "en": "Total"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "Money"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "PaidCheckout",
+        "extends": "PricedCheckout",
+        "fields": [
+          {
+            "codeName": "paidAmount",
+            "label": {
+              "es-MX": "Monto pagado",
+              "en": "Paid amount"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "Money"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "PlacedCheckout",
+        "extends": "PaidCheckout",
+        "fields": [
+          {
+            "codeName": "orderId",
+            "label": {
+              "es-MX": "Pedido",
+              "en": "Order"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "OrderId"
+            }
+          }
+        ]
+      }
+    ],
+    "stages": [
+      {
+        "codeName": "ValidateCheckout",
+        "label": {
+          "es-MX": "Validar la compra",
+          "en": "Validate checkout"
+        },
+        "description": {
+          "es-MX": "Convierte los datos crudos en valores del dominio que no pueden ser inválidos.",
+          "en": "Turns raw data into domain values that cannot be invalid."
+        },
+        "input": "UnvalidatedCheckout",
+        "output": "ValidatedCheckout",
+        "kind": {
+          "type": "validate"
+        },
+        "errors": [
+          {
+            "codeName": "CheckoutDataInvalid",
+            "message": {
+              "es-MX": "Algún dato de la compra no es válido.",
+              "en": "Some checkout data is not valid."
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "PriceCheckout",
+        "label": {
+          "es-MX": "Calcular el total",
+          "en": "Compute the total"
+        },
+        "description": {
+          "es-MX": "Multiplica el precio unitario por la cantidad.",
+          "en": "Multiplies the unit price by the quantity."
+        },
+        "input": "ValidatedCheckout",
+        "output": "PricedCheckout",
+        "kind": {
+          "type": "compute",
+          "assigns": [
+            {
+              "field": "total",
+              "expression": {
+                "op": "arithmetic",
+                "operator": "multiply",
+                "left": {
+                  "op": "field",
+                  "name": "unitPrice"
+                },
+                "right": {
+                  "op": "field",
+                  "name": "quantity"
+                }
+              }
+            }
+          ]
+        },
+        "errors": []
+      },
+      {
+        "codeName": "ChargePayment",
+        "label": {
+          "es-MX": "Cobrar",
+          "en": "Charge the payment"
+        },
+        "description": {
+          "es-MX": "Pide a la pasarela de pagos que cobre el total.",
+          "en": "Asks the payment gateway to charge the total."
+        },
+        "input": "PricedCheckout",
+        "output": "PaidCheckout",
+        "kind": {
+          "type": "callPort",
+          "port": {
+            "codeName": "PaymentGatewayPort",
+            "operation": "charge",
+            "description": {
+              "es-MX": "Cobra un monto a la tarjeta del comprador.",
+              "en": "Charges an amount to the buyer's card."
+            }
+          }
+        },
+        "errors": [
+          {
+            "codeName": "PaymentDeclined",
+            "message": {
+              "es-MX": "El banco rechazó el pago.",
+              "en": "The bank declined the payment."
+            }
+          },
+          {
+            "codeName": "PaymentGatewayUnavailable",
+            "message": {
+              "es-MX": "La pasarela de pagos no responde.",
+              "en": "The payment gateway is not responding."
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "PlaceCheckout",
+        "label": {
+          "es-MX": "Guardar el pedido",
+          "en": "Save the order"
+        },
+        "description": {
+          "es-MX": "Guarda el pedido y publica sus eventos.",
+          "en": "Saves the order and publishes its events."
+        },
+        "input": "PaidCheckout",
+        "output": "PlacedCheckout",
+        "kind": {
+          "type": "commit"
+        },
+        "errors": [
+          {
+            "codeName": "OrderCouldNotBeSaved",
+            "message": {
+              "es-MX": "No se pudo guardar el pedido.",
+              "en": "The order could not be saved."
+            }
+          }
+        ]
+      }
+    ],
+    "produces": ["OrderPlaced", "PaymentConfirmed"]
+  }
+}

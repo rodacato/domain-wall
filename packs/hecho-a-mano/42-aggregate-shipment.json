@@ -1,0 +1,316 @@
+{
+  "aggregates": [
+    {
+      "codeName": "Shipment",
+      "label": {
+        "es-MX": "Envío",
+        "en": "Shipment"
+      },
+      "description": {
+        "es-MX": "El viaje de un pedido pagado desde el taller hasta la puerta del comprador.",
+        "en": "The journey of a paid order from the workshop to the buyer's door."
+      },
+      "context": "Shipping",
+      "identity": "shipmentId",
+      "fields": [
+        {
+          "codeName": "shipmentId",
+          "label": {
+            "es-MX": "Envío",
+            "en": "Shipment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ShipmentId"
+          }
+        },
+        {
+          "codeName": "orderId",
+          "label": {
+            "es-MX": "Pedido",
+            "en": "Order"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "OrderId"
+          }
+        },
+        {
+          "codeName": "parcels",
+          "label": {
+            "es-MX": "Bultos",
+            "en": "Parcels"
+          },
+          "type": {
+            "kind": "list",
+            "of": {
+              "kind": "entity",
+              "ref": "Parcel"
+            }
+          }
+        },
+        {
+          "codeName": "destination",
+          "label": {
+            "es-MX": "Destino",
+            "en": "Destination"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "Address"
+            }
+          }
+        }
+      ],
+      "derived": [],
+      "entities": [
+        {
+          "codeName": "Parcel",
+          "label": {
+            "es-MX": "Bulto",
+            "en": "Parcel"
+          },
+          "description": {
+            "es-MX": "Una caja que viaja con la paquetería; solo importan su peso y su destino.",
+            "en": "A box that travels with the carrier; only its weight and destination matter."
+          },
+          "identity": "parcelId",
+          "fields": [
+            {
+              "codeName": "parcelId",
+              "label": {
+                "es-MX": "Bulto",
+                "en": "Parcel"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ParcelId"
+              }
+            },
+            {
+              "codeName": "weightGrams",
+              "label": {
+                "es-MX": "Peso en gramos",
+                "en": "Weight in grams"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "WeightGrams"
+              }
+            }
+          ],
+          "derived": []
+        }
+      ],
+      "states": [
+        {
+          "codeName": "Pending",
+          "label": {
+            "es-MX": "Pendiente",
+            "en": "Pending"
+          },
+          "description": {
+            "es-MX": "El envío existe pero aún no se programa.",
+            "en": "The shipment exists but is not scheduled yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Scheduled",
+          "label": {
+            "es-MX": "Programado",
+            "en": "Scheduled"
+          },
+          "description": {
+            "es-MX": "Reservado con la paquetería.",
+            "en": "Booked with the carrier."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "InTransit",
+          "label": {
+            "es-MX": "En camino",
+            "en": "In transit"
+          },
+          "description": {
+            "es-MX": "El bulto ya salió.",
+            "en": "The parcel has left."
+          },
+          "terminal": false,
+          "data": [
+            {
+              "codeName": "trackingNumber",
+              "label": {
+                "es-MX": "Número de guía",
+                "en": "Tracking number"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "TrackingNumber"
+              }
+            },
+            {
+              "codeName": "service",
+              "label": {
+                "es-MX": "Servicio",
+                "en": "Service"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ShippingService"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Delivered",
+          "label": {
+            "es-MX": "Entregado",
+            "en": "Delivered"
+          },
+          "description": {
+            "es-MX": "El bulto llegó al comprador.",
+            "en": "The parcel reached the buyer."
+          },
+          "terminal": true,
+          "data": []
+        }
+      ],
+      "initialState": "Pending",
+      "rules": [
+        {
+          "codeName": "ParcelWithinCarrierWeightLimit",
+          "label": {
+            "es-MX": "El bulto respeta el límite de peso",
+            "en": "The parcel respects the weight limit"
+          },
+          "description": {
+            "es-MX": "La paquetería no acepta bultos de más de 30 kg.",
+            "en": "The carrier does not accept parcels over 30 kg."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "weightGrams"
+            },
+            "operator": "<=",
+            "right": {
+              "op": "literal",
+              "value": 30000
+            }
+          },
+          "message": {
+            "es-MX": "El bulto no puede pesar más de 30 kg.",
+            "en": "The parcel cannot weigh more than 30 kg."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "ScheduleShipment",
+              "args": {
+                "weightGrams": 30001
+              }
+            }
+          }
+        }
+      ],
+      "invariants": [],
+      "transitions": [
+        {
+          "command": "ScheduleShipment",
+          "from": ["Pending"],
+          "to": "Scheduled",
+          "guards": ["ParcelWithinCarrierWeightLimit"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "destination",
+              "value": {
+                "op": "arg",
+                "name": "destination"
+              }
+            },
+            {
+              "op": "append",
+              "field": "parcels",
+              "value": {
+                "op": "construct",
+                "type": "Parcel",
+                "fields": [
+                  {
+                    "name": "parcelId",
+                    "value": {
+                      "op": "arg",
+                      "name": "parcelId"
+                    }
+                  },
+                  {
+                    "name": "weightGrams",
+                    "value": {
+                      "op": "arg",
+                      "name": "weightGrams"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "emits": ["ShipmentScheduled"]
+        },
+        {
+          "command": "DispatchShipment",
+          "from": ["Scheduled"],
+          "to": "InTransit",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "trackingNumber",
+              "value": {
+                "op": "arg",
+                "name": "trackingNumber"
+              }
+            },
+            {
+              "op": "set",
+              "field": "service",
+              "value": {
+                "op": "arg",
+                "name": "service"
+              }
+            }
+          ],
+          "emits": ["ShipmentDispatched"]
+        },
+        {
+          "command": "ConfirmDelivery",
+          "from": ["InTransit"],
+          "to": "Delivered",
+          "guards": [],
+          "effects": [],
+          "emits": ["ShipmentDelivered"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "ScheduleShipment",
+          "args": {}
+        },
+        {
+          "command": "DispatchShipment",
+          "args": {}
+        },
+        {
+          "command": "ConfirmDelivery",
+          "args": {}
+        }
+      ]
+    }
+  ]
+}
