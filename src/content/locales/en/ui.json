@@ -1,7 +1,8 @@
 {
   "rail": {
     "title": "Course",
-    "soon": "Coming soon"
+    "soon": "Coming soon",
+    "progress": "{completed}/{total}"
   },
   "player": {
     "previous": "Previous step",
@@ -27,6 +28,33 @@
     "aggregate": "Aggregate"
   },
   "language": {
-    "label": "Language"
+    "label": "Language",
+    "code": "Code"
+  },
+  "preferences": {
+    "open": "Change my choices"
+  },
+  "onboarding": {
+    "step": "Step {current} of {total}",
+    "language": {
+      "title": "Which language should the course speak?",
+      "hint": "Everything changes at once: explanations, dialogues and the notes on the wall."
+    },
+    "programmingLanguage": {
+      "title": "Which language do you write code in?",
+      "hint": "Move over a card to see the same idea written in each language. The course adapts to the one you pick; it is not a comparison."
+    },
+    "industry": {
+      "title": "Which business do we learn on?",
+      "hint": "The course is the same for every business; only the domain changes.",
+      "defaultBadge": "Hand-polished",
+      "presets": "Curated industries",
+      "describe": "Describe your business",
+      "describeHint": "A domain generated for you and validated before use.",
+      "soon": "Coming soon"
+    },
+    "back": "Back",
+    "next": "Next",
+    "start": "Start the course"
   }
 }

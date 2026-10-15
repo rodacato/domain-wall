@@ -8,7 +8,7 @@ export const NOTE_SIZE: Readonly<
 > = {
   event: { width: 128, height: 96 },
   command: { width: 128, height: 96 },
-  actor: { width: 88, height: 72 },
+  actor: { width: 112, height: 72 },
   policy: { width: 128, height: 96 },
   externalSystem: { width: 128, height: 96 },
   readModel: { width: 128, height: 96 },

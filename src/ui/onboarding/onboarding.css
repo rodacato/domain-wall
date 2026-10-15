@@ -1,0 +1,151 @@
+.onboarding {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  padding: 32px 16px;
+  background-color: var(--wall-background);
+  background-image: radial-gradient(ellipse at center, transparent 55%, rgba(60, 40, 10, 0.1) 100%);
+}
+
+.onboarding__board {
+  width: min(880px, 100%);
+  padding: 36px 40px 28px;
+  border: 1px solid var(--ui-border);
+  border-radius: 14px;
+  background: var(--ui-surface);
+  box-shadow: 0 20px 50px rgba(40, 30, 10, 0.18);
+}
+
+.onboarding__step {
+  margin: 0 0 14px;
+  color: var(--ui-muted);
+  font-size: 13px;
+}
+
+.onboarding__title {
+  margin: 0 0 8px;
+  font-family: var(--font-note);
+  font-size: 36px;
+  line-height: 1.15;
+}
+
+.onboarding__hint {
+  margin: 0 0 22px;
+  max-width: 62ch;
+  color: var(--ui-muted);
+}
+
+.onboarding__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.chip,
+.card {
+  border: 2px solid var(--ui-border);
+  border-radius: 12px;
+  background: var(--ui-background);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color 0.15s,
+    transform 0.15s;
+}
+
+.chip {
+  padding: 14px 22px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.chip:hover,
+.card:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.chip[aria-pressed="true"],
+.card[aria-pressed="true"] {
+  border-color: var(--ui-accent);
+  background: color-mix(in srgb, var(--ui-accent) 10%, var(--ui-surface));
+}
+
+.card:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.onboarding__languages {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 22px;
+}
+
+.onboarding__cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.onboarding__languages .card {
+  padding: 14px 16px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.onboarding__code {
+  margin: 0;
+  min-height: 240px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  border-radius: 12px;
+  background: #1f2023;
+  color: #e8e6df;
+  font-family: var(--font-code);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.onboarding__industries {
+  display: grid;
+  gap: 12px;
+}
+
+.card--wide {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 16px 20px;
+}
+
+.card__title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.card__text {
+  color: var(--ui-muted);
+  font-size: 14px;
+}
+
+.card__badge {
+  margin-top: 4px;
+  padding: 1px 10px;
+  border-radius: 999px;
+  background: var(--ui-border);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.onboarding__actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 28px;
+}
+
+@media (max-width: 720px) {
+  .onboarding__languages {
+    grid-template-columns: 1fr;
+  }
+}

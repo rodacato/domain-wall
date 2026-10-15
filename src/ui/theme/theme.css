@@ -126,8 +126,14 @@ select {
   padding: 4px 12px;
   border: 1px solid var(--ui-border);
   border-radius: 999px;
+  background: transparent;
   font-size: 13px;
   font-weight: 600;
+  cursor: pointer;
+}
+
+.app__business:hover {
+  background: var(--ui-background);
 }
 
 .app__language {

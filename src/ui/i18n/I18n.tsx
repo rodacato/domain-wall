@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useMemo, type ReactNode } from "react";
 import type { FlatCatalog } from "../../domain/locale/compareCatalogs";
 import { CANONICAL_LOCALE, type LocaleCode } from "../../domain/locale/LocaleRegistry";
 
@@ -17,13 +17,17 @@ const I18nContext = createContext<I18n | null>(null);
 
 interface I18nProviderProps {
   readonly catalogs: Readonly<Record<LocaleCode, FlatCatalog>>;
-  readonly initialLocale: LocaleCode;
+  readonly locale: LocaleCode;
+  readonly onLocaleChange: (locale: LocaleCode) => void;
   readonly children: ReactNode;
 }
 
-export function I18nProvider({ catalogs, initialLocale, children }: I18nProviderProps): ReactNode {
-  const [locale, setLocale] = useState<LocaleCode>(initialLocale);
-
+export function I18nProvider({
+  catalogs,
+  locale,
+  onLocaleChange,
+  children,
+}: I18nProviderProps): ReactNode {
   const t = useCallback<Translate>(
     (key, parameters) => {
       const message = catalogs[locale][key] ?? catalogs[CANONICAL_LOCALE][key] ?? `⟪${key}⟫`;
@@ -35,7 +39,10 @@ export function I18nProvider({ catalogs, initialLocale, children }: I18nProvider
     [catalogs, locale],
   );
 
-  const value = useMemo(() => ({ locale, setLocale, t }), [locale, t]);
+  const value = useMemo(
+    () => ({ locale, setLocale: onLocaleChange, t }),
+    [locale, onLocaleChange, t],
+  );
   return <I18nContext value={value}>{children}</I18nContext>;
 }
 

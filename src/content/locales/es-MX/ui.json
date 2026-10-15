@@ -1,7 +1,8 @@
 {
   "rail": {
     "title": "Curso",
-    "soon": "Próximamente"
+    "soon": "Próximamente",
+    "progress": "{completed}/{total}"
   },
   "player": {
     "previous": "Paso anterior",
@@ -27,6 +28,33 @@
     "aggregate": "Agregado"
   },
   "language": {
-    "label": "Idioma"
+    "label": "Idioma",
+    "code": "Código"
+  },
+  "preferences": {
+    "open": "Cambiar mis elecciones"
+  },
+  "onboarding": {
+    "step": "Paso {current} de {total}",
+    "language": {
+      "title": "¿En qué idioma quieres el curso?",
+      "hint": "Todo cambia a la vez: explicaciones, diálogos y las notas del muro."
+    },
+    "programmingLanguage": {
+      "title": "¿En qué lenguaje programas?",
+      "hint": "Pasa el cursor por una tarjeta para ver la misma idea escrita en cada lenguaje. El curso se adapta al que elijas; no es una comparación."
+    },
+    "industry": {
+      "title": "¿Con qué negocio aprendemos?",
+      "hint": "El curso es el mismo para todos los negocios; solo cambia el dominio.",
+      "defaultBadge": "Pulido a mano",
+      "presets": "Industrias curadas",
+      "describe": "Describe tu negocio",
+      "describeHint": "Un dominio generado para ti y validado antes de usarse.",
+      "soon": "Próximamente"
+    },
+    "back": "Atrás",
+    "next": "Siguiente",
+    "start": "Empezar el curso"
   }
 }

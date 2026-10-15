@@ -1,13 +1,21 @@
 import { useEffect, type ReactNode } from "react";
 import type { CourseSession } from "../../application/CourseSession";
+import {
+  PROGRAMMING_LANGUAGES,
+  type ProgrammingLanguageId,
+} from "../../domain/language/ProgrammingLanguage";
 import { SUPPORTED_LOCALES, type LocaleCode } from "../../domain/locale/LocaleRegistry";
+import { moduleCompletion } from "../../domain/progress/Progress";
 import { useI18n } from "../i18n/I18n";
 import { NarrationPanel } from "../narration/NarrationPanel";
 import { WallView } from "../wall/WallView";
+import type { Learner } from "./useLearner";
 import { useScenePlayer } from "./useScenePlayer";
 
 interface AppShellProps {
   readonly session: CourseSession;
+  readonly learner: Learner;
+  readonly onReopenOnboarding: () => void;
 }
 
 const LOCALE_NAMES: Readonly<Record<LocaleCode, string>> = {
@@ -15,13 +23,19 @@ const LOCALE_NAMES: Readonly<Record<LocaleCode, string>> = {
   en: "English",
 };
 
-export function AppShell({ session }: AppShellProps): ReactNode {
+export function AppShell({ session, learner, onReopenOnboarding }: AppShellProps): ReactNode {
   const { locale, setLocale, t } = useI18n();
   const player = useScenePlayer(session.scenes);
+  const { reach } = learner;
+  const conceptInView = player.step?.concept ?? null;
 
   useEffect(() => {
     document.documentElement.lang = locale;
   }, [locale]);
+
+  useEffect(() => {
+    if (conceptInView !== null) reach(conceptInView);
+  }, [conceptInView, reach]);
 
   return (
     <div className="app">
@@ -29,7 +43,13 @@ export function AppShell({ session }: AppShellProps): ReactNode {
         <span className="app__brand">{t("common.app.name")}</span>
         <span className="app__tagline">{t("common.app.tagline")}</span>
         <span className="app__spacer" />
-        <span className="app__business">{session.index.pack.business.name[locale]}</span>
+        <button
+          className="app__business"
+          onClick={onReopenOnboarding}
+          title={t("ui.preferences.open")}
+        >
+          {session.index.pack.business.name[locale]}
+        </button>
         <label className="app__language">
           {t("ui.language.label")}
           <select
@@ -45,12 +65,31 @@ export function AppShell({ session }: AppShellProps): ReactNode {
             ))}
           </select>
         </label>
+        <label className="app__language">
+          {t("ui.language.code")}
+          <select
+            value={learner.preferences.programmingLanguage}
+            onChange={(event) => {
+              learner.choose({
+                ...learner.preferences,
+                programmingLanguage: event.target.value as ProgrammingLanguageId,
+              });
+            }}
+          >
+            {PROGRAMMING_LANGUAGES.map((language) => (
+              <option key={language} value={language}>
+                {t(`common.programmingLanguage.${language}`)}
+              </option>
+            ))}
+          </select>
+        </label>
       </header>
 
       <nav className="rail" aria-label={t("ui.rail.title")}>
         <h2 className="rail__title">{t("ui.rail.title")}</h2>
         {session.syllabus.modules.map((courseModule) => {
           const scene = session.scenes.find((candidate) => candidate.module === courseModule.id);
+          const completion = moduleCompletion(learner.progress, session.syllabus, courseModule.id);
           return (
             <button
               key={courseModule.id}
@@ -63,7 +102,16 @@ export function AppShell({ session }: AppShellProps): ReactNode {
             >
               <span className="rail__number">{courseModule.number}</span>
               <span>{t(`course.modules.${courseModule.id}.title`)}</span>
-              {scene === undefined && <span className="rail__soon">{t("ui.rail.soon")}</span>}
+              {scene === undefined ? (
+                <span className="rail__soon">{t("ui.rail.soon")}</span>
+              ) : (
+                <span className="rail__soon">
+                  {t("ui.rail.progress", {
+                    completed: completion.completed,
+                    total: completion.total,
+                  })}
+                </span>
+              )}
             </button>
           );
         })}
