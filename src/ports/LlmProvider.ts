@@ -10,6 +10,8 @@ export interface StructuredRequest {
   readonly user: string;
   /** A JSON Schema the answer must follow. */
   readonly jsonSchema: unknown;
+  /** What the request is for, so a provider can log it or route it; it does not change the answer. */
+  readonly label?: string;
   readonly signal?: AbortSignal;
 }
 

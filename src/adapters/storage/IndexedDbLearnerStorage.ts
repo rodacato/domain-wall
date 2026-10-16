@@ -1,5 +1,5 @@
 import { openDB, type IDBPDatabase } from "idb";
-import type { ZodType } from "zod";
+import { z, type ZodType } from "zod";
 import {
   learnerPreferencesSchema,
   type LearnerPreferences,
@@ -11,10 +11,12 @@ import type {
   ProgressRepository,
   StorageError,
 } from "../../ports/LearnerStorage";
+import type { PackRepository, StoredPack } from "../../ports/PackRepository";
 
 const DATABASE_NAME = "domain-wall";
-const DATABASE_VERSION = 1;
+const DATABASE_VERSION = 2;
 const STORE = "learner";
+const PACK_STORE = "packs";
 
 type LearnerDatabase = IDBPDatabase;
 
@@ -23,7 +25,10 @@ export async function openLearnerDatabase(): Promise<Result<LearnerDatabase, Sto
   try {
     const database = await openDB(DATABASE_NAME, DATABASE_VERSION, {
       upgrade(upgrading) {
-        upgrading.createObjectStore(STORE);
+        if (!upgrading.objectStoreNames.contains(STORE)) upgrading.createObjectStore(STORE);
+        if (!upgrading.objectStoreNames.contains(PACK_STORE)) {
+          upgrading.createObjectStore(PACK_STORE, { keyPath: "key" });
+        }
       },
     });
     return ok(database);
@@ -92,5 +97,57 @@ export class IndexedDbPreferencesRepository implements PreferencesRepository {
 
   save(preferences: LearnerPreferences): Promise<Result<void, StorageError>> {
     return writeRecord(this.database, "preferences", preferences);
+  }
+}
+
+const storedPackSchema = z.object({
+  key: z.string(),
+  createdAt: z.string(),
+  description: z.string(),
+  pack: z.unknown(),
+});
+
+export class IndexedDbPackRepository implements PackRepository {
+  constructor(private readonly database: LearnerDatabase) {}
+
+  async list(): Promise<Result<readonly StoredPack[], StorageError>> {
+    try {
+      const raw: unknown[] = await this.database.getAll(PACK_STORE);
+      return ok(
+        raw.flatMap((entry) => {
+          const parsed = storedPackSchema.safeParse(entry);
+          return parsed.success ? [parsed.data] : [];
+        }),
+      );
+    } catch (failure) {
+      return err({
+        kind: "unavailable",
+        message: failure instanceof Error ? failure.message : "read failed",
+      });
+    }
+  }
+
+  async save(stored: StoredPack): Promise<Result<void, StorageError>> {
+    try {
+      await this.database.put(PACK_STORE, stored);
+      return ok(undefined);
+    } catch (failure) {
+      return err({
+        kind: "unavailable",
+        message: failure instanceof Error ? failure.message : "write failed",
+      });
+    }
+  }
+
+  async remove(key: string): Promise<Result<void, StorageError>> {
+    try {
+      await this.database.delete(PACK_STORE, key);
+      return ok(undefined);
+    } catch (failure) {
+      return err({
+        kind: "unavailable",
+        message: failure instanceof Error ? failure.message : "delete failed",
+      });
+    }
   }
 }

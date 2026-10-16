@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { ConceptId } from "../../domain/course/ConceptId";
 import { EMPTY_PROGRESS } from "../../domain/progress/Progress";
 import {
+  IndexedDbPackRepository,
   IndexedDbPreferencesRepository,
   IndexedDbProgressRepository,
   openLearnerDatabase,
@@ -66,5 +67,27 @@ describe("the IndexedDB learner storage", () => {
 
     expect(loaded.ok).toBe(false);
     expect(!loaded.ok && loaded.error.kind).toBe("corrupt");
+  });
+});
+
+describe("IndexedDbPackRepository", () => {
+  it("keeps generated packs by key, and removes them", async () => {
+    const opened = await openLearnerDatabase();
+    if (!opened.ok) throw new Error("the database must open");
+    const repository = new IndexedDbPackRepository(opened.value);
+    const stored = {
+      key: "abc",
+      createdAt: "2026-10-15T00:00:00Z",
+      description: "A bakery",
+      pack: { a: 1 },
+    };
+
+    await repository.save(stored);
+    const listed = await repository.list();
+    expect(listed.ok && listed.value.some((entry) => entry.key === "abc")).toBe(true);
+
+    await repository.remove("abc");
+    const after = await repository.list();
+    expect(after.ok && after.value.some((entry) => entry.key === "abc")).toBe(false);
   });
 });
