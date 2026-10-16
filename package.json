@@ -20,6 +20,7 @@
     "validate:packs": "tsx scripts/validate-packs.ts",
     "check:translations": "tsx scripts/check-translations.ts",
     "validate:course": "tsx scripts/validate-course.ts",
+    "test:generated": "tsx scripts/run-all-generated.ts",
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview"

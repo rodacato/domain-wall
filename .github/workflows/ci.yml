@@ -25,3 +25,4 @@ jobs:
       - run: pnpm validate:packs
       - run: pnpm validate:course
       - run: pnpm check:translations
+      - run: pnpm test:generated
