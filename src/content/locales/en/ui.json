@@ -114,7 +114,8 @@
     "code": "Code"
   },
   "preferences": {
-    "open": "Change my choices"
+    "open": "Change my choices",
+    "modeling": "Today we model"
   },
   "onboarding": {
     "step": "Step {current} of {total}",

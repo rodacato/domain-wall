@@ -114,7 +114,8 @@
     "code": "Código"
   },
   "preferences": {
-    "open": "Cambiar mis elecciones"
+    "open": "Cambiar mis elecciones",
+    "modeling": "Hoy modelamos"
   },
   "onboarding": {
     "step": "Paso {current} de {total}",

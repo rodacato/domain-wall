@@ -49,15 +49,18 @@ export function AppShell({
   return (
     <div className="app">
       <header className="app__header">
-        <span className="app__brand">{t("common.app.name")}</span>
-        <span className="app__tagline">{t("common.app.tagline")}</span>
+        <span className="app__title tape">
+          <span className="app__brand">{t("common.app.name")}</span>
+          <span className="app__tagline">{t("common.app.tagline")}</span>
+        </span>
         <span className="app__spacer" />
         <button
           className="app__business"
           onClick={onReopenOnboarding}
           title={t("ui.preferences.open")}
         >
-          {session.index.pack.business.name[locale]}
+          <span className="app__business-top">{t("ui.preferences.modeling")}</span>
+          <span className="app__business-name">{session.index.pack.business.name[locale]}</span>
         </button>
         <label className="app__language">
           {t("ui.language.label")}
@@ -168,7 +171,7 @@ export function AppShell({
 
       <footer className="player">
         <button
-          className="player__button"
+          className="player__button player__button--back"
           onClick={player.previous}
           disabled={player.stepIndex === 0}
         >
@@ -192,7 +195,7 @@ export function AppShell({
           {t("ui.player.position", { current: player.stepIndex + 1, total: player.stepCount })}
         </span>
         <button
-          className="player__button"
+          className="player__button player__button--demo"
           aria-pressed={player.demo}
           onClick={player.toggleDemo}
           title={t("ui.player.demoHint")}

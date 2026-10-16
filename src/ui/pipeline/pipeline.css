@@ -2,6 +2,7 @@
   max-width: 820px;
   margin: 0;
   font-family: var(--font-note);
+  font-variation-settings: var(--axes-note);
   font-size: 28px;
 }
 
@@ -54,6 +55,7 @@
 .type__name {
   min-width: 190px;
   font-family: var(--font-code);
+  font-variation-settings: var(--axes-code);
   font-size: 13px;
 }
 
@@ -149,6 +151,7 @@
 
 .stage__box strong {
   font-family: var(--font-note);
+  font-variation-settings: var(--axes-note);
   font-size: 18px;
   line-height: 1.2;
 }
@@ -187,6 +190,7 @@
   background: transparent;
   color: #c92a2a;
   font-family: var(--font-code);
+  font-variation-settings: var(--axes-code);
   font-size: 12px;
 }
 

@@ -7,6 +7,7 @@
 .exercise__title {
   margin: 0;
   font-family: var(--font-note);
+  font-variation-settings: var(--axes-note);
   font-size: 28px;
 }
 
@@ -242,6 +243,7 @@
   background: var(--code-background);
   color: var(--code-text);
   font-family: var(--font-code);
+  font-variation-settings: var(--axes-code);
   font-size: 13px;
 }
 

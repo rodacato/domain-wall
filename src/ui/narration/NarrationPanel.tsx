@@ -13,13 +13,6 @@ interface NarrationPanelProps {
   readonly language: ProgrammingLanguageId;
 }
 
-/** A pastel colour derived from an expert's avatar seed, stable across sessions. */
-function avatarColour(seed: string): string {
-  let hash = 0;
-  for (const character of seed) hash = (hash * 31 + character.charCodeAt(0)) % 360;
-  return `hsl(${hash} 70% 82%)`;
-}
-
 export function NarrationPanel({ session, step, language }: NarrationPanelProps): ReactNode {
   const { locale, t } = useI18n();
   const concept =
@@ -50,43 +43,35 @@ export function NarrationPanel({ session, step, language }: NarrationPanelProps)
       {step.focus !== undefined && (
         <FocusSection session={session} focus={step.focus} language={language} />
       )}
-      <ul className="dialogue">
-        {lines.map((line, position) => {
-          const expert = session.index.experts.get(line.speaker);
-          return (
-            <li className="dialogue__line" key={`${step.id}-${position}`}>
-              <span
-                className="dialogue__avatar"
-                style={
-                  {
-                    "--avatar": avatarColour(expert?.avatarSeed ?? line.speaker),
-                  } as React.CSSProperties
-                }
-              >
-                {(expert?.name ?? line.speaker).charAt(0)}
-              </span>
-              <div>
-                <div className="dialogue__speaker">
-                  {expert?.name ?? line.speaker}
-                  <span className="dialogue__role">{expert?.role[locale]}</span>
+      {lines.length > 0 && (
+        <ul className="dialogue">
+          {lines.map((line, position) => {
+            const expert = session.index.experts.get(line.speaker);
+            return (
+              <li className="dialogue__line" key={`${step.id}-${position}`}>
+                <div>
+                  <div className="dialogue__speaker">
+                    <span className="dialogue__tag">{expert?.name ?? line.speaker}</span>
+                    <span className="dialogue__role">{expert?.role[locale]}</span>
+                  </div>
+                  <p className="dialogue__text">
+                    {dialogueSegments(session.index, line.text, locale).map(
+                      (segment, segmentPosition) =>
+                        segment.kind === "term" ? (
+                          <span className="dialogue__term" key={segmentPosition}>
+                            {segment.text}
+                          </span>
+                        ) : (
+                          <span key={segmentPosition}>{segment.text}</span>
+                        ),
+                    )}
+                  </p>
                 </div>
-                <p className="dialogue__text">
-                  {dialogueSegments(session.index, line.text, locale).map(
-                    (segment, segmentPosition) =>
-                      segment.kind === "term" ? (
-                        <span className="dialogue__term" key={segmentPosition}>
-                          {segment.text}
-                        </span>
-                      ) : (
-                        <span key={segmentPosition}>{segment.text}</span>
-                      ),
-                  )}
-                </p>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+              </li>
+            );
+          })}
+        </ul>
+      )}
       {courseModule !== undefined && <Sources references={courseModule.references} />}
     </aside>
   );
