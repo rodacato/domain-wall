@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import { useMemo, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import type { CourseSession } from "../../application/CourseSession";
 import { labelOfConcept } from "../../domain/pack/conceptLabels";
 import { viewportsFor } from "../../domain/wall/cameraViewport";
@@ -17,6 +17,7 @@ import { useI18n } from "../i18n/I18n";
 import { PipelineStage } from "../pipeline/PipelineStage";
 import { ChangeImpactStage } from "./ChangeImpactStage";
 import { GlossaryBoard } from "./GlossaryBoard";
+import { needsLoupe, NoteLoupe, type HoveredNote } from "./NoteLoupe";
 import { StickyNote } from "./StickyNote";
 import { TermNote } from "./TermNote";
 import { useElementSize } from "./useElementSize";
@@ -56,6 +57,30 @@ export function WallView({
   const last = viewports[viewports.length - 1] ?? { x: 0, y: 0, scale: 1 };
   const manualCamera = useManualCamera(JSON.stringify([state.camera, state.layout]), last);
   const term = termPlacement(layout, state);
+  const [hovered, setHovered] = useState<{ note: HoveredNote; at: string } | null>(null);
+  const shown = manualCamera.override ?? last;
+  const cameraAt = JSON.stringify([state.camera, state.layout, shown]);
+
+  const hover = (kind: NoteKind, label: string) => (note: HTMLElement | null) => {
+    const wall = reference.current;
+    if (note === null || wall === null) {
+      setHovered(null);
+      return;
+    }
+    const box = note.getBoundingClientRect();
+    const origin = wall.getBoundingClientRect();
+    setHovered({
+      note: {
+        kind,
+        label,
+        left: box.left - origin.left,
+        top: box.top - origin.top,
+        width: box.width,
+        height: box.height,
+      },
+      at: cameraAt,
+    });
+  };
 
   const dropOrderByKind = new Map<NoteKind, number>();
   const kindsOnWall = new Set<NoteKind>();
@@ -120,6 +145,7 @@ export function WallView({
                 placement={placement}
                 emphasis={wallNote.emphasis}
                 dropOrder={dropOrder}
+                onHover={hover(spec.kind, label)}
               />
             );
           })}
@@ -130,6 +156,7 @@ export function WallView({
           )}
         </AnimatePresence>
       </motion.div>
+      {hovered?.at === cameraAt && needsLoupe(shown.scale) && <NoteLoupe note={hovered.note} />}
       {state.glossary.entries.length > 0 && (
         <GlossaryBoard session={session} glossary={state.glossary} />
       )}

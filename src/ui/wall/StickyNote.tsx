@@ -11,6 +11,7 @@ interface StickyNoteProps {
   readonly emphasis: NoteEmphasis;
   /** Position among the notes dropped together; later notes fall a little after earlier ones. */
   readonly dropOrder: number;
+  readonly onHover: (note: HTMLElement | null) => void;
 }
 
 const MAXIMUM_DROP_DELAY_SECONDS = 1.5;
@@ -22,6 +23,7 @@ export function StickyNote({
   placement,
   emphasis,
   dropOrder,
+  onHover,
 }: StickyNoteProps): ReactNode {
   const delay = Math.min(MAXIMUM_DROP_DELAY_SECONDS, dropOrder * 0.03);
   return (
@@ -41,6 +43,12 @@ export function StickyNote({
         opacity: emphasis === "dimmed" ? 0.3 : 1,
       }}
       transition={{ type: "spring", stiffness: 90, damping: 18 }}
+      onPointerEnter={(event) => {
+        onHover(event.currentTarget);
+      }}
+      onPointerLeave={() => {
+        onHover(null);
+      }}
     >
       <motion.div
         className={`note note--${kind} ${emphasis === "highlighted" ? "note--highlighted" : ""} ${emphasis === "rejected" ? "note--rejected" : ""}`}

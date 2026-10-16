@@ -78,7 +78,7 @@
 
 .field small {
   color: var(--ui-muted);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .field--added {
@@ -157,12 +157,12 @@
 }
 
 .stage__box small {
-  font-size: 11px;
+  font-size: 12px;
   opacity: 0.9;
 }
 
 .stage__kind {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
