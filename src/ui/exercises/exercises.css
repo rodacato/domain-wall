@@ -12,11 +12,18 @@
 
 .exercise__badge {
   padding: 2px 12px;
+  border: 1px solid #237032;
   border-radius: 999px;
-  background: #2f9e44;
+  background: #237032;
   color: #fff;
   font-size: 12px;
   font-weight: 700;
+}
+
+.exercise__badge--reviewed {
+  border-color: var(--ui-border);
+  background: transparent;
+  color: var(--ui-muted);
 }
 
 .exercise__instructions {

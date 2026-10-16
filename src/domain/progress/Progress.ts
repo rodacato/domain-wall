@@ -20,11 +20,21 @@ const completionRecordSchema = z.strictObject({
 });
 export type CompletionRecord = z.infer<typeof completionRecordSchema>;
 
+/** What shows an exercise was solved: a checked answer, code that only looks right, or passing tests, which replaces the others. */
+export const EXERCISE_EVIDENCE = ["answered", "reviewed", "tested"] as const;
+export type ExerciseEvidence = (typeof EXERCISE_EVIDENCE)[number];
+
+/** Records saved before evidence existed have none and read as `answered`. */
+const exerciseRecordSchema = completionRecordSchema.extend({
+  evidence: z.enum(EXERCISE_EVIDENCE).optional(),
+});
+export type ExerciseRecord = z.infer<typeof exerciseRecordSchema>;
+
 export const progressSchema = z.strictObject({
   schemaVersion: z.literal(PROGRESS_SCHEMA_VERSION),
   completions: z.record(conceptIdSchema, completionRecordSchema),
   /** Exercises the learner has solved; absent in progress saved before exercises existed. */
-  exercises: z.partialRecord(z.enum(EXERCISE_KINDS), completionRecordSchema).default({}),
+  exercises: z.partialRecord(z.enum(EXERCISE_KINDS), exerciseRecordSchema).default({}),
 });
 export type Progress = z.infer<typeof progressSchema>;
 
@@ -79,16 +89,25 @@ export function nextConcept(progress: Progress, syllabus: Syllabus): ConceptId |
   return allConcepts(syllabus).find((concept) => !isConceptCompleted(progress, concept.id))?.id;
 }
 
-/** Marks an exercise solved. Solving it again keeps the first record. */
+/** Marks an exercise solved. Solving it again keeps the first record, unless the new one has stronger evidence. */
 export function completeExercise(
   progress: Progress,
   kind: ExerciseKind,
-  record: CompletionRecord,
+  record: ExerciseRecord & { readonly evidence: ExerciseEvidence },
 ): Progress {
-  if (progress.exercises[kind] !== undefined) return progress;
+  const known = exerciseEvidence(progress, kind);
+  if (known !== undefined && strength(known) >= strength(record.evidence)) return progress;
   return { ...progress, exercises: { ...progress.exercises, [kind]: record } };
 }
 
-export function isExerciseCompleted(progress: Progress, kind: ExerciseKind): boolean {
-  return progress.exercises[kind] !== undefined;
+export function exerciseEvidence(
+  progress: Progress,
+  kind: ExerciseKind,
+): ExerciseEvidence | undefined {
+  const record = progress.exercises[kind];
+  return record === undefined ? undefined : (record.evidence ?? "answered");
+}
+
+function strength(evidence: ExerciseEvidence): number {
+  return EXERCISE_EVIDENCE.indexOf(evidence);
 }

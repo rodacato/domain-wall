@@ -6,7 +6,7 @@ import {
   completeExercise,
   EMPTY_PROGRESS,
   isConceptCompleted,
-  isExerciseCompleted,
+  exerciseEvidence,
   moduleCompletion,
   nextConcept,
   progressSchema,
@@ -70,12 +70,48 @@ describe("progress", () => {
 
 describe("exercise progress", () => {
   it("records a solved exercise once, keeping the first record", () => {
-    const solved = completeExercise(EMPTY_PROGRESS, "orderEvents", record);
-    const again = completeExercise(solved, "orderEvents", { ...record, locale: "en" });
+    const solved = completeExercise(EMPTY_PROGRESS, "orderEvents", {
+      ...record,
+      evidence: "answered",
+    });
+    const again = completeExercise(solved, "orderEvents", {
+      ...record,
+      locale: "en",
+      evidence: "answered",
+    });
 
-    expect(isExerciseCompleted(solved, "orderEvents")).toBe(true);
-    expect(isExerciseCompleted(solved, "classifyPhrases")).toBe(false);
+    expect(exerciseEvidence(solved, "orderEvents")).toBe("answered");
+    expect(exerciseEvidence(solved, "classifyPhrases")).toBeUndefined();
     expect(again.exercises.orderEvents?.locale).toBe("es-MX");
+  });
+
+  it("replaces code that only looked right with passing tests, never the other way", () => {
+    const reviewed = completeExercise(EMPTY_PROGRESS, "implementTheRule", {
+      ...record,
+      evidence: "reviewed",
+    });
+    const tested = completeExercise(reviewed, "implementTheRule", {
+      ...record,
+      evidence: "tested",
+    });
+    const reviewedAgain = completeExercise(tested, "implementTheRule", {
+      ...record,
+      evidence: "reviewed",
+    });
+
+    expect(exerciseEvidence(reviewed, "implementTheRule")).toBe("reviewed");
+    expect(exerciseEvidence(tested, "implementTheRule")).toBe("tested");
+    expect(exerciseEvidence(reviewedAgain, "implementTheRule")).toBe("tested");
+  });
+
+  it("reads an exercise saved before evidence existed as answered", () => {
+    const parsed = progressSchema.safeParse({
+      schemaVersion: 1,
+      completions: {},
+      exercises: { orderEvents: record },
+    });
+
+    expect(parsed.success && exerciseEvidence(parsed.data, "orderEvents")).toBe("answered");
   });
 
   it("reads progress saved before exercises existed", () => {

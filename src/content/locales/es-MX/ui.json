@@ -397,7 +397,11 @@
     "ruleBroken": "Ahora las reglas del negocio no corren sin una base de datos, y un cambio en cómo se guardan los datos obliga a cambiar el dominio. La flecha siempre debe apuntar hacia adentro."
   },
   "exercise": {
-    "solved": "Resuelto",
+    "solved": {
+      "answered": "Resuelto",
+      "reviewed": "Revisado, sin ejecutar",
+      "tested": "Pruebas superadas"
+    },
     "check": "Revisar",
     "correct": "Correcto. Muy bien.",
     "incorrect": "{count} todavía no están en su lugar. Cámbialos y revisa de nuevo.",
