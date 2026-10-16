@@ -21,7 +21,7 @@ export function GlossaryBoard({ session, glossary }: GlossaryBoardProps): ReactN
   });
 
   return (
-    <aside className="glossary">
+    <aside className="glossary" tabIndex={0} aria-label={t("ui.glossary.title")}>
       <h2 className="glossary__title">{t("ui.glossary.title")}</h2>
       {glossary.entries.length === 0 && <p className="glossary__empty">{t("ui.glossary.empty")}</p>}
       <ul className="glossary__list">

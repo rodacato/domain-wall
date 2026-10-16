@@ -9,8 +9,8 @@ async function violations(page: Page): Promise<string[]> {
   );
 }
 
-async function onboard(page: Page): Promise<void> {
-  await page.goto("/");
+async function onboard(page: Page, path = "/"): Promise<void> {
+  await page.goto(path);
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: "Start the course" }).click();
@@ -59,6 +59,29 @@ test("every step of every module has none", async ({ page }) => {
       await page.waitForTimeout(1300);
       for (const violation of await violations(page))
         found.push(`module ${module + 1}, step ${step + 1}: ${violation.slice(0, 200)}`);
+      if (!(await next.isEnabled())) break;
+      await next.click();
+    }
+  }
+
+  expect(found).toEqual([]);
+});
+
+test("in the dark theme, every step of the context map and the architecture has none", async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+  await onboard(page, "/?theme=dark");
+  const rail = page.getByRole("navigation", { name: "Course" });
+  const found: string[] = [];
+
+  for (const title of [/Context map/, /Architecture/]) {
+    await rail.getByRole("button", { name: title }).click();
+    const next = page.getByRole("button", { name: /^Next step/ });
+    for (let step = 0; ; step += 1) {
+      await page.waitForTimeout(1300);
+      for (const violation of await violations(page))
+        found.push(`${title.source}, step ${step + 1}: ${violation.slice(0, 200)}`);
       if (!(await next.isEnabled())) break;
       await next.click();
     }

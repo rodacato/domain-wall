@@ -11,18 +11,6 @@
   --code-symbol: #d0bfff;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --code-background: #15161a;
-    --code-border: #2c2f36;
-  }
-}
-
-:root[data-theme="dark"] {
-  --code-background: #15161a;
-  --code-border: #2c2f36;
-}
-
 .code {
   display: flex;
   flex: 1;
@@ -35,6 +23,7 @@
   box-shadow: 0 14px 34px rgba(20, 15, 5, 0.28);
   color: var(--code-text);
   font-family: var(--font-code);
+  font-variation-settings: var(--axes-code);
   font-size: 13px;
 }
 
@@ -80,6 +69,7 @@
   background: var(--chip-color, var(--note-actor));
   color: var(--note-ink);
   font-family: var(--font-ui);
+  font-variation-settings: var(--axes-ui);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -245,6 +235,7 @@
 .opened__title {
   margin: 0;
   font-family: var(--font-note);
+  font-variation-settings: var(--axes-note);
   font-size: 32px;
 }
 
@@ -321,12 +312,14 @@
   box-shadow: var(--note-shadow);
   color: var(--note-ink);
   font-family: var(--font-note);
+  font-variation-settings: var(--axes-note);
   font-size: 17px;
   line-height: 1.25;
 }
 
 .mini small {
   font-family: var(--font-ui);
+  font-variation-settings: var(--axes-ui);
   font-size: 10px;
   opacity: 0.88;
 }
@@ -357,6 +350,7 @@
 .breaker__header h3 {
   margin: 0;
   font-family: var(--font-note);
+  font-variation-settings: var(--axes-note);
   font-size: 22px;
 }
 

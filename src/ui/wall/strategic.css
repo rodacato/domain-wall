@@ -14,6 +14,7 @@
 .arrow__label {
   fill: var(--wall-ink);
   font-family: var(--font-note);
+  font-variation-settings: var(--axes-note);
   font-size: 22px;
   font-weight: 700;
   paint-order: stroke;
@@ -24,6 +25,7 @@
 .boundary__advice {
   fill: var(--wall-ink);
   font-family: var(--font-note);
+  font-variation-settings: var(--axes-note);
   font-size: 24px;
   opacity: 0.8;
 }
@@ -48,6 +50,7 @@
 .glossary__title {
   margin: 0;
   font-family: var(--font-note);
+  font-variation-settings: var(--axes-note);
   font-size: 28px;
 }
 
@@ -84,6 +87,7 @@
   align-items: baseline;
   gap: 8px;
   font-family: var(--font-note);
+  font-variation-settings: var(--axes-note);
   font-size: 20px;
 }
 
@@ -93,6 +97,7 @@
   background: #c2410c;
   color: #fff;
   font-family: var(--font-ui);
+  font-variation-settings: var(--axes-ui);
   font-size: 11px;
   font-weight: 700;
 }
@@ -137,6 +142,7 @@
   max-width: 760px;
   margin: 0;
   font-family: var(--font-note);
+  font-variation-settings: var(--axes-note);
   font-size: 30px;
   text-align: center;
 }
@@ -279,6 +285,7 @@
 .pattern__box-label {
   fill: currentColor;
   font-family: var(--font-note);
+  font-variation-settings: var(--axes-note);
   font-size: 20px;
   font-weight: 700;
 }

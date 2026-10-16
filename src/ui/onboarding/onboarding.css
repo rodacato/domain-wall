@@ -25,6 +25,7 @@
 .onboarding__title {
   margin: 0 0 8px;
   font-family: var(--font-note);
+  font-variation-settings: var(--axes-note);
   font-size: 36px;
   line-height: 1.15;
 }
@@ -102,6 +103,7 @@
   background: #1f2023;
   color: #e8e6df;
   font-family: var(--font-code);
+  font-variation-settings: var(--axes-code);
   font-size: 13.5px;
   line-height: 1.55;
 }

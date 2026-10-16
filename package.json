@@ -35,9 +35,7 @@
     "demo": "pnpm build && node scripts/record-demo.mjs"
   },
   "dependencies": {
-    "@fontsource-variable/inter": "^5.3.0",
-    "@fontsource/jetbrains-mono": "^5.3.0",
-    "@fontsource/kalam": "^5.3.0",
+    "@fontsource-variable/recursive": "^5.3.0",
     "idb": "^8.0.4",
     "motion": "^14.0.0",
     "mustache": "^4.2.0",
