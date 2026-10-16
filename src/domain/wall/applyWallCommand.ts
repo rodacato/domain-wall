@@ -50,7 +50,7 @@ export function applyWallCommand(state: WallState, command: WallCommand): WallSt
       };
     }
     case "clearWall":
-      return { ...EMPTY_WALL, layout: state.layout };
+      return { ...EMPTY_WALL, layout: state.layout, version: state.version };
     case "setLayout":
       return { ...state, layout: command.layout };
     case "drawBoundary":
@@ -136,6 +136,8 @@ export function applyWallCommand(state: WallState, command: WallCommand): WallSt
       };
     case "hidePipeline":
       return { ...state, pipeline: HIDDEN_PIPELINE };
+    case "evolveModel":
+      return { ...state, version: 2 };
   }
 }
 

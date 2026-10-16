@@ -410,3 +410,45 @@
 .breaker__answer small {
   color: var(--ui-muted);
 }
+
+/* What a business change did to the code */
+
+.code__line--added {
+  background: color-mix(in srgb, #2f9e44 22%, transparent);
+  border-left-color: #2f9e44;
+}
+
+.code__line--removed {
+  background: color-mix(in srgb, #e03131 22%, transparent);
+  border-left-color: #e03131;
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, #e03131 60%, transparent);
+}
+
+.code__sign {
+  flex: none;
+  width: 18px;
+  color: var(--code-muted);
+  text-align: center;
+  user-select: none;
+}
+
+.code__gap {
+  padding: 4px 0 4px 44px;
+  border-left: 4px solid transparent;
+  color: var(--code-muted);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.code__tally {
+  font-weight: 700;
+}
+
+.code__tally--added {
+  color: #51cf66;
+}
+
+.code__tally--removed {
+  color: #ff6b6b;
+}

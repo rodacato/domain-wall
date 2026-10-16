@@ -51,4 +51,5 @@ export type WallCommand =
       readonly failures?: Readonly<Record<string, string>>;
       readonly interactive?: boolean;
     }
-  | { readonly kind: "hidePipeline" };
+  | { readonly kind: "hidePipeline" }
+  | { readonly kind: "evolveModel" };

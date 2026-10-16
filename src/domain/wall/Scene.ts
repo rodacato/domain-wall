@@ -22,6 +22,9 @@ export const LOOK_AT_NOTES = [
   "illegalStates",
   "pipeline",
   "errorsAsValues",
+  "newNotes",
+  "evolutionDiff",
+  "breakthrough",
 ] as const;
 export type LookAtNote = (typeof LOOK_AT_NOTES)[number];
 

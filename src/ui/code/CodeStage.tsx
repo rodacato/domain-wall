@@ -6,6 +6,7 @@ import type { ProgrammingLanguageId } from "../../domain/language/ProgrammingLan
 import { useI18n } from "../i18n/I18n";
 import { StageOverlay } from "../wall/StageOverlay";
 import { AggregateOpened } from "./AggregateOpened";
+import { CodeDiff } from "./CodeDiff";
 import { CodeListing } from "./CodeListing";
 import { InvariantBreaker } from "./InvariantBreaker";
 import { useGeneratedCode } from "./useGeneratedCode";
@@ -39,6 +40,13 @@ function CodeStageBody({ session, language, code }: CodeStageProps): ReactNode {
     return (
       <StageOverlay>
         <p className="code__unavailable">{t("ui.code.unavailable")}</p>
+      </StageOverlay>
+    );
+  }
+  if (code.mode === "diff" && code.unit !== null) {
+    return (
+      <StageOverlay wide>
+        <CodeDiff session={session} language={language} unit={code.unit} />
       </StageOverlay>
     );
   }

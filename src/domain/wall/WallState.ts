@@ -67,6 +67,8 @@ export interface WallState {
   readonly impact: ImpactState;
   readonly code: CodeStageState;
   readonly pipeline: PipelineStageState;
+  /** Which version of the model the notes come from: the original or the one after the evolution. */
+  readonly version: 1 | 2;
 }
 
 export const EMPTY_WALL: WallState = {
@@ -80,6 +82,7 @@ export const EMPTY_WALL: WallState = {
   impact: { model: null, revealed: 0 },
   code: HIDDEN_CODE_STAGE,
   pipeline: HIDDEN_PIPELINE,
+  version: 1,
 };
 
 export function zoneKey(subdomainType: string): string {

@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { buildPackIndex } from "../../domain/pack/PackIndex";
 import { loadDefaultPack } from "../../domain/pack/packFixtures";
+import { evolveIndex } from "../../domain/pack/patch/evolveIndex";
 import { listAllNotes, notesIn } from "../../domain/wall/Note";
 import { wallAfterStep, wallBeforeScene, type Scene } from "../../domain/wall/Scene";
 import { buildScenes } from "./buildScenes";
 
 const index = buildPackIndex(loadDefaultPack());
+const evolved = evolveIndex(index);
 const scenes = buildScenes(index);
 const sceneNamed = (id: string): Scene => {
   const found = scenes.find((scene) => scene.id === id);
@@ -31,7 +33,11 @@ describe("every scene", () => {
   it.each(scenes.map((scene) => [scene.id, scene] as const))(
     "%s only places notes the pack can show",
     (_id, scene) => {
-      const known = new Set<string>(listAllNotes(index).map((note) => note.id));
+      const evolves = scene.steps.some((step) =>
+        step.commands.some((command) => command.kind === "evolveModel"),
+      );
+      const shown = evolves && evolved !== undefined ? evolved : index;
+      const known = new Set<string>(listAllNotes(shown).map((note) => note.id));
       const placed = scene.steps.flatMap((step) =>
         step.commands.flatMap((command) => (command.kind === "placeNotes" ? command.ids : [])),
       );

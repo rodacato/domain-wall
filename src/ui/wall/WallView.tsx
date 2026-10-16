@@ -32,7 +32,8 @@ const ZONE_PREFIX = "zone:";
 export function WallView({ session, state, language }: WallViewProps): ReactNode {
   const { locale, t } = useI18n();
   const [reference, viewSize] = useElementSize<HTMLDivElement>();
-  const { index } = session;
+  const index =
+    state.version === 2 && session.evolved !== undefined ? session.evolved : session.index;
 
   const specs = useMemo(() => new Map(listAllNotes(index).map((spec) => [spec.id, spec])), [index]);
   const layout = useMemo(() => layoutWall(index, state.layout), [index, state.layout]);

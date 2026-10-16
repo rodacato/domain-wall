@@ -7,8 +7,8 @@ export type CodeUnit =
 /** How close the camera is: hidden, the opened aggregate drawn as notes, or its generated code. */
 export type CodeLevel = "hidden" | "aggregate" | "code";
 
-/** Whether the learner only reads the code or may attack the aggregate's rules. */
-export type CodeMode = "read" | "breakInvariants";
+/** Whether the learner only reads the code, may attack the aggregate's rules, or sees what the business change did to it. */
+export type CodeMode = "read" | "breakInvariants" | "diff";
 
 export interface CodeStageState {
   readonly level: CodeLevel;

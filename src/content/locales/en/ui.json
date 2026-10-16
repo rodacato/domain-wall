@@ -248,6 +248,15 @@
     },
     "errorsAsValues": {
       "general": "Expected failures, such as a declined card, are not exceptions: they are values returned on a second track. Break a stage and see that nothing after it runs and nothing is thrown."
+    },
+    "newNotes": {
+      "general": "The wall grows: the highlighted notes are what the change needs, new events, commands and states. Nothing that was already there had to be thrown away."
+    },
+    "evolutionDiff": {
+      "general": "Only the lines that follow from the change are new; everything else stays as it was. That is what a model that speaks the language of the business buys you."
+    },
+    "breakthrough": {
+      "general": "Back to the whole wall, now in version 2. Sometimes a change reveals a concept that makes many things simpler at once. That is a breakthrough, and it is worth the refactor."
     }
   },
   "pipeline": {
@@ -274,5 +283,9 @@
     "failedAt": "Stopped at: {stage}",
     "errorIsValue": "The failure is a value that travels on the second track; the stages after it never run.",
     "run": "Run again"
+  },
+  "diff": {
+    "header": "{file} · what the change did",
+    "unchanged": "{count} unchanged lines"
   }
 }

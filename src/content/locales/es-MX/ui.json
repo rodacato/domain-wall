@@ -248,6 +248,15 @@
     },
     "errorsAsValues": {
       "general": "Los fallos esperados, como una tarjeta rechazada, no son excepciones: son valores devueltos por una segunda vía. Rompe una etapa y verás que nada después corre y nada se lanza."
+    },
+    "newNotes": {
+      "general": "El muro crece: las notas resaltadas son lo que el cambio necesita, eventos, comandos y estados nuevos. Nada de lo que ya estaba tuvo que tirarse."
+    },
+    "evolutionDiff": {
+      "general": "Solo son nuevas las líneas que se desprenden del cambio; todo lo demás sigue igual. Eso es lo que te da un modelo que habla el idioma del negocio."
+    },
+    "breakthrough": {
+      "general": "De vuelta al muro completo, ahora en su versión 2. A veces un cambio revela un concepto que simplifica muchas cosas a la vez. Eso es un avance decisivo, y vale la pena el refactor."
     }
   },
   "pipeline": {
@@ -274,5 +283,9 @@
     "failedAt": "Se detuvo en: {stage}",
     "errorIsValue": "El fallo es un valor que viaja por la segunda vía; las etapas que siguen nunca corren.",
     "run": "Correr de nuevo"
+  },
+  "diff": {
+    "header": "{file} · lo que hizo el cambio",
+    "unchanged": "{count} líneas sin cambios"
   }
 }
