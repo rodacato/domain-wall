@@ -9,6 +9,11 @@ import {
   InMemoryPreferencesRepository,
   InMemoryProgressRepository,
 } from "./adapters/storage/InMemoryLearnerStorage";
+import { TreeSitterSyntaxChecker } from "./adapters/syntax/TreeSitterSyntaxChecker";
+import pythonWasm from "tree-sitter-python/tree-sitter-python.wasm?url";
+import rubyWasm from "tree-sitter-ruby/tree-sitter-ruby.wasm?url";
+import typescriptWasm from "tree-sitter-typescript/tree-sitter-typescript.wasm?url";
+import runtimeWasm from "web-tree-sitter/web-tree-sitter.wasm?url";
 import type { CourseSharedInput } from "./application/CourseSession";
 import { loadCatalogs } from "./application/loadCatalogs";
 import { loadTemplates } from "./application/loadTemplates";
@@ -29,6 +34,10 @@ const packParts = import.meta.glob(["../packs/hecho-a-mano/*.json", "../packs/pr
 const catalogFiles = import.meta.glob("./content/locales/*/*.json", {
   eager: true,
   import: "default",
+});
+const syntaxChecker = new TreeSitterSyntaxChecker({
+  runtime: runtimeWasm,
+  grammars: { typescript: typescriptWasm, python: pythonWasm, ruby: rubyWasm },
 });
 const templateFiles = import.meta.glob("./generation/languages/*/templates/*.mustache", {
   eager: true,
@@ -94,7 +103,13 @@ async function start(): Promise<void> {
   if (container === null) throw new Error("the page has no #root element");
   createRoot(container).render(
     <StrictMode>
-      <CourseApp library={library} shared={shared} storage={storage} initial={initial} />
+      <CourseApp
+        library={library}
+        shared={shared}
+        storage={storage}
+        syntaxChecker={syntaxChecker}
+        initial={initial}
+      />
     </StrictMode>,
   );
 }

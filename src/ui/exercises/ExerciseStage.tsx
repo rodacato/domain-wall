@@ -11,6 +11,8 @@ import {
 } from "../../domain/exercises/Exercise";
 import { deriveExercise } from "../../domain/exercises/deriveExercise";
 import type { ExerciseStageState } from "../../domain/wall/ExerciseStage";
+import type { ProgrammingLanguageId } from "../../domain/language/ProgrammingLanguage";
+import { CodeBoard } from "./CodeBoard";
 import { useI18n } from "../i18n/I18n";
 import { StageOverlay } from "../wall/StageOverlay";
 import "./exercises.css";
@@ -18,6 +20,7 @@ import "./exercises.css";
 interface ExerciseStageProps {
   readonly session: CourseSession;
   readonly exercise: ExerciseStageState;
+  readonly language: ProgrammingLanguageId;
   readonly solved: (kind: ExerciseKind) => boolean;
   readonly onSolve: (kind: ExerciseKind) => void;
 }
@@ -25,6 +28,7 @@ interface ExerciseStageProps {
 export function ExerciseStage({
   session,
   exercise,
+  language,
   solved,
   onSolve,
 }: ExerciseStageProps): ReactNode {
@@ -34,6 +38,7 @@ export function ExerciseStage({
       key={exercise.kind}
       session={session}
       kind={exercise.kind}
+      language={language}
       alreadySolved={solved(exercise.kind)}
       onSolve={onSolve}
     />
@@ -43,11 +48,12 @@ export function ExerciseStage({
 interface BoardProps {
   readonly session: CourseSession;
   readonly kind: ExerciseKind;
+  readonly language: ProgrammingLanguageId;
   readonly alreadySolved: boolean;
   readonly onSolve: (kind: ExerciseKind) => void;
 }
 
-function Board({ session, kind, alreadySolved, onSolve }: BoardProps): ReactNode {
+function Board({ session, kind, language, alreadySolved, onSolve }: BoardProps): ReactNode {
   const { t } = useI18n();
   const exercise = useMemo(() => deriveExercise(session.index, kind), [session.index, kind]);
   const [verdict, setVerdict] = useState<Verdict | null>(null);
@@ -67,7 +73,15 @@ function Board({ session, kind, alreadySolved, onSolve }: BoardProps): ReactNode
       </header>
       <p className="exercise__instructions">{t(`ui.exercise.instructions.${kind}`)}</p>
       {exercise === undefined ? (
-        <p className="exercise__soon">{t("ui.exercise.codeSoon")}</p>
+        <CodeBoard
+          session={session}
+          kind={kind}
+          language={language}
+          onSolve={() => {
+            setVerdict({ correct: true, wrong: [] });
+            onSolve(kind);
+          }}
+        />
       ) : exercise.challenge.type === "classify" ? (
         <Classify
           challenge={exercise.challenge}

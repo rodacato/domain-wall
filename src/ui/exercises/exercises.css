@@ -148,3 +148,92 @@
   opacity: 0.35;
   cursor: default;
 }
+
+.codeboard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(900px, 100%);
+}
+
+.codeboard__task {
+  margin: 0;
+  font-weight: 600;
+}
+
+.codeboard__editor {
+  flex: none;
+  overflow: auto;
+}
+
+.codeboard__context {
+  padding: 4px 0;
+  opacity: 0.8;
+}
+
+.codeboard__answer {
+  display: block;
+  width: 100%;
+  padding: 6px 14px 6px 58px;
+  border: 0;
+  border-top: 1px dashed var(--note-aggregate);
+  border-bottom: 1px dashed var(--note-aggregate);
+  background: color-mix(in srgb, var(--note-aggregate) 14%, var(--code-background));
+  color: var(--code-text);
+  font: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  white-space: pre;
+}
+
+.codeboard__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.codeboard__reveal {
+  padding: 8px 16px;
+  border: 1px solid var(--ui-border);
+  border-radius: 8px;
+  background: var(--ui-surface);
+  cursor: pointer;
+}
+
+.codeboard__verdict {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--ui-surface);
+  list-style: none;
+}
+
+.codeboard__verdict .good::before {
+  content: "✓ ";
+  color: #2f9e44;
+  font-weight: 700;
+}
+
+.codeboard__verdict .bad::before {
+  content: "✗ ";
+  color: #e03131;
+  font-weight: 700;
+}
+
+.codeboard__verdict .note {
+  color: var(--ui-muted);
+  font-size: 13px;
+}
+
+.codeboard__reference {
+  margin: 0;
+  padding: 10px 14px;
+  overflow: auto;
+  border-radius: 8px;
+  background: var(--code-background);
+  color: var(--code-text);
+  font-family: var(--font-code);
+  font-size: 13px;
+}

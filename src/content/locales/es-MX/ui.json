@@ -364,7 +364,7 @@
     "incorrect": "{count} todavía no están en su lugar. Cámbialos y revisa de nuevo.",
     "up": "Subir",
     "down": "Bajar",
-    "codeSoon": "Este ejercicio se escribe en código y llega con el editor de código.",
+    "codeSoon": "Este ejercicio necesita código generado que llega en una actualización posterior.",
     "title": {
       "locateTheRule": "¿Dónde vive la regla?",
       "classifyPhrases": "¿Lenguaje del negocio o jerga?",
@@ -404,6 +404,18 @@
       "format": "Cambiar su formato",
       "mapCode": "Traducir su código",
       "constant": "Un valor fijo"
+    },
+    "code": {
+      "task": "Falta la revisión de «{rule}» en {file}. Escríbela donde está el recuadro punteado.",
+      "answer": "Tu código",
+      "reveal": "Ver la referencia",
+      "unfinished": "Reemplaza la nota con tu código",
+      "written": "Escribiste algo",
+      "syntaxValid": "La sintaxis es válida",
+      "syntaxIssue": "línea {line}: «{snippet}» inesperado",
+      "mentions": "Menciona de qué trata la regla",
+      "missing": "Una respuesta correcta menciona: {tokens}",
+      "runsInDojo": "Aquí se revisan la sintaxis y la forma; las pruebas generadas se ejecutan en Dojo."
     }
   }
 }

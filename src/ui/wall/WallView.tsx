@@ -139,6 +139,7 @@ export function WallView({
       <ExerciseStage
         session={session}
         exercise={state.exercise}
+        language={language}
         solved={isSolved}
         onSolve={onSolve}
       />

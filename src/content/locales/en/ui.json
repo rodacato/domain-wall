@@ -364,7 +364,7 @@
     "incorrect": "{count} not in the right place yet. Change them and check again.",
     "up": "Move up",
     "down": "Move down",
-    "codeSoon": "This exercise is written in code and arrives with the code editor.",
+    "codeSoon": "This exercise needs generated code that arrives in a later update.",
     "title": {
       "locateTheRule": "Where does the rule live?",
       "classifyPhrases": "Business language or jargon?",
@@ -404,6 +404,18 @@
       "format": "Change its format",
       "mapCode": "Translate its code",
       "constant": "A fixed value"
+    },
+    "code": {
+      "task": "The check for “{rule}” is missing in {file}. Write it where the dashed box is.",
+      "answer": "Your code",
+      "reveal": "Show the reference",
+      "unfinished": "Replace the note with your code",
+      "written": "You wrote something",
+      "syntaxValid": "The syntax is valid",
+      "syntaxIssue": "line {line}: unexpected “{snippet}”",
+      "mentions": "It mentions what the rule is about",
+      "missing": "A correct answer mentions: {tokens}",
+      "runsInDojo": "The syntax and the shape are checked here; the generated tests run in Dojo."
     }
   }
 }
