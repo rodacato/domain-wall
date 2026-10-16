@@ -17,6 +17,8 @@ interface CodeListingProps {
   readonly language: ProgrammingLanguageId;
   /** Anchor whose lines stand out; the rest of the file recedes. */
   readonly focus: string | null;
+  /** Whether the listing opens as the yellow note it came from, its handwriting turning into code. */
+  readonly fromNote?: boolean;
 }
 
 const LEGEND_KINDS: readonly AnchorKind[] = [
@@ -42,7 +44,13 @@ function kindAt(file: GeneratedFile, line: number): AnchorKind | null {
 }
 
 /** A generated file with its lines tied to the notes they came from: hover either side and the other lights up. */
-export function CodeListing({ session, file, language, focus }: CodeListingProps): ReactNode {
+export function CodeListing({
+  session,
+  file,
+  language,
+  focus,
+  fromNote = false,
+}: CodeListingProps): ReactNode {
   const { locale, t } = useI18n();
   const [hovered, setHovered] = useState<string | null>(null);
   const [pinned, setPinned] = useState<string | null>(null);
@@ -83,7 +91,7 @@ export function CodeListing({ session, file, language, focus }: CodeListingProps
   };
 
   return (
-    <div className="code">
+    <div className={`code ${fromNote ? "code--from-note" : ""}`}>
       <header className="code__header">
         <span className="code__file">{t("ui.code.fileHeader", { file: file.path })}</span>
         {pinned !== null && (
