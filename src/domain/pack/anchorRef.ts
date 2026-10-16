@@ -12,6 +12,7 @@ export type AnchorKind =
   | "transition"
   | "factory"
   | "repository"
+  | "adapter"
   | "event"
   | "valueObject"
   | "workflow"
@@ -58,6 +59,7 @@ export function parseAnchorRef(ref: string): AnchorRef | undefined {
   if (second === "factory" || second === "repository") {
     return { kind: second, aggregate: first, name: null };
   }
+  if (second === "adapter") return { kind: "adapter", aggregate: first, name: third ?? null };
   if (third !== undefined && AGGREGATE_MEMBER_KINDS.includes(second)) {
     return { kind: second as AnchorKind, aggregate: first, name: third };
   }
@@ -96,6 +98,7 @@ export function labelOfAnchor(index: PackIndex, ref: string): LocalizedText | un
       return parsed.name === null ? undefined : { "es-MX": parsed.name, en: parsed.name };
     case "factory":
     case "repository":
+    case "adapter":
       return undefined;
   }
 }

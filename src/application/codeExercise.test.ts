@@ -91,9 +91,25 @@ describe("code exercises", () => {
     expect([untouched, broken, forgetful].some((verdict) => verdict.plausible)).toBe(false);
   });
 
-  it("has no code exercise for the kinds that need other generated code", () => {
+  it.each(PROGRAMMING_LANGUAGES)(
+    "%s: the reference body of the repository adapter is plausible",
+    async (language) => {
+      const exercise = deriveCodeExercise(
+        "implementRepositoryAdapter",
+        index,
+        evolved,
+        language,
+        templates,
+      );
+      if (exercise === undefined) throw new Error("no exercise");
+
+      expect((await checkCodeAnswer(exercise, exercise.reference, checker)).plausible).toBe(true);
+    },
+  );
+
+  it("has no code exercise for the kinds that need no code", () => {
     expect(
-      deriveCodeExercise("implementRepositoryAdapter", index, evolved, "typescript", templates),
+      deriveCodeExercise("orderEvents", index, evolved, "typescript", templates),
     ).toBeUndefined();
   });
 });

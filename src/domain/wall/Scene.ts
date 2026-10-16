@@ -32,6 +32,7 @@ export const LOOK_AT_NOTES = [
   "hexagonal",
   "portsAdapters",
   "dependencyRule",
+  "adapterCode",
 ] as const;
 export type LookAtNote = (typeof LOOK_AT_NOTES)[number];
 

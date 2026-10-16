@@ -216,6 +216,8 @@
 }
 .code__line--workflowPort,
 .chip--workflowPort,
+.code__line--adapter,
+.chip--adapter,
 .code__line--factory,
 .code__line--repository,
 .chip--factory,

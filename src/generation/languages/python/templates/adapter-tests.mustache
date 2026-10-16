@@ -1,0 +1,21 @@
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+import unittest
+
+from {{aggregateModule}} import {{aggregate}}
+from {{module}} import {{name}}
+from testing import must_succeed
+{{#hasValueObjectImports}}
+from value_objects import {{#valueObjectImports}}{{name}}{{^last}}, {{/last}}{{/valueObjectImports}}
+{{/hasValueObjectImports}}
+
+
+class {{name}}Tests(unittest.TestCase):
+    def test_finds_the_{{instance}}_that_was_saved(self) -> None:
+        repository = {{name}}()
+        {{instance}} = {{aggregate}}.start({{{start}}})
+        repository.save({{instance}})
+        self.assertIs({{instance}}, repository.find({{instance}}.{{identityName}}))
+
+    def test_finds_nothing_for_an_identity_it_never_saw(self) -> None:
+        repository = {{name}}()
+        self.assertIsNone(repository.find({{{unknownIdentity}}}))

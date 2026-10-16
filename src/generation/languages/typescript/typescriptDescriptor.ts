@@ -81,6 +81,8 @@ export const typescriptDescriptor: LanguageDescriptor = {
     aggregateTests: "aggregate-tests",
     workflow: "workflow",
     workflowTests: "workflow-tests",
+    adapter: "adapter",
+    adapterTests: "adapter-tests",
     testRunner: "test-runner",
   },
   supportFiles: [

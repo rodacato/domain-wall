@@ -6,6 +6,7 @@ import type { LanguageDescriptor, TemplateLibrary } from "./languages/LanguageDe
 import { renderTemplate } from "./rendering/renderTemplate";
 import { buildAggregateTestPlan, buildValueObjectTestPlans } from "./test-plan/buildTestPlan";
 import { buildWorkflowTestPlan } from "./test-plan/buildWorkflowTestPlan";
+import { buildAdapterTestsView, buildAdapterView } from "./viewmodel/buildAdapterViews";
 import { buildAggregateView, stateLiteral } from "./viewmodel/buildAggregateView";
 import { buildEventsView } from "./viewmodel/buildEventsView";
 import { buildAggregateTestsView, buildValueObjectTestsView } from "./viewmodel/buildTestViews";
@@ -108,6 +109,29 @@ export function generateProject(
       ),
     );
     testedModules.push({ module: stem });
+
+    const adapterView = buildAdapterView(index, descriptor, aggregate);
+    const adapterTestsView = buildAdapterTestsView(index, descriptor, aggregate, plan, (state) =>
+      stateLiteral(descriptor, namingFor(descriptor.id), aggregate, state),
+    );
+    if (adapterView !== undefined && adapterTestsView !== undefined) {
+      const adapterStem = descriptor.moduleStem(adapterView.name);
+      addRendered(
+        descriptor.filePath(adapterStem, "source"),
+        "source",
+        { kind: "adapter", aggregate: aggregate.codeName },
+        descriptor.templates.adapter,
+        adapterView,
+      );
+      addRendered(
+        descriptor.filePath(adapterStem, "test"),
+        "test",
+        null,
+        descriptor.templates.adapterTests,
+        adapterTestsView,
+      );
+      testedModules.push({ module: adapterStem });
+    }
   }
 
   const workflowView = buildWorkflowView(index, descriptor);

@@ -1,3 +1,5 @@
+import { heroAggregate } from "../../domain/pack/heroAggregate";
+import type { PackIndex } from "../../domain/pack/PackIndex";
 import type { LookAtNote, NarrationFocus, Scene, SceneStep } from "../../domain/wall/Scene";
 import { conceptId, moduleId } from "./sceneIds";
 
@@ -6,7 +8,9 @@ function lookAt(note: LookAtNote): NarrationFocus {
 }
 
 /** Module 9: from layers that depend downwards to a domain at the centre that depends on nothing. */
-export function buildArchitectureScene(): Scene {
+export function buildArchitectureScene(index: PackIndex): Scene {
+  const aggregate = heroAggregate(index);
+  if (aggregate === undefined) throw new Error("the pack has no aggregate to adapt");
   const steps: SceneStep[] = [
     {
       id: "layers",
@@ -28,6 +32,20 @@ export function buildArchitectureScene(): Scene {
       dialogue: null,
       focus: lookAt("portsAdapters"),
       commands: [{ kind: "showArchitecture", view: "swap" }],
+    },
+    {
+      id: "adapter-code",
+      concept: conceptId("architecture.ports-adapters"),
+      dialogue: null,
+      focus: lookAt("adapterCode"),
+      commands: [
+        {
+          kind: "showCode",
+          level: "code",
+          unit: { kind: "adapter", aggregate: aggregate.codeName },
+          focus: `${aggregate.codeName}.adapter`,
+        },
+      ],
     },
     {
       id: "dependency-rule",

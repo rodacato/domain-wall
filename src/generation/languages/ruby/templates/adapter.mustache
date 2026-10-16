@@ -1,0 +1,20 @@
+# frozen_string_literal: true
+
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+require_relative "{{aggregateModule}}"
+
+⟦anchor {{anchor}}⟧
+class {{name}}
+  def initialize
+    @stored = {}
+  end
+
+  def find({{identityName}}) = @stored[{{identityName}}]
+
+  def save({{instance}})
+⟦anchor {{anchor}}.save⟧
+    @stored[{{instance}}.{{identityName}}] = {{instance}}
+⟦/anchor⟧
+  end
+end
+⟦/anchor⟧

@@ -152,11 +152,13 @@
       "workflowType": "Tipo",
       "workflowPort": "Puerto",
       "workflowStage": "Etapa",
-      "workflowStep": "Paso"
+      "workflowStep": "Paso",
+      "adapter": "Adaptador"
     },
     "anchor": {
       "factory": "Crea un {aggregate} ya válido",
-      "repository": "Cómo se guarda y se busca {aggregate}"
+      "repository": "Cómo se guarda y se busca {aggregate}",
+      "adapter": "Guarda {aggregate} en memoria"
     }
   },
   "aggregate": {
@@ -294,6 +296,13 @@
       "python": "`if isinstance(received, Err): return received`",
       "ruby": "`return received unless received.ok?`",
       "ruby-dry": "`return received unless received.success?`"
+    },
+    "adapterCode": {
+      "general": "El adaptador vive fuera del dominio e implementa el puerto del repositorio. Este guarda los agregados en memoria: perfecto para pruebas, y el dominio no nota la diferencia.",
+      "typescript": "Una clase que `implements` el puerto, así que el compilador revisa cada método contra él.",
+      "python": "Una clase simple con los mismos métodos que el Protocol: Python revisa la forma, no el nombre.",
+      "ruby": "Una clase simple con `find` y `save`: el duck typing es el único contrato.",
+      "ruby-dry": "Una clase simple con `find` y `save`: el duck typing es el único contrato."
     }
   },
   "pipeline": {
@@ -435,7 +444,8 @@
       "task": {
         "implementTheRule": "Falta la revisión de «{subject}» en {file}. Escríbela donde está el recuadro punteado.",
         "implementTheChange": "El cambio de negocio agrega la regla «{subject}», y falta su revisión en {file}. Escríbela donde está el recuadro punteado.",
-        "addPipelineStage": "El paso «{subject}» no está conectado al pipeline en {file}. Llama a la etapa con lo que devolvió la anterior y detente si falla."
+        "addPipelineStage": "El paso «{subject}» no está conectado al pipeline en {file}. Llama a la etapa con lo que devolvió la anterior y detente si falla.",
+        "implementRepositoryAdapter": "El adaptador en memoria de «{subject}» todavía no guarda nada en {file}. Escribe la línea que conserva el agregado bajo su identidad."
       },
       "answer": "Tu código",
       "reveal": "Ver la referencia",

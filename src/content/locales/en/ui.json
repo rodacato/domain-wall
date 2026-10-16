@@ -152,11 +152,13 @@
       "workflowType": "Type",
       "workflowPort": "Port",
       "workflowStage": "Stage",
-      "workflowStep": "Step"
+      "workflowStep": "Step",
+      "adapter": "Adapter"
     },
     "anchor": {
       "factory": "Creates a valid {aggregate}",
-      "repository": "How {aggregate} is stored and found"
+      "repository": "How {aggregate} is stored and found",
+      "adapter": "Stores {aggregate} in memory"
     }
   },
   "aggregate": {
@@ -294,6 +296,13 @@
       "python": "`if isinstance(received, Err): return received`",
       "ruby": "`return received unless received.ok?`",
       "ruby-dry": "`return received unless received.success?`"
+    },
+    "adapterCode": {
+      "general": "The adapter lives outside the domain and implements the repository port. This one keeps aggregates in memory: perfect for tests, and the domain cannot tell the difference.",
+      "typescript": "A class that `implements` the port, so the compiler checks every method against it.",
+      "python": "A plain class with the same methods as the Protocol: Python checks the shape, not the name.",
+      "ruby": "A plain class with `find` and `save`: duck typing is the only contract.",
+      "ruby-dry": "A plain class with `find` and `save`: duck typing is the only contract."
     }
   },
   "pipeline": {
@@ -435,7 +444,8 @@
       "task": {
         "implementTheRule": "The check for “{subject}” is missing in {file}. Write it where the dashed box is.",
         "implementTheChange": "The business change adds the rule “{subject}”, and its check is missing in {file}. Write it where the dashed box is.",
-        "addPipelineStage": "The step “{subject}” is not wired into the pipeline in {file}. Call the stage with what the previous one returned, and stop if it fails."
+        "addPipelineStage": "The step “{subject}” is not wired into the pipeline in {file}. Call the stage with what the previous one returned, and stop if it fails.",
+        "implementRepositoryAdapter": "The in-memory adapter for “{subject}” does not store anything yet in {file}. Write the line that keeps the aggregate under its identity."
       },
       "answer": "Your code",
       "reveal": "Show the reference",

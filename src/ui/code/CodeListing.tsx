@@ -27,6 +27,7 @@ const LEGEND_KINDS: readonly AnchorKind[] = [
   "invariant",
   "factory",
   "repository",
+  "adapter",
   "event",
   "valueObject",
   "workflow",
@@ -71,7 +72,7 @@ export function CodeListing({ session, file, language, focus }: CodeListingProps
     const parsed = parseAnchorRef(ref);
     const named = labelOfAnchor(session.index, ref)?.[locale];
     if (named !== undefined) return named;
-    if (parsed?.kind === "factory" || parsed?.kind === "repository") {
+    if (parsed?.kind === "factory" || parsed?.kind === "repository" || parsed?.kind === "adapter") {
       const aggregate =
         parsed.aggregate === null ? undefined : session.index.aggregates.get(parsed.aggregate);
       return t(`ui.code.anchor.${parsed.kind}`, {

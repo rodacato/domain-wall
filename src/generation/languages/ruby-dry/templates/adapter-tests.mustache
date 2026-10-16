@@ -1,0 +1,24 @@
+# frozen_string_literal: true
+
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+require "minitest"
+require_relative "{{aggregateModule}}"
+require_relative "{{module}}"
+require_relative "testing"
+require_relative "value_objects"
+
+class {{name}}Test < Minitest::Test
+  include Testing
+
+  def test_finds_the_{{instance}}_that_was_saved
+    repository = {{name}}.new
+    {{instance}} = {{aggregate}}.start({{{start}}})
+    repository.save({{instance}})
+    assert_same {{instance}}, repository.find({{instance}}.{{identityName}})
+  end
+
+  def test_finds_nothing_for_an_identity_it_never_saw
+    repository = {{name}}.new
+    assert_nil repository.find({{{unknownIdentity}}})
+  end
+end

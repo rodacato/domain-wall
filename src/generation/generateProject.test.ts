@@ -15,6 +15,19 @@ interface LanguageExpectations {
   readonly ruleError: string;
 }
 
+const AGGREGATES = ["invoice", "listing", "order", "shipment"] as const;
+
+/** The files of the in-memory repository of each aggregate, named the way each language names its files. */
+const adapterFiles = (
+  source: (stem: string) => string,
+  test: (stem: string) => string,
+  separator: "-" | "_",
+): readonly string[] =>
+  AGGREGATES.flatMap((aggregate) => {
+    const stem = `in${separator}memory${separator}${aggregate}${separator}repository`;
+    return [source(stem), test(stem)];
+  });
+
 const EXPECTATIONS: readonly LanguageExpectations[] = [
   {
     language: "typescript",
@@ -35,6 +48,11 @@ const EXPECTATIONS: readonly LanguageExpectations[] = [
       "testing.ts",
       "value-objects.test.ts",
       "value-objects.ts",
+      ...adapterFiles(
+        (stem) => `${stem}.ts`,
+        (stem) => `${stem}.test.ts`,
+        "-",
+      ),
     ],
     aggregateFile: "order.ts",
     ruleError: 'code: "OrderMustHaveLines"',
@@ -58,6 +76,11 @@ const EXPECTATIONS: readonly LanguageExpectations[] = [
       "test_value_objects.py",
       "testing.py",
       "value_objects.py",
+      ...adapterFiles(
+        (stem) => `${stem}.py`,
+        (stem) => `test_${stem}.py`,
+        "_",
+      ),
     ],
     aggregateFile: "order.py",
     ruleError: 'code="OrderMustHaveLines"',
@@ -81,6 +104,11 @@ const EXPECTATIONS: readonly LanguageExpectations[] = [
       "testing.rb",
       "value_objects.rb",
       "value_objects_test.rb",
+      ...adapterFiles(
+        (stem) => `${stem}.rb`,
+        (stem) => `${stem}_test.rb`,
+        "_",
+      ),
     ],
     aggregateFile: "order.rb",
     ruleError: "reject(:order_must_have_lines)",
@@ -104,6 +132,11 @@ const EXPECTATIONS: readonly LanguageExpectations[] = [
       "types.rb",
       "value_objects.rb",
       "value_objects_test.rb",
+      ...adapterFiles(
+        (stem) => `${stem}.rb`,
+        (stem) => `${stem}_test.rb`,
+        "_",
+      ),
     ],
     aggregateFile: "order.rb",
     ruleError: "reject(:order_must_have_lines)",

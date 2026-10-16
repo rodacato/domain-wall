@@ -3,6 +3,7 @@ export type CodeUnit =
   | { readonly kind: "valueObjects" }
   | { readonly kind: "events" }
   | { readonly kind: "workflow" }
+  | { readonly kind: "adapter"; readonly aggregate: string }
   | { readonly kind: "aggregate"; readonly aggregate: string };
 
 /** How close the camera is: hidden, the opened aggregate drawn as notes, or its generated code. */
@@ -29,5 +30,6 @@ export const HIDDEN_CODE_STAGE: CodeStageState = {
 export function sameCodeUnit(a: CodeUnit | null, b: CodeUnit | null): boolean {
   if (a === null || b === null) return a === b;
   if (a.kind === "aggregate" && b.kind === "aggregate") return a.aggregate === b.aggregate;
+  if (a.kind === "adapter" && b.kind === "adapter") return a.aggregate === b.aggregate;
   return a.kind === b.kind;
 }

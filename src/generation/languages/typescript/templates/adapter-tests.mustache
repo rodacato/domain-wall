@@ -1,0 +1,22 @@
+/// <reference lib="es2022" />
+// Generated from the "{{packId}}" domain pack. Do not edit by hand.
+import { describe, expect, it, mustSucceed } from "./testing";
+import { {{aggregate}} } from "./{{aggregateModule}}";
+import { {{name}} } from "./{{module}}";
+{{#hasValueObjectImports}}
+import { {{#valueObjectImports}}{{name}}{{^last}}, {{/last}}{{/valueObjectImports}} } from "./value-objects";
+{{/hasValueObjectImports}}
+
+describe("{{name}}", () => {
+  it("finds the {{instance}} that was saved", () => {
+    const repository = new {{name}}();
+    const {{instance}} = {{aggregate}}.start({{{start}}});
+    repository.save({{instance}});
+    expect(repository.find({{instance}}.{{identityName}}) === {{instance}}).toEqual(true);
+  });
+
+  it("finds nothing for an identity it never saw", () => {
+    const repository = new {{name}}();
+    expect(repository.find({{{unknownIdentity}}})).toEqual(undefined);
+  });
+});

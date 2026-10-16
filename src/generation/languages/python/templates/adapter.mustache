@@ -1,0 +1,22 @@
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+from __future__ import annotations
+
+from {{aggregateModule}} import {{aggregate}}
+{{#hasValueObjectImports}}
+from value_objects import {{#valueObjectImports}}{{name}}{{^last}}, {{/last}}{{/valueObjectImports}}
+{{/hasValueObjectImports}}
+
+
+⟦anchor {{anchor}}⟧
+class {{name}}:
+    def __init__(self) -> None:
+        self._stored: dict[{{{identityType}}}, {{aggregate}}] = {}
+
+    def find(self, {{identityName}}: {{{identityType}}}) -> {{aggregate}} | None:
+        return self._stored.get({{identityName}})
+
+    def save(self, {{instance}}: {{aggregate}}) -> None:
+⟦anchor {{anchor}}.save⟧
+        self._stored[{{instance}}.{{identityName}}] = {{instance}}
+⟦/anchor⟧
+⟦/anchor⟧

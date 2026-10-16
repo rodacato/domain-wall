@@ -1,0 +1,22 @@
+/// <reference lib="es2022" />
+// Generated from the "{{packId}}" domain pack. Do not edit by hand.
+import type { {{aggregate}}, {{repositoryType}} } from "./{{aggregateModule}}";
+{{#hasValueObjectImports}}
+import type { {{#valueObjectImports}}{{name}}{{^last}}, {{/last}}{{/valueObjectImports}} } from "./value-objects";
+{{/hasValueObjectImports}}
+
+⟦anchor {{anchor}}⟧
+export class {{name}} implements {{repositoryType}} {
+  private readonly stored = new Map<{{{identityType}}}, {{aggregate}}>();
+
+  find({{identityName}}: {{{identityType}}}): {{aggregate}} | undefined {
+    return this.stored.get({{identityName}});
+  }
+
+  save({{instance}}: {{aggregate}}): void {
+⟦anchor {{anchor}}.save⟧
+    this.stored.set({{instance}}.{{identityName}}, {{instance}});
+⟦/anchor⟧
+  }
+}
+⟦/anchor⟧

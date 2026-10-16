@@ -124,6 +124,8 @@ export interface LanguageDescriptor {
     readonly aggregateTests: string;
     readonly workflow: string;
     readonly workflowTests: string;
+    readonly adapter: string;
+    readonly adapterTests: string;
     readonly testRunner: string;
   };
   readonly supportFiles: readonly SupportFile[];

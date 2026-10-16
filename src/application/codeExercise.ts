@@ -120,6 +120,17 @@ function sourceFor(
       }
     }
   }
+  if (kind === "implementRepositoryAdapter") {
+    const aggregate = heroAggregate(index);
+    return aggregate === undefined
+      ? undefined
+      : {
+          index,
+          unit: { kind: "adapter", aggregate: aggregate.codeName },
+          anchors: [`${aggregate.codeName}.adapter.save`],
+          errorCode: null,
+        };
+  }
   if (kind === "addPipelineStage") {
     const stage = index.pack.workflow.stages[1];
     return stage === undefined

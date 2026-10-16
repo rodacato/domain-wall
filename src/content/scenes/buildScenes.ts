@@ -54,7 +54,7 @@ export function buildScenes(index: PackIndex): readonly Scene[] {
     buildSubdomainsScene(index),
     buildTacticalScene(index),
     buildFunctionalScene(index),
-    buildArchitectureScene(),
+    buildArchitectureScene(index),
     buildEvolutionScene(index),
   ].map(endingWithExercise);
 }
