@@ -6,8 +6,8 @@
 
 **Play it in your browser: [rodacato.github.io/domain-wall](https://rodacato.github.io/domain-wall/)**
 
-**Domain Wall** (working name _Muro_, Spanish for _wall_) is an interactive Domain-Driven Design
-course that feels like a live workshop. Everything happens on an animated Event Storming wall: the
+**Domain Wall** is an interactive Domain-Driven Design course, a guided workshop you play on your
+own. Everything happens on an animated Event Storming wall: the
 domain is discovered, split into bounded contexts and finally turned into code.
 
 At the start you choose a programming language and an industry, and the whole course adapts:
