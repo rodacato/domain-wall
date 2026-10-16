@@ -1,9 +1,8 @@
 import { AnimatePresence, motion } from "motion/react";
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import type { CourseSession } from "../../application/CourseSession";
 import type { GenerationServices } from "../../application/generationServices";
 import type { GeneratedPack, PackLibrary } from "../../application/packLibrary";
-import { GenerateBusiness } from "../generation/GenerateBusiness";
 import {
   PROGRAMMING_LANGUAGES,
   type ProgrammingLanguageId,
@@ -11,6 +10,7 @@ import {
 import { SUPPORTED_LOCALES, type LocaleCode } from "../../domain/locale/LocaleRegistry";
 import type { LearnerPreferences, PackSelection } from "../../domain/progress/LearnerPreferences";
 import { useI18n } from "../i18n/I18n";
+import { DescribeDialog } from "./DescribeDialog";
 import "./onboarding.css";
 
 const LOCALE_NAMES: Readonly<Record<LocaleCode, string>> = {
@@ -52,6 +52,7 @@ export function Onboarding({
   const { setLocale, t } = useI18n();
   const [choice, setChoice] = useState(initial);
   const [describing, setDescribing] = useState(false);
+  const describeButton = useRef<HTMLButtonElement>(null);
   const [previewed, setPreviewed] = useState<ProgrammingLanguageId>(initial.programmingLanguage);
   const { locale } = choice;
 
@@ -178,10 +179,11 @@ export function Onboarding({
                 </button>
               ))}
               <button
+                ref={describeButton}
                 className="pick pick--hotspot"
-                aria-expanded={describing}
+                aria-haspopup="dialog"
                 onClick={() => {
-                  setDescribing(!describing);
+                  setDescribing(true);
                 }}
               >
                 {t("ui.onboarding.industry.describe")}
@@ -199,18 +201,18 @@ export function Onboarding({
         </div>
 
         {describing && (
-          <section className="cover__describe">
-            <h2>{t("ui.onboarding.industry.describe")}</h2>
-            <p className="cover__hint">{t("ui.onboarding.industry.describeHint")}</p>
-            <GenerateBusiness
-              services={generation}
-              onReady={(entry) => {
-                onGenerated(entry);
-                setChoice({ ...choice, pack: { kind: "generated", packKey: entry.key } });
-                setDescribing(false);
-              }}
-            />
-          </section>
+          <DescribeDialog
+            services={generation}
+            onReady={(entry) => {
+              onGenerated(entry);
+              setChoice({ ...choice, pack: { kind: "generated", packKey: entry.key } });
+              setDescribing(false);
+            }}
+            onClose={() => {
+              setDescribing(false);
+              describeButton.current?.focus();
+            }}
+          />
         )}
 
         <button

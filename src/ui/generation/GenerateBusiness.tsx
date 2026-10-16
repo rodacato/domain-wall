@@ -2,6 +2,8 @@ import { useState, type ReactNode } from "react";
 import type { GenerationServices } from "../../application/generationServices";
 import {
   DEFAULT_ANTHROPIC_MODEL,
+  DEFAULT_OPENAI_BASE_URL,
+  DEFAULT_OPENAI_MODEL,
   isUsable,
   settingsFor,
   type LlmProviderKind,
@@ -21,7 +23,7 @@ interface GenerateBusinessProps {
 }
 
 const MINIMUM_DESCRIPTION = 20;
-const PROVIDERS: readonly LlmProviderKind[] = ["simulated", "host", "anthropic", "openai"];
+const PROVIDERS: readonly LlmProviderKind[] = ["simulated", "openai", "anthropic", "host"];
 
 /** Describe a business and watch it being generated, checked and, if need be, sent back. */
 export function GenerateBusiness({ services, onReady }: GenerateBusinessProps): ReactNode {
@@ -51,7 +53,7 @@ export function GenerateBusiness({ services, onReady }: GenerateBusinessProps): 
         />
       </label>
       <div className="generate__settings">
-        <label className="generate__field">
+        <label className="generate__field generate__field--wide">
           <span>{t("ui.generate.provider.label")}</span>
           <select
             value={settings.provider}
@@ -70,6 +72,19 @@ export function GenerateBusiness({ services, onReady }: GenerateBusinessProps): 
             ))}
           </select>
         </label>
+        {settings.provider === "openai" && (
+          <label className="generate__field generate__field--wide">
+            <span>{t("ui.generate.baseUrl")}</span>
+            <input
+              type="url"
+              value={settings.baseUrl}
+              placeholder={DEFAULT_OPENAI_BASE_URL}
+              onChange={(event) => {
+                setSettings({ ...settings, baseUrl: event.target.value });
+              }}
+            />
+          </label>
+        )}
         {(settings.provider === "anthropic" || settings.provider === "openai") && (
           <>
             <label className="generate__field">
@@ -87,7 +102,9 @@ export function GenerateBusiness({ services, onReady }: GenerateBusinessProps): 
               <span>{t("ui.generate.model")}</span>
               <input
                 value={settings.model}
-                placeholder={DEFAULT_ANTHROPIC_MODEL}
+                placeholder={
+                  settings.provider === "openai" ? DEFAULT_OPENAI_MODEL : DEFAULT_ANTHROPIC_MODEL
+                }
                 onChange={(event) => {
                   setSettings({ ...settings, model: event.target.value });
                 }}
@@ -95,23 +112,16 @@ export function GenerateBusiness({ services, onReady }: GenerateBusinessProps): 
             </label>
           </>
         )}
-        {settings.provider === "openai" && (
-          <label className="generate__field">
-            <span>{t("ui.generate.baseUrl")}</span>
-            <input
-              value={settings.baseUrl}
-              onChange={(event) => {
-                setSettings({ ...settings, baseUrl: event.target.value });
-              }}
-            />
-          </label>
-        )}
       </div>
       <p className="generate__note">
-        {t(settings.provider === "simulated" ? "ui.generate.simulatedNote" : "ui.generate.keyNote")}
+        {settings.provider === "simulated"
+          ? t("ui.generate.simulatedNote")
+          : settings.provider === "openai"
+            ? t("ui.generate.compatibleNote", { origin: window.location.origin })
+            : t("ui.generate.keyNote")}
       </p>
       <button
-        className="player__button player__button--primary"
+        className="generate__primary"
         disabled={!usable || !longEnough}
         onClick={() => {
           generation.start(description.trim(), settings);
@@ -200,7 +210,7 @@ function Progress({
       ))}
 
       {state.status === "running" && (
-        <button className="player__button" onClick={generation.cancel}>
+        <button className="generate__secondary" onClick={generation.cancel}>
           {t("ui.generate.cancel")}
         </button>
       )}
@@ -212,7 +222,7 @@ function Progress({
             })}
           </p>
           <button
-            className="player__button player__button--primary"
+            className="generate__primary"
             onClick={() => {
               onReady(state.entry);
             }}
@@ -230,7 +240,12 @@ function Progress({
                 ? t("ui.generate.aborted")
                 : t("ui.generate.exhausted", { count: state.failure.issues.length })}
           </p>
-          <button className="player__button" onClick={generation.reset}>
+          {state.failure.kind === "unavailable" && (
+            <p className="generate__note">
+              {t("ui.generate.unavailableHint", { origin: window.location.origin })}
+            </p>
+          )}
+          <button className="generate__secondary" onClick={generation.reset}>
             {t("ui.generate.again")}
           </button>
         </>

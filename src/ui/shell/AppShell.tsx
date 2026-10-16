@@ -41,6 +41,10 @@ export function AppShell({
   const conceptInView = player.step?.concept ?? null;
   const [touring, setTouring] = useState(() => opensByItself(window.location.search, tourSeen()));
   const tourButton = useRef<HTMLButtonElement>(null);
+  const atLastStep = player.stepIndex >= player.stepCount - 1;
+  const nextModule = session.syllabus.modules.find(
+    (candidate) => candidate.id === player.nextScene?.module,
+  );
 
   useEffect(() => {
     document.documentElement.lang = locale;
@@ -221,11 +225,16 @@ export function AppShell({
           {player.demo ? `⏸ ${t("ui.player.stopDemo")}` : `▶ ${t("ui.player.demo")}`}
         </button>
         <button
-          className="player__button player__button--primary"
+          className={`player__button player__button--primary ${atLastStep && nextModule !== undefined ? "player__button--next-module" : ""}`}
           onClick={player.next}
-          disabled={player.stepIndex >= player.stepCount - 1}
+          disabled={atLastStep && nextModule === undefined}
         >
-          {t("ui.player.next")} →
+          {atLastStep && nextModule !== undefined
+            ? t("ui.player.nextModule", {
+                title: t(`course.modules.${nextModule.id}.title`),
+              })
+            : t("ui.player.next")}{" "}
+          →
         </button>
       </footer>
       {touring && (

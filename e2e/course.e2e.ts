@@ -95,7 +95,7 @@ test("describing a business generates one, checks it, sends a pass back and then
 
   await page.getByRole("button", { name: /Describe your business/ }).click();
   await page
-    .getByLabel("Describe your business")
+    .getByLabel("What does it do, and for whom?")
     .fill("A neighborhood clinic where people book visits");
   await page.getByRole("button", { name: "Generate", exact: true }).click();
 
@@ -105,4 +105,42 @@ test("describing a business generates one, checks it, sends a pass back and then
   await page.getByRole("button", { name: "Start the workshop" }).click();
 
   await expect(page.getByRole("button", { name: "Neighborhood Clinic" })).toBeVisible();
+});
+
+test("the last step of a module leads to the next one, and the last module ends there", async ({
+  page,
+}) => {
+  await finishOnboarding(page);
+  const rail = page.getByRole("navigation", { name: "Course" });
+  await goToLastStep(page);
+
+  await page.getByRole("button", { name: "Next module: Ubiquitous language →" }).click();
+  await expect(rail.getByRole("button", { name: /Ubiquitous language/ })).toHaveAttribute(
+    "aria-current",
+    "true",
+  );
+  await expect(page.getByText(/^Step 1 of \d+$/)).toBeVisible();
+
+  await openModule(page, "Evolution");
+  await goToLastStep(page);
+  await expect(page.getByRole("button", { name: /^Next step/ })).toBeDisabled();
+});
+
+test("describing a business opens on a card that Escape closes, back on the cover", async ({
+  page,
+}) => {
+  await page.goto("/?tour=off");
+  const describe = page.getByRole("button", { name: /Describe your business/ });
+  await describe.click();
+
+  const dialog = page.getByRole("dialog", { name: "Describe your business" });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByLabel("What does it do, and for whom?")).toBeFocused();
+  await dialog.getByLabel("Language model").selectOption("openai");
+  await expect(dialog.getByLabel(/Server address/)).toBeVisible();
+  await expect(dialog.getByText(/has to allow http:\/\/localhost:\d+ \(CORS\)/)).toBeVisible();
+
+  await page.keyboard.press("Escape");
+  await expect(dialog).toHaveCount(0);
+  await expect(describe).toBeFocused();
 });

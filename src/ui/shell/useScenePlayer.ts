@@ -10,6 +10,8 @@ export interface ScenePlayer {
   readonly stepIndex: number;
   readonly stepCount: number;
   readonly wall: WallState | undefined;
+  /** The scene after this one; `next` moves there from the last step. */
+  readonly nextScene: Scene | undefined;
   /** Whether the course is playing itself, one step after another. */
   readonly demo: boolean;
   readonly toggleDemo: () => void;
@@ -29,7 +31,9 @@ export function useScenePlayer(scenes: readonly Scene[]): ScenePlayer {
   });
   const [demo, setDemo] = useState(false);
 
-  const scene = scenes.find((candidate) => candidate.id === position.sceneId);
+  const sceneIndex = scenes.findIndex((candidate) => candidate.id === position.sceneId);
+  const scene = scenes[sceneIndex];
+  const nextScene = sceneIndex === -1 ? undefined : scenes[sceneIndex + 1];
   const stepCount = scene?.steps.length ?? 0;
   const { stepIndex } = position;
   const wall = useMemo(
@@ -48,8 +52,13 @@ export function useScenePlayer(scenes: readonly Scene[]): ScenePlayer {
     [stepCount],
   );
   const next = useCallback(() => {
-    goTo(stepIndex + 1);
-  }, [goTo, stepIndex]);
+    if (stepIndex < stepCount - 1 || nextScene === undefined) {
+      goTo(stepIndex + 1);
+      return;
+    }
+    setDemo(false);
+    setPosition({ sceneId: nextScene.id, stepIndex: 0 });
+  }, [goTo, stepIndex, stepCount, nextScene]);
   const previous = useCallback(() => {
     goTo(stepIndex - 1);
   }, [goTo, stepIndex]);
@@ -103,6 +112,7 @@ export function useScenePlayer(scenes: readonly Scene[]): ScenePlayer {
     stepIndex,
     stepCount,
     wall,
+    nextScene,
     demo,
     toggleDemo,
     selectScene,

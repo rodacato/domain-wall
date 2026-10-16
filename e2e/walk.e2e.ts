@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import { expect, finishOnboarding, PACKS, test } from "./support";
+import { atLastStep, expect, finishOnboarding, PACKS, test } from "./support";
 
 interface Words {
   readonly course: string;
@@ -25,7 +25,7 @@ async function walkEveryStep(page: Page, words: Words): Promise<number> {
       await expect(page.locator(".player__position")).toHaveText(words.position(step));
       await expect(page.locator(".narration")).not.toBeEmpty();
       visited += 1;
-      if (!(await next.isEnabled())) break;
+      if (await atLastStep(page)) break;
       await next.click();
     }
     await expect(page.locator(".exercise__title")).toBeVisible();

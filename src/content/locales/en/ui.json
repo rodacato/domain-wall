@@ -12,7 +12,8 @@
     "restart": "Start over",
     "demo": "Demo",
     "stopDemo": "Pause",
-    "demoHint": "Let the course play itself, step by step"
+    "demoHint": "Let the course play itself, step by step",
+    "nextModule": "Next module: {title}"
   },
   "narration": {
     "functionalPerspective": "Functional perspective",
@@ -140,7 +141,7 @@
     },
     "player": {
       "title": "Moving through the course",
-      "body": "Go back and forward with these buttons or with the ← → keys. Demo moves on by itself every 7 seconds. Every module ends with an exercise: checking it tells you what is right, what is not and why."
+      "body": "Go back and forward with these buttons or with the ← → keys; from the last step of a module, Next takes you to the following one. Demo moves on by itself every 7 seconds. Every module ends with an exercise: checking it tells you what is right, what is not and why."
     },
     "header": {
       "title": "Your choices",
@@ -540,7 +541,7 @@
     "dark": "Dark"
   },
   "generate": {
-    "description": "Describe your business",
+    "description": "What does it do, and for whom?",
     "placeholder": "A small bakery in Puebla that sells bread by subscription and delivers every morning…",
     "tooShort": "Write at least {count} characters so the model has something to work with.",
     "provider": {
@@ -548,11 +549,11 @@
       "simulated": "Simulation (no key needed)",
       "host": "The host application",
       "anthropic": "Anthropic",
-      "openai": "OpenAI-compatible"
+      "openai": "Any OpenAI-compatible API (address + key)"
     },
     "apiKey": "API key",
     "model": "Model",
-    "baseUrl": "Server address",
+    "baseUrl": "Server address (ending in /v1)",
     "keyNote": "The key stays in this browser and goes only to the provider you chose.",
     "simulatedNote": "The simulation plays a prepared business through the same checks, including one answer that gets sent back, so you can see how it works.",
     "start": "Generate",
@@ -599,6 +600,9 @@
     "sentBack": "Sent back to “{pass}”: {count} problems",
     "unavailable": "The model could not be reached: {message}",
     "aborted": "You cancelled the generation.",
-    "exhausted": "The model could not produce a valid business ({count} problems remain)."
+    "exhausted": "The model could not produce a valid business ({count} problems remain).",
+    "close": "Close",
+    "compatibleNote": "Works with any server that speaks OpenAI's chat completions with a JSON schema: OpenAI itself or a proxy of your own. A server on another domain has to allow {origin} (CORS). The key stays in this browser and only travels to that address.",
+    "unavailableHint": "Check the address and the key. If the server is on another domain, it has to allow {origin} (CORS); the browser only says “Failed to fetch” when it does not."
   }
 }

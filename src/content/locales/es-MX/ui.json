@@ -12,7 +12,8 @@
     "restart": "Volver a empezar",
     "demo": "Demo",
     "stopDemo": "Pausar",
-    "demoHint": "Deja que el curso avance solo, paso a paso"
+    "demoHint": "Deja que el curso avance solo, paso a paso",
+    "nextModule": "Siguiente módulo: {title}"
   },
   "narration": {
     "functionalPerspective": "Perspectiva funcional",
@@ -140,7 +141,7 @@
     },
     "player": {
       "title": "Cómo avanzar",
-      "body": "Avanza y retrocede con estos botones o con las teclas ← →. Demo avanza solo cada 7 segundos. Cada módulo termina con un ejercicio: al revisarlo te dice qué está bien, qué no y por qué."
+      "body": "Avanza y retrocede con estos botones o con las teclas ← →; desde el último paso de un módulo, Siguiente te lleva al que sigue. Demo avanza solo cada 7 segundos. Cada módulo termina con un ejercicio: al revisarlo te dice qué está bien, qué no y por qué."
     },
     "header": {
       "title": "Tus elecciones",
@@ -540,7 +541,7 @@
     "dark": "Oscuro"
   },
   "generate": {
-    "description": "Describe tu negocio",
+    "description": "¿Qué hace y para quién?",
     "placeholder": "Una panadería pequeña en Puebla que vende pan por suscripción y reparte cada mañana…",
     "tooShort": "Escribe al menos {count} caracteres para que el modelo tenga con qué trabajar.",
     "provider": {
@@ -548,11 +549,11 @@
       "simulated": "Simulación (sin llave)",
       "host": "La aplicación anfitriona",
       "anthropic": "Anthropic",
-      "openai": "Compatible con OpenAI"
+      "openai": "Cualquier API compatible con OpenAI (dirección + llave)"
     },
     "apiKey": "Llave de la API",
     "model": "Modelo",
-    "baseUrl": "Dirección del servidor",
+    "baseUrl": "Dirección del servidor (termina en /v1)",
     "keyNote": "La llave se queda en este navegador y solo viaja al proveedor que elegiste.",
     "simulatedNote": "La simulación reproduce un negocio preparado por las mismas revisiones, incluida una respuesta que se devuelve, para que veas cómo funciona.",
     "start": "Generar",
@@ -599,6 +600,9 @@
     "sentBack": "Devuelto a «{pass}»: {count} problemas",
     "unavailable": "No se pudo contactar al modelo: {message}",
     "aborted": "Cancelaste la generación.",
-    "exhausted": "El modelo no pudo producir un negocio válido (quedan {count} problemas)."
+    "exhausted": "El modelo no pudo producir un negocio válido (quedan {count} problemas).",
+    "close": "Cerrar",
+    "compatibleNote": "Funciona con cualquier servidor que hable chat completions de OpenAI con un esquema JSON: OpenAI mismo o un proxy tuyo. Si el servidor está en otro dominio, tiene que permitir {origin} (CORS). La llave se queda en este navegador y solo viaja a esa dirección.",
+    "unavailableHint": "Revisa la dirección y la llave. Si el servidor está en otro dominio, tiene que permitir {origin} (CORS); cuando no lo hace, el navegador solo dice «Failed to fetch»."
   }
 }

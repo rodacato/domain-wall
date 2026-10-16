@@ -1,12 +1,6 @@
-import {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type KeyboardEvent,
-  type ReactNode,
-} from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { useI18n } from "../i18n/I18n";
+import { dialogKeys } from "../shared/dialogKeys";
 import "./tour.css";
 
 const STOPS = [
@@ -80,25 +74,7 @@ export function Tour({ onClose }: { readonly onClose: () => void }): ReactNode {
     primary.current?.focus();
   }, [index]);
 
-  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
-    if (event.key === "Escape") {
-      event.preventDefault();
-      onClose();
-      return;
-    }
-    if (event.key !== "Tab" || card.current === null) return;
-    const focusable = [...card.current.querySelectorAll<HTMLElement>("button")];
-    const first = focusable[0];
-    const final = focusable[focusable.length - 1];
-    if (first === undefined || final === undefined) return;
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      final.focus();
-    } else if (!event.shiftKey && document.activeElement === final) {
-      event.preventDefault();
-      first.focus();
-    }
-  };
+  const onKeyDown = dialogKeys(onClose);
 
   const position = box === null ? null : cardPosition(box, cardHeight);
 
