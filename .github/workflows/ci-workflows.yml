@@ -3,13 +3,13 @@ name: CI · Workflows
 on:
   pull_request:
     paths:
-      - '.github/workflows/**'
-      - '.github/actions/**'
+      - ".github/workflows/**"
+      - ".github/actions/**"
   push:
     branches: [main]
     paths:
-      - '.github/workflows/**'
-      - '.github/actions/**'
+      - ".github/workflows/**"
+      - ".github/actions/**"
   workflow_dispatch:
 
 permissions:
