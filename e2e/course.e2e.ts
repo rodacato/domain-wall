@@ -26,13 +26,17 @@ async function goToLastStep(page: Page): Promise<void> {
   while (await next.isEnabled()) await next.click();
 }
 
-test("a first visit asks three questions and then plays the course", async ({ page }) => {
-  await finishOnboarding(page);
+test(
+  "a first visit asks three questions and then plays the course",
+  { tag: "@smoke" },
+  async ({ page }) => {
+    await finishOnboarding(page);
 
-  await expect(page.getByRole("heading", { name: "Cost of change" })).toBeVisible();
-  await page.getByRole("button", { name: /^Next step/ }).click();
-  await expect(page.getByText("Step 2 of")).toBeVisible();
-});
+    await expect(page.getByRole("heading", { name: "Cost of change" })).toBeVisible();
+    await page.getByRole("button", { name: /^Next step/ }).click();
+    await expect(page.getByText("Step 2 of")).toBeVisible();
+  },
+);
 
 test("changing the language keeps the progress and translates the course", async ({ page }) => {
   await finishOnboarding(page);
