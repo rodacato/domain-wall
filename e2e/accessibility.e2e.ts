@@ -11,9 +11,7 @@ async function violations(page: Page): Promise<string[]> {
 
 async function onboard(page: Page, path = "/"): Promise<void> {
   await page.goto(path);
-  await page.getByRole("button", { name: "Next" }).click();
-  await page.getByRole("button", { name: "Next" }).click();
-  await page.getByRole("button", { name: "Start the course" }).click();
+  await page.getByRole("button", { name: "Start the workshop" }).click();
   await expect(page.getByRole("navigation", { name: "Course" })).toBeVisible();
 }
 

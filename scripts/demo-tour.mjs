@@ -5,12 +5,8 @@ export default async function tour(page) {
   const pause = (ms) => page.waitForTimeout(ms);
 
   await page.getByRole("heading", { name: /language should the course speak/i }).waitFor();
-  await pause(1500);
-  await page.getByRole("button", { name: "Next" }).click();
-  await pause(1200);
-  await page.getByRole("button", { name: "Next" }).click();
-  await pause(1500);
-  await page.getByRole("button", { name: "Start the course" }).click();
+  await pause(4000);
+  await page.getByRole("button", { name: "Start the workshop" }).click();
   await page.getByRole("navigation", { name: "Course" }).waitFor();
   await pause(2000);
   await page.getByRole("button", { name: /Demo/ }).click();

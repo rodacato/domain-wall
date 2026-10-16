@@ -118,26 +118,29 @@
     "modeling": "Today we model"
   },
   "onboarding": {
-    "step": "Step {current} of {total}",
+    "cover": {
+      "title": "From the business's own words to the rules in code.",
+      "pitch": "You listen to the people who know the business, put notes on the wall, draw boundaries and watch each rule end up protected in your language.",
+      "whoTitle": "Who it is for",
+      "who": "For people who already write code in one of these languages and want to model with DDD. No DDD needed. It is a guided workshop: you go at your own pace and nobody else is in the room.",
+      "startKicker": "Event",
+      "later": "You can change all of this later"
+    },
     "language": {
-      "title": "Which language should the course speak?",
-      "hint": "Everything changes at once: explanations, dialogues and the notes on the wall."
+      "title": "Which language should the course speak?"
     },
     "programmingLanguage": {
       "title": "Which language do you write code in?",
-      "hint": "Move over a card to see the same idea written in each language. The course adapts to the one you pick; it is not a comparison."
+      "hint": "Move over a note to see the same idea in each language. The course adapts to the one you pick; it is not a comparison."
     },
     "industry": {
       "title": "Which business do we learn on?",
-      "hint": "The course is the same for every business; only the domain changes.",
       "defaultBadge": "Hand-polished",
       "describe": "Describe your business",
-      "describeHint": "A domain generated for you and validated before use.",
+      "describeHint": "We generate a domain for you and, before it is used, check its structure and its coherence. Nobody from your industry reviews it.",
       "generatedBadge": "Generated for you"
     },
-    "back": "Back",
-    "next": "Next",
-    "start": "Start the course"
+    "start": "Start the workshop"
   },
   "code": {
     "unavailable": "The code for this step could not be generated.",
