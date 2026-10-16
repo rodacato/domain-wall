@@ -18,6 +18,8 @@ export interface ClassifyChallenge {
   readonly groups: readonly ExerciseItem[];
   /** The group of each item, by id. */
   readonly solution: Readonly<Record<string, string>>;
+  /** Why each item belongs where it does, shown once the learner has checked. */
+  readonly reasons: Readonly<Record<string, ExerciseText>>;
 }
 
 /** Put the items in the order they happen. */
@@ -54,4 +56,16 @@ export function checkClassification(
 export function checkOrder(challenge: OrderChallenge, order: readonly string[]): Verdict {
   const wrong = challenge.solution.filter((id, position) => order[position] !== id);
   return { correct: wrong.length === 0, wrong };
+}
+
+/** Which way a misplaced item has to move to reach its place; null when it is already there. */
+export function directionToPlace(
+  challenge: OrderChallenge,
+  order: readonly string[],
+  id: string,
+): "up" | "down" | null {
+  const current = order.indexOf(id);
+  const target = challenge.solution.indexOf(id);
+  if (current === target) return null;
+  return target < current ? "up" : "down";
 }

@@ -6,6 +6,7 @@ import { loadDefaultPack } from "../pack/packFixtures";
 import {
   checkClassification,
   checkOrder,
+  directionToPlace,
   type ClassifyChallenge,
   type OrderChallenge,
 } from "./Exercise";
@@ -66,6 +67,22 @@ describe("deriving exercises from a pack", () => {
       }
     },
   );
+
+  it.each(packDirectories().map((directory) => [directory] as const))(
+    "gives every item of every classification in %s a reason",
+    (directory) => {
+      const loaded = loadPackDirectory(directory);
+      if (!loaded.ok) throw new Error(`${directory} does not parse`);
+      const presetIndex = buildPackIndex(loaded.value);
+
+      for (const kind of NO_CODE_KINDS) {
+        const challenge = deriveExercise(presetIndex, kind)?.challenge;
+        if (challenge?.type !== "classify") continue;
+        const missing = challenge.items.filter((item) => challenge.reasons[item.id] === undefined);
+        expect(missing, `${directory} ${kind}`).toEqual([]);
+      }
+    },
+  );
 });
 
 describe("checking answers", () => {
@@ -77,6 +94,7 @@ describe("checking answers", () => {
     ],
     groups: [],
     solution: { a: "x", b: "y" },
+    reasons: {},
   };
   const order: OrderChallenge = {
     type: "order",
@@ -99,6 +117,14 @@ describe("checking answers", () => {
       wrong: ["two", "three"],
     });
     expect(checkOrder(order, ["one", "two", "three"]).correct).toBe(true);
+  });
+
+  it("says which way a misplaced item has to move", () => {
+    const answer = ["three", "one", "two"];
+
+    expect(directionToPlace(order, answer, "three")).toBe("down");
+    expect(directionToPlace(order, answer, "one")).toBe("up");
+    expect(directionToPlace(order, ["one", "two", "three"], "two")).toBeNull();
   });
 });
 

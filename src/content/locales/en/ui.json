@@ -415,10 +415,29 @@
       "tested": "Tests passed"
     },
     "check": "Check",
-    "correct": "That is right. Well done.",
-    "incorrect": "{count} not in the right place yet. Change them and check again.",
+    "correct": "Everything is in place. Each one keeps its reason below it.",
+    "incorrect": "{count} not in the right place yet. Each marked one carries a hint: move it and check again.",
     "up": "Move up",
     "down": "Move down",
+    "mark": {
+      "right": "Right",
+      "wrong": "Not yet"
+    },
+    "move": {
+      "up": "It happens earlier in the process: move it up.",
+      "down": "It happens later in the process: move it down."
+    },
+    "reason": {
+      "locateTheRule": "A business rule lives inside the aggregate it protects. If it lives in a screen or a service, every new place has to remember to repeat it.",
+      "business": "The people of the business say it: it is on the wall and in their conversations.",
+      "technical": "It is a detail of how the software is built; nobody from the business would say it in a meeting.",
+      "acl": {
+        "rename": "The data is the same; the other system only calls it something else.",
+        "format": "The data is the same, but the other system writes it in another format.",
+        "mapCode": "Each side has its own codes for the same thing; one has to be translated into the other.",
+        "constant": "Our model has no such data: the translation always sends the same value."
+      }
+    },
     "codeSoon": "This exercise needs generated code that arrives in a later update.",
     "title": {
       "locateTheRule": "Where does the rule live?",
@@ -465,11 +484,11 @@
       },
       "answer": "Your code",
       "reveal": "Show the reference",
-      "unfinished": "Replace the note with your code",
-      "written": "You wrote something",
+      "unfinished": "Write your code: the note and comments do not count",
+      "written": "There is code, not only comments",
       "syntaxValid": "The syntax is valid",
       "syntaxIssue": "line {line}: unexpected “{snippet}”",
-      "mentions": "It mentions what the rule is about",
+      "mentions": "It uses the names the solution needs",
       "missing": "A correct answer mentions: {tokens}",
       "runsInDojo": "The syntax and the shape are checked here; the generated tests run in Dojo.",
       "run": "Run the tests",
