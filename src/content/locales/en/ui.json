@@ -2,7 +2,8 @@
   "rail": {
     "title": "Course",
     "soon": "Coming soon",
-    "progress": "{completed}/{total}"
+    "progress": "{completed}/{total}",
+    "progressHint": "{completed} of {total} concepts visited"
   },
   "player": {
     "previous": "Previous step",
@@ -79,7 +80,7 @@
     "why": "Why"
   },
   "impact": {
-    "anemicTitle": "Anemic model: the rule is copied wherever {aggregate} is used",
+    "anemicTitle": "In this anemic example the rule ended up copied wherever {aggregate} is used",
     "richTitle": "Rich model: the rule lives in one place",
     "placeLine": "checks the state before {command}",
     "mustChange": "Must change",
@@ -248,16 +249,20 @@
       "general": "{subject} is not a bare string or number: it is a type that only admits legal values. The check happens once, where the value is built, and every function after that can trust it."
     },
     "statesAsTypes": {
-      "general": "Each step of the process has its own type, and the highlighted fields are what that step adds. An order that is not paid yet is a different thing from one that is, and the code says so."
+      "general": "Each step of the process has its own type, and the highlighted fields are what that step adds. What has not been validated yet is a different thing from what passed validation, and the code says so."
     },
     "illegalStates": {
-      "general": "Make the illegal state impossible to write. A function that charges a payment only accepts a priced checkout, so charging a checkout nobody validated is not a bug to test for: it does not compile."
+      "general": "Make the illegal state hard to write. Every stage only accepts the type the one before produces, so skipping validation stops being a silent slip. How early it is caught depends on the language.",
+      "typescript": "It does not compile: the compiler refuses the type of one step where the next one's is expected. Gaps remain, such as an `as` or outside data nobody validated on the way in.",
+      "python": "Python does not check annotations at run time. A type checker such as mypy or pyright flags the mistake before it runs, if you run it.",
+      "ruby": "Ruby will not stop you passing the wrong type. Validation when each step is built and the tests catch it, not a compiler.",
+      "ruby-dry": "Dry::Struct checks the attributes when the step is built, so a wrong shape fails as soon as it runs, not before."
     },
     "pipeline": {
       "general": "A business process as an assembly line: every stage takes the type the previous one produced and returns the next. Reading the stages in order reads the process."
     },
     "errorsAsValues": {
-      "general": "Expected failures, such as a declined card, are not exceptions: they are values returned on a second track. Break a stage and see that nothing after it runs and nothing is thrown."
+      "general": "Expected failures, such as an outside system saying no, are not exceptions: they are values returned on a second track. Break a stage and see that nothing after it runs and nothing is thrown."
     },
     "newNotes": {
       "general": "The wall grows: the highlighted notes are what the change needs, new events, commands and states. Nothing that was already there had to be thrown away."
@@ -269,33 +274,33 @@
       "general": "Back to the whole wall, now in version 2. Sometimes a change reveals a concept that makes many things simpler at once. That is a breakthrough, and it is worth the refactor."
     },
     "layers": {
-      "general": "A layered architecture looks tidy, but its dependencies run downwards, all the way to the infrastructure. The most valuable code ends up depending on the least stable."
+      "general": "These layers look tidy, but their dependencies run downwards, all the way to the infrastructure, so the most valuable code ends up depending on the least stable. Layers do not force that: the next step inverts the dependency."
     },
     "hexagonal": {
       "general": "Turn it inside out: the domain is at the centre and defines what it needs as ports. Everything else, screens, databases, gateways, plugs in from the outside."
     },
     "portsAdapters": {
-      "general": "A port is an interface the domain owns; an adapter is the outside code that implements it. Replace a SQL database with one in memory and not a line of the domain changes."
+      "general": "A port is a boundary of the application, and there are two sides. Through the driving ports, whoever asks (a screen, an API) calls a use case. The driven ports are what the domain needs, and an adapter outside implements them. Replace a SQL database with one in memory and not a line of the domain changes."
     },
     "dependencyRule": {
       "general": "Source code dependencies point only inwards. Adapters know the domain; the domain knows nothing of adapters. That one rule is what keeps the centre free."
     },
     "statesAsTypesCode": {
-      "general": "Each type here is the data at one step of the process: a priced checkout has everything a validated one has, plus its total. Nothing optional, nothing half-filled.",
-      "typescript": "Plain interfaces with readonly fields. The compiler refuses a ValidatedCheckout where a PricedCheckout is needed.",
-      "python": "Frozen dataclasses, one per step, built only by the stage before.",
+      "general": "Each type here is the data at one step of the process: each has everything the step before had, plus what its stage added. Nothing optional, nothing half-filled.",
+      "typescript": "Plain interfaces with readonly fields. The compiler refuses the type of one step where the next one's is needed.",
+      "python": "Frozen dataclasses, one per step, built only by the stage before. A type checker such as mypy checks the annotations, not Python at run time.",
       "ruby": "Structs with keyword arguments, one per step. Ruby will not stop you passing the wrong one, so the order of the stages and the tests carry that guarantee.",
       "ruby-dry": "Dry::Struct classes: the typed attributes are checked when an instance is built, so a wrong shape fails right there."
     },
     "pipelineCode": {
       "general": "The pipeline only wires the stages in order. Each line calls a stage with what the previous one returned and stops at the first failure. The ports are what the outside world provides.",
-      "typescript": "`checkoutWorkflow(ports)` returns the function that runs the pipeline.",
+      "typescript": "The workflow function receives the ports and returns the one that runs the pipeline.",
       "python": "The function returns `run`, which holds the ports it was given.",
       "ruby": "A class that receives the ports and runs the pipeline with `call`.",
       "ruby-dry": "A class that receives the ports and runs the pipeline with `call`, answering with Success or Failure."
     },
     "errorsAsValuesCode": {
-      "general": "This stage never raises. When the port refuses, it returns that failure as a value and the pipeline passes it on, so the caller always gets an answer it can inspect.",
+      "general": "This stage does not raise when the port refuses: it returns that failure as a value and the pipeline passes it on, so the caller gets an answer it can inspect. The contract covers the refusals the business expects; a programming error or a network outage is still an exception.",
       "typescript": "`if (!received.ok) return received;`",
       "python": "`if isinstance(received, Err): return received`",
       "ruby": "`return received unless received.ok?`",
@@ -304,7 +309,7 @@
     "adapterCode": {
       "general": "The adapter lives outside the domain and implements the repository port. This one keeps aggregates in memory: perfect for tests, and the domain cannot tell the difference.",
       "typescript": "A class that `implements` the port, so the compiler checks every method against it.",
-      "python": "A plain class with the same methods as the Protocol: Python checks the shape, not the name.",
+      "python": "A plain class with the same methods as the Protocol: a type checker compares the shape, not the name. Python itself checks nothing at run time.",
       "ruby": "A plain class with `find` and `save`: duck typing is the only contract.",
       "ruby-dry": "A plain class with `find` and `save`: duck typing is the only contract."
     }
@@ -329,7 +334,7 @@
       "commit": "Commit"
     },
     "inject": "Click an error to make that stage fail and watch where the data goes.",
-    "mismatch": "{stage} needs a {needs}, and what we have is a {got}. It does not even compile: the order of the stages is enforced by the types.",
+    "mismatch": "{stage} needs a {needs}, and what we have is a {got}. The order of the stages is enforced by the types: depending on the language, the compiler, a type checker or validation on construction catches it.",
     "failedAt": "Stopped at: {stage}",
     "errorIsValue": "The failure is a value that travels on the second track; the stages after it never run.",
     "run": "Run again"
@@ -360,7 +365,7 @@
       },
       "infrastructure": {
         "name": "Infrastructure",
-        "note": "database, payment gateway, tax authority"
+        "note": "database, gateways, outside services"
       }
     },
     "layerCost": "The domain sits on top of the infrastructure, so the business rules end up depending on how data is stored and sent.",
@@ -384,11 +389,11 @@
       },
       "gateway": {
         "fake": "Test double",
-        "http": "Bank API"
+        "http": "Provider API"
       },
       "external": {
         "fake": "Test double",
-        "http": "Tax authority client"
+        "http": "Outside service client"
       }
     },
     "adapterKnowsDomain": "The adapter for {port} knows the domain and implements the port",
@@ -426,7 +431,7 @@
       "orderEvents": "These things happen in a fixed order. Put them in the order the business lives them, with the first at the top.",
       "assignNotesToContexts": "Each note belongs to the context whose language it speaks. Choose the context of each one.",
       "implementAntiCorruptionLayer": "The translation layer turns our domain into the outside system's document. Say what it does to each field of that document.",
-      "classifySubdomains": "Where would you invest your best people? Classify each context as core, supporting or generic."
+      "classifySubdomains": "In this business each context covers a single subdomain, so classifying the contexts is enough; that is not always so, because one subdomain can be split across several. Where would you invest your best people? Classify each one as core, supporting or generic."
     },
     "group": {
       "business": "Business language",

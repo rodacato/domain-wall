@@ -2,7 +2,8 @@
   "rail": {
     "title": "Curso",
     "soon": "Próximamente",
-    "progress": "{completed}/{total}"
+    "progress": "{completed}/{total}",
+    "progressHint": "{completed} de {total} conceptos recorridos"
   },
   "player": {
     "previous": "Paso anterior",
@@ -79,7 +80,7 @@
     "why": "Por qué"
   },
   "impact": {
-    "anemicTitle": "Modelo anémico: la regla se copia en cada lugar donde se usa {aggregate}",
+    "anemicTitle": "En este ejemplo anémico la regla quedó copiada en cada lugar donde se usa {aggregate}",
     "richTitle": "Modelo rico: la regla vive en un solo lugar",
     "placeLine": "revisa el estado antes de {command}",
     "mustChange": "Hay que cambiarlo",
@@ -248,16 +249,20 @@
       "general": "{subject} no es un texto o un número sueltos: es un tipo que solo admite valores legales. La revisión ocurre una vez, donde se construye el valor, y todas las funciones que siguen pueden confiar en él."
     },
     "statesAsTypes": {
-      "general": "Cada paso del proceso tiene su propio tipo, y los campos resaltados son lo que ese paso agrega. Un pedido que aún no se paga es distinto de uno que sí, y el código lo dice."
+      "general": "Cada paso del proceso tiene su propio tipo, y los campos resaltados son lo que ese paso agrega. Lo que todavía no se valida es distinto de lo que ya pasó la validación, y el código lo dice."
     },
     "illegalStates": {
-      "general": "Haz imposible escribir el estado ilegal. Una función que cobra solo acepta una compra con precio, así que cobrar una compra que nadie validó no es un error que probar: no compila."
+      "general": "Haz que el estado ilegal sea difícil de escribir. Cada etapa solo acepta el tipo que produce la anterior, así que saltarse la validación deja de ser un descuido silencioso. Qué tan pronto se detecta depende del lenguaje.",
+      "typescript": "No compila: el compilador rechaza el tipo de un paso donde se espera el del siguiente. Sigue habiendo huecos, como un `as` o datos externos que nadie validó al entrar.",
+      "python": "Python no revisa las anotaciones al correr. Un verificador de tipos como mypy o pyright marca el error antes de ejecutar, si lo corres.",
+      "ruby": "Ruby no te impide pasar el tipo equivocado. Lo detectan la validación al construir cada paso y las pruebas, no un compilador.",
+      "ruby-dry": "Dry::Struct revisa los atributos al construir el paso, así que una forma equivocada falla en cuanto corre, no antes."
     },
     "pipeline": {
       "general": "Un proceso de negocio como una línea de ensamblaje: cada etapa recibe el tipo que produjo la anterior y devuelve el siguiente. Leer las etapas en orden es leer el proceso."
     },
     "errorsAsValues": {
-      "general": "Los fallos esperados, como una tarjeta rechazada, no son excepciones: son valores devueltos por una segunda vía. Rompe una etapa y verás que nada después corre y nada se lanza."
+      "general": "Los fallos esperados, como un rechazo del sistema externo, no son excepciones: son valores devueltos por una segunda vía. Rompe una etapa y verás que nada después corre y nada se lanza."
     },
     "newNotes": {
       "general": "El muro crece: las notas resaltadas son lo que el cambio necesita, eventos, comandos y estados nuevos. Nada de lo que ya estaba tuvo que tirarse."
@@ -269,33 +274,33 @@
       "general": "De vuelta al muro completo, ahora en su versión 2. A veces un cambio revela un concepto que simplifica muchas cosas a la vez. Eso es un avance decisivo, y vale la pena el refactor."
     },
     "layers": {
-      "general": "Una arquitectura en capas se ve ordenada, pero sus dependencias bajan hasta la infraestructura. El código más valioso termina dependiendo de lo menos estable."
+      "general": "Estas capas se ven ordenadas, pero sus dependencias bajan hasta la infraestructura, así que el código más valioso termina dependiendo de lo menos estable. Las capas no obligan a eso: el siguiente paso invierte la dependencia."
     },
     "hexagonal": {
       "general": "Voltéala: el dominio está al centro y define lo que necesita como puertos. Todo lo demás, pantallas, bases de datos, pasarelas, se conecta desde afuera."
     },
     "portsAdapters": {
-      "general": "Un puerto es una interfaz que pertenece al dominio; un adaptador es el código de afuera que la implementa. Cambia una base SQL por una en memoria y no se mueve una línea del dominio."
+      "general": "Un puerto es una frontera de la aplicación, y los hay de dos lados. Por los de entrada, quien pide (una pantalla, una API) invoca un caso de uso. Los de salida son lo que el dominio necesita, y un adaptador de afuera los implementa. Cambia una base SQL por una en memoria y no se mueve una línea del dominio."
     },
     "dependencyRule": {
       "general": "Las dependencias del código fuente apuntan solo hacia adentro. Los adaptadores conocen el dominio; el dominio no sabe nada de los adaptadores. Esa regla es la que mantiene libre el centro."
     },
     "statesAsTypesCode": {
-      "general": "Cada tipo de aquí son los datos en un paso del proceso: una compra con precio tiene todo lo que tiene una validada, más su total. Nada opcional, nada a medias.",
-      "typescript": "Interfaces simples con campos de solo lectura. El compilador rechaza una ValidatedCheckout donde se necesita una PricedCheckout.",
-      "python": "Dataclasses congelados, uno por paso, construidos solo por la etapa anterior.",
+      "general": "Cada tipo de aquí son los datos en un paso del proceso: cada uno tiene todo lo del paso anterior, más lo que su etapa agregó. Nada opcional, nada a medias.",
+      "typescript": "Interfaces simples con campos de solo lectura. El compilador rechaza el tipo de un paso donde se necesita el del siguiente.",
+      "python": "Dataclasses congelados, uno por paso, construidos solo por la etapa anterior. Las anotaciones las revisa un verificador como mypy, no Python al correr.",
       "ruby": "Structs con argumentos con nombre, uno por paso. Ruby no te impide pasar el equivocado, así que el orden de las etapas y las pruebas sostienen esa garantía.",
       "ruby-dry": "Clases Dry::Struct: los atributos con tipo se revisan al construir una instancia, así que una forma equivocada falla ahí mismo."
     },
     "pipelineCode": {
       "general": "El pipeline solo conecta las etapas en orden. Cada línea llama a una etapa con lo que devolvió la anterior y se detiene en el primer fallo. Los puertos son lo que provee el mundo exterior.",
-      "typescript": "`checkoutWorkflow(ports)` devuelve la función que corre el pipeline.",
+      "typescript": "La función del workflow recibe los puertos y devuelve la que corre el pipeline.",
       "python": "La función devuelve `run`, que guarda los puertos que recibió.",
       "ruby": "Una clase que recibe los puertos y corre el pipeline con `call`.",
       "ruby-dry": "Una clase que recibe los puertos y corre el pipeline con `call`, respondiendo con Success o Failure."
     },
     "errorsAsValuesCode": {
-      "general": "Esta etapa nunca lanza una excepción. Cuando el puerto rechaza, devuelve ese fallo como un valor y el pipeline lo pasa, así quien llama siempre recibe una respuesta que puede inspeccionar.",
+      "general": "Esta etapa no lanza una excepción cuando el puerto rechaza: devuelve ese fallo como un valor y el pipeline lo pasa, así quien llama recibe una respuesta que puede inspeccionar. El contrato cubre los rechazos que el negocio espera; un error de programación o una caída de la red siguen siendo excepciones.",
       "typescript": "`if (!received.ok) return received;`",
       "python": "`if isinstance(received, Err): return received`",
       "ruby": "`return received unless received.ok?`",
@@ -304,7 +309,7 @@
     "adapterCode": {
       "general": "El adaptador vive fuera del dominio e implementa el puerto del repositorio. Este guarda los agregados en memoria: perfecto para pruebas, y el dominio no nota la diferencia.",
       "typescript": "Una clase que `implements` el puerto, así que el compilador revisa cada método contra él.",
-      "python": "Una clase simple con los mismos métodos que el Protocol: Python revisa la forma, no el nombre.",
+      "python": "Una clase simple con los mismos métodos que el Protocol: un verificador de tipos compara la forma, no el nombre. Python, al correr, no revisa nada.",
       "ruby": "Una clase simple con `find` y `save`: el duck typing es el único contrato.",
       "ruby-dry": "Una clase simple con `find` y `save`: el duck typing es el único contrato."
     }
@@ -329,7 +334,7 @@
       "commit": "Confirmar"
     },
     "inject": "Haz clic en un error para que esa etapa falle y mira a dónde van los datos.",
-    "mismatch": "{stage} necesita un {needs}, y lo que tenemos es un {got}. Ni siquiera compila: el orden de las etapas lo imponen los tipos.",
+    "mismatch": "{stage} necesita un {needs}, y lo que tenemos es un {got}. El orden de las etapas lo imponen los tipos: según el lenguaje, lo detecta el compilador, un verificador de tipos o la validación al construir.",
     "failedAt": "Se detuvo en: {stage}",
     "errorIsValue": "El fallo es un valor que viaja por la segunda vía; las etapas que siguen nunca corren.",
     "run": "Correr de nuevo"
@@ -360,7 +365,7 @@
       },
       "infrastructure": {
         "name": "Infraestructura",
-        "note": "base de datos, pasarela de pagos, SAT"
+        "note": "base de datos, pasarelas, servicios externos"
       }
     },
     "layerCost": "El dominio queda encima de la infraestructura, así que las reglas del negocio terminan dependiendo de cómo se guardan y se envían los datos.",
@@ -384,11 +389,11 @@
       },
       "gateway": {
         "fake": "Doble de prueba",
-        "http": "API del banco"
+        "http": "API del proveedor"
       },
       "external": {
         "fake": "Doble de prueba",
-        "http": "Cliente del SAT"
+        "http": "Cliente del servicio externo"
       }
     },
     "adapterKnowsDomain": "El adaptador de {port} conoce el dominio e implementa el puerto",
@@ -426,7 +431,7 @@
       "orderEvents": "Estas cosas pasan en un orden fijo. Ponlas en el orden en que las vive el negocio, con la primera arriba.",
       "assignNotesToContexts": "Cada nota pertenece al contexto cuyo idioma habla. Elige el contexto de cada una.",
       "implementAntiCorruptionLayer": "La capa de traducción convierte nuestro dominio en el documento del sistema externo. Di qué hace con cada campo de ese documento.",
-      "classifySubdomains": "¿Dónde invertirías a tu mejor gente? Clasifica cada contexto como núcleo, de apoyo o genérico."
+      "classifySubdomains": "En este negocio cada contexto cubre un solo subdominio, así que basta con clasificar los contextos; no siempre es así, porque un subdominio puede repartirse en varios. ¿Dónde invertirías a tu mejor gente? Clasifica cada uno como núcleo, de apoyo o genérico."
     },
     "group": {
       "business": "Lenguaje del negocio",
