@@ -39,4 +39,19 @@ export default tseslint.config(
     files: ["scripts/**/*.ts", "*.config.ts", "*.config.js"],
     rules: { "no-console": "off" },
   },
+  {
+    files: ["scripts/**/*.mjs"],
+    ...tseslint.configs.disableTypeChecked,
+    languageOptions: {
+      ...tseslint.configs.disableTypeChecked.languageOptions,
+      globals: {
+        console: "readonly",
+        fetch: "readonly",
+        setTimeout: "readonly",
+        localStorage: "readonly",
+        document: "readonly",
+      },
+    },
+    rules: { ...tseslint.configs.disableTypeChecked.rules, "no-console": "off" },
+  },
 );
