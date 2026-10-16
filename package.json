@@ -1,9 +1,15 @@
 {
   "name": "domain-wall",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "description": "Muro: an interactive Domain-Driven Design course taught on an animated Event Storming wall.",
   "license": "MIT",
+  "homepage": "https://rodacato.github.io/domain-wall/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rodacato/domain-wall.git"
+  },
+  "bugs": "https://github.com/rodacato/domain-wall/issues",
   "type": "module",
   "engines": {
     "node": ">=22"
