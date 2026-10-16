@@ -38,7 +38,7 @@ export function CodeDiff({ session, language, unit }: CodeDiffProps): ReactNode 
           <span className="code__tally--removed">−{removed}</span>
         </span>
       </header>
-      <div className="code__body">
+      <div className="code__body" role="region" tabIndex={0} aria-label={change.path}>
         {change.entries.map((entry, position) =>
           entry.kind === "gap" ? (
             <div key={`gap-${position}`} className="code__gap">

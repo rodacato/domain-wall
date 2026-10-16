@@ -90,7 +90,7 @@
 .glossary__badge {
   padding: 0 8px;
   border-radius: 999px;
-  background: #e8590c;
+  background: #c2410c;
   color: #fff;
   font-family: var(--font-ui);
   font-size: 11px;
@@ -98,7 +98,7 @@
 }
 
 .glossary__badge--resolved {
-  background: #2f9e44;
+  background: #237a35;
 }
 
 .glossary__definition {
@@ -204,19 +204,19 @@
 }
 
 .impact__flag--forgotten {
-  color: #d9480f;
+  color: #b43c0a;
 }
 
 .impact__counter {
   padding: 6px 18px;
   border-radius: 999px;
-  background: #e03131;
+  background: #c92a2a;
   color: #fff;
   font-weight: 700;
 }
 
 .impact__counter--good {
-  background: #2f9e44;
+  background: #237a35;
 }
 
 .focus {

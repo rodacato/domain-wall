@@ -29,7 +29,12 @@ export function NarrationPanel({ session, step, language }: NarrationPanelProps)
   const lines = step.dialogue === null ? [] : session.index.pack.dialogues[step.dialogue];
 
   return (
-    <aside className="narration" aria-live="polite">
+    <aside
+      className="narration"
+      aria-live="polite"
+      tabIndex={0}
+      aria-label={t("ui.narration.label")}
+    >
       {concept !== undefined && (
         <section className="narration__concept">
           {concept.perspective === "functional" && (

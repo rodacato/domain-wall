@@ -1,12 +1,12 @@
 :root {
   --code-background: #1f2125;
   --code-text: #e8e6df;
-  --code-muted: #8b8f98;
+  --code-muted: #a9adb6;
   --code-border: #373a41;
   --code-keyword: #ffa94d;
   --code-string: #8ce99a;
   --code-number: #74c0fc;
-  --code-comment: #7d828c;
+  --code-comment: #b7bdc8;
   --code-type: #ffe066;
   --code-symbol: #d0bfff;
 }
@@ -91,8 +91,8 @@
 
 .chip__kind {
   font-size: 10px;
-  font-weight: 500;
-  opacity: 0.65;
+  font-weight: 600;
+  opacity: 0.85;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -115,7 +115,8 @@
 }
 
 .code__line--receded {
-  opacity: 0.28;
+  opacity: 0.74;
+  filter: grayscale(0.7);
 }
 
 .code__number {
@@ -327,7 +328,7 @@
 .mini small {
   font-family: var(--font-ui);
   font-size: 10px;
-  opacity: 0.65;
+  opacity: 0.88;
 }
 
 .mini--command {

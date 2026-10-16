@@ -15,6 +15,7 @@ export function StageOverlay({ children, wide = false }: StageOverlayProps): Rea
   return (
     <div
       className={`stage-overlay ${wide ? "stage-overlay--code" : ""}`}
+      tabIndex={0}
       onPointerDown={keepToThisStage}
       onWheel={keepToThisStage}
     >

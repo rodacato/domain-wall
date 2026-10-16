@@ -15,7 +15,8 @@
   },
   "narration": {
     "functionalPerspective": "Functional perspective",
-    "concept": "Concept"
+    "concept": "Concept",
+    "label": "Narration"
   },
   "term": {
     "neutralHint": "Which meaning?",

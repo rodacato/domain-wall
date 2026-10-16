@@ -130,7 +130,7 @@ export function CodeListing({ session, file, language, focus }: CodeListingProps
         })}
       </ul>
 
-      <div className="code__body">
+      <div className="code__body" role="region" tabIndex={0} aria-label={file.path}>
         {lines.map((text, position) => {
           const number = position + 1;
           const kind = kindAt(file, number);
