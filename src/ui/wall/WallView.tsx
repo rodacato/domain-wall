@@ -9,6 +9,7 @@ import { termPlacement } from "../../domain/wall/termPlacement";
 import type { WallState } from "../../domain/wall/WallState";
 import type { ExerciseKind } from "../../domain/course/Syllabus";
 import type { ProgrammingLanguageId } from "../../domain/language/ProgrammingLanguage";
+import type { ExerciseEvidence } from "../../domain/progress/Progress";
 import { ArchitectureStage } from "../architecture/ArchitectureStage";
 import { CodeStage } from "../code/CodeStage";
 import { ExerciseStage } from "../exercises/ExerciseStage";
@@ -28,8 +29,8 @@ interface WallViewProps {
   readonly session: CourseSession;
   readonly state: WallState;
   readonly language: ProgrammingLanguageId;
-  readonly isSolved: (kind: ExerciseKind) => boolean;
-  readonly onSolve: (kind: ExerciseKind) => void;
+  readonly evidenceOf: (kind: ExerciseKind) => ExerciseEvidence | undefined;
+  readonly onSolve: (kind: ExerciseKind, evidence: ExerciseEvidence) => void;
 }
 
 const ZONE_PREFIX = "zone:";
@@ -38,7 +39,7 @@ export function WallView({
   session,
   state,
   language,
-  isSolved,
+  evidenceOf,
   onSolve,
 }: WallViewProps): ReactNode {
   const { locale, t } = useI18n();
@@ -140,7 +141,7 @@ export function WallView({
         session={session}
         exercise={state.exercise}
         language={language}
-        solved={isSolved}
+        evidenceOf={evidenceOf}
         onSolve={onSolve}
       />
       <WallLegend kindsOnWall={kindsOnWall} />

@@ -5,7 +5,7 @@ import {
   type ProgrammingLanguageId,
 } from "../../domain/language/ProgrammingLanguage";
 import { SUPPORTED_LOCALES, type LocaleCode } from "../../domain/locale/LocaleRegistry";
-import { isExerciseCompleted, moduleCompletion } from "../../domain/progress/Progress";
+import { exerciseEvidence, moduleCompletion } from "../../domain/progress/Progress";
 import { useI18n } from "../i18n/I18n";
 import { NarrationPanel } from "../narration/NarrationPanel";
 import { WallView } from "../wall/WallView";
@@ -147,7 +147,7 @@ export function AppShell({
             session={session}
             state={player.wall}
             language={learner.preferences.programmingLanguage}
-            isSolved={(kind) => isExerciseCompleted(learner.progress, kind)}
+            evidenceOf={(kind) => exerciseEvidence(learner.progress, kind)}
             onSolve={learner.solve}
           />
         )}

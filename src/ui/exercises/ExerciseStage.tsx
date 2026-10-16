@@ -12,6 +12,7 @@ import {
 import { deriveExercise } from "../../domain/exercises/deriveExercise";
 import type { ExerciseStageState } from "../../domain/wall/ExerciseStage";
 import type { ProgrammingLanguageId } from "../../domain/language/ProgrammingLanguage";
+import type { ExerciseEvidence } from "../../domain/progress/Progress";
 import { CodeBoard } from "./CodeBoard";
 import { useI18n } from "../i18n/I18n";
 import { StageOverlay } from "../wall/StageOverlay";
@@ -21,15 +22,15 @@ interface ExerciseStageProps {
   readonly session: CourseSession;
   readonly exercise: ExerciseStageState;
   readonly language: ProgrammingLanguageId;
-  readonly solved: (kind: ExerciseKind) => boolean;
-  readonly onSolve: (kind: ExerciseKind) => void;
+  readonly evidenceOf: (kind: ExerciseKind) => ExerciseEvidence | undefined;
+  readonly onSolve: (kind: ExerciseKind, evidence: ExerciseEvidence) => void;
 }
 
 export function ExerciseStage({
   session,
   exercise,
   language,
-  solved,
+  evidenceOf,
   onSolve,
 }: ExerciseStageProps): ReactNode {
   if (exercise.kind === null) return null;
@@ -39,7 +40,7 @@ export function ExerciseStage({
       session={session}
       kind={exercise.kind}
       language={language}
-      alreadySolved={solved(exercise.kind)}
+      evidence={evidenceOf(exercise.kind)}
       onSolve={onSolve}
     />
   );
@@ -49,26 +50,28 @@ interface BoardProps {
   readonly session: CourseSession;
   readonly kind: ExerciseKind;
   readonly language: ProgrammingLanguageId;
-  readonly alreadySolved: boolean;
-  readonly onSolve: (kind: ExerciseKind) => void;
+  readonly evidence: ExerciseEvidence | undefined;
+  readonly onSolve: (kind: ExerciseKind, evidence: ExerciseEvidence) => void;
 }
 
-function Board({ session, kind, language, alreadySolved, onSolve }: BoardProps): ReactNode {
+function Board({ session, kind, language, evidence, onSolve }: BoardProps): ReactNode {
   const { t, has } = useI18n();
   const exercise = useMemo(() => deriveExercise(session.index, kind), [session.index, kind]);
   const [verdict, setVerdict] = useState<Verdict | null>(null);
 
   const report = (next: Verdict): void => {
     setVerdict(next);
-    if (next.correct) onSolve(kind);
+    if (next.correct) onSolve(kind, "answered");
   };
 
   return (
     <StageOverlay>
       <header className="exercise__header">
         <h2 className="exercise__title">{t(`ui.exercise.title.${kind}`)}</h2>
-        {(alreadySolved || verdict?.correct === true) && (
-          <span className="exercise__badge">{t("ui.exercise.solved")}</span>
+        {evidence !== undefined && (
+          <span className={`exercise__badge exercise__badge--${evidence}`}>
+            {t(`ui.exercise.solved.${evidence}`)}
+          </span>
         )}
       </header>
       {has(`ui.exercise.instructions.${kind}`) && (
@@ -79,9 +82,8 @@ function Board({ session, kind, language, alreadySolved, onSolve }: BoardProps):
           session={session}
           kind={kind}
           language={language}
-          onSolve={() => {
-            setVerdict({ correct: true, wrong: [] });
-            onSolve(kind);
+          onSolve={(next) => {
+            onSolve(kind, next);
           }}
         />
       ) : exercise.challenge.type === "classify" ? (

@@ -90,7 +90,7 @@ test("a code exercise accepts the reference solution", async ({ page }) => {
   await page.getByRole("button", { name: "Check" }).click();
 
   await expect(page.getByText("The syntax is valid")).toBeVisible();
-  await expect(page.getByText("Solved")).toBeVisible();
+  await expect(page.getByText("Checked, not run")).toBeVisible();
 });
 
 test("the demo plays the course by itself", async ({ page }) => {

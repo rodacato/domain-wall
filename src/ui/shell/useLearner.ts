@@ -8,7 +8,12 @@ import { packIdOf } from "../../application/packLibrary";
 import type { ConceptId } from "../../domain/course/ConceptId";
 import type { ExerciseKind, Syllabus } from "../../domain/course/Syllabus";
 import type { LearnerPreferences } from "../../domain/progress/LearnerPreferences";
-import { completeConcept, completeExercise, type Progress } from "../../domain/progress/Progress";
+import {
+  completeConcept,
+  completeExercise,
+  type ExerciseEvidence,
+  type Progress,
+} from "../../domain/progress/Progress";
 
 export interface Learner {
   readonly progress: Progress;
@@ -16,7 +21,7 @@ export interface Learner {
   readonly onboarded: boolean;
   readonly choose: (preferences: LearnerPreferences) => void;
   readonly reach: (conceptId: ConceptId) => void;
-  readonly solve: (exercise: ExerciseKind) => void;
+  readonly solve: (exercise: ExerciseKind, evidence: ExerciseEvidence) => void;
 }
 
 /** Holds the learner's progress and choices in the UI and writes every change through to storage. */
@@ -61,13 +66,14 @@ export function useLearner(
   );
 
   const solve = useCallback(
-    (exercise: ExerciseKind) => {
+    (exercise: ExerciseKind, evidence: ExerciseEvidence) => {
       setProgress((current) =>
         completeExercise(current, exercise, {
           completedAt: new Date().toISOString(),
           packId: packIdOf(preferences.pack),
           programmingLanguage: preferences.programmingLanguage,
           locale: preferences.locale,
+          evidence,
         }),
       );
     },

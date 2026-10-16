@@ -397,7 +397,11 @@
     "ruleBroken": "Now the business rules cannot run without a database, and a change in how data is stored forces a change in the domain. The arrow must always point inwards."
   },
   "exercise": {
-    "solved": "Solved",
+    "solved": {
+      "answered": "Solved",
+      "reviewed": "Checked, not run",
+      "tested": "Tests passed"
+    },
     "check": "Check",
     "correct": "That is right. Well done.",
     "incorrect": "{count} not in the right place yet. Change them and check again.",

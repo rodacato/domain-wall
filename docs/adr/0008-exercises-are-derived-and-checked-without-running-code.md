@@ -22,8 +22,11 @@ code needs the host's Piston (ADR 5), which is not available when the course run
 - **Judged by syntax and shape, never by "passed".** A `SyntaxChecker` port (tree-sitter compiled
   to WebAssembly, adapter in `adapters/syntax`) tells whether the assembled file is well formed.
   The answer must also mention what a correct one must: the rule's error code and the data the
-  reference solution reads. The verdict says the generated tests run in Dojo; it never claims they
-  passed. A host that can execute code later adds a second runner behind the same exercise.
+  reference solution reads. Only code counts: comments are blanked out with the same parser, and
+  the data must be named outside a string. The verdict says the generated tests run in Dojo; it
+  never claims they passed. A host that can execute code later adds a second runner behind the same
+  exercise, and the progress records which of the two said yes ("checked, not run" or "tests
+  passed").
 
 ## Consequences
 

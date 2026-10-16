@@ -23,7 +23,7 @@ interface CodeBoardProps {
   readonly session: CourseSession;
   readonly kind: ExerciseKind;
   readonly language: ProgrammingLanguageId;
-  readonly onSolve: () => void;
+  readonly onSolve: (evidence: "reviewed" | "tested") => void;
 }
 
 const CONTEXT_LINES = 6;
@@ -97,7 +97,7 @@ function Editor({
   readonly exercise: CodeExercise;
   readonly subject: string;
   readonly checker: ReturnType<typeof useSyntaxChecker>;
-  readonly onSolve: () => void;
+  readonly onSolve: CodeBoardProps["onSolve"];
 }): ReactNode {
   const { t } = useI18n();
   const [answer, setAnswer] = useState(exercise.placeholder);
@@ -119,7 +119,7 @@ function Editor({
     const next = await checkCodeAnswer(exercise, answer, checker);
     setChecking(false);
     setVerdict(next);
-    if (next.plausible) onSolve();
+    if (next.plausible) onSolve("reviewed");
   };
 
   const runTests = async (): Promise<void> => {
@@ -128,7 +128,7 @@ function Editor({
     const result = await runner.run(exerciseRunRequest(exercise, answer, RUN_TIMEOUT_MILLISECONDS));
     setRunning(false);
     setOutcome(result.ok ? result.value : "failed");
-    if (result.ok && allPassed(result.value)) onSolve();
+    if (result.ok && allPassed(result.value)) onSolve("tested");
   };
 
   return (
