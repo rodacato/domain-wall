@@ -369,6 +369,193 @@ end
 "
 `;
 
+exports[`generating the default pack in ruby-dry > reads like hand-written code: the Order aggregate 1`] = `
+"# frozen_string_literal: true
+
+# Generated from the "hecho-a-mano" domain pack. Do not edit by hand.
+require "dry-monads"
+require "dry-struct"
+require_relative "events"
+require_relative "types"
+require_relative "value_objects"
+
+class OrderError < Dry::Struct
+  attribute :code, Types::Strict::Symbol
+  attribute? :command, Types::Strict::String
+  attribute? :status, Types::Strict::Symbol
+end
+
+class OrderLine < Dry::Struct
+  attribute :listing_id, ListingId::Type
+  attribute :quantity, Quantity::Type
+  attribute :unit_price, Money::Type
+
+  def subtotal
+    Money.trusted(unit_price * quantity)
+  end
+end
+
+class Order
+  include Dry::Monads[:result]
+
+  STATUSES = [:draft, :placed, :paid, :shipped, :delivered, :cancelled].freeze
+
+  class State < Dry::Struct
+    attribute :status, Types::Strict::Symbol.enum(*STATUSES)
+    attribute :order_id, OrderId::Type
+    attribute :buyer_id, BuyerId::Type
+    attribute :lines, Types::Strict::Array.of(OrderLine)
+    attribute :shipping_address, Address.optional
+    attribute :tracking_number, TrackingNumber::Type.optional
+    attribute :cancellation_reason, CancellationReason::Type.optional
+  end
+  private_constant :State
+
+  def self.start(order_id:, buyer_id:)
+    new(
+      State.new(
+        status: :draft,
+        order_id: order_id,
+        buyer_id: buyer_id,
+        lines: [],
+        shipping_address: nil,
+        tracking_number: nil,
+        cancellation_reason: nil,
+      )
+    )
+  end
+
+  def initialize(state)
+    @state = state
+  end
+
+  def status = @state.status
+
+  def order_id = @state.order_id
+
+  def buyer_id = @state.buyer_id
+
+  def lines = @state.lines
+
+  def shipping_address = @state.shipping_address
+
+  def tracking_number = @state.tracking_number
+
+  def cancellation_reason = @state.cancellation_reason
+
+  def total
+    Money.trusted(self.lines.sum { |item| item.subtotal })
+  end
+
+  def add_order_line(listing_id:, quantity:, unit_price:)
+    return reject_invalid_state("AddOrderLine") unless status == :draft
+    transition(
+      { status: :draft, lines: [*self.lines, OrderLine.new(listing_id: listing_id, quantity: quantity, unit_price: unit_price)] },
+      lambda do |upcoming|
+        [
+          OrderLineAdded.new(order_id: upcoming.order_id, listing_id: listing_id, quantity: quantity),
+        ]
+      end
+    )
+  end
+
+  def set_shipping_address(address:)
+    return reject_invalid_state("SetShippingAddress") unless status == :draft
+    transition(
+      { status: :draft, shipping_address: address },
+      lambda do |upcoming|
+        [
+          ShippingAddressSet.new(order_id: upcoming.order_id, address: address),
+        ]
+      end
+    )
+  end
+
+  def place_order
+    return reject_invalid_state("PlaceOrder") unless status == :draft
+    return reject(:order_must_have_lines) if self.lines.empty?
+    return reject(:shipping_address_required) if self.shipping_address.nil?
+    transition(
+      { status: :placed },
+      lambda do |upcoming|
+        [
+          OrderPlaced.new(order_id: upcoming.order_id, total: upcoming.total),
+        ]
+      end
+    )
+  end
+
+  def confirm_payment(amount:)
+    return reject_invalid_state("ConfirmPayment") unless status == :placed
+    return reject(:payment_must_match_total) if amount != self.total
+    transition(
+      { status: :paid },
+      lambda do |upcoming|
+        [
+          PaymentConfirmed.new(order_id: upcoming.order_id, amount: amount),
+        ]
+      end
+    )
+  end
+
+  def mark_order_shipped(tracking_number:)
+    return reject_invalid_state("MarkOrderShipped") unless status == :paid
+    transition(
+      { status: :shipped, tracking_number: tracking_number },
+      lambda do |upcoming|
+        [
+          OrderShipped.new(order_id: upcoming.order_id, tracking_number: tracking_number),
+        ]
+      end
+    )
+  end
+
+  def mark_order_delivered
+    return reject_invalid_state("MarkOrderDelivered") unless status == :shipped
+    transition(
+      { status: :delivered },
+      lambda do |upcoming|
+        [
+          OrderDelivered.new(order_id: upcoming.order_id),
+        ]
+      end
+    )
+  end
+
+  def cancel_order(reason:)
+    return reject_invalid_state("CancelOrder") unless [:draft, :placed, :paid].include?(status)
+    transition(
+      { status: :cancelled, cancellation_reason: reason },
+      lambda do |upcoming|
+        [
+          OrderCancelled.new(order_id: upcoming.order_id, reason: reason),
+        ]
+      end
+    )
+  end
+
+  private
+
+  def transition(changes, emit)
+    upcoming = self.class.new(@state.new(changes))
+    return reject(:order_lines_within_limit) if upcoming.lines.length > 5
+    Success(OrderOutcome.new(order: upcoming, events: emit.call(upcoming)))
+  end
+
+  def reject(code) = Failure(OrderError.new(code: code))
+
+  def reject_invalid_state(command)
+    Failure(OrderError.new(code: :invalid_state_for_command, command: command, status: status))
+  end
+end
+
+class OrderOutcome < Dry::Struct
+  attribute :order, Types.Instance(Order)
+  attribute :events, Types::Strict::Array
+end
+"
+`;
+
 exports[`generating the default pack in typescript > reads like hand-written code: the Order aggregate 1`] = `
 "/// <reference lib="es2022" />
 // Generated from the "hecho-a-mano" domain pack. Do not edit by hand.

@@ -1,6 +1,6 @@
 import type { CodeName } from "../../../domain/pack/naming/CodeName";
 import { renderCodeName } from "../../../domain/pack/naming/NameStyle";
-import type { LanguageDescriptor } from "../LanguageDescriptor";
+import { REFERENCED_BY_NAME, type LanguageDescriptor } from "../LanguageDescriptor";
 
 export const pythonDescriptor: LanguageDescriptor = {
   id: "python",
@@ -13,6 +13,7 @@ export const pythonDescriptor: LanguageDescriptor = {
       timestamp: "str",
       list: "tuple[{{element}}, ...]",
       optional: "{{inner}} | None",
+      references: REFERENCED_BY_NAME,
     },
     literals: { true: "True", false: "False", null: "None", emptyList: "()" },
     escapesInterpolation: false,

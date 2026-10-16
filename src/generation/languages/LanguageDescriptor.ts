@@ -2,6 +2,15 @@ import type { ProgrammingLanguageId } from "../../domain/language/ProgrammingLan
 import type { ArithmeticOperator, ComparisonOperator } from "../../domain/pack/schema/Expression";
 import type { FileRole } from "../GeneratedProject";
 
+export type TypeReferences = Readonly<Record<"scalar" | "enum" | "record" | "entity", string>>;
+
+export const REFERENCED_BY_NAME: TypeReferences = {
+  scalar: "{{name}}",
+  enum: "{{name}}",
+  record: "{{name}}",
+  entity: "{{name}}",
+};
+
 /** Small Mustache snippets for the syntax that differs between languages; skeletons live in template files. */
 export interface LanguageSyntax {
   readonly types: {
@@ -14,6 +23,8 @@ export interface LanguageSyntax {
     readonly list: string;
     /** Takes {{inner}}. */
     readonly optional: string;
+    /** How a type refers to a domain type of each kind; takes {{name}}. */
+    readonly references: TypeReferences;
   };
   readonly literals: {
     readonly true: string;

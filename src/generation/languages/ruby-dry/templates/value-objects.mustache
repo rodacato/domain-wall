@@ -1,0 +1,51 @@
+# frozen_string_literal: true
+
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+require "dry-monads"
+require "dry-struct"
+require_relative "types"
+{{#scalars}}
+
+⟦anchor {{anchor}}⟧
+class {{name}}Error < Dry::Struct
+  attribute :code, Types::Strict::Symbol
+end
+
+module {{name}}
+  extend Dry::Monads[:result]
+
+  Type = {{{baseType}}}
+
+  def self.create(value)
+{{#violations}}
+    return Failure({{name}}Error.new(code: :{{code}})) if {{{condition}}}
+{{/violations}}
+    Success(value)
+  end
+
+  def self.trusted(value) = value
+end
+⟦/anchor⟧
+{{/scalars}}
+{{#enums}}
+
+⟦anchor {{anchor}}⟧
+module {{name}}
+{{#members}}
+  {{constant}} = "{{name}}"
+{{/members}}
+
+  Type = Types::Strict::String.enum({{#members}}{{constant}}{{^last}}, {{/last}}{{/members}})
+end
+⟦/anchor⟧
+{{/enums}}
+{{#records}}
+
+⟦anchor {{anchor}}⟧
+class {{name}} < Dry::Struct
+{{#fields}}
+  attribute :{{name}}, {{{type}}}
+{{/fields}}
+end
+⟦/anchor⟧
+{{/records}}

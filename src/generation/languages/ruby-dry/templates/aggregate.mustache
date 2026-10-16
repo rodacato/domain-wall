@@ -1,0 +1,159 @@
+# frozen_string_literal: true
+
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+require "dry-monads"
+require "dry-struct"
+require_relative "events"
+require_relative "types"
+require_relative "value_objects"
+
+class {{errorType}} < Dry::Struct
+  attribute :code, Types::Strict::Symbol
+  attribute? :command, Types::Strict::String
+  attribute? :status, Types::Strict::Symbol
+end
+{{#entities}}
+
+⟦anchor {{anchor}}⟧
+class {{name}} < Dry::Struct
+{{#fields}}
+  attribute :{{name}}, {{{type}}}
+{{/fields}}
+{{#derived}}
+
+  def {{name}}
+    {{{expression}}}
+  end
+{{/derived}}
+end
+⟦/anchor⟧
+{{/entities}}
+
+⟦anchor {{anchor}}⟧
+class {{name}}
+  include Dry::Monads[:result]
+
+  STATUSES = [{{#states}}⟦anchor {{anchor}}⟧{{{literal}}}⟦/anchor⟧{{^last}}, {{/last}}{{/states}}].freeze
+
+  class State < Dry::Struct
+    attribute :status, Types::Strict::Symbol.enum(*STATUSES)
+{{#stateFields}}
+    attribute :{{name}}, {{{type}}}
+{{/stateFields}}
+  end
+  private_constant :State
+
+  def self.start({{#startParams}}{{name}}:{{^last}}, {{/last}}{{/startParams}})
+    new(
+      State.new(
+        status: {{{initialStatus}}},
+{{#stateFields}}
+        {{name}}: {{{initial}}},
+{{/stateFields}}
+      )
+    )
+  end
+
+  def initialize(state)
+    @state = state
+  end
+
+  def status = @state.status
+{{#stateFields}}
+
+  def {{name}} = @state.{{name}}
+{{/stateFields}}
+{{#derived}}
+
+  def {{name}}
+    {{{expression}}}
+  end
+{{/derived}}
+{{#commands}}
+
+⟦anchor {{anchor}}⟧
+  def {{method}}{{#hasParams}}({{#params}}{{name}}:{{^last}}, {{/last}}{{/params}}){{/hasParams}}
+{{#singleBranch}}
+{{#onlyBranch}}
+{{#singleFrom}}
+    return reject_invalid_state("{{commandName}}") unless status == {{{onlyFrom}}}
+{{/singleFrom}}
+{{^singleFrom}}
+    return reject_invalid_state("{{commandName}}") unless [{{{fromList}}}].include?(status)
+{{/singleFrom}}
+{{#guards}}
+⟦anchor {{anchor}}⟧
+    return reject(:{{code}}) if {{{failure}}}
+⟦/anchor⟧
+{{/guards}}
+⟦anchor {{anchor}}⟧
+    transition(
+      { {{#changes}}{{field}}: {{{value}}}{{^last}}, {{/last}}{{/changes}} },
+      lambda do |upcoming|
+        [
+{{#events}}
+          {{type}}.new({{#fields}}{{name}}: {{{value}}}{{^last}}, {{/last}}{{/fields}}),
+{{/events}}
+        ]
+      end
+    )
+⟦/anchor⟧
+{{/onlyBranch}}
+{{/singleBranch}}
+{{^singleBranch}}
+{{#branches}}
+{{#singleFrom}}
+    if status == {{{onlyFrom}}}
+{{/singleFrom}}
+{{^singleFrom}}
+    if [{{{fromList}}}].include?(status)
+{{/singleFrom}}
+{{#guards}}
+⟦anchor {{anchor}}⟧
+      return reject(:{{code}}) if {{{failure}}}
+⟦/anchor⟧
+{{/guards}}
+⟦anchor {{anchor}}⟧
+      return transition(
+        { {{#changes}}{{field}}: {{{value}}}{{^last}}, {{/last}}{{/changes}} },
+        lambda do |upcoming|
+          [
+{{#events}}
+            {{type}}.new({{#fields}}{{name}}: {{{value}}}{{^last}}, {{/last}}{{/fields}}),
+{{/events}}
+          ]
+        end
+      )
+⟦/anchor⟧
+    end
+{{/branches}}
+    reject_invalid_state("{{commandName}}")
+{{/singleBranch}}
+  end
+⟦/anchor⟧
+{{/commands}}
+
+  private
+
+  def transition(changes, emit)
+    upcoming = self.class.new(@state.new(changes))
+{{#invariants}}
+⟦anchor {{anchor}}⟧
+    return reject(:{{code}}) if {{{failure}}}
+⟦/anchor⟧
+{{/invariants}}
+    Success({{outcomeType}}.new({{instance}}: upcoming, events: emit.call(upcoming)))
+  end
+
+  def reject(code) = Failure({{errorType}}.new(code: code))
+
+  def reject_invalid_state(command)
+    Failure({{errorType}}.new(code: :invalid_state_for_command, command: command, status: status))
+  end
+end
+⟦/anchor⟧
+
+class {{outcomeType}} < Dry::Struct
+  attribute :{{instance}}, Types.Instance({{name}})
+  attribute :events, Types::Strict::Array
+end

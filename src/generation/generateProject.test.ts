@@ -79,6 +79,27 @@ const EXPECTATIONS: readonly LanguageExpectations[] = [
     aggregateFile: "order.rb",
     ruleError: "reject(:order_must_have_lines)",
   },
+  {
+    language: "ruby-dry",
+    files: [
+      "events.rb",
+      "invoice.rb",
+      "invoice_test.rb",
+      "listing.rb",
+      "listing_test.rb",
+      "order.rb",
+      "order_test.rb",
+      "run_tests.rb",
+      "shipment.rb",
+      "shipment_test.rb",
+      "testing.rb",
+      "types.rb",
+      "value_objects.rb",
+      "value_objects_test.rb",
+    ],
+    aggregateFile: "order.rb",
+    ruleError: "reject(:order_must_have_lines)",
+  },
 ];
 
 function generateDefaultPack(language: ProgrammingLanguageId): GeneratedProject {

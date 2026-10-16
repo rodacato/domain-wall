@@ -70,10 +70,33 @@ const rubyToolchain: Toolchain = {
     inContainer("ruby:3.0.1-slim", projectDirectory, ["ruby", "run_tests.rb"]),
 };
 
+const RUBY_DRY_IMAGE = "muro-ruby-dry:3.0.1";
+
+/** The dry-rb gems are baked into an image, because generated code runs without network access. */
+function ensureRubyDryImage(): void {
+  capture("docker", [
+    "build",
+    "--quiet",
+    "--tag",
+    RUBY_DRY_IMAGE,
+    "--file",
+    "scripts/docker/ruby-dry.Dockerfile",
+    "scripts/docker",
+  ]);
+}
+
+const rubyDryToolchain: Toolchain = {
+  run: (projectDirectory) => {
+    ensureRubyDryImage();
+    return inContainer(RUBY_DRY_IMAGE, projectDirectory, ["ruby", "run_tests.rb"]);
+  },
+};
+
 const TOOLCHAINS: Partial<Record<ProgrammingLanguageId, Toolchain>> = {
   typescript: typescriptToolchain,
   python: pythonToolchain,
   ruby: rubyToolchain,
+  "ruby-dry": rubyDryToolchain,
 };
 
 export function toolchainFor(language: ProgrammingLanguageId): Toolchain | undefined {

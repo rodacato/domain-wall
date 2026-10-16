@@ -38,7 +38,7 @@ export function buildEventsView(index: PackIndex, descriptor: LanguageDescriptor
       fields: withLast(
         event.payload.map((field) => ({
           name: naming.member(field.codeName),
-          type: renderFieldType(descriptor.syntax, naming, field.type),
+          type: renderFieldType(index, descriptor.syntax, naming, field.type),
         })),
       ),
     })),

@@ -166,7 +166,7 @@ function derivedView(
   const { naming, index } = context;
   return {
     name: naming.member(derived.codeName),
-    type: renderFieldType(descriptor.syntax, naming, derived.type),
+    type: renderFieldType(index, descriptor.syntax, naming, derived.type),
     expression: withTrusted(
       index,
       descriptor,
@@ -199,7 +199,7 @@ function entityView(
     fields: withLast(
       entity.fields.map((field) => ({
         name: naming.member(field.codeName),
-        type: renderFieldType(descriptor.syntax, naming, field.type),
+        type: renderFieldType(index, descriptor.syntax, naming, field.type),
       })),
     ),
     derived: entity.derived.map((derived) => derivedView(context, descriptor, derived)),
@@ -335,7 +335,7 @@ function commandView(
     params: withLast(
       command.params.map((param) => ({
         name: naming.member(param.codeName),
-        type: renderFieldType(descriptor.syntax, naming, param.type),
+        type: renderFieldType(index, descriptor.syntax, naming, param.type),
       })),
     ),
     hasParams: command.params.length > 0,
@@ -362,7 +362,7 @@ export function buildAggregateView(
 ): AggregateView {
   const naming = namingFor(descriptor.id);
   const type = (fieldType: FieldType): string =>
-    renderFieldType(descriptor.syntax, naming, fieldType);
+    renderFieldType(index, descriptor.syntax, naming, fieldType);
   const name = naming.type(aggregate.codeName);
   const identityField = aggregate.fields.find((field) => field.codeName === aggregate.identity);
   const context: ExpressionContext = {

@@ -1,0 +1,18 @@
+# frozen_string_literal: true
+
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+require "dry-struct"
+require_relative "types"
+require_relative "value_objects"
+{{#events}}
+
+⟦anchor {{anchor}}⟧
+class {{name}} < Dry::Struct
+{{#fields}}
+  attribute :{{name}}, {{{type}}}
+{{/fields}}
+
+  def type = "{{discriminator}}"
+end
+⟦/anchor⟧
+{{/events}}

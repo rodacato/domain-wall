@@ -1,6 +1,6 @@
 import type { CodeName } from "../../../domain/pack/naming/CodeName";
 import { renderCodeName } from "../../../domain/pack/naming/NameStyle";
-import type { LanguageDescriptor } from "../LanguageDescriptor";
+import { REFERENCED_BY_NAME, type LanguageDescriptor } from "../LanguageDescriptor";
 
 export const rubyDescriptor: LanguageDescriptor = {
   id: "ruby",
@@ -13,6 +13,7 @@ export const rubyDescriptor: LanguageDescriptor = {
       timestamp: "String",
       list: "Array<{{element}}>",
       optional: "{{inner}}, nil",
+      references: REFERENCED_BY_NAME,
     },
     literals: { true: "true", false: "false", null: "nil", emptyList: "[]" },
     escapesInterpolation: true,
