@@ -3,16 +3,19 @@
 The order follows one principle: build the learning experience first, and add the integrations
 that depend on other systems afterwards.
 
-| #   | Phase                                                                                                                                                                        | Status |
-| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| 1   | Foundations and contract: tooling, pack schema, reference interpreter, semantic validation, the default pack, translation checks, spikes                                     | done   |
-| 2   | Course model and content skeleton: syllabus, concept ids, progress model, content file format, UI catalogs                                                                   | next   |
-| 3   | The wall: pure wall engine and scenes, visual language, app shell, onboarding. First demoable slice: Event Storming and bounded contexts                                     |        |
-| 4   | Code generation for the course: TypeScript first (entity style, anchors for the semantic zoom), then Python, Ruby and Ruby with dry-rb, then the functional and naive styles |        |
-| 5   | Course modules 1-10 with their interactions: invariant breaker, functional pipeline, before/after, hexagonal architecture, evolution                                         |        |
-| 6   | Persistence, progress across industry and language changes, demo mode, accessibility, GitHub Pages deployment                                                                |        |
-| 7   | Dojo integration: host protocol, `HostRunner`, execution harness contract, LLM access through the host (SheLLM)                                                              |        |
-| 8   | LLM-generated packs: wire schemas, three generation passes, validation loop with retries, the generation scene, curated presets                                              |        |
+| #   | Phase                                                                                                                                               | Status      |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| 1   | Foundations and contract: tooling, pack schema, reference interpreter, semantic validation, the default pack, translation checks, spikes            | done        |
+| 2   | Course model and content skeleton: syllabus, concept ids, progress model, content file format, UI catalogs                                          | done        |
+| 3   | The wall: pure wall engine and scenes, visual language, app shell, onboarding                                                                       | done        |
+| 4   | Code generation: entity style in TypeScript, Python, Ruby and Ruby with dry-rb, the workflow pipeline, in-memory adapters, all verified in CI       | done        |
+| 5   | Modules 1-10 with their interactions and exercises: invariant breaker, railway, hexagon, evolution diff, six no-code exercises, four code exercises | done        |
+| 6   | Persistence and presets: progress across industry and language changes, curated industries in onboarding, GitHub Pages deployment                   | in progress |
+| 7   | Dojo integration: host protocol, `HostRunner`, execution harness contract, LLM access through the host (SheLLM)                                     |             |
+| 8   | LLM-generated packs: wire schemas, three generation passes, validation loop with retries, the generation scene                                      |             |
+
+Pending in phase 6: the before/after comparison with a naive (anemic) style, demo mode, an
+accessibility pass, theming tokens for embedding and end-to-end tests.
 
 ## Decisions that move with the order
 

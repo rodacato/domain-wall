@@ -9,8 +9,11 @@ code, idioms, examples and scenarios. It is not a language comparison.
 
 ## Status
 
-Phase 1 (foundations and contract) is in progress. See
-[the proposal](docs/proposal/muro-proposal.md) for the full product and architecture design.
+The ten modules of the course run, each ending with an exercise, over the default pack and four
+curated industries (clinic, logistics, fintech, education), in Spanish and English. Code is
+generated in TypeScript, Python, Ruby and Ruby with dry-rb. What is left is described in
+[the roadmap](docs/roadmap.md); the full design is in
+[the proposal](docs/proposal/muro-proposal.md).
 
 ## How it is built
 
@@ -26,8 +29,13 @@ Requires Node 22+ and pnpm.
 
 ```bash
 pnpm install
-pnpm check   # typecheck, lint, format, architecture rules, tests
+pnpm dev                # the course, with hot reload
+pnpm check              # typecheck, lint, format, architecture rules, tests, packs, translations
+pnpm test:generated     # generates the code of every pack in every language and runs its tests
 ```
+
+`pnpm test:generated` needs Docker: each language runs in the official image of the version Dojo
+uses (see [ADR 7](docs/adr/0007-generated-code-targets-dojo-runtimes.md)).
 
 ## Sources
 
