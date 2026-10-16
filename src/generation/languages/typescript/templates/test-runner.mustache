@@ -5,5 +5,8 @@ import "./value-objects.test";
 {{#aggregates}}
 import "./{{module}}.test";
 {{/aggregates}}
+{{#illustrations}}
+import "./{{module}}";
+{{/illustrations}}
 
 runAll();

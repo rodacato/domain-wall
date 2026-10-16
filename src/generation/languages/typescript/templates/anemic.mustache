@@ -1,0 +1,77 @@
+/// <reference lib="es2022" />
+// Generated from the "{{packId}}" domain pack. The same behavior as {{module}}.ts, written the anemic way.
+{{#hasValueObjectImports}}
+import { {{#valueObjectImports}}{{name}}{{^last}}, {{/last}}{{/valueObjectImports}} } from "./value-objects";
+{{/hasValueObjectImports}}
+
+export type {{statusType}} = {{#states}}{{{literal}}}{{^last}} | {{/last}}{{/states}};
+{{#entities}}
+
+export interface {{name}} {
+{{#fields}}
+  {{name}}: {{{type}}};
+{{/fields}}
+{{#derived}}
+  {{name}}: {{{type}}};
+{{/derived}}
+}
+{{/entities}}
+
+⟦anchor {{anemicAnchor}}⟧
+export interface {{dataType}} {
+  status: {{statusType}};
+{{#stateFields}}
+  {{name}}: {{{type}}};
+{{/stateFields}}
+}
+⟦/anchor⟧
+{{#derived}}
+
+export function {{name}}(data: {{dataType}}): {{{type}}} {
+  return {{{expression}}};
+}
+{{/derived}}
+{{#commands}}
+
+export function {{method}}(data: {{dataType}}{{#params}}, {{name}}: {{{type}}}{{/params}}): void {
+{{#singleBranch}}
+{{#onlyBranch}}
+{{#singleFrom}}
+  if (data.status !== {{{onlyFrom}}}) throw new Error("InvalidStateForCommand");
+{{/singleFrom}}
+{{^singleFrom}}
+  if (![{{{fromList}}}].includes(data.status)) throw new Error("InvalidStateForCommand");
+{{/singleFrom}}
+{{#guards}}
+  if ({{{failure}}}) throw new Error("{{code}}");
+{{/guards}}
+{{#changes}}
+  data.{{field}} = {{{value}}};
+{{/changes}}
+{{/onlyBranch}}
+{{/singleBranch}}
+{{^singleBranch}}
+{{#branches}}
+{{#singleFrom}}
+  if (data.status === {{{onlyFrom}}}) {
+{{/singleFrom}}
+{{^singleFrom}}
+  if ([{{{fromList}}}].includes(data.status)) {
+{{/singleFrom}}
+{{#guards}}
+    if ({{{failure}}}) throw new Error("{{code}}");
+{{/guards}}
+{{#changes}}
+    data.{{field}} = {{{value}}};
+{{/changes}}
+    return;
+  }
+{{/branches}}
+  throw new Error("InvalidStateForCommand");
+{{/singleBranch}}
+}
+{{/commands}}
+{{#forgotten}}
+
+// {{rule}} must always hold, and nothing in this file checks it.
+{{/forgotten}}

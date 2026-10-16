@@ -229,9 +229,24 @@ function renderConstruct(
       ? syntax.expressions.constructEntityArgument
       : syntax.expressions.constructRecordArgument;
 
-  const rendered = declared.flatMap((field) => {
+  const derivedAsFields = syntax.entityDerivedAsFields === true && entity !== undefined;
+  const everyField = derivedAsFields ? [...declared, ...entity.derived] : declared;
+  const rendered = everyField.flatMap((field) => {
     const given = expression.fields.find((candidate) => candidate.name === field.codeName);
-    if (given === undefined) return [];
+    if (given === undefined) {
+      if (!derivedAsFields || !entity.derived.includes(field as never)) return [];
+      return [
+        fill(argumentTemplate, {
+          name: naming.member(field.codeName),
+          value: renderTypedValue(
+            context,
+            { op: "literal", value: placeholderFor(context, field.type) },
+            field.type,
+            elementDepth,
+          ),
+        }),
+      ];
+    }
     return [
       fill(argumentTemplate, {
         name: naming.member(field.codeName),
@@ -246,4 +261,14 @@ function renderConstruct(
       arguments: rendered.join(", "),
     },
   );
+}
+
+/** A value of the right kind for a field nobody gave one, so anemic code still reads as complete. */
+function placeholderFor(context: ExpressionContext, type: FieldType): string | number | boolean {
+  if (type.kind === "primitive") {
+    if (type.name === "integer") return 0;
+    return type.name === "boolean" ? false : "";
+  }
+  const scalar = scalarValueObjectOf(context, type);
+  return scalar?.base === "integer" ? 0 : "";
 }

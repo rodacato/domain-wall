@@ -3,6 +3,9 @@ import test_value_objects
 {{#aggregates}}
 import test_{{module}}
 {{/aggregates}}
+{{#illustrations}}
+import {{module}}  # noqa: F401
+{{/illustrations}}
 from testing import run_all
 
 run_all([test_value_objects{{#aggregates}}, test_{{module}}{{/aggregates}}])

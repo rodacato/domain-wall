@@ -6,5 +6,8 @@ require_relative "value_objects_test"
 {{#aggregates}}
 require_relative "{{module}}_test"
 {{/aggregates}}
+{{#illustrations}}
+require_relative "{{module}}"
+{{/illustrations}}
 
 Testing.run_all

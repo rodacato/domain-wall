@@ -48,6 +48,7 @@ const EXPECTATIONS: readonly LanguageExpectations[] = [
       "testing.ts",
       "value-objects.test.ts",
       "value-objects.ts",
+      ...AGGREGATES.map((aggregate) => `${aggregate}-anemic.ts`),
       ...adapterFiles(
         (stem) => `${stem}.ts`,
         (stem) => `${stem}.test.ts`,
@@ -76,6 +77,7 @@ const EXPECTATIONS: readonly LanguageExpectations[] = [
       "test_value_objects.py",
       "testing.py",
       "value_objects.py",
+      ...AGGREGATES.map((aggregate) => `${aggregate}_anemic.py`),
       ...adapterFiles(
         (stem) => `${stem}.py`,
         (stem) => `test_${stem}.py`,
@@ -104,6 +106,7 @@ const EXPECTATIONS: readonly LanguageExpectations[] = [
       "testing.rb",
       "value_objects.rb",
       "value_objects_test.rb",
+      ...AGGREGATES.map((aggregate) => `${aggregate}_anemic.rb`),
       ...adapterFiles(
         (stem) => `${stem}.rb`,
         (stem) => `${stem}_test.rb`,
@@ -132,6 +135,7 @@ const EXPECTATIONS: readonly LanguageExpectations[] = [
       "types.rb",
       "value_objects.rb",
       "value_objects_test.rb",
+      ...AGGREGATES.map((aggregate) => `${aggregate}_anemic.rb`),
       ...adapterFiles(
         (stem) => `${stem}.rb`,
         (stem) => `${stem}_test.rb`,

@@ -1,0 +1,66 @@
+# frozen_string_literal: true
+
+# Generated from the "{{packId}}" domain pack. The same behavior as {{module}}.rb, written the anemic way.
+require_relative "value_objects"
+
+module Anemic{{name}}
+{{#entities}}
+  {{name}} = Struct.new({{#fields}}:{{name}}, {{/fields}}{{#derived}}:{{name}}, {{/derived}}keyword_init: true)
+
+{{/entities}}
+⟦anchor {{anemicAnchor}}⟧
+  {{dataType}} = Struct.new(:status, {{#stateFields}}:{{name}}, {{/stateFields}}keyword_init: true)
+⟦/anchor⟧
+
+  module Service
+{{#derived}}
+    def self.{{name}}(data)
+      {{{expression}}}
+    end
+
+{{/derived}}
+{{#commands}}
+    def self.{{method}}(data{{#params}}, {{name}}{{/params}})
+{{#singleBranch}}
+{{#onlyBranch}}
+{{#singleFrom}}
+      raise ArgumentError, "invalid_state_for_command" unless data.status == {{{onlyFrom}}}
+{{/singleFrom}}
+{{^singleFrom}}
+      raise ArgumentError, "invalid_state_for_command" unless [{{{fromList}}}].include?(data.status)
+{{/singleFrom}}
+{{#guards}}
+      raise ArgumentError, "{{code}}" if {{{failure}}}
+{{/guards}}
+{{#changes}}
+      data.{{field}} = {{{value}}}
+{{/changes}}
+{{/onlyBranch}}
+{{/singleBranch}}
+{{^singleBranch}}
+{{#branches}}
+{{#singleFrom}}
+      if data.status == {{{onlyFrom}}}
+{{/singleFrom}}
+{{^singleFrom}}
+      if [{{{fromList}}}].include?(data.status)
+{{/singleFrom}}
+{{#guards}}
+        raise ArgumentError, "{{code}}" if {{{failure}}}
+{{/guards}}
+{{#changes}}
+        data.{{field}} = {{{value}}}
+{{/changes}}
+        return
+      end
+{{/branches}}
+      raise ArgumentError, "invalid_state_for_command"
+{{/singleBranch}}
+    end
+
+{{/commands}}
+{{#forgotten}}
+    # {{rule}} must always hold, and nothing in this module checks it.
+{{/forgotten}}
+  end
+end

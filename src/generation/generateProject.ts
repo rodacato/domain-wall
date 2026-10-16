@@ -7,6 +7,7 @@ import { renderTemplate } from "./rendering/renderTemplate";
 import { buildAggregateTestPlan, buildValueObjectTestPlans } from "./test-plan/buildTestPlan";
 import { buildWorkflowTestPlan } from "./test-plan/buildWorkflowTestPlan";
 import { buildAdapterTestsView, buildAdapterView } from "./viewmodel/buildAdapterViews";
+import { buildAnemicView } from "./viewmodel/buildAnemicView";
 import { buildAggregateView, stateLiteral } from "./viewmodel/buildAggregateView";
 import { buildEventsView } from "./viewmodel/buildEventsView";
 import { buildAggregateTestsView, buildValueObjectTestsView } from "./viewmodel/buildTestViews";
@@ -82,6 +83,7 @@ export function generateProject(
   );
 
   const testedModules: { readonly module: string }[] = [];
+  const illustrations: { readonly module: string }[] = [];
   for (const aggregate of index.pack.aggregates) {
     const stem = descriptor.moduleStem(aggregate.codeName);
     addRendered(
@@ -109,6 +111,16 @@ export function generateProject(
       ),
     );
     testedModules.push({ module: stem });
+
+    const anemicStem = descriptor.moduleStem(`${aggregate.codeName}Anemic`);
+    addRendered(
+      descriptor.filePath(anemicStem, "source"),
+      "source",
+      { kind: "anemic", aggregate: aggregate.codeName },
+      descriptor.templates.anemic,
+      { ...buildAnemicView(index, descriptor, aggregate), module: stem },
+    );
+    illustrations.push({ module: anemicStem });
 
     const adapterView = buildAdapterView(index, descriptor, aggregate);
     const adapterTestsView = buildAdapterTestsView(index, descriptor, aggregate, plan, (state) =>
@@ -163,6 +175,7 @@ export function generateProject(
 
   addRendered(descriptor.testEntry, "test", null, descriptor.templates.testRunner, {
     aggregates: testedModules,
+    illustrations,
   });
 
   if (problems.length > 0) return err(problems);

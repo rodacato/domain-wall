@@ -28,6 +28,7 @@ function CodeStageBody({ session, language, code }: CodeStageProps): ReactNode {
   const { t } = useI18n();
   const generated = useGeneratedCode(session, language);
   const [refusedBy, setRefusedBy] = useState<string | null>(null);
+  const [anemic, setAnemic] = useState(false);
 
   if (code.level === "aggregate" && code.unit?.kind === "aggregate") {
     return (
@@ -50,9 +51,13 @@ function CodeStageBody({ session, language, code }: CodeStageProps): ReactNode {
       </StageOverlay>
     );
   }
-  const file = sourceFileOf(generated.value, code.unit);
+  const aggregate = code.unit?.kind === "aggregate" ? code.unit.aggregate : null;
+  const anemicFile =
+    aggregate === null ? undefined : sourceFileOf(generated.value, { kind: "anemic", aggregate });
+  const showingAnemic = anemic && anemicFile !== undefined;
+  const file = showingAnemic ? anemicFile : sourceFileOf(generated.value, code.unit);
   if (file === undefined) return null;
-  const focus = refusedBy ?? code.focus;
+  const focus = showingAnemic ? null : (refusedBy ?? code.focus);
 
   return (
     <StageOverlay wide>
@@ -63,6 +68,20 @@ function CodeStageBody({ session, language, code }: CodeStageProps): ReactNode {
           aggregate={code.unit.aggregate}
           onRefused={setRefusedBy}
         />
+      )}
+      {anemicFile !== undefined && (
+        <div className="compare">
+          <button
+            className="compare__toggle"
+            aria-pressed={showingAnemic}
+            onClick={() => {
+              setAnemic(!anemic);
+            }}
+          >
+            {t(showingAnemic ? "ui.compare.back" : "ui.compare.show")}
+          </button>
+          {showingAnemic && <p className="compare__note">{t("ui.compare.note")}</p>}
+        </div>
       )}
       <CodeListing
         key={`${file.path}|${focus ?? ""}`}

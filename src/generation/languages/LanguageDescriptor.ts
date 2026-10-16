@@ -65,6 +65,8 @@ export interface LanguageSyntax {
     /** Lets two value objects with different brands be compared by their base type; takes {{value}} and {{base}}. */
     readonly widen: string;
   };
+  /** Set when entity values that follow from their data are plain fields too, as in anemic code. */
+  readonly entityDerivedAsFields?: boolean;
   /** Checks a raw text against an enum and turns it into the member; both take {{type}} and {{value}}. */
   readonly enumFromRaw: { readonly invalid: string; readonly convert: string };
   /** A state of an aggregate; takes {{name}}, {{snake}}, {{constant}} and {{aggregate}}. */
@@ -124,6 +126,7 @@ export interface LanguageDescriptor {
     readonly aggregateTests: string;
     readonly workflow: string;
     readonly workflowTests: string;
+    readonly anemic: string;
     readonly adapter: string;
     readonly adapterTests: string;
     readonly testRunner: string;

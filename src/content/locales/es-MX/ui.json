@@ -457,5 +457,10 @@
       "missing": "Una respuesta correcta menciona: {tokens}",
       "runsInDojo": "Aquí se revisan la sintaxis y la forma; las pruebas generadas se ejecutan en Dojo."
     }
+  },
+  "compare": {
+    "show": "Comparar con la versión anémica",
+    "back": "Volver al modelo rico",
+    "note": "Las mismas reglas, escritas a la manera anémica: los datos no tienen comportamiento, cada quien debe acordarse de llamar a la función correcta, lo que se deduce de los datos son campos que alguien tiene que mantener al día, y las reglas que siempre deben cumplirse no las revisa nadie."
   }
 }

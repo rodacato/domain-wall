@@ -457,5 +457,10 @@
       "missing": "A correct answer mentions: {tokens}",
       "runsInDojo": "The syntax and the shape are checked here; the generated tests run in Dojo."
     }
+  },
+  "compare": {
+    "show": "Compare with the anemic version",
+    "back": "Back to the rich model",
+    "note": "The same rules, written the anemic way: the data has no behavior, every caller must remember to call the right function, values that follow from the data are fields someone has to keep up to date, and the rules that must always hold are checked by nobody."
   }
 }

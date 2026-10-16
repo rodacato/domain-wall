@@ -1,0 +1,86 @@
+# Generated from the "{{packId}}" domain pack. The same behavior as {{module}}.py, written the anemic way.
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Literal
+{{#hasValueObjectImports}}
+
+from value_objects import {{#valueObjectImports}}{{name}}{{^last}}, {{/last}}{{/valueObjectImports}}
+{{/hasValueObjectImports}}
+
+{{statusType}} = Literal[{{#states}}{{{literal}}}{{^last}}, {{/last}}{{/states}}]
+{{#entities}}
+
+
+@dataclass
+class {{name}}:
+{{#fields}}
+    {{name}}: {{{type}}}
+{{/fields}}
+{{#derived}}
+    {{name}}: {{{type}}}
+{{/derived}}
+{{/entities}}
+
+
+⟦anchor {{anemicAnchor}}⟧
+@dataclass
+class {{dataType}}:
+    status: {{statusType}}
+{{#stateFields}}
+    {{name}}: {{{type}}}
+{{/stateFields}}
+⟦/anchor⟧
+{{#derived}}
+
+
+def {{name}}(data: {{dataType}}) -> {{{type}}}:
+    return {{{expression}}}
+{{/derived}}
+{{#commands}}
+
+
+def {{method}}(data: {{dataType}}{{#params}}, {{name}}: {{{type}}}{{/params}}) -> None:
+{{#singleBranch}}
+{{#onlyBranch}}
+{{#singleFrom}}
+    if data.status != {{{onlyFrom}}}:
+        raise ValueError("InvalidStateForCommand")
+{{/singleFrom}}
+{{^singleFrom}}
+    if data.status not in ({{{fromList}}}):
+        raise ValueError("InvalidStateForCommand")
+{{/singleFrom}}
+{{#guards}}
+    if {{{failure}}}:
+        raise ValueError("{{code}}")
+{{/guards}}
+{{#changes}}
+    data.{{field}} = {{{value}}}
+{{/changes}}
+{{/onlyBranch}}
+{{/singleBranch}}
+{{^singleBranch}}
+{{#branches}}
+{{#singleFrom}}
+    if data.status == {{{onlyFrom}}}:
+{{/singleFrom}}
+{{^singleFrom}}
+    if data.status in ({{{fromList}}}):
+{{/singleFrom}}
+{{#guards}}
+        if {{{failure}}}:
+            raise ValueError("{{code}}")
+{{/guards}}
+{{#changes}}
+        data.{{field}} = {{{value}}}
+{{/changes}}
+        return
+{{/branches}}
+    raise ValueError("InvalidStateForCommand")
+{{/singleBranch}}
+{{/commands}}
+{{#forgotten}}
+
+# {{rule}} must always hold, and nothing in this file checks it.
+{{/forgotten}}
