@@ -129,7 +129,13 @@ export function AppShell({
               {scene === undefined ? (
                 <span className="rail__soon">{t("ui.rail.soon")}</span>
               ) : (
-                <span className="rail__soon">
+                <span
+                  className="rail__soon"
+                  title={t("ui.rail.progressHint", {
+                    completed: completion.completed,
+                    total: completion.total,
+                  })}
+                >
                   {t("ui.rail.progress", {
                     completed: completion.completed,
                     total: completion.total,
