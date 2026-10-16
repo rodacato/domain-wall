@@ -102,7 +102,7 @@
 .cover__who h2 {
   margin: 0;
   color: var(--ui-muted);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -296,7 +296,7 @@
   display: block;
   margin-bottom: 8px;
   font-variation-settings: var(--axes-code);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   opacity: 0.75;

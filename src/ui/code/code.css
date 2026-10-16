@@ -82,7 +82,7 @@
 }
 
 .chip__kind {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   opacity: 0.85;
   text-transform: uppercase;
@@ -344,7 +344,7 @@
 .mini small {
   font-family: var(--font-ui);
   font-variation-settings: var(--axes-ui);
-  font-size: 10px;
+  font-size: 12px;
   opacity: 0.88;
 }
 

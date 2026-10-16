@@ -160,7 +160,7 @@ select {
   padding: 2px 12px;
   background: var(--ui-accent);
   color: #fff;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -272,7 +272,7 @@ select {
 .rail__soon {
   margin-left: auto;
   font-variation-settings: var(--axes-ui);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--ui-muted);
 }
@@ -434,6 +434,14 @@ select {
 .note--rejected {
   outline: 4px solid #d6336c;
   outline-offset: 3px;
+}
+
+.note-loupe {
+  z-index: 5;
+  width: 176px;
+  transform: translateX(-50%) rotate(-1deg);
+  box-shadow: 0 14px 30px rgba(40, 25, 10, 0.35);
+  pointer-events: none;
 }
 
 .term {
