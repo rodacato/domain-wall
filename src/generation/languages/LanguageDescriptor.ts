@@ -68,7 +68,7 @@ export interface LanguageSyntax {
     readonly not: string;
     readonly group: string;
   };
-  /** The condition under which a constraint is violated; takes {{value}} and {{limit}}, {{pattern}} or {{anchored}}. */
+  /** The condition under which a constraint is violated; patterns take {{pattern}}, {{anchored}} or {{wholeString}}. */
   readonly constraints: {
     readonly minLength: string;
     readonly maxLength: string;
@@ -79,7 +79,10 @@ export interface LanguageSyntax {
   /** How test code builds a value of each kind. */
   readonly values: {
     readonly scalarValueObject: string;
+    /** Takes {{type}} and the member spelled {{member}} (PascalCase), {{snake}} or {{constant}}. */
     readonly enumMember: string;
+    /** A list of values; takes {{items}}, already joined with commas. */
+    readonly list: string;
     readonly record: string;
     readonly recordField: string;
     readonly absent: string;

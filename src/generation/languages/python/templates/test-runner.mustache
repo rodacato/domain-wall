@@ -1,0 +1,8 @@
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+import test_value_objects
+{{#aggregates}}
+import test_{{module}}
+{{/aggregates}}
+from testing import run_all
+
+run_all([test_value_objects{{#aggregates}}, test_{{module}}{{/aggregates}}])

@@ -1,0 +1,36 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Generic, TypeVar, Union
+
+Value = TypeVar("Value")
+Failure = TypeVar("Failure")
+
+
+@dataclass(frozen=True)
+class Ok(Generic[Value]):
+    value: Value
+    ok = True
+
+
+@dataclass(frozen=True)
+class Err(Generic[Failure]):
+    error: Failure
+    ok = False
+
+
+Result = Union[Ok[Value], Err[Failure]]
+
+
+def ok(value: Value) -> Ok[Value]:
+    return Ok(value)
+
+
+def err(error: Failure) -> Err[Failure]:
+    return Err(error)
+
+
+def assert_present(value: Value | None) -> Value:
+    if value is None:
+        raise ValueError("expected a value but it is absent")
+    return value

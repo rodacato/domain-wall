@@ -1,6 +1,375 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`generating the default pack in TypeScript > reads like hand-written code: the Order aggregate 1`] = `
+exports[`generating the default pack in python > reads like hand-written code: the Order aggregate 1`] = `
+"# Generated from the "hecho-a-mano" domain pack. Do not edit by hand.
+from __future__ import annotations
+
+from dataclasses import dataclass, replace
+from typing import Any, Callable, Literal, Protocol
+
+from events import OrderCancelled, OrderDelivered, OrderLineAdded, OrderPlaced, OrderShipped, PaymentConfirmed, ShippingAddressSet
+from result import Result, assert_present, err, ok
+from value_objects import Address, BuyerId, CancellationReason, ListingId, Money, OrderId, Quantity, TrackingNumber
+
+OrderStatus = Literal["Draft", "Placed", "Paid", "Shipped", "Delivered", "Cancelled"]
+
+OrderErrorCode = Literal[
+    "OrderMustHaveLines",
+    "ShippingAddressRequired",
+    "PaymentMustMatchTotal",
+    "OrderLinesWithinLimit",
+    "InvalidStateForCommand",
+]
+
+OrderEvent = OrderCancelled | OrderDelivered | OrderLineAdded | OrderPlaced | OrderShipped | PaymentConfirmed | ShippingAddressSet
+
+
+@dataclass(frozen=True)
+class OrderError:
+    code: OrderErrorCode
+    command: str | None = None
+    status: OrderStatus | None = None
+
+
+@dataclass(frozen=True)
+class OrderOutcome:
+    order: Order
+    events: tuple[OrderEvent, ...]
+
+
+class OrderRepository(Protocol):
+    def find(self, order_id: OrderId) -> Order | None: ...
+
+    def save(self, order: Order) -> None: ...
+
+
+@dataclass(frozen=True)
+class OrderLine:
+    listing_id: ListingId
+    quantity: Quantity
+    unit_price: Money
+
+    @property
+    def subtotal(self) -> Money:
+        return Money.trusted(self.unit_price * self.quantity)
+
+
+@dataclass(frozen=True)
+class _OrderState:
+    status: OrderStatus
+    order_id: OrderId
+    buyer_id: BuyerId
+    lines: tuple[OrderLine, ...]
+    shipping_address: Address | None
+    tracking_number: TrackingNumber | None
+    cancellation_reason: CancellationReason | None
+
+
+class Order:
+    def __init__(self, state: _OrderState) -> None:
+        self._state = state
+
+    @staticmethod
+    def start(order_id: OrderId, buyer_id: BuyerId) -> Order:
+        return Order(
+            _OrderState(
+                status="Draft",
+                order_id=order_id,
+                buyer_id=buyer_id,
+                lines=(),
+                shipping_address=None,
+                tracking_number=None,
+                cancellation_reason=None,
+            )
+        )
+
+    @property
+    def status(self) -> OrderStatus:
+        return self._state.status
+
+    @property
+    def order_id(self) -> OrderId:
+        return self._state.order_id
+
+    @property
+    def buyer_id(self) -> BuyerId:
+        return self._state.buyer_id
+
+    @property
+    def lines(self) -> tuple[OrderLine, ...]:
+        return self._state.lines
+
+    @property
+    def shipping_address(self) -> Address | None:
+        return self._state.shipping_address
+
+    @property
+    def tracking_number(self) -> TrackingNumber | None:
+        return self._state.tracking_number
+
+    @property
+    def cancellation_reason(self) -> CancellationReason | None:
+        return self._state.cancellation_reason
+
+    @property
+    def total(self) -> Money:
+        return Money.trusted(sum(item.subtotal for item in self._state.lines))
+
+    def add_order_line(self, listing_id: ListingId, quantity: Quantity, unit_price: Money) -> Result[OrderOutcome, OrderError]:
+        if self._state.status != "Draft":
+            return self._reject_invalid_state("AddOrderLine")
+        return self._transition(
+            { "status": "Draft", "lines": (*self._state.lines, OrderLine(listing_id=listing_id, quantity=quantity, unit_price=unit_price)) },
+            lambda upcoming: (
+                OrderLineAdded(order_id=upcoming._state.order_id, listing_id=listing_id, quantity=quantity),
+            ),
+        )
+
+    def set_shipping_address(self, address: Address) -> Result[OrderOutcome, OrderError]:
+        if self._state.status != "Draft":
+            return self._reject_invalid_state("SetShippingAddress")
+        return self._transition(
+            { "status": "Draft", "shipping_address": address },
+            lambda upcoming: (
+                ShippingAddressSet(order_id=upcoming._state.order_id, address=address),
+            ),
+        )
+
+    def place_order(self) -> Result[OrderOutcome, OrderError]:
+        if self._state.status != "Draft":
+            return self._reject_invalid_state("PlaceOrder")
+        if len(self._state.lines) == 0:
+            return err(OrderError(code="OrderMustHaveLines"))
+        if self._state.shipping_address is None:
+            return err(OrderError(code="ShippingAddressRequired"))
+        return self._transition(
+            { "status": "Placed" },
+            lambda upcoming: (
+                OrderPlaced(order_id=upcoming._state.order_id, total=upcoming.total),
+            ),
+        )
+
+    def confirm_payment(self, amount: Money) -> Result[OrderOutcome, OrderError]:
+        if self._state.status != "Placed":
+            return self._reject_invalid_state("ConfirmPayment")
+        if amount != self.total:
+            return err(OrderError(code="PaymentMustMatchTotal"))
+        return self._transition(
+            { "status": "Paid" },
+            lambda upcoming: (
+                PaymentConfirmed(order_id=upcoming._state.order_id, amount=amount),
+            ),
+        )
+
+    def mark_order_shipped(self, tracking_number: TrackingNumber) -> Result[OrderOutcome, OrderError]:
+        if self._state.status != "Paid":
+            return self._reject_invalid_state("MarkOrderShipped")
+        return self._transition(
+            { "status": "Shipped", "tracking_number": tracking_number },
+            lambda upcoming: (
+                OrderShipped(order_id=upcoming._state.order_id, tracking_number=tracking_number),
+            ),
+        )
+
+    def mark_order_delivered(self) -> Result[OrderOutcome, OrderError]:
+        if self._state.status != "Shipped":
+            return self._reject_invalid_state("MarkOrderDelivered")
+        return self._transition(
+            { "status": "Delivered" },
+            lambda upcoming: (
+                OrderDelivered(order_id=upcoming._state.order_id),
+            ),
+        )
+
+    def cancel_order(self, reason: CancellationReason) -> Result[OrderOutcome, OrderError]:
+        if self._state.status not in ("Draft", "Placed", "Paid"):
+            return self._reject_invalid_state("CancelOrder")
+        return self._transition(
+            { "status": "Cancelled", "cancellation_reason": reason },
+            lambda upcoming: (
+                OrderCancelled(order_id=upcoming._state.order_id, reason=reason),
+            ),
+        )
+
+    def _transition(
+        self,
+        changes: dict[str, Any],
+        emit: Callable[[Order], tuple[OrderEvent, ...]],
+    ) -> Result[OrderOutcome, OrderError]:
+        upcoming = Order(replace(self._state, **changes))
+        if len(upcoming._state.lines) > 5:
+            return err(OrderError(code="OrderLinesWithinLimit"))
+        return ok(OrderOutcome(order=upcoming, events=emit(upcoming)))
+
+    def _reject_invalid_state(self, command: str) -> Result[Any, OrderError]:
+        return err(OrderError(code="InvalidStateForCommand", command=command, status=self._state.status))
+"
+`;
+
+exports[`generating the default pack in ruby > reads like hand-written code: the Order aggregate 1`] = `
+"# frozen_string_literal: true
+
+# Generated from the "hecho-a-mano" domain pack. Do not edit by hand.
+require_relative "events"
+require_relative "result"
+require_relative "value_objects"
+
+OrderError = Struct.new(:code, :command, :status, keyword_init: true)
+OrderOutcome = Struct.new(:order, :events, keyword_init: true)
+
+OrderLine = Struct.new(:listing_id, :quantity, :unit_price, keyword_init: true) do
+  def subtotal
+    Money.trusted(unit_price * quantity)
+  end
+end
+
+class Order
+  STATUSES = [:draft, :placed, :paid, :shipped, :delivered, :cancelled].freeze
+
+  State = Struct.new(:status, :order_id, :buyer_id, :lines, :shipping_address, :tracking_number, :cancellation_reason, keyword_init: true)
+  private_constant :State
+
+  def self.start(order_id:, buyer_id:)
+    new(
+      State.new(
+        status: :draft,
+        order_id: order_id,
+        buyer_id: buyer_id,
+        lines: [],
+        shipping_address: nil,
+        tracking_number: nil,
+        cancellation_reason: nil,
+      )
+    )
+  end
+
+  def initialize(state)
+    @state = state
+  end
+
+  def status = @state.status
+
+  def order_id = @state.order_id
+
+  def buyer_id = @state.buyer_id
+
+  def lines = @state.lines
+
+  def shipping_address = @state.shipping_address
+
+  def tracking_number = @state.tracking_number
+
+  def cancellation_reason = @state.cancellation_reason
+
+  def total
+    Money.trusted(self.lines.sum { |item| item.subtotal })
+  end
+
+  def add_order_line(listing_id:, quantity:, unit_price:)
+    return reject_invalid_state("AddOrderLine") unless status == :draft
+    transition(
+      { status: :draft, lines: [*self.lines, OrderLine.new(listing_id: listing_id, quantity: quantity, unit_price: unit_price)] },
+      lambda do |upcoming|
+        [
+          OrderLineAdded.new(order_id: upcoming.order_id, listing_id: listing_id, quantity: quantity),
+        ]
+      end
+    )
+  end
+
+  def set_shipping_address(address:)
+    return reject_invalid_state("SetShippingAddress") unless status == :draft
+    transition(
+      { status: :draft, shipping_address: address },
+      lambda do |upcoming|
+        [
+          ShippingAddressSet.new(order_id: upcoming.order_id, address: address),
+        ]
+      end
+    )
+  end
+
+  def place_order
+    return reject_invalid_state("PlaceOrder") unless status == :draft
+    return reject(:order_must_have_lines) if self.lines.empty?
+    return reject(:shipping_address_required) if self.shipping_address.nil?
+    transition(
+      { status: :placed },
+      lambda do |upcoming|
+        [
+          OrderPlaced.new(order_id: upcoming.order_id, total: upcoming.total),
+        ]
+      end
+    )
+  end
+
+  def confirm_payment(amount:)
+    return reject_invalid_state("ConfirmPayment") unless status == :placed
+    return reject(:payment_must_match_total) if amount != self.total
+    transition(
+      { status: :paid },
+      lambda do |upcoming|
+        [
+          PaymentConfirmed.new(order_id: upcoming.order_id, amount: amount),
+        ]
+      end
+    )
+  end
+
+  def mark_order_shipped(tracking_number:)
+    return reject_invalid_state("MarkOrderShipped") unless status == :paid
+    transition(
+      { status: :shipped, tracking_number: tracking_number },
+      lambda do |upcoming|
+        [
+          OrderShipped.new(order_id: upcoming.order_id, tracking_number: tracking_number),
+        ]
+      end
+    )
+  end
+
+  def mark_order_delivered
+    return reject_invalid_state("MarkOrderDelivered") unless status == :shipped
+    transition(
+      { status: :delivered },
+      lambda do |upcoming|
+        [
+          OrderDelivered.new(order_id: upcoming.order_id),
+        ]
+      end
+    )
+  end
+
+  def cancel_order(reason:)
+    return reject_invalid_state("CancelOrder") unless [:draft, :placed, :paid].include?(status)
+    transition(
+      { status: :cancelled, cancellation_reason: reason },
+      lambda do |upcoming|
+        [
+          OrderCancelled.new(order_id: upcoming.order_id, reason: reason),
+        ]
+      end
+    )
+  end
+
+  private
+
+  def transition(changes, emit)
+    upcoming = self.class.new(State.new(**@state.to_h, **changes))
+    return reject(:order_lines_within_limit) if upcoming.lines.length > 5
+    Result.ok(OrderOutcome.new(order: upcoming, events: emit.call(upcoming)))
+  end
+
+  def reject(code) = Result.err(OrderError.new(code: code))
+
+  def reject_invalid_state(command)
+    Result.err(OrderError.new(code: :invalid_state_for_command, command: command, status: status))
+  end
+end
+"
+`;
+
+exports[`generating the default pack in typescript > reads like hand-written code: the Order aggregate 1`] = `
 "/// <reference lib="es2022" />
 // Generated from the "hecho-a-mano" domain pack. Do not edit by hand.
 import { err, ok, type Result } from "./result";

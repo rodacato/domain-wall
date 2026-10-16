@@ -1,0 +1,37 @@
+# frozen_string_literal: true
+
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+require_relative "result"
+{{#scalars}}
+
+⟦anchor {{anchor}}⟧
+{{name}}Error = Struct.new(:code, keyword_init: true)
+
+module {{name}}
+  def self.create(value)
+{{#violations}}
+    return Result.err({{name}}Error.new(code: :{{code}})) if {{{condition}}}
+{{/violations}}
+    Result.ok(value)
+  end
+
+  def self.trusted(value) = value
+end
+⟦/anchor⟧
+{{/scalars}}
+{{#enums}}
+
+⟦anchor {{anchor}}⟧
+module {{name}}
+{{#members}}
+  {{constant}} = "{{name}}"
+{{/members}}
+end
+⟦/anchor⟧
+{{/enums}}
+{{#records}}
+
+⟦anchor {{anchor}}⟧
+{{name}} = Struct.new({{#fields}}:{{name}}, {{/fields}}keyword_init: true)
+⟦/anchor⟧
+{{/records}}

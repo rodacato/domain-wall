@@ -1,0 +1,55 @@
+# frozen_string_literal: true
+
+require "json"
+require "minitest"
+
+module Testing
+  def must_succeed(result)
+    raise Minitest::Assertion, "expected success but got #{result.error.inspect}" unless result.ok?
+
+    result.value
+  end
+
+  def rejected_code(result)
+    result.ok? ? "(succeeded)" : result.error.code
+  end
+
+  def invalid_state_of(result)
+    return nil if result.ok? || result.error.code != :invalid_state_for_command
+
+    [result.error.command, result.error.status]
+  end
+
+  def event_types(events)
+    events.map(&:type)
+  end
+
+  # Prints one JSON line per test, so a host can read results without parsing Minitest output.
+  class JsonLinesReporter < Minitest::AbstractReporter
+    attr_reader :passed, :failed
+
+    def initialize
+      super
+      @passed = 0
+      @failed = 0
+    end
+
+    def record(result)
+      name = "#{result.klass} #{result.name.delete_prefix('test_').tr('_', ' ')}"
+      if result.passed?
+        @passed += 1
+        puts JSON.generate(type: "test", name: name, status: "passed")
+      else
+        @failed += 1
+        puts JSON.generate(type: "test", name: name, status: "failed", message: result.failure.message)
+      end
+    end
+  end
+
+  def self.run_all
+    reporter = JsonLinesReporter.new
+    Minitest::Runnable.runnables.each { |suite| suite.run(reporter, {}) }
+    puts JSON.generate(type: "summary", passed: reporter.passed, failed: reporter.failed)
+    exit(reporter.failed.zero? ? 0 : 1)
+  end
+end

@@ -1,0 +1,24 @@
+# frozen_string_literal: true
+
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+require "minitest"
+require_relative "testing"
+require_relative "value_objects"
+
+class ValueObjectTest < Minitest::Test
+  include Testing
+{{#scalars}}
+
+  def test_{{slug}}_accepts_its_valid_examples
+{{#valid}}
+    assert {{name}}.create({{{literal}}}).ok?
+{{/valid}}
+  end
+{{#invalid}}
+
+  def test_{{slug}}_rejects_invalid_example_{{number}}
+    assert_equal :{{code}}, rejected_code({{name}}.create({{{literal}}}))
+  end
+{{/invalid}}
+{{/scalars}}
+end

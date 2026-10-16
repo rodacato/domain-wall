@@ -11,6 +11,10 @@ export interface LanguageNaming {
   readonly module: (codeName: string) => string;
   /** The error code as the language spells it: a PascalCase string, or a snake_case symbol name. */
   readonly errorCode: (codeName: string) => string;
+  /** SCREAMING_SNAKE_CASE, for enum members and constants. */
+  readonly constant: (codeName: string) => string;
+  /** snake_case in every language, for test names. */
+  readonly snake: (codeName: string) => string;
 }
 
 export function namingFor(language: ProgrammingLanguageId): LanguageNaming {
@@ -26,5 +30,7 @@ export function namingFor(language: ProgrammingLanguageId): LanguageNaming {
       ),
     errorCode: (codeName) =>
       snakeErrors ? renderCodeName(codeName as CodeName, "snake_case") : codeName,
+    constant: (codeName) => renderCodeName(codeName as CodeName, "SCREAMING_SNAKE_CASE"),
+    snake: (codeName) => renderCodeName(codeName as CodeName, "snake_case"),
   };
 }

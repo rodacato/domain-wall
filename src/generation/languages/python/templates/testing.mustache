@@ -1,0 +1,65 @@
+from __future__ import annotations
+
+import json
+import sys
+import unittest
+from types import ModuleType
+from typing import Any, Sequence, TypeVar
+
+from result import Err, Result
+
+Value = TypeVar("Value")
+
+
+def must_succeed(result: Result[Value, Any]) -> Value:
+    if isinstance(result, Err):
+        raise AssertionError(f"expected success but got {result.error}")
+    return result.value
+
+
+def rejected_code(result: Result[Any, Any]) -> str:
+    """The code of the error a result carries, or a marker when it succeeded."""
+    return result.error.code if isinstance(result, Err) else "(succeeded)"
+
+
+def invalid_state_of(result: Result[Any, Any]) -> tuple[str, str] | None:
+    """The command and status of an InvalidStateForCommand rejection, if that is what happened."""
+    if isinstance(result, Err) and result.error.code == "InvalidStateForCommand":
+        return (result.error.command, result.error.status)
+    return None
+
+
+def event_types(events: Sequence[Any]) -> list[str]:
+    return [event.type for event in events]
+
+
+class _JsonLinesResult(unittest.TestResult):
+    """Prints one JSON line per test, so a host can read results without parsing unittest output."""
+
+    def _report(self, test: unittest.TestCase, status: str, message: str | None = None) -> None:
+        name = test._testMethodName.removeprefix("test_").replace("_", " ")
+        line: dict[str, Any] = {"type": "test", "name": f"{type(test).__name__} {name}", "status": status}
+        if message is not None:
+            line["message"] = message
+        print(json.dumps(line))
+
+    def addSuccess(self, test: unittest.TestCase) -> None:
+        super().addSuccess(test)
+        self._report(test, "passed")
+
+    def addFailure(self, test: unittest.TestCase, err: Any) -> None:
+        super().addFailure(test, err)
+        self._report(test, "failed", str(err[1]))
+
+    def addError(self, test: unittest.TestCase, err: Any) -> None:
+        super().addError(test, err)
+        self._report(test, "failed", str(err[1]))
+
+
+def run_all(modules: Sequence[ModuleType]) -> None:
+    suite = unittest.TestSuite(unittest.defaultTestLoader.loadTestsFromModule(module) for module in modules)
+    result = _JsonLinesResult()
+    suite.run(result)
+    failed = len(result.failures) + len(result.errors)
+    print(json.dumps({"type": "summary", "passed": result.testsRun - failed, "failed": failed}))
+    sys.exit(0 if failed == 0 else 1)

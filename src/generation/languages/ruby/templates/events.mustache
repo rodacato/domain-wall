@@ -1,0 +1,11 @@
+# frozen_string_literal: true
+
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+{{#events}}
+
+⟦anchor {{anchor}}⟧
+{{name}} = Struct.new({{#fields}}:{{name}}, {{/fields}}keyword_init: true) do
+  def type = "{{discriminator}}"
+end
+⟦/anchor⟧
+{{/events}}

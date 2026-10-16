@@ -32,7 +32,11 @@ export function renderValue(renderer: ValueRenderer, type: FieldType, value: Lit
     case "entity":
       return renderLiteral(syntax, value);
     case "list":
-      return `[${(Array.isArray(value) ? value : []).map((item) => renderValue(renderer, type.of, item)).join(", ")}]`;
+      return fill(syntax.values.list, {
+        items: (Array.isArray(value) ? value : [])
+          .map((item) => renderValue(renderer, type.of, item))
+          .join(", "),
+      });
     case "optional":
       return value === null ? syntax.values.absent : renderValue(renderer, type.of, value);
     case "valueObject": {
@@ -45,9 +49,12 @@ export function renderValue(renderer: ValueRenderer, type: FieldType, value: Lit
         });
       }
       if (valueObject?.kind === "enum") {
+        const memberName = typeof value === "string" ? value : "";
         return fill(syntax.values.enumMember, {
           type: typeName,
-          member: naming.type(typeof value === "string" ? value : ""),
+          member: naming.type(memberName),
+          snake: naming.errorCode(memberName),
+          constant: naming.constant(memberName),
         });
       }
       const fields = (valueObject?.kind === "record" ? valueObject.fields : []).map((field) =>
@@ -112,12 +119,15 @@ export interface AggregateTestsView {
   readonly finalStatus: string;
   readonly violations: readonly {
     readonly title: string;
+    /** A snake_case, unique test name for languages whose tests are methods. */
+    readonly slug: string;
     readonly code: string;
     readonly given: readonly CallView[];
     readonly when: string;
   }[];
   readonly invalidStates: readonly {
     readonly title: string;
+    readonly slug: string;
     readonly command: string;
     readonly status: string;
     readonly given: readonly CallView[];
@@ -169,14 +179,16 @@ export function buildAggregateTestsView(
       command: step.command,
     })),
     finalStatus: stateLiteral(plan.finalState),
-    violations: plan.violations.map((test) => ({
+    violations: plan.violations.map((test, position) => ({
       title: `rejects ${test.when.command} with ${test.rule}`,
+      slug: `rejects_${naming.snake(test.when.command)}_with_${naming.snake(test.rule)}_${position + 1}`,
       code: naming.errorCode(test.rule),
       given: givenOf(test.given),
       when: callOf(test.when),
     })),
-    invalidStates: plan.invalidStates.map((test) => ({
+    invalidStates: plan.invalidStates.map((test, position) => ({
       title: `rejects ${test.when.command} while ${test.state}`,
+      slug: `rejects_${naming.snake(test.when.command)}_while_${naming.snake(test.state)}_${position + 1}`,
       command: test.when.command,
       status: stateLiteral(test.state),
       given: givenOf(test.given),
@@ -189,6 +201,7 @@ export interface ValueObjectTestsView {
   readonly imports: readonly { readonly name: string; readonly last: boolean }[];
   readonly scalars: readonly {
     readonly name: string;
+    readonly slug: string;
     readonly valid: readonly { readonly literal: string }[];
     readonly invalid: readonly {
       readonly literal: string;
@@ -208,6 +221,7 @@ export function buildValueObjectTestsView(
     imports: asNamedList(plans.map((plan) => naming.type(plan.valueObject))),
     scalars: plans.map((plan) => ({
       name: naming.type(plan.valueObject),
+      slug: naming.snake(plan.valueObject),
       valid: plan.valid.map((value) => ({ literal: renderLiteral(syntax, value) })),
       invalid: plan.constraints
         .flatMap((constraint) =>

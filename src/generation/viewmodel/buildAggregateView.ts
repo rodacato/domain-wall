@@ -63,6 +63,7 @@ export interface CommandView {
   readonly anchor: string;
   readonly commandName: string;
   readonly params: readonly Named[];
+  readonly hasParams: boolean;
   readonly branches: readonly BranchView[];
   readonly singleBranch: boolean;
   readonly onlyBranch: BranchView | undefined;
@@ -337,6 +338,7 @@ function commandView(
         type: renderFieldType(descriptor.syntax, naming, param.type),
       })),
     ),
+    hasParams: command.params.length > 0,
     branches,
     singleBranch: branches.length === 1,
     onlyBranch: branches.length === 1 ? branches[0] : undefined,

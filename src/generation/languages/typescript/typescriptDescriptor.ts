@@ -59,6 +59,7 @@ export const typescriptDescriptor: LanguageDescriptor = {
     values: {
       scalarValueObject: "mustSucceed({{type}}.create({{literal}}))",
       enumMember: "{{type}}.{{member}}",
+      list: "[{{items}}]",
       record: "{ {{fields}} }",
       recordField: "{{name}}: {{value}}",
       absent: "undefined",

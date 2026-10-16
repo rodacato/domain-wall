@@ -1,0 +1,138 @@
+# frozen_string_literal: true
+
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+require_relative "events"
+require_relative "result"
+require_relative "value_objects"
+
+{{errorType}} = Struct.new(:code, :command, :status, keyword_init: true)
+{{outcomeType}} = Struct.new(:{{instance}}, :events, keyword_init: true)
+{{#entities}}
+
+⟦anchor {{anchor}}⟧
+{{name}} = Struct.new({{#fields}}:{{name}}, {{/fields}}keyword_init: true) do
+{{#derived}}
+  def {{name}}
+    {{{expression}}}
+  end
+{{/derived}}
+end
+⟦/anchor⟧
+{{/entities}}
+
+⟦anchor {{anchor}}⟧
+class {{name}}
+  STATUSES = [{{#states}}⟦anchor {{anchor}}⟧{{{literal}}}⟦/anchor⟧{{^last}}, {{/last}}{{/states}}].freeze
+
+  State = Struct.new(:status, {{#stateFields}}:{{name}}, {{/stateFields}}keyword_init: true)
+  private_constant :State
+
+  def self.start({{#startParams}}{{name}}:{{^last}}, {{/last}}{{/startParams}})
+    new(
+      State.new(
+        status: {{{initialStatus}}},
+{{#stateFields}}
+        {{name}}: {{{initial}}},
+{{/stateFields}}
+      )
+    )
+  end
+
+  def initialize(state)
+    @state = state
+  end
+
+  def status = @state.status
+{{#stateFields}}
+
+  def {{name}} = @state.{{name}}
+{{/stateFields}}
+{{#derived}}
+
+  def {{name}}
+    {{{expression}}}
+  end
+{{/derived}}
+{{#commands}}
+
+⟦anchor {{anchor}}⟧
+  def {{method}}{{#hasParams}}({{#params}}{{name}}:{{^last}}, {{/last}}{{/params}}){{/hasParams}}
+{{#singleBranch}}
+{{#onlyBranch}}
+{{#singleFrom}}
+    return reject_invalid_state("{{commandName}}") unless status == {{{onlyFrom}}}
+{{/singleFrom}}
+{{^singleFrom}}
+    return reject_invalid_state("{{commandName}}") unless [{{{fromList}}}].include?(status)
+{{/singleFrom}}
+{{#guards}}
+⟦anchor {{anchor}}⟧
+    return reject(:{{code}}) if {{{failure}}}
+⟦/anchor⟧
+{{/guards}}
+⟦anchor {{anchor}}⟧
+    transition(
+      { {{#changes}}{{field}}: {{{value}}}{{^last}}, {{/last}}{{/changes}} },
+      lambda do |upcoming|
+        [
+{{#events}}
+          {{type}}.new({{#fields}}{{name}}: {{{value}}}{{^last}}, {{/last}}{{/fields}}),
+{{/events}}
+        ]
+      end
+    )
+⟦/anchor⟧
+{{/onlyBranch}}
+{{/singleBranch}}
+{{^singleBranch}}
+{{#branches}}
+{{#singleFrom}}
+    if status == {{{onlyFrom}}}
+{{/singleFrom}}
+{{^singleFrom}}
+    if [{{{fromList}}}].include?(status)
+{{/singleFrom}}
+{{#guards}}
+⟦anchor {{anchor}}⟧
+      return reject(:{{code}}) if {{{failure}}}
+⟦/anchor⟧
+{{/guards}}
+⟦anchor {{anchor}}⟧
+      return transition(
+        { {{#changes}}{{field}}: {{{value}}}{{^last}}, {{/last}}{{/changes}} },
+        lambda do |upcoming|
+          [
+{{#events}}
+            {{type}}.new({{#fields}}{{name}}: {{{value}}}{{^last}}, {{/last}}{{/fields}}),
+{{/events}}
+          ]
+        end
+      )
+⟦/anchor⟧
+    end
+{{/branches}}
+    reject_invalid_state("{{commandName}}")
+{{/singleBranch}}
+  end
+⟦/anchor⟧
+{{/commands}}
+
+  private
+
+  def transition(changes, emit)
+    upcoming = self.class.new(State.new(**@state.to_h, **changes))
+{{#invariants}}
+⟦anchor {{anchor}}⟧
+    return reject(:{{code}}) if {{{failure}}}
+⟦/anchor⟧
+{{/invariants}}
+    Result.ok({{outcomeType}}.new({{instance}}: upcoming, events: emit.call(upcoming)))
+  end
+
+  def reject(code) = Result.err({{errorType}}.new(code: code))
+
+  def reject_invalid_state(command)
+    Result.err({{errorType}}.new(code: :invalid_state_for_command, command: command, status: status))
+  end
+end
+⟦/anchor⟧

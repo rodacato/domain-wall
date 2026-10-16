@@ -1,0 +1,21 @@
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+import unittest
+
+from result import Ok
+from testing import rejected_code
+from value_objects import {{#imports}}{{name}}{{^last}}, {{/last}}{{/imports}}
+
+
+class ValueObjectTests(unittest.TestCase):
+{{#scalars}}
+    def test_{{slug}}_accepts_its_valid_examples(self) -> None:
+{{#valid}}
+        self.assertIsInstance({{name}}.create({{{literal}}}), Ok)
+{{/valid}}
+{{#invalid}}
+
+    def test_{{slug}}_rejects_invalid_example_{{number}}_with_{{code}}(self) -> None:
+        self.assertEqual("{{code}}", rejected_code({{name}}.create({{{literal}}})))
+{{/invalid}}
+
+{{/scalars}}

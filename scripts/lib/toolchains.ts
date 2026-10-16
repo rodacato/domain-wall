@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import type { ProgrammingLanguageId } from "../../src/domain/language/ProgrammingLanguage";
 
 /** The real toolchain that runs generated code for one language, on the same versions as Dojo's Piston (ADR 7). */
@@ -45,8 +45,35 @@ const typescriptToolchain: Toolchain = {
   },
 };
 
+/** Runs a command inside a container of the official image, with the project mounted read-only. */
+function inContainer(image: string, projectDirectory: string, command: readonly string[]): string {
+  return capture("docker", [
+    "run",
+    "--rm",
+    "--network=none",
+    "--volume",
+    `${resolve(projectDirectory)}:/project:ro`,
+    "--workdir",
+    "/project",
+    image,
+    ...command,
+  ]);
+}
+
+const pythonToolchain: Toolchain = {
+  run: (projectDirectory) =>
+    inContainer("python:3.10-slim", projectDirectory, ["python", "-B", "run_tests.py"]),
+};
+
+const rubyToolchain: Toolchain = {
+  run: (projectDirectory) =>
+    inContainer("ruby:3.0.1-slim", projectDirectory, ["ruby", "run_tests.rb"]),
+};
+
 const TOOLCHAINS: Partial<Record<ProgrammingLanguageId, Toolchain>> = {
   typescript: typescriptToolchain,
+  python: pythonToolchain,
+  ruby: rubyToolchain,
 };
 
 export function toolchainFor(language: ProgrammingLanguageId): Toolchain | undefined {

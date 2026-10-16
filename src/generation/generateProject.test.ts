@@ -1,16 +1,93 @@
 import { describe, expect, it } from "vitest";
 import { loadTemplates } from "../../scripts/lib/loadTemplates";
+import type { ProgrammingLanguageId } from "../domain/language/ProgrammingLanguage";
 import { buildPackIndex } from "../domain/pack/PackIndex";
 import { loadDefaultPack } from "../domain/pack/packFixtures";
 import type { GeneratedFile, GeneratedProject } from "./GeneratedProject";
 import { generateProject } from "./generateProject";
-import { typescriptDescriptor } from "./languages/typescript/typescriptDescriptor";
+import { descriptorFor } from "./languages/descriptors";
 
-function generateDefaultPack(): GeneratedProject {
+interface LanguageExpectations {
+  readonly language: ProgrammingLanguageId;
+  readonly files: readonly string[];
+  readonly aggregateFile: string;
+  /** How the language spells the error the OrderMustHaveLines rule returns. */
+  readonly ruleError: string;
+}
+
+const EXPECTATIONS: readonly LanguageExpectations[] = [
+  {
+    language: "typescript",
+    files: [
+      "events.ts",
+      "invoice.test.ts",
+      "invoice.ts",
+      "listing.test.ts",
+      "listing.ts",
+      "order.test.ts",
+      "order.ts",
+      "result.ts",
+      "run-tests.ts",
+      "shipment.test.ts",
+      "shipment.ts",
+      "testing.ts",
+      "value-objects.test.ts",
+      "value-objects.ts",
+    ],
+    aggregateFile: "order.ts",
+    ruleError: 'code: "OrderMustHaveLines"',
+  },
+  {
+    language: "python",
+    files: [
+      "events.py",
+      "invoice.py",
+      "listing.py",
+      "order.py",
+      "result.py",
+      "run_tests.py",
+      "shipment.py",
+      "test_invoice.py",
+      "test_listing.py",
+      "test_order.py",
+      "test_shipment.py",
+      "test_value_objects.py",
+      "testing.py",
+      "value_objects.py",
+    ],
+    aggregateFile: "order.py",
+    ruleError: 'code="OrderMustHaveLines"',
+  },
+  {
+    language: "ruby",
+    files: [
+      "events.rb",
+      "invoice.rb",
+      "invoice_test.rb",
+      "listing.rb",
+      "listing_test.rb",
+      "order.rb",
+      "order_test.rb",
+      "result.rb",
+      "run_tests.rb",
+      "shipment.rb",
+      "shipment_test.rb",
+      "testing.rb",
+      "value_objects.rb",
+      "value_objects_test.rb",
+    ],
+    aggregateFile: "order.rb",
+    ruleError: "reject(:order_must_have_lines)",
+  },
+];
+
+function generateDefaultPack(language: ProgrammingLanguageId): GeneratedProject {
+  const descriptor = descriptorFor(language);
+  if (descriptor === undefined) throw new Error(`no descriptor for ${language}`);
   const generated = generateProject(
     buildPackIndex(loadDefaultPack()),
-    typescriptDescriptor,
-    loadTemplates("typescript"),
+    descriptor,
+    loadTemplates(language),
   );
   if (!generated.ok) throw new Error(generated.error.join("\n"));
   return generated.value;
@@ -22,52 +99,35 @@ function fileNamed(project: GeneratedProject, path: string): GeneratedFile {
   return found;
 }
 
-const project = generateDefaultPack();
+describe.each(EXPECTATIONS)("generating the default pack in $language", (expectations) => {
+  const project = generateDefaultPack(expectations.language);
+  const aggregate = fileNamed(project, expectations.aggregateFile);
 
-describe("generating the default pack in TypeScript", () => {
   it("produces the support files, the shared modules, one module and one test file per aggregate, and the runner", () => {
-    expect(project.files.map((file) => file.path).sort()).toEqual(
-      [
-        "events.ts",
-        "invoice.test.ts",
-        "invoice.ts",
-        "listing.test.ts",
-        "listing.ts",
-        "order.test.ts",
-        "order.ts",
-        "result.ts",
-        "run-tests.ts",
-        "shipment.test.ts",
-        "shipment.ts",
-        "testing.ts",
-        "value-objects.test.ts",
-        "value-objects.ts",
-      ].sort(),
-    );
+    expect(project.files.map((file) => file.path).sort()).toEqual([...expectations.files].sort());
   });
 
   it("reads like hand-written code: the Order aggregate", () => {
-    expect(fileNamed(project, "order.ts").content).toMatchSnapshot();
+    expect(aggregate.content).toMatchSnapshot();
   });
 
   it("is deterministic", () => {
-    expect(generateDefaultPack()).toEqual(project);
+    expect(generateDefaultPack(expectations.language)).toEqual(project);
   });
 
-  it("anchors each rule to the line that enforces it", () => {
-    const order = fileNamed(project, "order.ts");
-    const lines = order.content.split("\n");
-    const anchor = order.anchors.find(
+  it("anchors each rule to the lines that enforce it", () => {
+    const lines = aggregate.content.split("\n");
+    const anchor = aggregate.anchors.find(
       (candidate) => candidate.ref === "Order.rule.OrderMustHaveLines",
     );
 
     expect(anchor).toBeDefined();
-    expect(lines[(anchor?.startLine ?? 1) - 1]).toContain('code: "OrderMustHaveLines"');
-    expect(anchor?.startLine).toBe(anchor?.endLine);
+    const anchored = lines.slice((anchor?.startLine ?? 1) - 1, anchor?.endLine).join("\n");
+    expect(anchored).toContain(expectations.ruleError);
   });
 
   it("anchors every command, entity, state and invariant of the aggregate", () => {
-    const refs = new Set(fileNamed(project, "order.ts").anchors.map((anchor) => anchor.ref));
+    const refs = new Set(aggregate.anchors.map((anchor) => anchor.ref));
 
     for (const expected of [
       "Order",

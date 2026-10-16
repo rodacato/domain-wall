@@ -1,0 +1,15 @@
+# frozen_string_literal: true
+
+module Result
+  Ok = Struct.new(:value) do
+    def ok? = true
+  end
+
+  Err = Struct.new(:error) do
+    def ok? = false
+  end
+
+  def self.ok(value) = Ok.new(value)
+
+  def self.err(error) = Err.new(error)
+end

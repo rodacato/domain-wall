@@ -1,0 +1,21 @@
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import ClassVar
+{{#hasValueObjectImports}}
+
+from value_objects import {{#valueObjectImports}}{{name}}{{^last}}, {{/last}}{{/valueObjectImports}}
+{{/hasValueObjectImports}}
+{{#events}}
+
+
+⟦anchor {{anchor}}⟧
+@dataclass(frozen=True)
+class {{name}}:
+    type: ClassVar[str] = "{{discriminator}}"
+{{#fields}}
+    {{name}}: {{{type}}}
+{{/fields}}
+⟦/anchor⟧
+{{/events}}

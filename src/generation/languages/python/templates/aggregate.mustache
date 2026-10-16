@@ -1,0 +1,178 @@
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+from __future__ import annotations
+
+from dataclasses import dataclass, replace
+from typing import Any, Callable, Literal, Protocol
+
+from events import {{#eventImports}}{{name}}{{^last}}, {{/last}}{{/eventImports}}
+from result import Result, assert_present, err, ok
+{{#hasValueObjectImports}}
+from value_objects import {{#valueObjectImports}}{{name}}{{^last}}, {{/last}}{{/valueObjectImports}}
+{{/hasValueObjectImports}}
+
+{{statusType}} = Literal[{{#states}}⟦anchor {{anchor}}⟧{{{literal}}}⟦/anchor⟧{{^last}}, {{/last}}{{/states}}]
+
+{{errorType}}Code = Literal[
+{{#errors}}
+    "{{code}}",
+{{/errors}}
+    "InvalidStateForCommand",
+]
+
+{{eventType}} = {{#events}}{{type}}{{^last}} | {{/last}}{{/events}}
+
+
+@dataclass(frozen=True)
+class {{errorType}}:
+    code: {{errorType}}Code
+    command: str | None = None
+    status: {{statusType}} | None = None
+
+
+@dataclass(frozen=True)
+class {{outcomeType}}:
+    {{instance}}: {{name}}
+    events: tuple[{{eventType}}, ...]
+
+
+class {{repositoryType}}(Protocol):
+    def find(self, {{identityName}}: {{{identityType}}}) -> {{name}} | None: ...
+
+    def save(self, {{instance}}: {{name}}) -> None: ...
+
+{{#entities}}
+
+⟦anchor {{anchor}}⟧
+@dataclass(frozen=True)
+class {{name}}:
+{{#fields}}
+    {{name}}: {{{type}}}
+{{/fields}}
+{{#derived}}
+
+    @property
+    def {{name}}(self) -> {{{type}}}:
+        return {{{expression}}}
+{{/derived}}
+⟦/anchor⟧
+{{/entities}}
+
+
+@dataclass(frozen=True)
+class _{{name}}State:
+    status: {{statusType}}
+{{#stateFields}}
+    {{name}}: {{{type}}}
+{{/stateFields}}
+
+
+⟦anchor {{anchor}}⟧
+class {{name}}:
+    def __init__(self, state: _{{name}}State) -> None:
+        self._state = state
+
+    @staticmethod
+    def start({{#startParams}}{{name}}: {{{type}}}{{^last}}, {{/last}}{{/startParams}}) -> {{name}}:
+        return {{name}}(
+            _{{name}}State(
+                status={{{initialStatus}}},
+{{#stateFields}}
+                {{name}}={{{initial}}},
+{{/stateFields}}
+            )
+        )
+
+    @property
+    def status(self) -> {{statusType}}:
+        return self._state.status
+{{#stateFields}}
+
+    @property
+    def {{name}}(self) -> {{{type}}}:
+        return self._state.{{name}}
+{{/stateFields}}
+{{#derived}}
+
+    @property
+    def {{name}}(self) -> {{{type}}}:
+        return {{{expression}}}
+{{/derived}}
+{{#commands}}
+
+⟦anchor {{anchor}}⟧
+    def {{method}}(self{{#params}}, {{name}}: {{{type}}}{{/params}}) -> Result[{{outcomeType}}, {{errorType}}]:
+{{#singleBranch}}
+{{#onlyBranch}}
+{{#singleFrom}}
+        if self._state.status != {{{onlyFrom}}}:
+            return self._reject_invalid_state("{{commandName}}")
+{{/singleFrom}}
+{{^singleFrom}}
+        if self._state.status not in ({{{fromList}}}):
+            return self._reject_invalid_state("{{commandName}}")
+{{/singleFrom}}
+{{#guards}}
+⟦anchor {{anchor}}⟧
+        if {{{failure}}}:
+            return err({{errorType}}(code="{{code}}"))
+⟦/anchor⟧
+{{/guards}}
+⟦anchor {{anchor}}⟧
+        return self._transition(
+            { {{#changes}}"{{field}}": {{{value}}}{{^last}}, {{/last}}{{/changes}} },
+            lambda upcoming: (
+{{#events}}
+                {{type}}({{#fields}}{{name}}={{{value}}}{{^last}}, {{/last}}{{/fields}}),
+{{/events}}
+            ),
+        )
+⟦/anchor⟧
+{{/onlyBranch}}
+{{/singleBranch}}
+{{^singleBranch}}
+{{#branches}}
+{{#singleFrom}}
+        if self._state.status == {{{onlyFrom}}}:
+{{/singleFrom}}
+{{^singleFrom}}
+        if self._state.status in ({{{fromList}}}):
+{{/singleFrom}}
+{{#guards}}
+⟦anchor {{anchor}}⟧
+            if {{{failure}}}:
+                return err({{errorType}}(code="{{code}}"))
+⟦/anchor⟧
+{{/guards}}
+⟦anchor {{anchor}}⟧
+            return self._transition(
+                { {{#changes}}"{{field}}": {{{value}}}{{^last}}, {{/last}}{{/changes}} },
+                lambda upcoming: (
+{{#events}}
+                    {{type}}({{#fields}}{{name}}={{{value}}}{{^last}}, {{/last}}{{/fields}}),
+{{/events}}
+                ),
+            )
+⟦/anchor⟧
+{{/branches}}
+        return self._reject_invalid_state("{{commandName}}")
+{{/singleBranch}}
+⟦/anchor⟧
+{{/commands}}
+
+    def _transition(
+        self,
+        changes: dict[str, Any],
+        emit: Callable[[{{name}}], tuple[{{eventType}}, ...]],
+    ) -> Result[{{outcomeType}}, {{errorType}}]:
+        upcoming = {{name}}(replace(self._state, **changes))
+{{#invariants}}
+⟦anchor {{anchor}}⟧
+        if {{{failure}}}:
+            return err({{errorType}}(code="{{code}}"))
+⟦/anchor⟧
+{{/invariants}}
+        return ok({{outcomeType}}({{instance}}=upcoming, events=emit(upcoming)))
+
+    def _reject_invalid_state(self, command: str) -> Result[Any, {{errorType}}]:
+        return err({{errorType}}(code="InvalidStateForCommand", command=command, status=self._state.status))
+⟦/anchor⟧

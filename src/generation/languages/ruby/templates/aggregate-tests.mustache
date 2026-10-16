@@ -1,0 +1,41 @@
+# frozen_string_literal: true
+
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+require "minitest"
+require_relative "{{module}}"
+require_relative "testing"
+require_relative "value_objects"
+
+class {{name}}Test < Minitest::Test
+  include Testing
+
+  def test_completes_its_happy_path
+    current = {{name}}.start({{{start}}})
+{{#walkthrough}}
+    step{{number}} = must_succeed({{{call}}})
+    current = step{{number}}.{{instance}}
+    assert_equal [{{{events}}}], event_types(step{{number}}.events)
+{{/walkthrough}}
+    assert_equal {{{finalStatus}}}, current.status
+  end
+{{#violations}}
+
+  def test_{{slug}}
+    current = {{name}}.start({{{start}}})
+{{#given}}
+    current = must_succeed({{{call}}}).{{instance}}
+{{/given}}
+    assert_equal :{{code}}, rejected_code({{{when}}})
+  end
+{{/violations}}
+{{#invalidStates}}
+
+  def test_{{slug}}
+    current = {{name}}.start({{{start}}})
+{{#given}}
+    current = must_succeed({{{call}}}).{{instance}}
+{{/given}}
+    assert_equal ["{{command}}", {{{status}}}], invalid_state_of({{{when}}})
+  end
+{{/invalidStates}}
+end

@@ -1,0 +1,51 @@
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+from __future__ import annotations
+
+import re
+from dataclasses import dataclass
+from enum import Enum
+from typing import Literal
+
+from result import Result, err, ok
+
+{{#scalars}}
+
+⟦anchor {{anchor}}⟧
+@dataclass(frozen=True)
+class {{name}}Error:
+    code: {{#constraintCount}}Literal[{{#errors}}"{{code}}"{{^last}}, {{/last}}{{/errors}}]{{/constraintCount}}{{^constraintCount}}str{{/constraintCount}}
+
+
+class {{name}}({{{baseType}}}):
+    @staticmethod
+    def create(value: {{{baseType}}}) -> Result[{{name}}, {{name}}Error]:
+{{#violations}}
+        if {{{condition}}}:
+            return err({{name}}Error(code="{{code}}"))
+{{/violations}}
+        return ok({{name}}(value))
+
+    @staticmethod
+    def trusted(value: {{{baseType}}}) -> {{name}}:
+        return {{name}}(value)
+⟦/anchor⟧
+{{/scalars}}
+{{#enums}}
+
+⟦anchor {{anchor}}⟧
+class {{name}}(str, Enum):
+{{#members}}
+    {{constant}} = "{{name}}"
+{{/members}}
+⟦/anchor⟧
+{{/enums}}
+{{#records}}
+
+⟦anchor {{anchor}}⟧
+@dataclass(frozen=True)
+class {{name}}:
+{{#fields}}
+    {{name}}: {{{type}}}
+{{/fields}}
+⟦/anchor⟧
+{{/records}}

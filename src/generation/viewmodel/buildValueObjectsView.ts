@@ -62,6 +62,7 @@ function violationCondition(descriptor: LanguageDescriptor, constraint: Constrai
         value: "value",
         pattern: renderString(descriptor.syntax, constraint.value),
         anchored: renderString(descriptor.syntax, `^(?:${constraint.value})$`),
+        wholeString: renderString(descriptor.syntax, `\\A(?:${constraint.value})\\z`),
       });
   }
 }
@@ -88,7 +89,7 @@ function scalarView(descriptor: LanguageDescriptor, valueObject: ScalarValueObje
       condition: violationCondition(descriptor, constraint),
     })),
     brand: `${naming.member(valueObject.codeName)}Brand`,
-    constant: naming.module(valueObject.codeName).toUpperCase().replaceAll("-", "_"),
+    constant: naming.constant(valueObject.codeName),
   };
 }
 
@@ -114,7 +115,7 @@ export function buildValueObjectsView(
             valueObject.members.map((member) => ({
               name: naming.type(member.codeName),
               snake: naming.errorCode(member.codeName),
-              constant: naming.module(member.codeName).toUpperCase().replaceAll("-", "_"),
+              constant: naming.constant(member.codeName),
             })),
           ),
         });

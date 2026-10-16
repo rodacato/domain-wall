@@ -1,0 +1,37 @@
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+import unittest
+
+from {{module}} import {{name}}
+from testing import event_types, invalid_state_of, must_succeed, rejected_code
+{{#hasValueObjectImports}}
+from value_objects import {{#valueObjectImports}}{{name}}{{^last}}, {{/last}}{{/valueObjectImports}}
+{{/hasValueObjectImports}}
+
+
+class {{name}}Tests(unittest.TestCase):
+    def test_completes_its_happy_path(self) -> None:
+        current = {{name}}.start({{{start}}})
+{{#walkthrough}}
+        step{{number}} = must_succeed({{{call}}})
+        current = step{{number}}.{{instance}}
+        self.assertEqual([{{{events}}}], event_types(step{{number}}.events))
+{{/walkthrough}}
+        self.assertEqual({{{finalStatus}}}, current.status)
+{{#violations}}
+
+    def test_{{slug}}(self) -> None:
+        current = {{name}}.start({{{start}}})
+{{#given}}
+        current = must_succeed({{{call}}}).{{instance}}
+{{/given}}
+        self.assertEqual("{{code}}", rejected_code({{{when}}}))
+{{/violations}}
+{{#invalidStates}}
+
+    def test_{{slug}}(self) -> None:
+        current = {{name}}.start({{{start}}})
+{{#given}}
+        current = must_succeed({{{call}}}).{{instance}}
+{{/given}}
+        self.assertEqual(("{{command}}", {{{status}}}), invalid_state_of({{{when}}}))
+{{/invalidStates}}
