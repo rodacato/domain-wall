@@ -1,3 +1,4 @@
+import { MotionConfig } from "motion/react";
 import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { startCourse, type CourseSharedInput } from "../../application/CourseSession";
 import type { SyntaxChecker } from "../../application/codeExercise";
@@ -45,27 +46,29 @@ export function CourseApp({
       locale={preferences.locale}
       onLocaleChange={changeLocale}
     >
-      <SyntaxCheckerProvider checker={syntaxChecker}>
-        {choosing ? (
-          <Onboarding
-            session={session}
-            library={library}
-            initial={preferences}
-            onFinish={(chosen) => {
-              choose(chosen);
-              setChoosing(false);
-            }}
-          />
-        ) : (
-          <AppShell
-            session={session}
-            learner={learner}
-            onReopenOnboarding={() => {
-              setChoosing(true);
-            }}
-          />
-        )}
-      </SyntaxCheckerProvider>
+      <MotionConfig reducedMotion="user">
+        <SyntaxCheckerProvider checker={syntaxChecker}>
+          {choosing ? (
+            <Onboarding
+              session={session}
+              library={library}
+              initial={preferences}
+              onFinish={(chosen) => {
+                choose(chosen);
+                setChoosing(false);
+              }}
+            />
+          ) : (
+            <AppShell
+              session={session}
+              learner={learner}
+              onReopenOnboarding={() => {
+                setChoosing(true);
+              }}
+            />
+          )}
+        </SyntaxCheckerProvider>
+      </MotionConfig>
     </I18nProvider>
   );
 }

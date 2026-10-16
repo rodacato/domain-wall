@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { nextDemoPosition, type DemoPosition } from "../../domain/wall/demoTour";
 import type { Scene, SceneStep } from "../../domain/wall/Scene";
 import { wallAfterStep } from "../../domain/wall/Scene";
 import type { WallState } from "../../domain/wall/WallState";
@@ -9,19 +10,28 @@ export interface ScenePlayer {
   readonly stepIndex: number;
   readonly stepCount: number;
   readonly wall: WallState | undefined;
+  /** Whether the course is playing itself, one step after another. */
+  readonly demo: boolean;
+  readonly toggleDemo: () => void;
   readonly selectScene: (sceneId: string) => void;
   readonly goTo: (stepIndex: number) => void;
   readonly next: () => void;
   readonly previous: () => void;
 }
 
+const DEMO_STEP_MILLISECONDS = 7000;
+
 /** Plays a scene: the wall at any step is the replay of its commands, so stepping backwards is free. */
 export function useScenePlayer(scenes: readonly Scene[]): ScenePlayer {
-  const [sceneId, setSceneId] = useState<string | undefined>(scenes[0]?.id);
-  const [stepIndex, setStepIndex] = useState(0);
+  const [position, setPosition] = useState<DemoPosition>({
+    sceneId: scenes[0]?.id ?? "",
+    stepIndex: 0,
+  });
+  const [demo, setDemo] = useState(false);
 
-  const scene = scenes.find((candidate) => candidate.id === sceneId);
+  const scene = scenes.find((candidate) => candidate.id === position.sceneId);
   const stepCount = scene?.steps.length ?? 0;
+  const { stepIndex } = position;
   const wall = useMemo(
     () => (scene === undefined ? undefined : wallAfterStep(scene, stepIndex)),
     [scene, stepIndex],
@@ -29,7 +39,11 @@ export function useScenePlayer(scenes: readonly Scene[]): ScenePlayer {
 
   const goTo = useCallback(
     (target: number) => {
-      setStepIndex(Math.max(0, Math.min(stepCount - 1, target)));
+      setDemo(false);
+      setPosition((current) => ({
+        ...current,
+        stepIndex: Math.max(0, Math.min(stepCount - 1, target)),
+      }));
     },
     [stepCount],
   );
@@ -40,9 +54,29 @@ export function useScenePlayer(scenes: readonly Scene[]): ScenePlayer {
     goTo(stepIndex - 1);
   }, [goTo, stepIndex]);
   const selectScene = useCallback((id: string) => {
-    setSceneId(id);
-    setStepIndex(0);
+    setDemo(false);
+    setPosition({ sceneId: id, stepIndex: 0 });
   }, []);
+  const toggleDemo = useCallback(() => {
+    setDemo((playing) => !playing);
+  }, []);
+
+  useEffect(() => {
+    if (!demo) return;
+    const timer = window.setInterval(() => {
+      setPosition((current) => {
+        const following = nextDemoPosition(scenes, current);
+        if (following === null) {
+          setDemo(false);
+          return current;
+        }
+        return following;
+      });
+    }, DEMO_STEP_MILLISECONDS);
+    return () => {
+      window.clearInterval(timer);
+    };
+  }, [demo, scenes]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent): void => {
@@ -63,6 +97,8 @@ export function useScenePlayer(scenes: readonly Scene[]): ScenePlayer {
     stepIndex,
     stepCount,
     wall,
+    demo,
+    toggleDemo,
     selectScene,
     goTo,
     next,

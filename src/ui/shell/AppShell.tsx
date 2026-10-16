@@ -10,6 +10,7 @@ import { useI18n } from "../i18n/I18n";
 import { NarrationPanel } from "../narration/NarrationPanel";
 import { WallView } from "../wall/WallView";
 import type { Learner } from "./useLearner";
+import { THEME_CHOICES, useTheme, type ThemeChoice } from "./useTheme";
 import { useScenePlayer } from "./useScenePlayer";
 
 interface AppShellProps {
@@ -26,6 +27,7 @@ const LOCALE_NAMES: Readonly<Record<LocaleCode, string>> = {
 export function AppShell({ session, learner, onReopenOnboarding }: AppShellProps): ReactNode {
   const { locale, setLocale, t } = useI18n();
   const player = useScenePlayer(session.scenes);
+  const [theme, setTheme] = useTheme();
   const { reach } = learner;
   const conceptInView = player.step?.concept ?? null;
 
@@ -61,6 +63,21 @@ export function AppShell({ session, learner, onReopenOnboarding }: AppShellProps
             {SUPPORTED_LOCALES.map((code) => (
               <option key={code} value={code}>
                 {LOCALE_NAMES[code]}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="app__language">
+          {t("ui.theme.label")}
+          <select
+            value={theme}
+            onChange={(event) => {
+              setTheme(event.target.value as ThemeChoice);
+            }}
+          >
+            {THEME_CHOICES.map((choice) => (
+              <option key={choice} value={choice}>
+                {t(`ui.theme.${choice}`)}
               </option>
             ))}
           </select>
@@ -161,6 +178,14 @@ export function AppShell({ session, learner, onReopenOnboarding }: AppShellProps
         <span className="player__position">
           {t("ui.player.position", { current: player.stepIndex + 1, total: player.stepCount })}
         </span>
+        <button
+          className="player__button"
+          aria-pressed={player.demo}
+          onClick={player.toggleDemo}
+          title={t("ui.player.demoHint")}
+        >
+          {player.demo ? `⏸ ${t("ui.player.stopDemo")}` : `▶ ${t("ui.player.demo")}`}
+        </button>
         <button
           className="player__button player__button--primary"
           onClick={player.next}

@@ -8,7 +8,10 @@
     "previous": "Paso anterior",
     "next": "Siguiente paso",
     "position": "Paso {current} de {total}",
-    "restart": "Volver a empezar"
+    "restart": "Volver a empezar",
+    "demo": "Demo",
+    "stopDemo": "Pausar",
+    "demoHint": "Deja que el curso avance solo, paso a paso"
   },
   "narration": {
     "functionalPerspective": "Perspectiva funcional",
@@ -462,5 +465,11 @@
     "show": "Comparar con la versión anémica",
     "back": "Volver al modelo rico",
     "note": "Las mismas reglas, escritas a la manera anémica: los datos no tienen comportamiento, cada quien debe acordarse de llamar a la función correcta, lo que se deduce de los datos son campos que alguien tiene que mantener al día, y las reglas que siempre deben cumplirse no las revisa nadie."
+  },
+  "theme": {
+    "label": "Tema",
+    "auto": "Automático",
+    "light": "Claro",
+    "dark": "Oscuro"
   }
 }

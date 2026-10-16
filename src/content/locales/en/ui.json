@@ -8,7 +8,10 @@
     "previous": "Previous step",
     "next": "Next step",
     "position": "Step {current} of {total}",
-    "restart": "Start over"
+    "restart": "Start over",
+    "demo": "Demo",
+    "stopDemo": "Pause",
+    "demoHint": "Let the course play itself, step by step"
   },
   "narration": {
     "functionalPerspective": "Functional perspective",
@@ -462,5 +465,11 @@
     "show": "Compare with the anemic version",
     "back": "Back to the rich model",
     "note": "The same rules, written the anemic way: the data has no behavior, every caller must remember to call the right function, values that follow from the data are fields someone has to keep up to date, and the rules that must always hold are checked by nobody."
+  },
+  "theme": {
+    "label": "Theme",
+    "auto": "Automatic",
+    "light": "Light",
+    "dark": "Dark"
   }
 }
