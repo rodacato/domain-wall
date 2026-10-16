@@ -1,11 +1,11 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./support";
 
 // The stand-in host is served from the same server, since browsers block public pages from embedding local ones.
 const HOST_ORIGIN = "http://localhost:5192";
 
 /** A page standing in for Dojo: it embeds the course, introduces itself and answers run requests. */
 const HOST_PAGE = `<!doctype html><html><body>
-<iframe id="course" style="width:1360px;height:860px;border:0" src="http://localhost:5192/?hostOrigin=${HOST_ORIGIN}"></iframe>
+<iframe id="course" style="width:1360px;height:860px;border:0" src="http://localhost:5192/?tour=off&hostOrigin=${HOST_ORIGIN}"></iframe>
 <script>
   const frame = document.getElementById("course");
   const received = [];

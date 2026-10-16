@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test, type Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import { expect, test } from "./support";
 
 async function violations(page: Page): Promise<string[]> {
   const result = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze();
@@ -9,14 +10,14 @@ async function violations(page: Page): Promise<string[]> {
   );
 }
 
-async function onboard(page: Page, path = "/"): Promise<void> {
+async function onboard(page: Page, path = "/?tour=off"): Promise<void> {
   await page.goto(path);
   await page.getByRole("button", { name: "Start the workshop" }).click();
   await expect(page.getByRole("navigation", { name: "Course" })).toBeVisible();
 }
 
 test("onboarding has no accessibility violations", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/?tour=off");
   await expect(
     page.getByRole("heading", { name: /language should the course speak/i }),
   ).toBeVisible();
@@ -25,7 +26,7 @@ test("onboarding has no accessibility violations", async ({ page }) => {
   expect(await violations(page)).toEqual([]);
 });
 
-test("the wall and its narration have none", async ({ page }) => {
+test("the wall and its narration have none", { tag: "@smoke" }, async ({ page }) => {
   await onboard(page);
   await page.waitForTimeout(1500);
 
@@ -69,7 +70,7 @@ test("in the dark theme, every step of the context map and the architecture has 
   page,
 }) => {
   test.setTimeout(120_000);
-  await onboard(page, "/?theme=dark");
+  await onboard(page, "/?theme=dark&tour=off");
   const rail = page.getByRole("navigation", { name: "Course" });
   const found: string[] = [];
 
@@ -83,6 +84,20 @@ test("in the dark theme, every step of the context map and the architecture has 
       if (!(await next.isEnabled())) break;
       await next.click();
     }
+  }
+
+  expect(found).toEqual([]);
+});
+
+test("every stop of the guide has none", async ({ page }) => {
+  await onboard(page, "/?tour=on");
+  const guide = page.getByRole("dialog");
+  const found: string[] = [];
+
+  for (let stop = 1; (await guide.count()) > 0; stop += 1) {
+    await page.waitForTimeout(500);
+    for (const violation of await violations(page)) found.push(`stop ${stop}: ${violation}`);
+    await guide.getByRole("button").last().click();
   }
 
   expect(found).toEqual([]);

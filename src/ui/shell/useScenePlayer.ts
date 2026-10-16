@@ -80,7 +80,13 @@ export function useScenePlayer(scenes: readonly Scene[]): ScenePlayer {
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent): void => {
-      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement)
+      const target = event.target;
+      if (
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLSelectElement ||
+        target instanceof HTMLTextAreaElement ||
+        (target instanceof Element && target.closest('[role="dialog"]') !== null)
+      )
         return;
       if (event.key === "ArrowRight") next();
       if (event.key === "ArrowLeft") previous();
