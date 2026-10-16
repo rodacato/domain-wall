@@ -147,7 +147,12 @@
       "factory": "Fábrica",
       "repository": "Repositorio",
       "event": "Evento",
-      "valueObject": "Value object"
+      "valueObject": "Value object",
+      "workflow": "Pipeline",
+      "workflowType": "Tipo",
+      "workflowPort": "Puerto",
+      "workflowStage": "Etapa",
+      "workflowStep": "Paso"
     },
     "anchor": {
       "factory": "Crea un {aggregate} ya válido",
@@ -268,6 +273,27 @@
     },
     "dependencyRule": {
       "general": "Las dependencias del código fuente apuntan solo hacia adentro. Los adaptadores conocen el dominio; el dominio no sabe nada de los adaptadores. Esa regla es la que mantiene libre el centro."
+    },
+    "statesAsTypesCode": {
+      "general": "Cada tipo de aquí son los datos en un paso del proceso: una compra con precio tiene todo lo que tiene una validada, más su total. Nada opcional, nada a medias.",
+      "typescript": "Interfaces simples con campos de solo lectura. El compilador rechaza una ValidatedCheckout donde se necesita una PricedCheckout.",
+      "python": "Dataclasses congelados, uno por paso, construidos solo por la etapa anterior.",
+      "ruby": "Structs con argumentos con nombre, uno por paso. Ruby no te impide pasar el equivocado, así que el orden de las etapas y las pruebas sostienen esa garantía.",
+      "ruby-dry": "Clases Dry::Struct: los atributos con tipo se revisan al construir una instancia, así que una forma equivocada falla ahí mismo."
+    },
+    "pipelineCode": {
+      "general": "El pipeline solo conecta las etapas en orden. Cada línea llama a una etapa con lo que devolvió la anterior y se detiene en el primer fallo. Los puertos son lo que provee el mundo exterior.",
+      "typescript": "`checkoutWorkflow(ports)` devuelve la función que corre el pipeline.",
+      "python": "La función devuelve `run`, que guarda los puertos que recibió.",
+      "ruby": "Una clase que recibe los puertos y corre el pipeline con `call`.",
+      "ruby-dry": "Una clase que recibe los puertos y corre el pipeline con `call`, respondiendo con Success o Failure."
+    },
+    "errorsAsValuesCode": {
+      "general": "Esta etapa nunca lanza una excepción. Cuando el puerto rechaza, devuelve ese fallo como un valor y el pipeline lo pasa, así quien llama siempre recibe una respuesta que puede inspeccionar.",
+      "typescript": "`if (!received.ok) return received;`",
+      "python": "`if isinstance(received, Err): return received`",
+      "ruby": "`return received unless received.ok?`",
+      "ruby-dry": "`return received unless received.success?`"
     }
   },
   "pipeline": {
@@ -406,7 +432,11 @@
       "constant": "Un valor fijo"
     },
     "code": {
-      "task": "Falta la revisión de «{rule}» en {file}. Escríbela donde está el recuadro punteado.",
+      "task": {
+        "implementTheRule": "Falta la revisión de «{subject}» en {file}. Escríbela donde está el recuadro punteado.",
+        "implementTheChange": "El cambio de negocio agrega la regla «{subject}», y falta su revisión en {file}. Escríbela donde está el recuadro punteado.",
+        "addPipelineStage": "El paso «{subject}» no está conectado al pipeline en {file}. Llama a la etapa con lo que devolvió la anterior y detente si falla."
+      },
       "answer": "Tu código",
       "reveal": "Ver la referencia",
       "unfinished": "Reemplaza la nota con tu código",

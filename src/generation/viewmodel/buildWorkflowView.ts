@@ -279,7 +279,7 @@ export function buildWorkflowView(
         : resultValue(resultName(shaped[position - 1]?.output.codeName ?? ""));
     const portArgument = stage.port === undefined ? "" : `, ports.${stage.port.member}`;
     return {
-      anchor: stage.anchor,
+      anchor: stage.anchor.replace("workflow.stage.", "workflow.step."),
       result: resultName(shaped[position]?.output.codeName ?? ""),
       call: `${stage.function}(${previous}${portArgument})`,
       isLast: position === stages.length - 1,

@@ -8,6 +8,8 @@ import {
 } from "../../application/codeExercise";
 import type { CourseSession } from "../../application/CourseSession";
 import type { ExerciseKind } from "../../domain/course/Syllabus";
+import type { LocaleCode } from "../../domain/locale/LocaleRegistry";
+import { labelOfAnchor } from "../../domain/pack/anchorRef";
 import type { ProgrammingLanguageId } from "../../domain/language/ProgrammingLanguage";
 import "../code/code.css";
 import { tokenizeLine } from "../code/highlight";
@@ -66,34 +68,30 @@ export function CodeBoard({ session, kind, language, onSolve }: CodeBoardProps):
     <Editor
       key={`${kind}-${language}`}
       exercise={exercise}
-      ruleLabel={ruleLabelOf(session, exercise, locale)}
+      subject={subjectLabelOf(session, exercise, locale)}
       checker={checker}
       onSolve={onSolve}
     />
   );
 }
 
-function ruleLabelOf(
+function subjectLabelOf(
   session: CourseSession,
   exercise: CodeExercise,
-  locale: "en" | "es-MX",
+  locale: LocaleCode,
 ): string {
-  const source =
-    exercise.kind === "implementTheChange" ? (session.evolved ?? session.index) : session.index;
-  return (
-    source.aggregates.get(exercise.aggregate)?.rules.find((rule) => rule.codeName === exercise.rule)
-      ?.label[locale] ?? exercise.rule
-  );
+  const source = exercise.forEvolvedModel ? (session.evolved ?? session.index) : session.index;
+  return labelOfAnchor(source, exercise.anchorRef)?.[locale] ?? exercise.anchorRef;
 }
 
 function Editor({
   exercise,
-  ruleLabel,
+  subject,
   checker,
   onSolve,
 }: {
   readonly exercise: CodeExercise;
-  readonly ruleLabel: string;
+  readonly subject: string;
   readonly checker: ReturnType<typeof useSyntaxChecker>;
   readonly onSolve: () => void;
 }): ReactNode {
@@ -120,7 +118,7 @@ function Editor({
   return (
     <div className="codeboard">
       <p className="codeboard__task">
-        {t("ui.exercise.code.task", { rule: ruleLabel, file: exercise.path })}
+        {t(`ui.exercise.code.task.${exercise.kind}`, { subject, file: exercise.path })}
       </p>
       <div className="code codeboard__editor">
         <Lines text={shownBefore.join("\n")} language={exercise.language} from={firstShown} />

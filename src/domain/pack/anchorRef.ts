@@ -13,7 +13,12 @@ export type AnchorKind =
   | "factory"
   | "repository"
   | "event"
-  | "valueObject";
+  | "valueObject"
+  | "workflow"
+  | "workflowType"
+  | "workflowPort"
+  | "workflowStage"
+  | "workflowStep";
 
 export interface AnchorRef {
   readonly kind: AnchorKind;
@@ -22,6 +27,13 @@ export interface AnchorRef {
   /** The concept the anchor names: a command, rule, state, entity, event or value object. */
   readonly name: string | null;
 }
+
+const WORKFLOW_PARTS: Readonly<Record<string, AnchorKind>> = {
+  type: "workflowType",
+  port: "workflowPort",
+  stage: "workflowStage",
+  step: "workflowStep",
+};
 
 const AGGREGATE_MEMBER_KINDS = ["command", "rule", "invariant", "state", "entity", "transition"];
 
@@ -35,6 +47,12 @@ export function parseAnchorRef(ref: string): AnchorRef | undefined {
   }
   if (first === "valueObject" && second !== undefined) {
     return { kind: "valueObject", aggregate: null, name: second };
+  }
+  if (first === "workflow" && second !== undefined) {
+    const part = WORKFLOW_PARTS[second];
+    if (part !== undefined && third !== undefined)
+      return { kind: part, aggregate: null, name: third };
+    return { kind: "workflow", aggregate: null, name: second };
   }
   if (second === undefined) return { kind: "aggregate", aggregate: first, name: null };
   if (second === "factory" || second === "repository") {
@@ -68,6 +86,14 @@ export function labelOfAnchor(index: PackIndex, ref: string): LocalizedText | un
       return parsed.name === null ? undefined : index.events.get(parsed.name)?.label;
     case "valueObject":
       return parsed.name === null ? undefined : index.valueObjects.get(parsed.name)?.label;
+    case "workflow":
+      return index.pack.workflow.label;
+    case "workflowStage":
+    case "workflowStep":
+      return index.pack.workflow.stages.find((stage) => stage.codeName === parsed.name)?.label;
+    case "workflowType":
+    case "workflowPort":
+      return parsed.name === null ? undefined : { "es-MX": parsed.name, en: parsed.name };
     case "factory":
     case "repository":
       return undefined;

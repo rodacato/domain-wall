@@ -53,6 +53,16 @@ describe("code exercises", () => {
     },
   );
 
+  it.each(PROGRAMMING_LANGUAGES)(
+    "%s: the reference wiring of the pipeline step is plausible",
+    async (language) => {
+      const exercise = deriveCodeExercise("addPipelineStage", index, evolved, language, templates);
+      if (exercise === undefined) throw new Error("no exercise");
+
+      expect((await checkCodeAnswer(exercise, exercise.reference, checker)).plausible).toBe(true);
+    },
+  );
+
   it("puts the answer back exactly where the hole was", () => {
     const exercise = deriveCodeExercise(
       "implementTheRule",
@@ -83,7 +93,7 @@ describe("code exercises", () => {
 
   it("has no code exercise for the kinds that need other generated code", () => {
     expect(
-      deriveCodeExercise("addPipelineStage", index, evolved, "typescript", templates),
+      deriveCodeExercise("implementRepositoryAdapter", index, evolved, "typescript", templates),
     ).toBeUndefined();
   });
 });

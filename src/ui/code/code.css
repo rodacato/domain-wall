@@ -200,6 +200,22 @@
   --line-color: var(--note-readModel);
   --chip-color: var(--note-readModel);
 }
+.code__line--workflow,
+.code__line--workflowStage,
+.code__line--workflowStep,
+.chip--workflow,
+.chip--workflowStage,
+.chip--workflowStep {
+  --line-color: var(--note-command);
+  --chip-color: var(--note-command);
+}
+.code__line--workflowType,
+.chip--workflowType {
+  --line-color: var(--note-readModel);
+  --chip-color: var(--note-readModel);
+}
+.code__line--workflowPort,
+.chip--workflowPort,
 .code__line--factory,
 .code__line--repository,
 .chip--factory,

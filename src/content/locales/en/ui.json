@@ -147,7 +147,12 @@
       "factory": "Factory",
       "repository": "Repository",
       "event": "Event",
-      "valueObject": "Value object"
+      "valueObject": "Value object",
+      "workflow": "Pipeline",
+      "workflowType": "Type",
+      "workflowPort": "Port",
+      "workflowStage": "Stage",
+      "workflowStep": "Step"
     },
     "anchor": {
       "factory": "Creates a valid {aggregate}",
@@ -268,6 +273,27 @@
     },
     "dependencyRule": {
       "general": "Source code dependencies point only inwards. Adapters know the domain; the domain knows nothing of adapters. That one rule is what keeps the centre free."
+    },
+    "statesAsTypesCode": {
+      "general": "Each type here is the data at one step of the process: a priced checkout has everything a validated one has, plus its total. Nothing optional, nothing half-filled.",
+      "typescript": "Plain interfaces with readonly fields. The compiler refuses a ValidatedCheckout where a PricedCheckout is needed.",
+      "python": "Frozen dataclasses, one per step, built only by the stage before.",
+      "ruby": "Structs with keyword arguments, one per step. Ruby will not stop you passing the wrong one, so the order of the stages and the tests carry that guarantee.",
+      "ruby-dry": "Dry::Struct classes: the typed attributes are checked when an instance is built, so a wrong shape fails right there."
+    },
+    "pipelineCode": {
+      "general": "The pipeline only wires the stages in order. Each line calls a stage with what the previous one returned and stops at the first failure. The ports are what the outside world provides.",
+      "typescript": "`checkoutWorkflow(ports)` returns the function that runs the pipeline.",
+      "python": "The function returns `run`, which holds the ports it was given.",
+      "ruby": "A class that receives the ports and runs the pipeline with `call`.",
+      "ruby-dry": "A class that receives the ports and runs the pipeline with `call`, answering with Success or Failure."
+    },
+    "errorsAsValuesCode": {
+      "general": "This stage never raises. When the port refuses, it returns that failure as a value and the pipeline passes it on, so the caller always gets an answer it can inspect.",
+      "typescript": "`if (!received.ok) return received;`",
+      "python": "`if isinstance(received, Err): return received`",
+      "ruby": "`return received unless received.ok?`",
+      "ruby-dry": "`return received unless received.success?`"
     }
   },
   "pipeline": {
@@ -406,7 +432,11 @@
       "constant": "A fixed value"
     },
     "code": {
-      "task": "The check for “{rule}” is missing in {file}. Write it where the dashed box is.",
+      "task": {
+        "implementTheRule": "The check for “{subject}” is missing in {file}. Write it where the dashed box is.",
+        "implementTheChange": "The business change adds the rule “{subject}”, and its check is missing in {file}. Write it where the dashed box is.",
+        "addPipelineStage": "The step “{subject}” is not wired into the pipeline in {file}. Call the stage with what the previous one returned, and stop if it fails."
+      },
       "answer": "Your code",
       "reveal": "Show the reference",
       "unfinished": "Replace the note with your code",

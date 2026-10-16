@@ -29,6 +29,10 @@ const LEGEND_KINDS: readonly AnchorKind[] = [
   "repository",
   "event",
   "valueObject",
+  "workflow",
+  "workflowType",
+  "workflowPort",
+  "workflowStage",
 ];
 
 function kindAt(file: GeneratedFile, line: number): AnchorKind | null {

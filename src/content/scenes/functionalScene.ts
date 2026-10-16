@@ -36,6 +36,11 @@ export function buildFunctionalScene(index: PackIndex): Scene {
       ? {}
       : { [failing.codeName]: firstError.codeName };
 
+  const shaped = shapeWorkflow(index);
+  const workflowType = `workflow.type.${shaped[2]?.output.codeName ?? shaped[0]?.output.codeName ?? ""}`;
+  const pipelineRef = `workflow.${index.pack.workflow.codeName}`;
+  const failingStageRef = `workflow.stage.${failing?.codeName ?? index.pack.workflow.stages[0]?.codeName ?? ""}`;
+
   const steps: SceneStep[] = [
     {
       id: "constrained-types",
@@ -59,6 +64,15 @@ export function buildFunctionalScene(index: PackIndex): Scene {
       commands: [{ kind: "showPipeline", view: "types" }],
     },
     {
+      id: "states-as-types-code",
+      concept: conceptId("functional.states-as-types"),
+      dialogue: null,
+      focus: lookAt("statesAsTypesCode", workflowType),
+      commands: [
+        { kind: "showCode", level: "code", unit: { kind: "workflow" }, focus: workflowType },
+      ],
+    },
+    {
       id: "illegal-states",
       concept: conceptId("functional.illegal-states"),
       dialogue: null,
@@ -73,11 +87,29 @@ export function buildFunctionalScene(index: PackIndex): Scene {
       commands: [{ kind: "showPipeline", view: "run" }],
     },
     {
+      id: "pipeline-code",
+      concept: conceptId("functional.pipeline"),
+      dialogue: null,
+      focus: lookAt("pipelineCode", pipelineRef),
+      commands: [
+        { kind: "showCode", level: "code", unit: { kind: "workflow" }, focus: pipelineRef },
+      ],
+    },
+    {
       id: "errors-as-values",
       concept: conceptId("functional.errors-as-values"),
       dialogue: null,
       focus: lookAt("errorsAsValues"),
       commands: [{ kind: "showPipeline", view: "run", failures: failure, interactive: true }],
+    },
+    {
+      id: "errors-as-values-code",
+      concept: conceptId("functional.errors-as-values"),
+      dialogue: null,
+      focus: lookAt("errorsAsValuesCode", failingStageRef),
+      commands: [
+        { kind: "showCode", level: "code", unit: { kind: "workflow" }, focus: failingStageRef },
+      ],
     },
   ];
 

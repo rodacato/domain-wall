@@ -27,6 +27,18 @@ describe("parseAnchorRef", () => {
     expect(parseAnchorRef("valueObject.Money")?.kind).toBe("valueObject");
   });
 
+  it("reads the references of the workflow", () => {
+    expect(parseAnchorRef("workflow.CheckoutWorkflow")?.kind).toBe("workflow");
+    expect(parseAnchorRef("workflow.stage.PriceCheckout")).toEqual({
+      kind: "workflowStage",
+      aggregate: null,
+      name: "PriceCheckout",
+    });
+    expect(parseAnchorRef("workflow.step.PriceCheckout")?.kind).toBe("workflowStep");
+    expect(parseAnchorRef("workflow.type.PricedCheckout")?.kind).toBe("workflowType");
+    expect(parseAnchorRef("workflow.port.PaymentGatewayPort")?.kind).toBe("workflowPort");
+  });
+
   it("rejects references it does not know", () => {
     expect(parseAnchorRef("Order.unknown.Thing")).toBeUndefined();
   });
@@ -40,6 +52,11 @@ describe("labelOfAnchor", () => {
     expect(labelOfAnchor(index, "event.OrderPlaced")?.en).toBeDefined();
     expect(labelOfAnchor(index, "valueObject.Money")?.en).toBeDefined();
     expect(labelOfAnchor(index, "Order.entity.OrderLine")?.en).toBeDefined();
+  });
+
+  it("labels the stages of the workflow with the pack's own text", () => {
+    expect(labelOfAnchor(index, "workflow.stage.PriceCheckout")?.en).toBe("Compute the total");
+    expect(labelOfAnchor(index, "workflow.CheckoutWorkflow")?.en).toBe("Checkout workflow");
   });
 
   it("leaves the factory and the repository to the UI", () => {
