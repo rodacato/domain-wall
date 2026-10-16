@@ -6,6 +6,8 @@ export const rubyDryDescriptor: LanguageDescriptor = {
   id: "ruby-dry",
   syntax: {
     ...rubyDescriptor.syntax,
+    expressions: { ...rubyDescriptor.syntax.expressions, resultValue: "{{result}}.value!" },
+    enumFromRaw: { invalid: "!{{type}}::Type.valid?({{value}})", convert: "{{value}}" },
     types: {
       string: "Types::Strict::String",
       integer: "Types::Strict::Integer",

@@ -34,7 +34,9 @@ export const rubyDescriptor: LanguageDescriptor = {
       append: "[*{{current}}, {{value}}]",
       assertPresent: "{{value}}",
       widen: "{{value}}",
+      resultValue: "{{result}}.value",
     },
+    enumFromRaw: { invalid: "!{{type}}::VALUES.include?({{value}})", convert: "{{value}}" },
     stateLiteral: ":{{snake}}",
     operators: {
       arithmetic: { add: "+", subtract: "-", multiply: "*" },
@@ -74,6 +76,8 @@ export const rubyDescriptor: LanguageDescriptor = {
     aggregate: "aggregate",
     valueObjectTests: "value-object-tests",
     aggregateTests: "aggregate-tests",
+    workflow: "workflow",
+    workflowTests: "workflow-tests",
     testRunner: "test-runner",
   },
   supportFiles: [

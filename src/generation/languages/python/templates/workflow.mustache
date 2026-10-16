@@ -1,0 +1,98 @@
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Callable, Literal, Protocol
+
+from result import Err, Result, err, ok
+{{#hasValueObjectImports}}
+from value_objects import {{#valueObjectImports}}{{name}}{{^last}}, {{/last}}{{/valueObjectImports}}
+{{/hasValueObjectImports}}
+
+{{errorType}}Code = Literal[{{#errorCodes}}"{{code}}"{{^last}}, {{/last}}{{/errorCodes}}]
+
+
+@dataclass(frozen=True)
+class {{errorType}}:
+    code: {{errorType}}Code
+{{#types}}
+
+
+⟦anchor {{anchor}}⟧
+@dataclass(frozen=True)
+class {{name}}:
+{{#fields}}
+    {{name}}: {{{type}}}
+{{/fields}}
+⟦/anchor⟧
+{{/types}}
+{{#ports}}
+
+
+⟦anchor {{anchor}}⟧
+@dataclass(frozen=True)
+class {{receiptType}}:
+{{#receipt}}
+    {{name}}: {{{type}}}
+{{/receipt}}
+
+
+class {{type}}(Protocol):
+    def {{operation}}(self, input: {{inputType}}) -> Result[{{receiptType}}, {{errorType}}]: ...
+⟦/anchor⟧
+{{/ports}}
+
+
+@dataclass(frozen=True)
+class {{portsType}}:
+{{#ports}}
+    {{member}}: {{type}}
+{{/ports}}
+{{#stages}}
+
+
+⟦anchor {{anchor}}⟧
+def {{function}}(input: {{inputType}}{{#port}}, port: {{type}}{{/port}}) -> Result[{{outputType}}, {{errorType}}]:
+{{#isValidate}}
+{{#validations}}
+{{#isScalar}}
+    {{name}} = {{type}}.create({{{raw}}})
+    if isinstance({{name}}, Err):
+        return err({{errorType}}(code="{{errorCode}}"))
+{{/isScalar}}
+{{#isEnum}}
+    if {{{enumInvalid}}}:
+        return err({{errorType}}(code="{{errorCode}}"))
+{{/isEnum}}
+{{/validations}}
+{{/isValidate}}
+{{#isPort}}
+{{#port}}
+    received = port.{{operation}}(input)
+{{/port}}
+    if isinstance(received, Err):
+        return received
+{{/isPort}}
+    return ok({{outputType}}({{#outputs}}{{name}}={{{value}}}{{^last}}, {{/last}}{{/outputs}}))
+⟦/anchor⟧
+{{/stages}}
+
+
+⟦anchor {{anchor}}⟧
+def {{functionName}}(ports: {{portsType}}) -> Callable[[{{inputType}}], Result[{{outputType}}, {{errorType}}]]:
+    def run(input: {{inputType}}) -> Result[{{outputType}}, {{errorType}}]:
+{{#steps}}
+⟦anchor {{anchor}}⟧
+{{#isLast}}
+        return {{{call}}}
+{{/isLast}}
+{{^isLast}}
+        {{result}} = {{{call}}}
+        if isinstance({{result}}, Err):
+            return {{result}}
+{{/isLast}}
+⟦/anchor⟧
+{{/steps}}
+
+    return run
+⟦/anchor⟧

@@ -1,0 +1,93 @@
+# frozen_string_literal: true
+
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+require "dry-monads"
+require "dry-struct"
+require_relative "types"
+require_relative "value_objects"
+
+class {{errorType}} < Dry::Struct
+  attribute :code, Types::Strict::Symbol
+end
+{{#types}}
+
+⟦anchor {{anchor}}⟧
+class {{name}} < Dry::Struct
+{{#fields}}
+  attribute :{{name}}, {{{type}}}
+{{/fields}}
+end
+⟦/anchor⟧
+{{/types}}
+{{#ports}}
+
+⟦anchor {{anchor}}⟧
+class {{receiptType}} < Dry::Struct
+{{#receipt}}
+  attribute :{{name}}, {{{type}}}
+{{/receipt}}
+end
+
+# A {{type}} answers {{operation}}({{inputType}}) with a Result (Success or Failure) of {{receiptType}}.
+⟦/anchor⟧
+{{/ports}}
+
+class {{portsType}} < Dry::Struct
+{{#ports}}
+  attribute :{{member}}, Types::Any
+{{/ports}}
+end
+
+⟦anchor {{anchor}}⟧
+class {{name}}
+  include Dry::Monads[:result]
+
+  def initialize(ports)
+    @ports = ports
+  end
+
+  def call(input)
+    ports = @ports
+{{#steps}}
+⟦anchor {{anchor}}⟧
+{{#isLast}}
+    {{{call}}}
+{{/isLast}}
+{{^isLast}}
+    {{result}} = {{{call}}}
+    return {{result}} unless {{result}}.success?
+{{/isLast}}
+⟦/anchor⟧
+{{/steps}}
+  end
+{{#stages}}
+
+⟦anchor {{anchor}}⟧
+  def {{function}}(input{{#port}}, port{{/port}})
+{{#isValidate}}
+{{#validations}}
+{{#isScalar}}
+    {{name}} = {{type}}.create({{{raw}}})
+    return reject(:{{errorCode}}) unless {{name}}.success?
+{{/isScalar}}
+{{#isEnum}}
+    return reject(:{{errorCode}}) if {{{enumInvalid}}}
+{{/isEnum}}
+{{/validations}}
+{{/isValidate}}
+{{#isPort}}
+{{#port}}
+    received = port.{{operation}}(input)
+{{/port}}
+    return received unless received.success?
+{{/isPort}}
+    Success({{outputType}}.new({{#outputs}}{{name}}: {{{value}}}{{^last}}, {{/last}}{{/outputs}}))
+  end
+⟦/anchor⟧
+{{/stages}}
+
+  private
+
+  def reject(code) = Failure({{errorType}}.new(code: code))
+end
+⟦/anchor⟧

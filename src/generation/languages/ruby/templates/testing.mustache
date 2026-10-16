@@ -20,6 +20,17 @@ module Testing
     [result.error.command, result.error.status]
   end
 
+  # A stand-in for a port, with the given operations.
+  def fake_port(**operations)
+    port = Object.new
+    operations.each { |name, body| port.define_singleton_method(name) { |*arguments| body.call(*arguments) } }
+    port
+  end
+
+  def unreachable(*)
+    raise Minitest::Assertion, "this port must not be called"
+  end
+
   def event_types(events)
     events.map(&:type)
   end

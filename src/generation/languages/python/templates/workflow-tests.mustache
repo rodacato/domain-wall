@@ -1,0 +1,30 @@
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+import unittest
+
+from {{module}} import {{#workflowImports}}{{name}}{{^last}}, {{/last}}{{/workflowImports}}
+from result import err, ok
+from testing import fake_port, must_succeed, rejected_code, unreachable
+{{#hasValueObjectImports}}
+from value_objects import {{#valueObjectImports}}{{name}}{{^last}}, {{/last}}{{/valueObjectImports}}
+{{/hasValueObjectImports}}
+
+
+class {{name}}Tests(unittest.TestCase):
+    def test_runs_every_stage_on_valid_data(self) -> None:
+        run = {{functionName}}({{portsType}}({{#happyPorts}}{{member}}=fake_port({{operation}}=lambda _input: ok({{{receipt}}})){{^last}}, {{/last}}{{/happyPorts}}))
+        final = must_succeed(run({{{validInput}}}))
+{{#computed}}
+        self.assertEqual({{{expected}}}, final.{{name}})
+{{/computed}}
+{{#validationFailures}}
+
+    def test_{{slug}}(self) -> None:
+        run = {{functionName}}({{portsType}}({{#ports}}{{member}}=fake_port({{operation}}=unreachable){{^last}}, {{/last}}{{/ports}}))
+        self.assertEqual("{{code}}", rejected_code(run({{{input}}})))
+{{/validationFailures}}
+{{#portFailures}}
+
+    def test_{{slug}}(self) -> None:
+        run = {{functionName}}({{portsType}}({{#ports}}{{member}}=fake_port({{operation}}={{#isOk}}lambda _input: ok({{{receipt}}}){{/isOk}}{{#isFailing}}lambda _input: err({{errorType}}(code="{{code}}")){{/isFailing}}{{#isUnreachable}}unreachable{{/isUnreachable}}){{^last}}, {{/last}}{{/ports}}))
+        self.assertEqual("{{code}}", rejected_code(run({{{validInput}}})))
+{{/portFailures}}

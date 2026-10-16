@@ -2,6 +2,7 @@
 export type CodeUnit =
   | { readonly kind: "valueObjects" }
   | { readonly kind: "events" }
+  | { readonly kind: "workflow" }
   | { readonly kind: "aggregate"; readonly aggregate: string };
 
 /** How close the camera is: hidden, the opened aggregate drawn as notes, or its generated code. */

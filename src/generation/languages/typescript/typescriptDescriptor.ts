@@ -34,6 +34,11 @@ export const typescriptDescriptor: LanguageDescriptor = {
       append: "[...{{current}}, {{value}}]",
       assertPresent: "{{value}}!",
       widen: "({{value}} as {{base}})",
+      resultValue: "{{result}}.value",
+    },
+    enumFromRaw: {
+      invalid: "!Object.values({{type}}).some((member) => member === {{value}})",
+      convert: "{{value}} as {{type}}",
     },
     stateLiteral: '"{{name}}"',
     operators: {
@@ -74,6 +79,8 @@ export const typescriptDescriptor: LanguageDescriptor = {
     aggregate: "aggregate",
     valueObjectTests: "value-object-tests",
     aggregateTests: "aggregate-tests",
+    workflow: "workflow",
+    workflowTests: "workflow-tests",
     testRunner: "test-runner",
   },
   supportFiles: [

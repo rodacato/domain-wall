@@ -19,6 +19,8 @@ const EXPECTATIONS: readonly LanguageExpectations[] = [
   {
     language: "typescript",
     files: [
+      "checkout-workflow.test.ts",
+      "checkout-workflow.ts",
       "events.ts",
       "invoice.test.ts",
       "invoice.ts",
@@ -40,6 +42,7 @@ const EXPECTATIONS: readonly LanguageExpectations[] = [
   {
     language: "python",
     files: [
+      "checkout_workflow.py",
       "events.py",
       "invoice.py",
       "listing.py",
@@ -47,6 +50,7 @@ const EXPECTATIONS: readonly LanguageExpectations[] = [
       "result.py",
       "run_tests.py",
       "shipment.py",
+      "test_checkout_workflow.py",
       "test_invoice.py",
       "test_listing.py",
       "test_order.py",
@@ -61,6 +65,8 @@ const EXPECTATIONS: readonly LanguageExpectations[] = [
   {
     language: "ruby",
     files: [
+      "checkout_workflow.rb",
+      "checkout_workflow_test.rb",
       "events.rb",
       "invoice.rb",
       "invoice_test.rb",
@@ -82,6 +88,8 @@ const EXPECTATIONS: readonly LanguageExpectations[] = [
   {
     language: "ruby-dry",
     files: [
+      "checkout_workflow.rb",
+      "checkout_workflow_test.rb",
       "events.rb",
       "invoice.rb",
       "invoice_test.rb",

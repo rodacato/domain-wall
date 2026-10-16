@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import sys
 import unittest
-from types import ModuleType
+from types import ModuleType, SimpleNamespace
 from typing import Any, Sequence, TypeVar
 
 from result import Err, Result
@@ -27,6 +27,15 @@ def invalid_state_of(result: Result[Any, Any]) -> tuple[str, str] | None:
     if isinstance(result, Err) and result.error.code == "InvalidStateForCommand":
         return (result.error.command, result.error.status)
     return None
+
+
+def fake_port(**operations: Any) -> SimpleNamespace:
+    """A stand-in for a port, with the given operations."""
+    return SimpleNamespace(**operations)
+
+
+def unreachable(*_arguments: Any) -> Any:
+    raise AssertionError("this port must not be called")
 
 
 def event_types(events: Sequence[Any]) -> list[str]:

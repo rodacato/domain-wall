@@ -26,6 +26,8 @@ module {{name}}
 {{#members}}
   {{constant}} = "{{name}}"
 {{/members}}
+
+  VALUES = [{{#members}}{{constant}}{{^last}}, {{/last}}{{/members}}].freeze
 end
 ⟦/anchor⟧
 {{/enums}}

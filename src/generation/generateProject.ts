@@ -5,10 +5,13 @@ import type { FileRole, GeneratedFile, GeneratedProject } from "./GeneratedProje
 import type { LanguageDescriptor, TemplateLibrary } from "./languages/LanguageDescriptor";
 import { renderTemplate } from "./rendering/renderTemplate";
 import { buildAggregateTestPlan, buildValueObjectTestPlans } from "./test-plan/buildTestPlan";
+import { buildWorkflowTestPlan } from "./test-plan/buildWorkflowTestPlan";
 import { buildAggregateView, stateLiteral } from "./viewmodel/buildAggregateView";
 import { buildEventsView } from "./viewmodel/buildEventsView";
 import { buildAggregateTestsView, buildValueObjectTestsView } from "./viewmodel/buildTestViews";
 import { buildValueObjectsView } from "./viewmodel/buildValueObjectsView";
+import { buildWorkflowTestsView } from "./viewmodel/buildWorkflowTestsView";
+import { buildWorkflowView } from "./viewmodel/buildWorkflowView";
 import { namingFor } from "./viewmodel/LanguageNaming";
 
 /** Generates the domain code and its tests for a pack in one programming language. */
@@ -103,6 +106,33 @@ export function generateProject(
       buildAggregateTestsView(index, descriptor, plan, (state) =>
         stateLiteral(descriptor, namingFor(descriptor.id), aggregate, state),
       ),
+    );
+    testedModules.push({ module: stem });
+  }
+
+  const workflowView = buildWorkflowView(index, descriptor);
+  const workflowPlan = buildWorkflowTestPlan(index);
+  const workflowTestsView =
+    workflowPlan === undefined
+      ? undefined
+      : buildWorkflowTestsView(index, descriptor, workflowPlan);
+  if (workflowView === undefined || workflowTestsView === undefined) {
+    problems.push("the workflow cannot be planned");
+  } else {
+    const stem = descriptor.moduleStem(index.pack.workflow.codeName);
+    addRendered(
+      descriptor.filePath(stem, "source"),
+      "source",
+      { kind: "workflow" },
+      descriptor.templates.workflow,
+      workflowView,
+    );
+    addRendered(
+      descriptor.filePath(stem, "test"),
+      "test",
+      null,
+      descriptor.templates.workflowTests,
+      workflowTestsView,
     );
     testedModules.push({ module: stem });
   }

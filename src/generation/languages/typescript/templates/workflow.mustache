@@ -1,0 +1,81 @@
+/// <reference lib="es2022" />
+// Generated from the "{{packId}}" domain pack. Do not edit by hand.
+import { err, ok, type Result } from "./result";
+{{#hasValueObjectImports}}
+import { {{#valueObjectImports}}{{name}}{{^last}}, {{/last}}{{/valueObjectImports}} } from "./value-objects";
+{{/hasValueObjectImports}}
+
+export type {{errorType}} = {{#errorCodes}}{ readonly code: "{{code}}" }{{^last}} | {{/last}}{{/errorCodes}};
+
+{{#types}}
+⟦anchor {{anchor}}⟧
+export interface {{name}} {
+{{#fields}}
+  readonly {{name}}: {{{type}}};
+{{/fields}}
+}
+⟦/anchor⟧
+
+{{/types}}
+{{#ports}}
+⟦anchor {{anchor}}⟧
+export interface {{receiptType}} {
+{{#receipt}}
+  readonly {{name}}: {{{type}}};
+{{/receipt}}
+}
+
+export interface {{type}} {
+  {{operation}}(input: {{inputType}}): Result<{{receiptType}}, {{errorType}}>;
+}
+⟦/anchor⟧
+
+{{/ports}}
+export interface {{portsType}} {
+{{#ports}}
+  readonly {{member}}: {{type}};
+{{/ports}}
+}
+
+{{#stages}}
+⟦anchor {{anchor}}⟧
+export function {{function}}(input: {{inputType}}{{#port}}, port: {{type}}{{/port}}): Result<{{outputType}}, {{errorType}}> {
+{{#isValidate}}
+{{#validations}}
+{{#isScalar}}
+  const {{name}} = {{type}}.create({{{raw}}});
+  if (!{{name}}.ok) return err({ code: "{{errorCode}}" });
+{{/isScalar}}
+{{#isEnum}}
+  if ({{{enumInvalid}}}) return err({ code: "{{errorCode}}" });
+{{/isEnum}}
+{{/validations}}
+{{/isValidate}}
+{{#isPort}}
+{{#port}}
+  const received = port.{{operation}}(input);
+{{/port}}
+  if (!received.ok) return received;
+{{/isPort}}
+  return ok({ {{#outputs}}{{name}}: {{{value}}}{{^last}}, {{/last}}{{/outputs}} });
+}
+⟦/anchor⟧
+
+{{/stages}}
+⟦anchor {{anchor}}⟧
+export function {{functionName}}(ports: {{portsType}}) {
+  return (input: {{inputType}}): Result<{{outputType}}, {{errorType}}> => {
+{{#steps}}
+⟦anchor {{anchor}}⟧
+{{#isLast}}
+    return {{{call}}};
+{{/isLast}}
+{{^isLast}}
+    const {{result}} = {{{call}}};
+    if (!{{result}}.ok) return {{result}};
+{{/isLast}}
+⟦/anchor⟧
+{{/steps}}
+  };
+}
+⟦/anchor⟧

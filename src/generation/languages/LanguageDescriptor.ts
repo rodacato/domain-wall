@@ -60,9 +60,13 @@ export interface LanguageSyntax {
     readonly append: string;
     /** Reads an optional value where a present one is required; takes {{value}}. */
     readonly assertPresent: string;
+    /** The value held by a result that is known to have succeeded; takes {{result}}. */
+    readonly resultValue: string;
     /** Lets two value objects with different brands be compared by their base type; takes {{value}} and {{base}}. */
     readonly widen: string;
   };
+  /** Checks a raw text against an enum and turns it into the member; both take {{type}} and {{value}}. */
+  readonly enumFromRaw: { readonly invalid: string; readonly convert: string };
   /** A state of an aggregate; takes {{name}}, {{snake}}, {{constant}} and {{aggregate}}. */
   readonly stateLiteral: string;
   readonly operators: {
@@ -118,6 +122,8 @@ export interface LanguageDescriptor {
     readonly aggregate: string;
     readonly valueObjectTests: string;
     readonly aggregateTests: string;
+    readonly workflow: string;
+    readonly workflowTests: string;
     readonly testRunner: string;
   };
   readonly supportFiles: readonly SupportFile[];

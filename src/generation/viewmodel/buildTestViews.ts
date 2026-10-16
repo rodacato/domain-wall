@@ -69,7 +69,7 @@ export function renderValue(renderer: ValueRenderer, type: FieldType, value: Lit
 }
 
 /** Value objects a value of this type is built from, including the fields of record value objects. */
-function valueObjectsUsedBy(
+export function valueObjectsUsedBy(
   index: PackIndex,
   type: FieldType,
   seen = new Set<string>(),

@@ -34,6 +34,11 @@ export const pythonDescriptor: LanguageDescriptor = {
       append: "(*{{current}}, {{value}})",
       assertPresent: "assert_present({{value}})",
       widen: "{{base}}({{value}})",
+      resultValue: "{{result}}.value",
+    },
+    enumFromRaw: {
+      invalid: "{{value}} not in [member.value for member in {{type}}]",
+      convert: "{{type}}({{value}})",
     },
     stateLiteral: '"{{name}}"',
     operators: {
@@ -74,6 +79,8 @@ export const pythonDescriptor: LanguageDescriptor = {
     aggregate: "aggregate",
     valueObjectTests: "value-object-tests",
     aggregateTests: "aggregate-tests",
+    workflow: "workflow",
+    workflowTests: "workflow-tests",
     testRunner: "test-runner",
   },
   supportFiles: [

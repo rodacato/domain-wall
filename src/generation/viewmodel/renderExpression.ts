@@ -2,6 +2,7 @@ import type { PackIndex } from "../../domain/pack/PackIndex";
 import type { Aggregate, Entity } from "../../domain/pack/schema/Aggregate";
 import type { Command } from "../../domain/pack/schema/EventStorming";
 import type { Expression } from "../../domain/pack/schema/Expression";
+import type { Field } from "../../domain/pack/schema/Field";
 import type { FieldType } from "../../domain/pack/schema/FieldType";
 import type { LanguageSyntax } from "../languages/LanguageDescriptor";
 import { fill } from "./fill";
@@ -15,7 +16,9 @@ export interface ExpressionContext {
   readonly naming: LanguageNaming;
   /** Whether `field` reads the aggregate or the entity whose derived value is being computed. */
   readonly scope:
-    { readonly kind: "aggregate" } | { readonly kind: "entity"; readonly entity: Entity };
+    | { readonly kind: "aggregate" }
+    | { readonly kind: "entity"; readonly entity: Entity }
+    | { readonly kind: "record"; readonly fields: readonly Field[] };
   /** The instance fields are read from: the one running the command, or the one it produced. */
   readonly self: "current" | "next";
   /** The command being run, which gives the types of its arguments; null outside commands. */
@@ -34,6 +37,10 @@ interface DeclaredField {
 
 function declaredField(context: ExpressionContext, name: string): DeclaredField | undefined {
   const { aggregate, scope } = context;
+  if (scope.kind === "record") {
+    const field = scope.fields.find((candidate) => candidate.codeName === name);
+    return field === undefined ? undefined : { type: field.type, mayBeAbsent: false };
+  }
   if (scope.kind === "entity") {
     const field = [...scope.entity.fields, ...scope.entity.derived].find(
       (candidate) => candidate.codeName === name,
@@ -195,6 +202,9 @@ function renderField(context: ExpressionContext, name: string, elementDepth: num
       element: elementVariable(elementDepth - 1),
       name: memberName,
     });
+  }
+  if (scope.kind === "record") {
+    return fill(syntax.expressions.elementField, { element: "input", name: memberName });
   }
   if (scope.kind === "entity") return fill(syntax.expressions.entityField, { name: memberName });
   const self = syntax.selfNames[context.self];

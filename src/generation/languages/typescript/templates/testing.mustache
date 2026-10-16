@@ -45,6 +45,10 @@ export function invalidState(command: string, status: string): unknown {
   return { ok: false, error: { code: "InvalidStateForCommand", command, status } };
 }
 
+export function unreachable(): never {
+  throw new Error("this port must not be called");
+}
+
 export function eventTypes(events: readonly { readonly type: string }[]): readonly string[] {
   return events.map((event) => event.type);
 }

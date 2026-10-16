@@ -49,3 +49,18 @@ export function shapeWorkflow(index: PackIndex): readonly ShapedStage[] {
     return { stage, input, output: resolve(stage.output, input) };
   });
 }
+
+/** The port a stage calls: the one the pack declares, or one implied by the commit stage; undefined for stages that call nothing. */
+export function portOfStage(
+  stage: Stage,
+): { readonly name: string; readonly operation: string } | undefined {
+  switch (stage.kind.type) {
+    case "callPort":
+      return { name: stage.kind.port.codeName, operation: stage.kind.port.operation };
+    case "commit":
+      return { name: `${stage.codeName}Port`, operation: "commit" };
+    case "validate":
+    case "compute":
+      return undefined;
+  }
+}

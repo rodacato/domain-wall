@@ -1,0 +1,33 @@
+# frozen_string_literal: true
+
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+require "minitest"
+require_relative "{{module}}"
+require_relative "testing"
+require_relative "value_objects"
+
+class {{name}}Test < Minitest::Test
+  include Testing
+
+  def test_runs_every_stage_on_valid_data
+    run = {{name}}.new({{portsType}}.new({{#happyPorts}}{{member}}: fake_port({{operation}}: ->(_input) { Result.ok({{{receipt}}}) }){{^last}}, {{/last}}{{/happyPorts}}))
+    final = must_succeed(run.call({{{validInput}}}))
+{{#computed}}
+    assert_equal {{{expected}}}, final.{{name}}
+{{/computed}}
+  end
+{{#validationFailures}}
+
+  def test_{{slug}}
+    run = {{name}}.new({{portsType}}.new({{#ports}}{{member}}: fake_port({{operation}}: method(:unreachable)){{^last}}, {{/last}}{{/ports}}))
+    assert_equal :{{code}}, rejected_code(run.call({{{input}}}))
+  end
+{{/validationFailures}}
+{{#portFailures}}
+
+  def test_{{slug}}
+    run = {{name}}.new({{portsType}}.new({{#ports}}{{member}}: fake_port({{operation}}: {{#isOk}}->(_input) { Result.ok({{{receipt}}}) }{{/isOk}}{{#isFailing}}->(_input) { Result.err({{errorType}}.new(code: :{{code}})) }{{/isFailing}}{{#isUnreachable}}method(:unreachable){{/isUnreachable}}){{^last}}, {{/last}}{{/ports}}))
+    assert_equal :{{code}}, rejected_code(run.call({{{validInput}}}))
+  end
+{{/portFailures}}
+end

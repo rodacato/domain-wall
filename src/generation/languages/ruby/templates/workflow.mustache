@@ -1,0 +1,75 @@
+# frozen_string_literal: true
+
+# Generated from the "{{packId}}" domain pack. Do not edit by hand.
+require_relative "result"
+require_relative "value_objects"
+
+{{errorType}} = Struct.new(:code, keyword_init: true)
+{{#types}}
+
+⟦anchor {{anchor}}⟧
+{{name}} = Struct.new({{#fields}}:{{name}}, {{/fields}}keyword_init: true)
+⟦/anchor⟧
+{{/types}}
+{{#ports}}
+
+⟦anchor {{anchor}}⟧
+{{receiptType}} = Struct.new({{#receipt}}:{{name}}, {{/receipt}}keyword_init: true)
+
+# A {{type}} answers {{operation}}({{inputType}}) with a Result of {{receiptType}}.
+⟦/anchor⟧
+{{/ports}}
+
+{{portsType}} = Struct.new({{#ports}}:{{member}}, {{/ports}}keyword_init: true)
+
+⟦anchor {{anchor}}⟧
+class {{name}}
+  def initialize(ports)
+    @ports = ports
+  end
+
+  def call(input)
+    ports = @ports
+{{#steps}}
+⟦anchor {{anchor}}⟧
+{{#isLast}}
+    {{{call}}}
+{{/isLast}}
+{{^isLast}}
+    {{result}} = {{{call}}}
+    return {{result}} unless {{result}}.ok?
+{{/isLast}}
+⟦/anchor⟧
+{{/steps}}
+  end
+{{#stages}}
+
+⟦anchor {{anchor}}⟧
+  def {{function}}(input{{#port}}, port{{/port}})
+{{#isValidate}}
+{{#validations}}
+{{#isScalar}}
+    {{name}} = {{type}}.create({{{raw}}})
+    return reject(:{{errorCode}}) unless {{name}}.ok?
+{{/isScalar}}
+{{#isEnum}}
+    return reject(:{{errorCode}}) if {{{enumInvalid}}}
+{{/isEnum}}
+{{/validations}}
+{{/isValidate}}
+{{#isPort}}
+{{#port}}
+    received = port.{{operation}}(input)
+{{/port}}
+    return received unless received.ok?
+{{/isPort}}
+    Result.ok({{outputType}}.new({{#outputs}}{{name}}: {{{value}}}{{^last}}, {{/last}}{{/outputs}}))
+  end
+⟦/anchor⟧
+{{/stages}}
+
+  private
+
+  def reject(code) = Result.err({{errorType}}.new(code: code))
+end
+⟦/anchor⟧

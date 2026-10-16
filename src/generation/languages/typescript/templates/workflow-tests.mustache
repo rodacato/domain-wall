@@ -1,0 +1,32 @@
+/// <reference lib="es2022" />
+// Generated from the "{{packId}}" domain pack. Do not edit by hand.
+import { describe, expect, it, mustSucceed, rejection, unreachable } from "./testing";
+import { err, ok } from "./result";
+import { {{functionName}} } from "./{{module}}";
+{{#hasValueObjectImports}}
+import { {{#valueObjectImports}}{{name}}{{^last}}, {{/last}}{{/valueObjectImports}} } from "./value-objects";
+{{/hasValueObjectImports}}
+
+describe("{{name}}", () => {
+  it("runs every stage on valid data", () => {
+    const run = {{functionName}}({ {{#happyPorts}}{{member}}: { {{operation}}: () => ok({{{receipt}}}) }{{^last}}, {{/last}}{{/happyPorts}} });
+    const final = mustSucceed(run({{{validInput}}}));
+{{#computed}}
+    expect(final.{{name}}).toEqual({{{expected}}});
+{{/computed}}
+  });
+{{#validationFailures}}
+
+  it("{{slug}}", () => {
+    const run = {{functionName}}({ {{#ports}}{{member}}: { {{operation}}: () => unreachable() }{{^last}}, {{/last}}{{/ports}} });
+    expect(run({{{input}}})).toEqual(rejection("{{code}}"));
+  });
+{{/validationFailures}}
+{{#portFailures}}
+
+  it("{{slug}}", () => {
+    const run = {{functionName}}({ {{#ports}}{{member}}: { {{operation}}: () => {{#isOk}}ok({{{receipt}}}){{/isOk}}{{#isFailing}}err({ code: "{{code}}" }){{/isFailing}}{{#isUnreachable}}unreachable(){{/isUnreachable}} }{{^last}}, {{/last}}{{/ports}} });
+    expect(run({{{validInput}}})).toEqual(rejection("{{code}}"));
+  });
+{{/portFailures}}
+});
