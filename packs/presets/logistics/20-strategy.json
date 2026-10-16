@@ -1,0 +1,317 @@
+{
+  "contexts": [
+    {
+      "codeName": "Warehouse",
+      "label": {
+        "es-MX": "Almacén",
+        "en": "Warehouse"
+      },
+      "description": {
+        "es-MX": "Donde llegan, se pesan y se clasifican los paquetes antes de salir a ruta.",
+        "en": "Where parcels arrive, get weighed and are sorted before going out on a route."
+      },
+      "subdomain": {
+        "type": "supporting",
+        "rationale": {
+          "es-MX": "Hay que operar bien el hub, pero un almacén de tránsito funciona casi igual en todas las empresas y no es lo que nos distingue.",
+          "en": "We must run the hub well, but a transit warehouse works much the same everywhere and is not what sets us apart."
+        }
+      }
+    },
+    {
+      "codeName": "Dispatching",
+      "label": {
+        "es-MX": "Despacho",
+        "en": "Dispatching"
+      },
+      "description": {
+        "es-MX": "Arma las rutas del día: qué paradas lleva cada repartidor y cuánto cabe en su camioneta.",
+        "en": "Builds the day's routes: which stops each driver takes and how much fits in the van."
+      },
+      "subdomain": {
+        "type": "core",
+        "rationale": {
+          "es-MX": "Armar rutas que quepan, sean rápidas y respeten las ventanas de entrega es lo que baja nuestro costo por paquete.",
+          "en": "Building routes that fit, run fast and respect the delivery windows is what lowers our cost per parcel."
+        }
+      }
+    },
+    {
+      "codeName": "Doorstep",
+      "label": {
+        "es-MX": "Entrega en destino",
+        "en": "Doorstep delivery"
+      },
+      "description": {
+        "es-MX": "El último tramo: acordar la ventana, llegar a la puerta y comprobar la entrega.",
+        "en": "The last stretch: agreeing on the window, reaching the door and proving the handover."
+      },
+      "subdomain": {
+        "type": "core",
+        "rationale": {
+          "es-MX": "La experiencia de entrega, con ventanas de horario, reintentos y evidencia, es lo que el comercio y el cliente recuerdan de nosotros.",
+          "en": "The delivery experience, with time windows, retries and proof, is what merchants and customers remember about us."
+        }
+      }
+    },
+    {
+      "codeName": "Settlement",
+      "label": {
+        "es-MX": "Liquidación",
+        "en": "Settlement"
+      },
+      "description": {
+        "es-MX": "Concilia el efectivo cobrado contra entrega y paga a cada comercio por transferencia.",
+        "en": "Reconciles the cash collected on delivery and pays each merchant by bank transfer."
+      },
+      "subdomain": {
+        "type": "generic",
+        "rationale": {
+          "es-MX": "Conciliar y dispersar pagos funciona igual en cualquier negocio; conviene aislarlo y adaptarse al banco, no reinventarlo.",
+          "en": "Reconciling and disbursing payments works the same in any business; it is better to isolate it and adapt to the bank than to reinvent it."
+        }
+      }
+    }
+  ],
+  "contextRelations": [
+    {
+      "type": "partnership",
+      "a": "Warehouse",
+      "b": "Dispatching",
+      "shared": [],
+      "description": {
+        "es-MX": "Almacén y Despacho avanzan juntos: cada uno reacciona a los eventos del otro y coordinan sus cambios.",
+        "en": "Warehouse and Dispatching move together: each reacts to the other's events and they coordinate their changes."
+      }
+    },
+    {
+      "type": "upstreamDownstream",
+      "upstream": "Dispatching",
+      "downstream": "Doorstep",
+      "upstreamRoles": ["OpenHostService", "PublishedLanguage"],
+      "downstreamRoles": ["Conformist"],
+      "customerSupplier": false,
+      "via": ["RouteStarted"],
+      "description": {
+        "es-MX": "Despacho publica el plan de rutas en un lenguaje estable y Entrega en destino lo acepta tal cual, sin negociarlo.",
+        "en": "Dispatching publishes the route plan in a stable language and Doorstep delivery accepts it as it is, without negotiating."
+      }
+    },
+    {
+      "type": "upstreamDownstream",
+      "upstream": "Doorstep",
+      "downstream": "Settlement",
+      "upstreamRoles": ["PublishedLanguage"],
+      "downstreamRoles": [],
+      "customerSupplier": true,
+      "via": ["DeliveryCompleted"],
+      "description": {
+        "es-MX": "Liquidación recibe las entregas completadas y puede pedir a Entrega en destino los datos que le falten.",
+        "en": "Settlement receives completed deliveries and can ask Doorstep delivery for any data it is missing."
+      }
+    },
+    {
+      "type": "separateWays",
+      "a": "Warehouse",
+      "b": "Settlement",
+      "description": {
+        "es-MX": "Almacén y Liquidación no necesitan hablarse: cada uno sigue su camino.",
+        "en": "Warehouse and Settlement do not need to talk to each other: each goes its own way."
+      }
+    }
+  ],
+  "ambiguousTerm": {
+    "codeName": "Package",
+    "label": {
+      "es-MX": "Paquete",
+      "en": "Package"
+    },
+    "meanings": [
+      {
+        "context": "Warehouse",
+        "concept": "Parcel",
+        "definition": {
+          "es-MX": "La caja que se escanea en el hub: guía, peso y casillero.",
+          "en": "The box scanned at the hub: label, weight and bin."
+        },
+        "showcaseFields": ["trackingCode", "weightGrams"]
+      },
+      {
+        "context": "Dispatching",
+        "concept": "RouteStop",
+        "definition": {
+          "es-MX": "Una parada de la ruta: cuánto pesa y a qué código postal va.",
+          "en": "A stop on the route: how much it weighs and which postal code it goes to."
+        },
+        "showcaseFields": ["weightGrams", "postalCode"]
+      },
+      {
+        "context": "Doorstep",
+        "concept": "Delivery",
+        "definition": {
+          "es-MX": "La entrega a una persona: quién recibe, en qué ventana y cuánto debe pagar.",
+          "en": "The handover to a person: who receives, in which window and how much they owe."
+        },
+        "showcaseFields": ["recipientName", "address", "cashToCollect"]
+      },
+      {
+        "context": "Settlement",
+        "concept": "CashRemittance",
+        "definition": {
+          "es-MX": "El dinero que viaja con el paquete: efectivo cobrado que se concilia y se paga al comercio.",
+          "en": "The money that travels with the package: cash collected that is reconciled and paid to the merchant."
+        },
+        "showcaseFields": ["amount", "fee"]
+      }
+    ]
+  },
+  "antiCorruptionLayer": {
+    "context": "Settlement",
+    "externalSystem": "BankTransferService",
+    "domainType": "CashRemittance",
+    "externalRoot": "SpeiPaymentOrder",
+    "externalTypes": [
+      {
+        "codeName": "SpeiPaymentOrder",
+        "label": {
+          "es-MX": "Orden de pago SPEI",
+          "en": "SPEI payment order"
+        },
+        "description": {
+          "es-MX": "La orden que exige el banco para transferir, con sus nombres, claves y formatos propios.",
+          "en": "The order the bank requires to make a transfer, with its own names, keys and formats."
+        },
+        "wireName": "ordenPago",
+        "fields": [
+          {
+            "codeName": "company",
+            "label": {
+              "es-MX": "Empresa",
+              "en": "Company"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "empresa"
+          },
+          {
+            "codeName": "paymentType",
+            "label": {
+              "es-MX": "Tipo de pago",
+              "en": "Payment type"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "tipoPago"
+          },
+          {
+            "codeName": "accountType",
+            "label": {
+              "es-MX": "Tipo de cuenta del beneficiario",
+              "en": "Beneficiary account type"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "tipoCuentaBeneficiario"
+          },
+          {
+            "codeName": "beneficiaryAccount",
+            "label": {
+              "es-MX": "Cuenta del beneficiario",
+              "en": "Beneficiary account"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "cuentaBeneficiario"
+          },
+          {
+            "codeName": "amount",
+            "label": {
+              "es-MX": "Monto",
+              "en": "Amount"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "monto"
+          },
+          {
+            "codeName": "concept",
+            "label": {
+              "es-MX": "Concepto del pago",
+              "en": "Payment concept"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "conceptoPago"
+          },
+          {
+            "codeName": "trackingKey",
+            "label": {
+              "es-MX": "Clave de rastreo",
+              "en": "Tracking key"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "claveRastreo"
+          }
+        ]
+      }
+    ],
+    "translation": [
+      {
+        "op": "constant",
+        "externalField": "company",
+        "value": "ULTIMAMILLA"
+      },
+      {
+        "op": "constant",
+        "externalField": "paymentType",
+        "value": "1"
+      },
+      {
+        "op": "mapCode",
+        "domainField": "accountType",
+        "externalField": "accountType",
+        "table": {
+          "Clabe": "40",
+          "DebitCard": "3",
+          "MobilePhone": "10"
+        }
+      },
+      {
+        "op": "rename",
+        "domainField": "beneficiaryAccount",
+        "externalField": "beneficiaryAccount"
+      },
+      {
+        "op": "format",
+        "domainField": "netAmount",
+        "externalField": "amount",
+        "format": "minorUnitsToDecimalString"
+      },
+      {
+        "op": "constant",
+        "externalField": "concept",
+        "value": "Liquidacion contra entrega"
+      },
+      {
+        "op": "rename",
+        "domainField": "remittanceId",
+        "externalField": "trackingKey"
+      }
+    ]
+  }
+}

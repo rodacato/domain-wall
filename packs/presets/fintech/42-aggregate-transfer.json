@@ -1,0 +1,570 @@
+{
+  "aggregates": [
+    {
+      "codeName": "Transfer",
+      "label": {
+        "es-MX": "Transferencia",
+        "en": "Transfer"
+      },
+      "description": {
+        "es-MX": "El envío de dinero a otra cuenta por SPEI, desde que se pide hasta que el banco receptor lo liquida o lo rechaza.",
+        "en": "The sending of money to another account over SPEI, from the request until the receiving bank settles or rejects it."
+      },
+      "context": "Transfers",
+      "identity": "transferId",
+      "fields": [
+        {
+          "codeName": "transferId",
+          "label": {
+            "es-MX": "Transferencia",
+            "en": "Transfer"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TransferId"
+          }
+        },
+        {
+          "codeName": "payerAccount",
+          "label": {
+            "es-MX": "Cuenta ordenante",
+            "en": "Payer account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Clabe"
+          }
+        },
+        {
+          "codeName": "payeeName",
+          "label": {
+            "es-MX": "Beneficiario",
+            "en": "Payee"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "FullName"
+          }
+        },
+        {
+          "codeName": "payeeAccount",
+          "label": {
+            "es-MX": "Cuenta del beneficiario",
+            "en": "Payee account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PayeeAccountNumber"
+          }
+        },
+        {
+          "codeName": "payeeAccountKind",
+          "label": {
+            "es-MX": "Tipo de cuenta",
+            "en": "Account kind"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PayeeAccountKind"
+          }
+        },
+        {
+          "codeName": "payeeInstitution",
+          "label": {
+            "es-MX": "Banco del beneficiario",
+            "en": "Payee bank"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "InstitutionCode"
+          }
+        },
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        },
+        {
+          "codeName": "concept",
+          "label": {
+            "es-MX": "Concepto",
+            "en": "Concept"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "TransferConcept"
+            }
+          }
+        },
+        {
+          "codeName": "requestedOn",
+          "label": {
+            "es-MX": "Fecha de operación",
+            "en": "Operation date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        },
+        {
+          "codeName": "trackingKey",
+          "label": {
+            "es-MX": "Clave de rastreo",
+            "en": "Tracking key"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "TrackingKey"
+            }
+          }
+        }
+      ],
+      "derived": [],
+      "entities": [],
+      "states": [
+        {
+          "codeName": "Draft",
+          "label": {
+            "es-MX": "Borrador",
+            "en": "Draft"
+          },
+          "description": {
+            "es-MX": "La transferencia todavía no se pide.",
+            "en": "The transfer has not been requested yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Requested",
+          "label": {
+            "es-MX": "Solicitada",
+            "en": "Requested"
+          },
+          "description": {
+            "es-MX": "El titular la pidió y falta apartar el dinero.",
+            "en": "The holder requested it and the money still has to be set aside."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Submitted",
+          "label": {
+            "es-MX": "Enviada a SPEI",
+            "en": "Submitted to SPEI"
+          },
+          "description": {
+            "es-MX": "La orden ya viajó a SPEI y espera su resultado.",
+            "en": "The order has traveled to SPEI and awaits its result."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Settled",
+          "label": {
+            "es-MX": "Liquidada",
+            "en": "Settled"
+          },
+          "description": {
+            "es-MX": "El banco receptor abonó el dinero.",
+            "en": "The receiving bank credited the money."
+          },
+          "terminal": true,
+          "data": []
+        },
+        {
+          "codeName": "Rejected",
+          "label": {
+            "es-MX": "Rechazada",
+            "en": "Rejected"
+          },
+          "description": {
+            "es-MX": "SPEI no pudo completar la transferencia.",
+            "en": "SPEI could not complete the transfer."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "rejectionReason",
+              "label": {
+                "es-MX": "Motivo de rechazo",
+                "en": "Rejection reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ReasonText"
+              }
+            }
+          ]
+        }
+      ],
+      "initialState": "Draft",
+      "rules": [
+        {
+          "codeName": "TransferAmountMustBePositive",
+          "label": {
+            "es-MX": "El monto debe ser mayor a cero",
+            "en": "The amount must be greater than zero"
+          },
+          "description": {
+            "es-MX": "No se pueden enviar cero pesos.",
+            "en": "You cannot send zero pesos."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "amount"
+            },
+            "operator": ">",
+            "right": {
+              "op": "literal",
+              "value": 0
+            }
+          },
+          "message": {
+            "es-MX": "El monto debe ser mayor a cero.",
+            "en": "The amount must be greater than zero."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "RequestTransfer",
+              "args": {
+                "amount": 0,
+                "concept": "Pago"
+              }
+            }
+          }
+        },
+        {
+          "codeName": "ConceptRequired",
+          "label": {
+            "es-MX": "La transferencia necesita concepto",
+            "en": "The transfer needs a concept"
+          },
+          "description": {
+            "es-MX": "SPEI exige un concepto que ve quien recibe el dinero.",
+            "en": "SPEI requires a concept that the receiver of the money sees."
+          },
+          "predicate": {
+            "kind": "present",
+            "value": {
+              "op": "arg",
+              "name": "concept"
+            }
+          },
+          "message": {
+            "es-MX": "Escribe un concepto para la transferencia.",
+            "en": "Write a concept for the transfer."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "RequestTransfer",
+              "args": {
+                "amount": 150000
+              }
+            }
+          }
+        },
+        {
+          "codeName": "PayeeMustDifferFromPayer",
+          "label": {
+            "es-MX": "No puedes enviarte dinero a ti mismo",
+            "en": "You cannot send money to yourself"
+          },
+          "description": {
+            "es-MX": "La cuenta del beneficiario no puede ser la misma que la del ordenante.",
+            "en": "The payee account cannot be the same as the payer account."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "payeeAccount"
+            },
+            "operator": "!=",
+            "right": {
+              "op": "arg",
+              "name": "payerAccount"
+            }
+          },
+          "message": {
+            "es-MX": "La cuenta destino es la misma que la de origen.",
+            "en": "The destination account is the same as the source account."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "RequestTransfer",
+              "args": {
+                "amount": 150000,
+                "concept": "Pago",
+                "payerAccount": "646180157000000004",
+                "payeeAccount": "646180157000000004"
+              }
+            }
+          }
+        },
+        {
+          "codeName": "PhoneTransfersHaveLowerCeiling",
+          "label": {
+            "es-MX": "Las transferencias a celular tienen un tope menor",
+            "en": "Transfers to a phone have a lower ceiling"
+          },
+          "description": {
+            "es-MX": "Si el beneficiario se identifica con su celular, el monto no puede pasar de $3,000.",
+            "en": "If the payee is identified by mobile phone, the amount cannot exceed $3,000."
+          },
+          "predicate": {
+            "kind": "any",
+            "of": [
+              {
+                "kind": "not",
+                "of": {
+                  "kind": "compare",
+                  "left": {
+                    "op": "arg",
+                    "name": "payeeAccountKind"
+                  },
+                  "operator": "==",
+                  "right": {
+                    "op": "literal",
+                    "value": "PhoneNumber"
+                  }
+                }
+              },
+              {
+                "kind": "compare",
+                "left": {
+                  "op": "arg",
+                  "name": "amount"
+                },
+                "operator": "<=",
+                "right": {
+                  "op": "literal",
+                  "value": 300000
+                }
+              }
+            ]
+          },
+          "message": {
+            "es-MX": "A un celular solo puedes enviar hasta $3,000.",
+            "en": "To a phone number you can only send up to $3,000."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "RequestTransfer",
+              "args": {
+                "amount": 300001,
+                "concept": "Pago",
+                "payeeAccountKind": "PhoneNumber",
+                "payeeAccount": "5512345678"
+              }
+            }
+          }
+        },
+        {
+          "codeName": "TransferWithinOperationCeiling",
+          "label": {
+            "es-MX": "Una transferencia respeta el tope por operación",
+            "en": "A transfer respects the per-operation ceiling"
+          },
+          "description": {
+            "es-MX": "Ninguna transferencia puede ser de más de $100,000, aunque el límite diario lo permita.",
+            "en": "No transfer can be above $100,000, even if the daily limit would allow it."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "field",
+              "name": "amount"
+            },
+            "operator": "<=",
+            "right": {
+              "op": "literal",
+              "value": 10000000
+            }
+          },
+          "message": {
+            "es-MX": "Una sola transferencia no puede pasar de $100,000.",
+            "en": "A single transfer cannot exceed $100,000."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "RequestTransfer",
+              "args": {
+                "amount": 10000001,
+                "concept": "Pago"
+              }
+            }
+          }
+        }
+      ],
+      "invariants": ["TransferWithinOperationCeiling"],
+      "transitions": [
+        {
+          "command": "RequestTransfer",
+          "from": ["Draft"],
+          "to": "Requested",
+          "guards": [
+            "TransferAmountMustBePositive",
+            "ConceptRequired",
+            "PayeeMustDifferFromPayer",
+            "PhoneTransfersHaveLowerCeiling"
+          ],
+          "effects": [
+            {
+              "op": "set",
+              "field": "payerAccount",
+              "value": {
+                "op": "arg",
+                "name": "payerAccount"
+              }
+            },
+            {
+              "op": "set",
+              "field": "payeeName",
+              "value": {
+                "op": "arg",
+                "name": "payeeName"
+              }
+            },
+            {
+              "op": "set",
+              "field": "payeeAccount",
+              "value": {
+                "op": "arg",
+                "name": "payeeAccount"
+              }
+            },
+            {
+              "op": "set",
+              "field": "payeeAccountKind",
+              "value": {
+                "op": "arg",
+                "name": "payeeAccountKind"
+              }
+            },
+            {
+              "op": "set",
+              "field": "payeeInstitution",
+              "value": {
+                "op": "arg",
+                "name": "payeeInstitution"
+              }
+            },
+            {
+              "op": "set",
+              "field": "amount",
+              "value": {
+                "op": "arg",
+                "name": "amount"
+              }
+            },
+            {
+              "op": "set",
+              "field": "concept",
+              "value": {
+                "op": "arg",
+                "name": "concept"
+              }
+            },
+            {
+              "op": "set",
+              "field": "requestedOn",
+              "value": {
+                "op": "arg",
+                "name": "requestedOn"
+              }
+            }
+          ],
+          "emits": ["TransferRequested"]
+        },
+        {
+          "command": "SubmitTransfer",
+          "from": ["Requested"],
+          "to": "Submitted",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "trackingKey",
+              "value": {
+                "op": "arg",
+                "name": "trackingKey"
+              }
+            }
+          ],
+          "emits": ["TransferSubmitted"]
+        },
+        {
+          "command": "SettleTransfer",
+          "from": ["Submitted"],
+          "to": "Settled",
+          "guards": [],
+          "effects": [],
+          "emits": ["TransferSettled"]
+        },
+        {
+          "command": "RejectTransfer",
+          "from": ["Submitted"],
+          "to": "Rejected",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "rejectionReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["TransferRejected"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "RequestTransfer",
+          "args": {
+            "payerAccount": "646180157000000004",
+            "payeeName": "Jorge Luis Paredes",
+            "payeeAccount": "012180001234567899",
+            "payeeAccountKind": "Clabe",
+            "payeeInstitution": "40012",
+            "amount": 150000,
+            "concept": "Renta de octubre",
+            "requestedOn": "2026-10-15"
+          }
+        },
+        {
+          "command": "SubmitTransfer",
+          "args": {
+            "trackingKey": "MXW20261015A1B2C3D4"
+          }
+        },
+        {
+          "command": "SettleTransfer",
+          "args": {}
+        }
+      ]
+    }
+  ]
+}

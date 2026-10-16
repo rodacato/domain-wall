@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "meta": {
+    "packId": "clinic",
+    "origin": "preset",
+    "locales": ["es-MX", "en"],
+    "generation": null
+  },
+  "business": {
+    "codeName": "NeighborhoodClinic",
+    "name": {
+      "es-MX": "Clínica Vecinal",
+      "en": "Neighborhood Clinic"
+    },
+    "description": {
+      "es-MX": "Una clínica de barrio: la gente pide cita, la atiende un médico, sale con su receta y paga o presenta el reclamo a su aseguradora.",
+      "en": "A neighborhood clinic: people book an appointment, see a physician, leave with a prescription and either pay or have a claim filed with their insurer."
+    }
+  }
+}

@@ -1,0 +1,301 @@
+{
+  "dialogues": {
+    "whyDdd.change": [
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Equipo, llegó un cambio de cumplimiento: una cuenta congelada ya no debe recibir depósitos, ni siquiera por SPEI.",
+          "en": "Team, a compliance change came in: a frozen account must no longer receive deposits, not even over SPEI."
+        }
+      },
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Así es. Estaban usando cuentas congeladas para estacionar fondos, y cada depósito nuevo hace más difícil rastrear el dinero.",
+          "en": "Exactly. People were parking funds in frozen accounts, and every new deposit makes the money harder to trace."
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Suena a una sola regla de negocio. Veamos cuántos lugares del código tenemos que tocar para aplicarla.",
+          "en": "That sounds like a single business rule. Let's see how many places in the code we have to touch to apply it."
+        }
+      }
+    ],
+    "ubiquity.intro": [
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Antes de escribir código, hablemos igual. Ricardo, ¿cómo le dices al lugar donde vive el dinero de una persona?",
+          "en": "Before writing code, let's speak the same language. Ricardo, what do you call the place where a person's money lives?"
+        }
+      },
+      {
+        "speaker": "Ricardo",
+        "text": {
+          "es-MX": "Una cuenta. Cuando digo {{term:Account}}, pienso en su CLABE, su saldo, su límite diario y si está activa o congelada.",
+          "en": "An account. When I say {{term:Account}}, I think of its CLABE, its balance, its daily limit and whether it is active or frozen."
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Perfecto. Esa palabra va al glosario y la usaremos igual en las conversaciones, en los tableros y en el código.",
+          "en": "Perfect. That word goes into the glossary and we will use it the same way in conversations, on boards and in code."
+        }
+      }
+    ],
+    "ubiquity.ambiguity": [
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Para mí un «cliente» es alguien cuya identidad estoy comprobando: su nombre, su CURP y los documentos que entrega.",
+          "en": "To me a “customer” is someone whose identity I am verifying: their name, their CURP and the documents they hand over."
+        }
+      },
+      {
+        "speaker": "Ricardo",
+        "text": {
+          "es-MX": "Pues para mí es quien manda o recibe dinero: un nombre, un número de cuenta y el banco. Su CURP ni me importa.",
+          "en": "For me it is whoever sends or receives money: a name, an account number and the bank. I do not even care about their CURP."
+        }
+      },
+      {
+        "speaker": "Emilio",
+        "text": {
+          "es-MX": "Y para mí es el tarjetahabiente: un plástico con sus últimos cuatro dígitos y un límite por compra.",
+          "en": "And for me it is the cardholder: a piece of plastic with its last four digits and a per-purchase limit."
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "La palabra {{term:Customer}} tiene tres significados: eso es una ambigüedad. La resolveremos separando contextos.",
+          "en": "The word {{term:Customer}} has three meanings: that is an ambiguity. We will resolve it by separating contexts."
+        }
+      }
+    ],
+    "storming.kickoff": [
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Contemos la historia de una persona con eventos: cosas que ya pasaron, escritas en pasado, en naranja.",
+          "en": "Let's tell a person's story through events: things that already happened, written in the past tense, in orange."
+        }
+      },
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Primero comprobamos quién es: {{term:IdentityVerified}}. Hasta ahí todavía no hay dinero de por medio.",
+          "en": "First we prove who they are: {{term:IdentityVerified}}. Up to that point there is no money involved yet."
+        }
+      },
+      {
+        "speaker": "Ricardo",
+        "text": {
+          "es-MX": "Luego se abre la cuenta con {{term:AccountOpened}} y, cuando alguien envía dinero, {{term:TransferSettled}} avisa que SPEI ya lo abonó.",
+          "en": "Then the account is opened with {{term:AccountOpened}} and, when someone sends money, {{term:TransferSettled}} says SPEI has already credited it."
+        }
+      }
+    ],
+    "storming.commands": [
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Cada evento nace de una decisión. ¿Qué pidió alguien para que ocurriera {{term:TransferRequested}}?",
+          "en": "Every event comes from a decision. What did someone ask for so that {{term:TransferRequested}} could happen?"
+        }
+      },
+      {
+        "speaker": "Ricardo",
+        "text": {
+          "es-MX": "El titular pide {{term:RequestTransfer}}, pero solo si el monto es mayor a cero y viene con un concepto.",
+          "en": "The holder issues {{term:RequestTransfer}}, but only if the amount is greater than zero and comes with a concept."
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Esa condición es una regla del dominio. La vamos a guardar en el agregado, no en la pantalla.",
+          "en": "That condition is a domain rule. We will keep it in the aggregate, not on the screen."
+        }
+      }
+    ],
+    "contexts.split": [
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Ya vimos que «cliente» significa varias cosas. Dibujemos fronteras: dentro de cada una, la palabra tiene un solo significado.",
+          "en": "We saw that “customer” means several things. Let's draw boundaries: inside each one, the word has a single meaning."
+        }
+      },
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Entonces en {{term:Onboarding}} un cliente es una {{term:IdentityVerification}}: nombre, CURP y documentos, y nada de saldos.",
+          "en": "So in {{term:Onboarding}} a customer is an {{term:IdentityVerification}}: name, CURP and documents, and no balances."
+        }
+      },
+      {
+        "speaker": "Emilio",
+        "text": {
+          "es-MX": "Y en {{term:Cards}} es una {{term:Card}}, con sus últimos cuatro dígitos y su límite por compra.",
+          "en": "And in {{term:Cards}} it is a {{term:Card}}, with its last four digits and its per-purchase limit."
+        }
+      },
+      {
+        "speaker": "Ricardo",
+        "text": {
+          "es-MX": "En {{term:Accounts}} es el dueño de un saldo; en {{term:Transfers}} solo es un nombre y un número de cuenta.",
+          "en": "In {{term:Accounts}} it is the owner of a balance; in {{term:Transfers}} it is just a name and an account number."
+        }
+      }
+    ],
+    "contexts.mapping": [
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "¿Cómo se hablan los contextos? {{term:Onboarding}} publica la identidad verificada y {{term:Accounts}} abre una cuenta por cada una.",
+          "en": "How do the contexts talk to each other? {{term:Onboarding}} publishes the verified identity and {{term:Accounts}} opens one account for each."
+        }
+      },
+      {
+        "speaker": "Ricardo",
+        "text": {
+          "es-MX": "Con {{term:SpeiNetwork}} no hay negociación: sus campos se llaman claveRastreo, monto, institucionContraparte... Necesitamos una capa que traduzca para que su modelo no contamine el nuestro.",
+          "en": "There is no negotiating with {{term:SpeiNetwork}}: its fields are called claveRastreo, monto, institucionContraparte... We need a layer that translates so its model does not leak into ours."
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Eso es una capa anticorrupción: traducimos en la frontera y nuestro dominio sigue hablando su propio idioma.",
+          "en": "That is an anticorruption layer: we translate at the border and our domain keeps speaking its own language."
+        }
+      }
+    ],
+    "subdomains.focus": [
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "No todo merece el mismo esfuerzo. Ricardo, ¿en qué nos diferenciamos de otra billetera?",
+          "en": "Not everything deserves the same effort. Ricardo, what sets us apart from another wallet?"
+        }
+      },
+      {
+        "speaker": "Ricardo",
+        "text": {
+          "es-MX": "En mover dinero rápido y sin sustos: límites claros, devoluciones automáticas y congelamientos bien hechos. Eso vive en {{term:Transfers}} y {{term:Accounts}}.",
+          "en": "In moving money fast and without surprises: clear limits, automatic refunds and well-handled freezes. That lives in {{term:Transfers}} and {{term:Accounts}}."
+        }
+      },
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Verificar identidad en {{term:Onboarding}}, en cambio, es una obligación igual para todas las billeteras y la hace un proveedor. Ahí conviene comprar, no inventar.",
+          "en": "Verifying identity in {{term:Onboarding}}, on the other hand, is a duty that is the same for every wallet and a provider does it. There it pays to buy, not to invent."
+        }
+      }
+    ],
+    "tactical.aggregate": [
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Veamos la {{term:Account}}. ¿Qué nunca debería pasar con una cuenta?",
+          "en": "Let's look at the {{term:Account}}. What should never happen to an account?"
+        }
+      },
+      {
+        "speaker": "Ricardo",
+        "text": {
+          "es-MX": "Que el saldo quede negativo, que se gaste más del límite diario o que una cuenta congelada mande dinero.",
+          "en": "That the balance goes negative, that more than the daily limit gets spent, or that a frozen account sends money."
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Esas son invariantes. El agregado las protege: cualquier comando que las rompa se rechaza con un error claro.",
+          "en": "Those are invariants. The aggregate protects them: any command that breaks them is rejected with a clear error."
+        }
+      }
+    ],
+    "functional.pipeline": [
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Mira el envío de dinero como una línea de ensamblaje: validar, calcular el cargo, mandar a SPEI y guardar.",
+          "en": "Look at sending money as an assembly line: validate, compute the charge, send to SPEI and save."
+        }
+      },
+      {
+        "speaker": "Ricardo",
+        "text": {
+          "es-MX": "Y si SPEI no responde, la transferencia no sigue por la línea principal: se desvía y nadie cree que el dinero ya salió.",
+          "en": "And if SPEI does not respond, the transfer does not continue on the main line: it gets diverted and nobody believes the money already left."
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Exacto. Cada etapa recibe un tipo y devuelve otro, y los errores son valores, no sorpresas.",
+          "en": "Exactly. Each stage takes one type and returns another, and errors are values, not surprises."
+        }
+      }
+    ],
+    "architecture.ports": [
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "El dominio no debe saber si hablamos con SPEI directo o por medio de un proveedor. Solo pide «envía esta orden de pago».",
+          "en": "The domain must not know whether we talk to SPEI directly or through a provider. It only asks “send this payment order”."
+        }
+      },
+      {
+        "speaker": "Ricardo",
+        "text": {
+          "es-MX": "Entonces {{term:SpeiNetwork}}, el {{term:IdentityProvider}} y el {{term:CardProcessor}} son puertos, y cada proveedor es un adaptador que se puede cambiar.",
+          "en": "So {{term:SpeiNetwork}}, the {{term:IdentityProvider}} and the {{term:CardProcessor}} are ports, and each provider is an adapter you can swap."
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Y las dependencias apuntan hacia el dominio, nunca al revés.",
+          "en": "And dependencies point toward the domain, never the other way around."
+        }
+      }
+    ],
+    "evolution.request": [
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Cumplimiento nos pide algo nuevo: toda transferencia de más de $25,000 debe revisarla una persona antes de salir a SPEI.",
+          "en": "Compliance is asking for something new: every transfer above $25,000 must be reviewed by a person before it goes out to SPEI."
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Entonces entre «solicitada» y «enviada» falta un paso que el modelo nunca nombró: la revisión.",
+          "en": "So between “requested” and “submitted” there is a step the model never named: the review."
+        }
+      },
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Eso. Un analista puede retener la transferencia y liberarla cuando todo esté en orden.",
+          "en": "Right. An analyst can hold the transfer and release it once everything checks out."
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Un concepto implícito que ahora hacemos explícito. Refactoricemos la {{term:Transfer}}.",
+          "en": "An implicit concept we now make explicit. Let's refactor the {{term:Transfer}}."
+        }
+      }
+    ]
+  }
+}

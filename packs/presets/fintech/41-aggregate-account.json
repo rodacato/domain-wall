@@ -1,0 +1,776 @@
+{
+  "aggregates": [
+    {
+      "codeName": "Account",
+      "label": {
+        "es-MX": "Cuenta",
+        "en": "Account"
+      },
+      "description": {
+        "es-MX": "La cuenta de una persona verificada: guarda su saldo, vigila su límite diario y decide si puede enviar dinero.",
+        "en": "The account of a verified person: it keeps their balance, watches their daily limit and decides whether they can send money."
+      },
+      "context": "Accounts",
+      "identity": "accountId",
+      "fields": [
+        {
+          "codeName": "accountId",
+          "label": {
+            "es-MX": "Cuenta",
+            "en": "Account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AccountId"
+          }
+        },
+        {
+          "codeName": "holderName",
+          "label": {
+            "es-MX": "Titular",
+            "en": "Holder"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "FullName"
+          }
+        },
+        {
+          "codeName": "clabe",
+          "label": {
+            "es-MX": "CLABE",
+            "en": "CLABE"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Clabe"
+          }
+        },
+        {
+          "codeName": "balance",
+          "label": {
+            "es-MX": "Saldo",
+            "en": "Balance"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        },
+        {
+          "codeName": "spentToday",
+          "label": {
+            "es-MX": "Gastado hoy",
+            "en": "Spent today"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        },
+        {
+          "codeName": "dailyLimit",
+          "label": {
+            "es-MX": "Límite diario",
+            "en": "Daily limit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ],
+      "derived": [],
+      "entities": [],
+      "states": [
+        {
+          "codeName": "Unopened",
+          "label": {
+            "es-MX": "Sin abrir",
+            "en": "Unopened"
+          },
+          "description": {
+            "es-MX": "La cuenta todavía no existe para el titular.",
+            "en": "The account does not exist for the holder yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Active",
+          "label": {
+            "es-MX": "Activa",
+            "en": "Active"
+          },
+          "description": {
+            "es-MX": "La cuenta recibe y envía dinero con normalidad.",
+            "en": "The account receives and sends money normally."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Frozen",
+          "label": {
+            "es-MX": "Congelada",
+            "en": "Frozen"
+          },
+          "description": {
+            "es-MX": "La cuenta no puede enviar dinero mientras se investiga.",
+            "en": "The account cannot send money while it is investigated."
+          },
+          "terminal": false,
+          "data": [
+            {
+              "codeName": "freezeReason",
+              "label": {
+                "es-MX": "Motivo de congelamiento",
+                "en": "Freeze reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ReasonText"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Closed",
+          "label": {
+            "es-MX": "Cerrada",
+            "en": "Closed"
+          },
+          "description": {
+            "es-MX": "La cuenta se cerró de forma definitiva.",
+            "en": "The account was closed for good."
+          },
+          "terminal": true,
+          "data": []
+        }
+      ],
+      "initialState": "Unopened",
+      "rules": [
+        {
+          "codeName": "LimitWithinCeiling",
+          "label": {
+            "es-MX": "El límite diario respeta el tope regulatorio",
+            "en": "The daily limit respects the regulatory ceiling"
+          },
+          "description": {
+            "es-MX": "Ninguna cuenta puede tener un límite diario de más de $100,000.",
+            "en": "No account can have a daily limit above $100,000."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "dailyLimit"
+            },
+            "operator": "<=",
+            "right": {
+              "op": "literal",
+              "value": 10000000
+            }
+          },
+          "message": {
+            "es-MX": "El límite diario no puede pasar de $100,000.",
+            "en": "The daily limit cannot exceed $100,000."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenAccount",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "SetDailyLimit",
+              "args": {
+                "dailyLimit": 10000001
+              }
+            }
+          }
+        },
+        {
+          "codeName": "DepositMustBePositive",
+          "label": {
+            "es-MX": "El depósito debe ser mayor a cero",
+            "en": "The deposit must be greater than zero"
+          },
+          "description": {
+            "es-MX": "Un abono de cero pesos no es un depósito válido.",
+            "en": "A credit of zero pesos is not a valid deposit."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "amount"
+            },
+            "operator": ">",
+            "right": {
+              "op": "literal",
+              "value": 0
+            }
+          },
+          "message": {
+            "es-MX": "El depósito debe ser mayor a cero.",
+            "en": "The deposit must be greater than zero."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenAccount",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "ReceiveDeposit",
+              "args": {
+                "amount": 0
+              }
+            }
+          }
+        },
+        {
+          "codeName": "WithinDailyLimit",
+          "label": {
+            "es-MX": "Lo gastado en el día no supera el límite",
+            "en": "Spending in the day stays within the limit"
+          },
+          "description": {
+            "es-MX": "Lo ya gastado hoy más el nuevo débito no puede pasar del límite diario.",
+            "en": "What was already spent today plus the new debit cannot exceed the daily limit."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arithmetic",
+              "operator": "add",
+              "left": {
+                "op": "field",
+                "name": "spentToday"
+              },
+              "right": {
+                "op": "arg",
+                "name": "amount"
+              }
+            },
+            "operator": "<=",
+            "right": {
+              "op": "field",
+              "name": "dailyLimit"
+            }
+          },
+          "message": {
+            "es-MX": "Con este envío superarías tu límite diario.",
+            "en": "This transfer would exceed your daily limit."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenAccount",
+                "args": {}
+              },
+              {
+                "command": "ReceiveDeposit",
+                "args": {
+                  "amount": 9000000
+                }
+              }
+            ],
+            "when": {
+              "command": "DebitAccount",
+              "args": {
+                "amount": 5000001
+              }
+            }
+          }
+        },
+        {
+          "codeName": "BalanceNeverNegative",
+          "label": {
+            "es-MX": "El saldo nunca es negativo",
+            "en": "The balance is never negative"
+          },
+          "description": {
+            "es-MX": "Una cuenta no puede gastar más dinero del que tiene.",
+            "en": "An account cannot spend more money than it has."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "field",
+              "name": "balance"
+            },
+            "operator": ">=",
+            "right": {
+              "op": "literal",
+              "value": 0
+            }
+          },
+          "message": {
+            "es-MX": "No tienes saldo suficiente para este envío.",
+            "en": "You do not have enough balance for this transfer."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenAccount",
+                "args": {}
+              },
+              {
+                "command": "ReceiveDeposit",
+                "args": {
+                  "amount": 1000
+                }
+              }
+            ],
+            "when": {
+              "command": "DebitAccount",
+              "args": {
+                "amount": 2000
+              }
+            }
+          }
+        },
+        {
+          "codeName": "SpentNeverNegative",
+          "label": {
+            "es-MX": "Lo gastado en el día nunca es negativo",
+            "en": "Spending in the day is never negative"
+          },
+          "description": {
+            "es-MX": "No se puede devolver más de lo que se gastó en el día.",
+            "en": "You cannot refund more than was spent in the day."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "field",
+              "name": "spentToday"
+            },
+            "operator": ">=",
+            "right": {
+              "op": "literal",
+              "value": 0
+            }
+          },
+          "message": {
+            "es-MX": "La devolución es mayor a lo gastado hoy.",
+            "en": "The refund is larger than what was spent today."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenAccount",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "RefundDebit",
+              "args": {
+                "amount": 1000
+              }
+            }
+          }
+        },
+        {
+          "codeName": "BalanceMustBeZeroToClose",
+          "label": {
+            "es-MX": "Para cerrar la cuenta el saldo debe ser cero",
+            "en": "To close the account the balance must be zero"
+          },
+          "description": {
+            "es-MX": "Una cuenta con dinero no se cierra: primero hay que retirarlo.",
+            "en": "An account holding money is not closed: it must be withdrawn first."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "field",
+              "name": "balance"
+            },
+            "operator": "==",
+            "right": {
+              "op": "literal",
+              "value": 0
+            }
+          },
+          "message": {
+            "es-MX": "Retira tu saldo antes de cerrar la cuenta.",
+            "en": "Withdraw your balance before closing the account."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenAccount",
+                "args": {}
+              },
+              {
+                "command": "ReceiveDeposit",
+                "args": {
+                  "amount": 1000
+                }
+              }
+            ],
+            "when": {
+              "command": "CloseAccount",
+              "args": {}
+            }
+          }
+        }
+      ],
+      "invariants": ["BalanceNeverNegative", "SpentNeverNegative"],
+      "transitions": [
+        {
+          "command": "OpenAccount",
+          "from": ["Unopened"],
+          "to": "Active",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "holderName",
+              "value": {
+                "op": "arg",
+                "name": "holderName"
+              }
+            },
+            {
+              "op": "set",
+              "field": "clabe",
+              "value": {
+                "op": "arg",
+                "name": "clabe"
+              }
+            },
+            {
+              "op": "set",
+              "field": "dailyLimit",
+              "value": {
+                "op": "literal",
+                "value": 5000000
+              }
+            }
+          ],
+          "emits": ["AccountOpened"]
+        },
+        {
+          "command": "ReceiveDeposit",
+          "from": ["Active"],
+          "to": "Active",
+          "guards": ["DepositMustBePositive"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "balance",
+              "value": {
+                "op": "arithmetic",
+                "operator": "add",
+                "left": {
+                  "op": "field",
+                  "name": "balance"
+                },
+                "right": {
+                  "op": "arg",
+                  "name": "amount"
+                }
+              }
+            }
+          ],
+          "emits": ["DepositReceived"]
+        },
+        {
+          "command": "ReceiveDeposit",
+          "from": ["Frozen"],
+          "to": "Frozen",
+          "guards": ["DepositMustBePositive"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "balance",
+              "value": {
+                "op": "arithmetic",
+                "operator": "add",
+                "left": {
+                  "op": "field",
+                  "name": "balance"
+                },
+                "right": {
+                  "op": "arg",
+                  "name": "amount"
+                }
+              }
+            }
+          ],
+          "emits": ["DepositReceived"]
+        },
+        {
+          "command": "SetDailyLimit",
+          "from": ["Active"],
+          "to": "Active",
+          "guards": ["LimitWithinCeiling"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "dailyLimit",
+              "value": {
+                "op": "arg",
+                "name": "dailyLimit"
+              }
+            }
+          ],
+          "emits": ["DailyLimitChanged"]
+        },
+        {
+          "command": "DebitAccount",
+          "from": ["Active"],
+          "to": "Active",
+          "guards": ["WithinDailyLimit"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "balance",
+              "value": {
+                "op": "arithmetic",
+                "operator": "subtract",
+                "left": {
+                  "op": "field",
+                  "name": "balance"
+                },
+                "right": {
+                  "op": "arg",
+                  "name": "amount"
+                }
+              }
+            },
+            {
+              "op": "set",
+              "field": "spentToday",
+              "value": {
+                "op": "arithmetic",
+                "operator": "add",
+                "left": {
+                  "op": "field",
+                  "name": "spentToday"
+                },
+                "right": {
+                  "op": "arg",
+                  "name": "amount"
+                }
+              }
+            }
+          ],
+          "emits": ["AccountDebited"]
+        },
+        {
+          "command": "RefundDebit",
+          "from": ["Active"],
+          "to": "Active",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "balance",
+              "value": {
+                "op": "arithmetic",
+                "operator": "add",
+                "left": {
+                  "op": "field",
+                  "name": "balance"
+                },
+                "right": {
+                  "op": "arg",
+                  "name": "amount"
+                }
+              }
+            },
+            {
+              "op": "set",
+              "field": "spentToday",
+              "value": {
+                "op": "arithmetic",
+                "operator": "subtract",
+                "left": {
+                  "op": "field",
+                  "name": "spentToday"
+                },
+                "right": {
+                  "op": "arg",
+                  "name": "amount"
+                }
+              }
+            }
+          ],
+          "emits": ["DebitRefunded"]
+        },
+        {
+          "command": "RefundDebit",
+          "from": ["Frozen"],
+          "to": "Frozen",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "balance",
+              "value": {
+                "op": "arithmetic",
+                "operator": "add",
+                "left": {
+                  "op": "field",
+                  "name": "balance"
+                },
+                "right": {
+                  "op": "arg",
+                  "name": "amount"
+                }
+              }
+            },
+            {
+              "op": "set",
+              "field": "spentToday",
+              "value": {
+                "op": "arithmetic",
+                "operator": "subtract",
+                "left": {
+                  "op": "field",
+                  "name": "spentToday"
+                },
+                "right": {
+                  "op": "arg",
+                  "name": "amount"
+                }
+              }
+            }
+          ],
+          "emits": ["DebitRefunded"]
+        },
+        {
+          "command": "ResetDailySpending",
+          "from": ["Active"],
+          "to": "Active",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "spentToday",
+              "value": {
+                "op": "literal",
+                "value": 0
+              }
+            }
+          ],
+          "emits": ["DailySpendingReset"]
+        },
+        {
+          "command": "ResetDailySpending",
+          "from": ["Frozen"],
+          "to": "Frozen",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "spentToday",
+              "value": {
+                "op": "literal",
+                "value": 0
+              }
+            }
+          ],
+          "emits": ["DailySpendingReset"]
+        },
+        {
+          "command": "FreezeAccount",
+          "from": ["Active"],
+          "to": "Frozen",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "freezeReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["AccountFrozen"]
+        },
+        {
+          "command": "UnfreezeAccount",
+          "from": ["Frozen"],
+          "to": "Active",
+          "guards": [],
+          "effects": [],
+          "emits": ["AccountUnfrozen"]
+        },
+        {
+          "command": "CloseAccount",
+          "from": ["Active"],
+          "to": "Closed",
+          "guards": ["BalanceMustBeZeroToClose"],
+          "effects": [],
+          "emits": ["AccountClosed"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "OpenAccount",
+          "args": {
+            "holderName": "Valeria Hernández Gómez",
+            "clabe": "646180157000000004"
+          }
+        },
+        {
+          "command": "ReceiveDeposit",
+          "args": {
+            "amount": 100000
+          }
+        },
+        {
+          "command": "SetDailyLimit",
+          "args": {
+            "dailyLimit": 3000000
+          }
+        },
+        {
+          "command": "DebitAccount",
+          "args": {
+            "amount": 25000
+          }
+        },
+        {
+          "command": "RefundDebit",
+          "args": {
+            "amount": 25000
+          }
+        },
+        {
+          "command": "FreezeAccount",
+          "args": {
+            "reason": "Suspicious activity reported"
+          }
+        },
+        {
+          "command": "UnfreezeAccount",
+          "args": {}
+        },
+        {
+          "command": "DebitAccount",
+          "args": {
+            "amount": 100000
+          }
+        },
+        {
+          "command": "ResetDailySpending",
+          "args": {}
+        },
+        {
+          "command": "CloseAccount",
+          "args": {}
+        }
+      ]
+    }
+  ]
+}

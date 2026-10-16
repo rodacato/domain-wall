@@ -1,0 +1,1093 @@
+{
+  "valueObjects": [
+    {
+      "kind": "scalar",
+      "codeName": "ParcelId",
+      "label": {
+        "es-MX": "Paquete",
+        "en": "Parcel"
+      },
+      "description": {
+        "es-MX": "Identificador de un paquete.",
+        "en": "Identifier of a parcel."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "pcl_[a-z0-9]{8}",
+          "errorCode": "ParcelIdMalformed",
+          "message": {
+            "es-MX": "El identificador de un paquete debe empezar con pcl_ seguido de 8 caracteres.",
+            "en": "The parcel identifier must start with pcl_ followed by 8 characters."
+          },
+          "invalidExamples": ["PCL_11111111", "pcl_12"]
+        }
+      ],
+      "examples": {
+        "valid": ["pcl_8w4y6e2l"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "RouteId",
+      "label": {
+        "es-MX": "Ruta",
+        "en": "Route"
+      },
+      "description": {
+        "es-MX": "Identificador de una ruta.",
+        "en": "Identifier of a route."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "rte_[a-z0-9]{8}",
+          "errorCode": "RouteIdMalformed",
+          "message": {
+            "es-MX": "El identificador de una ruta debe empezar con rte_ seguido de 8 caracteres.",
+            "en": "The route identifier must start with rte_ followed by 8 characters."
+          },
+          "invalidExamples": ["RTE_11111111", "rte_12"]
+        }
+      ],
+      "examples": {
+        "valid": ["rte_3d7h1n5v"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "StopId",
+      "label": {
+        "es-MX": "Parada",
+        "en": "Stop"
+      },
+      "description": {
+        "es-MX": "Identificador de una parada.",
+        "en": "Identifier of a stop."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "stp_[a-z0-9]{8}",
+          "errorCode": "StopIdMalformed",
+          "message": {
+            "es-MX": "El identificador de una parada debe empezar con stp_ seguido de 8 caracteres.",
+            "en": "The stop identifier must start with stp_ followed by 8 characters."
+          },
+          "invalidExamples": ["STP_11111111", "stp_12"]
+        }
+      ],
+      "examples": {
+        "valid": ["stp_6b2k9c4t"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "DeliveryId",
+      "label": {
+        "es-MX": "Entrega",
+        "en": "Delivery"
+      },
+      "description": {
+        "es-MX": "Identificador de una entrega.",
+        "en": "Identifier of a delivery."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "dlv_[a-z0-9]{8}",
+          "errorCode": "DeliveryIdMalformed",
+          "message": {
+            "es-MX": "El identificador de una entrega debe empezar con dlv_ seguido de 8 caracteres.",
+            "en": "The delivery identifier must start with dlv_ followed by 8 characters."
+          },
+          "invalidExamples": ["DLV_11111111", "dlv_12"]
+        }
+      ],
+      "examples": {
+        "valid": ["dlv_2f8s5m1z"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "RemittanceId",
+      "label": {
+        "es-MX": "Liquidación",
+        "en": "Remittance"
+      },
+      "description": {
+        "es-MX": "Identificador de una liquidación.",
+        "en": "Identifier of a remittance."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "rmt_[a-z0-9]{8}",
+          "errorCode": "RemittanceIdMalformed",
+          "message": {
+            "es-MX": "El identificador de una liquidación debe empezar con rmt_ seguido de 8 caracteres.",
+            "en": "The remittance identifier must start with rmt_ followed by 8 characters."
+          },
+          "invalidExamples": ["RMT_11111111", "rmt_12"]
+        }
+      ],
+      "examples": {
+        "valid": ["rmt_9j3q7w2e"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "DriverId",
+      "label": {
+        "es-MX": "Repartidor",
+        "en": "Driver"
+      },
+      "description": {
+        "es-MX": "Identificador de un repartidor.",
+        "en": "Identifier of a driver."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "drv_[a-z0-9]{8}",
+          "errorCode": "DriverIdMalformed",
+          "message": {
+            "es-MX": "El identificador de un repartidor debe empezar con drv_ seguido de 8 caracteres.",
+            "en": "The driver identifier must start with drv_ followed by 8 characters."
+          },
+          "invalidExamples": ["DRV_11111111", "drv_12"]
+        }
+      ],
+      "examples": {
+        "valid": ["drv_5t1x8r4n"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "TrackingCode",
+      "label": {
+        "es-MX": "Número de guía",
+        "en": "Tracking code"
+      },
+      "description": {
+        "es-MX": "Guía del paquete con formato postal: 2 letras, 9 dígitos y MX.",
+        "en": "Parcel tracking code in postal format: 2 letters, 9 digits and MX."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[A-Z]{2}[0-9]{9}MX",
+          "errorCode": "TrackingCodeMalformed",
+          "message": {
+            "es-MX": "La guía debe tener 2 letras mayúsculas, 9 dígitos y terminar en MX.",
+            "en": "The tracking code must have 2 uppercase letters, 9 digits and end in MX."
+          },
+          "invalidExamples": ["rr123456789mx", "RR12345MX", "RR123456789US"]
+        }
+      ],
+      "examples": {
+        "valid": ["RR123456789MX"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "Money",
+      "label": {
+        "es-MX": "Dinero",
+        "en": "Money"
+      },
+      "description": {
+        "es-MX": "Un monto en centavos de peso mexicano, nunca negativo.",
+        "en": "An amount in Mexican peso cents, never negative."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 0,
+          "errorCode": "MoneyCannotBeNegative",
+          "message": {
+            "es-MX": "El monto no puede ser negativo.",
+            "en": "The amount cannot be negative."
+          },
+          "invalidExamples": [-1, -500]
+        }
+      ],
+      "examples": {
+        "valid": [45000, 3500]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "WeightGrams",
+      "label": {
+        "es-MX": "Peso en gramos",
+        "en": "Weight in grams"
+      },
+      "description": {
+        "es-MX": "El peso de un paquete en gramos; siempre positivo.",
+        "en": "The weight of a parcel in grams; always positive."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 1,
+          "errorCode": "WeightMustBePositive",
+          "message": {
+            "es-MX": "El peso debe ser mayor a cero.",
+            "en": "The weight must be greater than zero."
+          },
+          "invalidExamples": [0, -10]
+        }
+      ],
+      "examples": {
+        "valid": [1500, 800]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "LoadGrams",
+      "label": {
+        "es-MX": "Carga en gramos",
+        "en": "Load in grams"
+      },
+      "description": {
+        "es-MX": "El peso total que lleva una camioneta, en gramos; puede ser cero.",
+        "en": "The total weight a van carries, in grams; it can be zero."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 0,
+          "errorCode": "LoadCannotBeNegative",
+          "message": {
+            "es-MX": "La carga no puede ser negativa.",
+            "en": "The load cannot be negative."
+          },
+          "invalidExamples": [-1, -300]
+        }
+      ],
+      "examples": {
+        "valid": [0, 12000]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "AttemptCount",
+      "label": {
+        "es-MX": "Intentos de entrega",
+        "en": "Delivery attempts"
+      },
+      "description": {
+        "es-MX": "Cuántos intentos de entrega se han hecho: entre 0 y 3.",
+        "en": "How many delivery attempts have been made: between 0 and 3."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 0,
+          "errorCode": "AttemptCountCannotBeNegative",
+          "message": {
+            "es-MX": "Los intentos no pueden ser negativos.",
+            "en": "Attempts cannot be negative."
+          },
+          "invalidExamples": [-1]
+        },
+        {
+          "kind": "max",
+          "value": 3,
+          "errorCode": "AttemptCountTooLarge",
+          "message": {
+            "es-MX": "Los intentos no pueden pasar de 3.",
+            "en": "Attempts cannot exceed 3."
+          },
+          "invalidExamples": [4, 10]
+        }
+      ],
+      "examples": {
+        "valid": [0, 1, 2]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "HourOfDay",
+      "label": {
+        "es-MX": "Hora del día",
+        "en": "Hour of the day"
+      },
+      "description": {
+        "es-MX": "Una hora completa del día, de 0 a 23.",
+        "en": "A whole hour of the day, from 0 to 23."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 0,
+          "errorCode": "HourBelowRange",
+          "message": {
+            "es-MX": "La hora no puede ser menor a 0.",
+            "en": "The hour cannot be below 0."
+          },
+          "invalidExamples": [-1]
+        },
+        {
+          "kind": "max",
+          "value": 23,
+          "errorCode": "HourAboveRange",
+          "message": {
+            "es-MX": "La hora no puede pasar de 23.",
+            "en": "The hour cannot exceed 23."
+          },
+          "invalidExamples": [24, 30]
+        }
+      ],
+      "examples": {
+        "valid": [9, 13, 18]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "StopPosition",
+      "label": {
+        "es-MX": "Posición de la parada",
+        "en": "Stop position"
+      },
+      "description": {
+        "es-MX": "El lugar de una parada dentro de la ruta, desde 1.",
+        "en": "The place of a stop within the route, starting at 1."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 1,
+          "errorCode": "StopPositionMustBePositive",
+          "message": {
+            "es-MX": "La posición debe ser al menos 1.",
+            "en": "The position must be at least 1."
+          },
+          "invalidExamples": [0, -1]
+        },
+        {
+          "kind": "max",
+          "value": 99,
+          "errorCode": "StopPositionTooLarge",
+          "message": {
+            "es-MX": "La posición no puede pasar de 99.",
+            "en": "The position cannot exceed 99."
+          },
+          "invalidExamples": [100]
+        }
+      ],
+      "examples": {
+        "valid": [1, 2, 3]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "StopCount",
+      "label": {
+        "es-MX": "Cantidad de paradas",
+        "en": "Stop count"
+      },
+      "description": {
+        "es-MX": "Cuántas paradas se cuentan en una ruta: entre 0 y 99.",
+        "en": "How many stops are counted on a route: between 0 and 99."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 0,
+          "errorCode": "StopCountCannotBeNegative",
+          "message": {
+            "es-MX": "La cantidad de paradas no puede ser negativa.",
+            "en": "The stop count cannot be negative."
+          },
+          "invalidExamples": [-1]
+        },
+        {
+          "kind": "max",
+          "value": 99,
+          "errorCode": "StopCountTooLarge",
+          "message": {
+            "es-MX": "La cantidad de paradas no puede pasar de 99.",
+            "en": "The stop count cannot exceed 99."
+          },
+          "invalidExamples": [100]
+        }
+      ],
+      "examples": {
+        "valid": [0, 3, 8]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "PostalCode",
+      "label": {
+        "es-MX": "Código postal",
+        "en": "Postal code"
+      },
+      "description": {
+        "es-MX": "Código postal mexicano de cinco dígitos.",
+        "en": "Five-digit Mexican postal code."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[0-9]{5}",
+          "errorCode": "PostalCodeMalformed",
+          "message": {
+            "es-MX": "El código postal debe tener 5 dígitos.",
+            "en": "The postal code must have 5 digits."
+          },
+          "invalidExamples": ["1234", "ABCDE", "123456"]
+        }
+      ],
+      "examples": {
+        "valid": ["06700", "03100"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "StreetLine",
+      "label": {
+        "es-MX": "Calle y número",
+        "en": "Street and number"
+      },
+      "description": {
+        "es-MX": "Calle y número de una dirección.",
+        "en": "Street and number of an address."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 3,
+          "errorCode": "StreetLineTooShort",
+          "message": {
+            "es-MX": "La calle y número deben tener al menos 3 caracteres.",
+            "en": "The street and number must have at least 3 characters."
+          },
+          "invalidExamples": ["aa"]
+        }
+      ],
+      "examples": {
+        "valid": ["Calle Durango 215"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "NeighborhoodName",
+      "label": {
+        "es-MX": "Colonia",
+        "en": "Neighborhood"
+      },
+      "description": {
+        "es-MX": "Nombre de la colonia de una dirección.",
+        "en": "Name of the neighborhood of an address."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 2,
+          "errorCode": "NeighborhoodNameTooShort",
+          "message": {
+            "es-MX": "La colonia debe tener al menos 2 caracteres.",
+            "en": "The neighborhood must have at least 2 characters."
+          },
+          "invalidExamples": ["a"]
+        }
+      ],
+      "examples": {
+        "valid": ["Roma Norte"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "CityName",
+      "label": {
+        "es-MX": "Ciudad",
+        "en": "City"
+      },
+      "description": {
+        "es-MX": "Nombre de una ciudad o alcaldía.",
+        "en": "Name of a city or borough."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 2,
+          "errorCode": "CityNameTooShort",
+          "message": {
+            "es-MX": "La ciudad debe tener al menos 2 caracteres.",
+            "en": "The city must have at least 2 characters."
+          },
+          "invalidExamples": ["a"]
+        }
+      ],
+      "examples": {
+        "valid": ["Ciudad de México"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "PersonName",
+      "label": {
+        "es-MX": "Nombre de la persona",
+        "en": "Person name"
+      },
+      "description": {
+        "es-MX": "Nombre de quien recibe el paquete.",
+        "en": "Name of the person who receives the parcel."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 2,
+          "errorCode": "PersonNameTooShort",
+          "message": {
+            "es-MX": "El nombre debe tener al menos 2 caracteres.",
+            "en": "The name must have at least 2 characters."
+          },
+          "invalidExamples": ["a"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 80,
+          "errorCode": "PersonNameTooLong",
+          "message": {
+            "es-MX": "El nombre no puede pasar de 80 caracteres.",
+            "en": "The name cannot exceed 80 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["Mariana López"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "DamageNote",
+      "label": {
+        "es-MX": "Nota de daño",
+        "en": "Damage note"
+      },
+      "description": {
+        "es-MX": "Qué daño sufrió un paquete.",
+        "en": "What damage a parcel suffered."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 5,
+          "errorCode": "DamageNoteTooShort",
+          "message": {
+            "es-MX": "La nota debe tener al menos 5 caracteres.",
+            "en": "The note must have at least 5 characters."
+          },
+          "invalidExamples": ["aaaa"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 200,
+          "errorCode": "DamageNoteTooLong",
+          "message": {
+            "es-MX": "La nota no puede pasar de 200 caracteres.",
+            "en": "The note cannot exceed 200 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["Box crushed on one corner"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "CancellationReason",
+      "label": {
+        "es-MX": "Motivo de cancelación",
+        "en": "Cancellation reason"
+      },
+      "description": {
+        "es-MX": "Por qué se canceló una ruta o una entrega.",
+        "en": "Why a route or a delivery was cancelled."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 3,
+          "errorCode": "CancellationReasonTooShort",
+          "message": {
+            "es-MX": "El motivo debe tener al menos 3 caracteres.",
+            "en": "The reason must have at least 3 characters."
+          },
+          "invalidExamples": ["aa"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 200,
+          "errorCode": "CancellationReasonTooLong",
+          "message": {
+            "es-MX": "El motivo no puede pasar de 200 caracteres.",
+            "en": "The reason cannot exceed 200 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["Customer changed their mind"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "RejectionReason",
+      "label": {
+        "es-MX": "Motivo de rechazo",
+        "en": "Rejection reason"
+      },
+      "description": {
+        "es-MX": "Por qué el banco rechazó una transferencia.",
+        "en": "Why the bank rejected a transfer."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 3,
+          "errorCode": "RejectionReasonTooShort",
+          "message": {
+            "es-MX": "El motivo debe tener al menos 3 caracteres.",
+            "en": "The reason must have at least 3 characters."
+          },
+          "invalidExamples": ["aa"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 200,
+          "errorCode": "RejectionReasonTooLong",
+          "message": {
+            "es-MX": "El motivo no puede pasar de 200 caracteres.",
+            "en": "The reason cannot exceed 200 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["Beneficiary account does not exist"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "BinCode",
+      "label": {
+        "es-MX": "Casillero",
+        "en": "Bin"
+      },
+      "description": {
+        "es-MX": "Código de un casillero del hub: una letra, dos dígitos, guion y dos dígitos.",
+        "en": "Code of a hub bin: one letter, two digits, a hyphen and two digits."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[A-Z][0-9]{2}-[0-9]{2}",
+          "errorCode": "BinCodeMalformed",
+          "message": {
+            "es-MX": "El casillero debe verse como B07-12.",
+            "en": "The bin must look like B07-12."
+          },
+          "invalidExamples": ["b07-12", "B7-12", "B07/12"]
+        }
+      ],
+      "examples": {
+        "valid": ["B07-12"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "EvidenceReference",
+      "label": {
+        "es-MX": "Referencia de la evidencia",
+        "en": "Evidence reference"
+      },
+      "description": {
+        "es-MX": "Identificador de la firma, foto o código guardado como evidencia.",
+        "en": "Identifier of the signature, photo or code kept as evidence."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "evd_[a-z0-9]{8}",
+          "errorCode": "EvidenceReferenceMalformed",
+          "message": {
+            "es-MX": "La referencia debe empezar con evd_ seguido de 8 caracteres.",
+            "en": "The reference must start with evd_ followed by 8 characters."
+          },
+          "invalidExamples": ["EVD_12345678", "evd_12"]
+        }
+      ],
+      "examples": {
+        "valid": ["evd_4k8m2q7x"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "BeneficiaryAccount",
+      "label": {
+        "es-MX": "Cuenta del beneficiario",
+        "en": "Beneficiary account"
+      },
+      "description": {
+        "es-MX": "Número de cuenta destino: de 10 a 18 dígitos (celular, tarjeta o CLABE).",
+        "en": "Destination account number: 10 to 18 digits (phone, card or CLABE)."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[0-9]{10,18}",
+          "errorCode": "BeneficiaryAccountMalformed",
+          "message": {
+            "es-MX": "La cuenta debe tener de 10 a 18 dígitos.",
+            "en": "The account must have 10 to 18 digits."
+          },
+          "invalidExamples": ["12345", "ABC1234567890123456", "1234567890123456789"]
+        }
+      ],
+      "examples": {
+        "valid": ["646180110400000007", "5512345678"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "BankReceiptFolio",
+      "label": {
+        "es-MX": "Folio del banco",
+        "en": "Bank folio"
+      },
+      "description": {
+        "es-MX": "Folio numérico con el que el banco confirma una transferencia.",
+        "en": "Numeric folio with which the bank confirms a transfer."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[0-9]{6,12}",
+          "errorCode": "BankReceiptFolioMalformed",
+          "message": {
+            "es-MX": "El folio debe tener de 6 a 12 dígitos.",
+            "en": "The folio must have 6 to 12 digits."
+          },
+          "invalidExamples": ["12345", "ABC123456", "1234567890123"]
+        }
+      ],
+      "examples": {
+        "valid": ["20260314001"]
+      }
+    },
+    {
+      "kind": "record",
+      "codeName": "Address",
+      "label": {
+        "es-MX": "Dirección",
+        "en": "Address"
+      },
+      "description": {
+        "es-MX": "Dónde se entrega un paquete.",
+        "en": "Where a parcel is delivered."
+      },
+      "fields": [
+        {
+          "codeName": "street",
+          "label": {
+            "es-MX": "Calle",
+            "en": "Street"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StreetLine"
+          }
+        },
+        {
+          "codeName": "neighborhood",
+          "label": {
+            "es-MX": "Colonia",
+            "en": "Neighborhood"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "NeighborhoodName"
+          }
+        },
+        {
+          "codeName": "city",
+          "label": {
+            "es-MX": "Ciudad",
+            "en": "City"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CityName"
+          }
+        },
+        {
+          "codeName": "postalCode",
+          "label": {
+            "es-MX": "Código postal",
+            "en": "Postal code"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PostalCode"
+          }
+        }
+      ],
+      "examples": {
+        "valid": [
+          {
+            "street": "Calle Durango 215",
+            "neighborhood": "Roma Norte",
+            "city": "Ciudad de México",
+            "postalCode": "06700"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "record",
+      "codeName": "ProofOfDelivery",
+      "label": {
+        "es-MX": "Evidencia de entrega",
+        "en": "Proof of delivery"
+      },
+      "description": {
+        "es-MX": "Con qué se comprueba que el paquete llegó a su destinatario.",
+        "en": "What proves that the parcel reached its recipient."
+      },
+      "fields": [
+        {
+          "codeName": "proofKind",
+          "label": {
+            "es-MX": "Tipo de evidencia",
+            "en": "Proof kind"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ProofKind"
+          }
+        },
+        {
+          "codeName": "evidenceRef",
+          "label": {
+            "es-MX": "Referencia",
+            "en": "Reference"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "EvidenceReference"
+          }
+        }
+      ],
+      "examples": {
+        "valid": [
+          {
+            "proofKind": "Photo",
+            "evidenceRef": "evd_4k8m2q7x"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "enum",
+      "codeName": "ServiceZone",
+      "label": {
+        "es-MX": "Zona de servicio",
+        "en": "Service zone"
+      },
+      "description": {
+        "es-MX": "Las zonas de la ciudad donde repartimos, más la que queda fuera.",
+        "en": "The city zones where we deliver, plus the one outside coverage."
+      },
+      "members": [
+        {
+          "codeName": "Downtown",
+          "label": {
+            "es-MX": "Centro",
+            "en": "Downtown"
+          }
+        },
+        {
+          "codeName": "North",
+          "label": {
+            "es-MX": "Norte",
+            "en": "North"
+          }
+        },
+        {
+          "codeName": "South",
+          "label": {
+            "es-MX": "Sur",
+            "en": "South"
+          }
+        },
+        {
+          "codeName": "West",
+          "label": {
+            "es-MX": "Poniente",
+            "en": "West"
+          }
+        },
+        {
+          "codeName": "OutOfCoverage",
+          "label": {
+            "es-MX": "Fuera de cobertura",
+            "en": "Out of coverage"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "enum",
+      "codeName": "FailureReason",
+      "label": {
+        "es-MX": "Motivo de intento fallido",
+        "en": "Failed attempt reason"
+      },
+      "description": {
+        "es-MX": "Por qué el repartidor no pudo entregar el paquete.",
+        "en": "Why the driver could not hand over the parcel."
+      },
+      "members": [
+        {
+          "codeName": "NobodyHome",
+          "label": {
+            "es-MX": "Nadie en casa",
+            "en": "Nobody home"
+          }
+        },
+        {
+          "codeName": "WrongAddress",
+          "label": {
+            "es-MX": "Dirección incorrecta",
+            "en": "Wrong address"
+          }
+        },
+        {
+          "codeName": "RecipientRefused",
+          "label": {
+            "es-MX": "El destinatario lo rechazó",
+            "en": "Recipient refused it"
+          }
+        },
+        {
+          "codeName": "NoAccess",
+          "label": {
+            "es-MX": "Sin acceso al domicilio",
+            "en": "No access to the address"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "enum",
+      "codeName": "ProofKind",
+      "label": {
+        "es-MX": "Tipo de evidencia",
+        "en": "Kind of proof"
+      },
+      "description": {
+        "es-MX": "Cómo se comprobó la entrega.",
+        "en": "How the handover was proven."
+      },
+      "members": [
+        {
+          "codeName": "Signature",
+          "label": {
+            "es-MX": "Firma",
+            "en": "Signature"
+          }
+        },
+        {
+          "codeName": "Photo",
+          "label": {
+            "es-MX": "Foto",
+            "en": "Photo"
+          }
+        },
+        {
+          "codeName": "PinCode",
+          "label": {
+            "es-MX": "Código de entrega",
+            "en": "Delivery code"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "enum",
+      "codeName": "BeneficiaryAccountType",
+      "label": {
+        "es-MX": "Tipo de cuenta del beneficiario",
+        "en": "Beneficiary account type"
+      },
+      "description": {
+        "es-MX": "Qué clase de cuenta recibe la transferencia.",
+        "en": "What kind of account receives the transfer."
+      },
+      "members": [
+        {
+          "codeName": "Clabe",
+          "label": {
+            "es-MX": "CLABE interbancaria",
+            "en": "Interbank CLABE"
+          }
+        },
+        {
+          "codeName": "DebitCard",
+          "label": {
+            "es-MX": "Tarjeta de débito",
+            "en": "Debit card"
+          }
+        },
+        {
+          "codeName": "MobilePhone",
+          "label": {
+            "es-MX": "Número de celular",
+            "en": "Mobile phone number"
+          }
+        }
+      ]
+    }
+  ]
+}

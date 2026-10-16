@@ -1,0 +1,429 @@
+{
+  "contexts": [
+    {
+      "codeName": "Onboarding",
+      "label": {
+        "es-MX": "Alta de clientes",
+        "en": "Onboarding"
+      },
+      "description": {
+        "es-MX": "Donde una persona comprueba quién es antes de tener una cuenta.",
+        "en": "Where a person proves who they are before getting an account."
+      },
+      "subdomain": {
+        "type": "generic",
+        "rationale": {
+          "es-MX": "Verificar identidad es una obligación regulatoria igual para todas las billeteras y la resuelve un proveedor; conviene comprarla, no inventarla.",
+          "en": "Verifying identity is a regulatory duty that is the same for every wallet and a provider solves it; it is better to buy it than to invent it."
+        }
+      }
+    },
+    {
+      "codeName": "Accounts",
+      "label": {
+        "es-MX": "Cuentas",
+        "en": "Accounts"
+      },
+      "description": {
+        "es-MX": "Donde vive el dinero de cada persona: saldo, límite diario y estatus.",
+        "en": "Where each person's money lives: balance, daily limit and status."
+      },
+      "subdomain": {
+        "type": "core",
+        "rationale": {
+          "es-MX": "Cuidar el saldo, los límites y los congelamientos mejor que nadie es lo que hace que la gente confíe su dinero a nuestra billetera.",
+          "en": "Looking after balances, limits and freezes better than anyone is what makes people trust their money to our wallet."
+        }
+      }
+    },
+    {
+      "codeName": "Transfers",
+      "label": {
+        "es-MX": "Transferencias",
+        "en": "Transfers"
+      },
+      "description": {
+        "es-MX": "Desde que alguien pide enviar dinero hasta que SPEI lo liquida o lo rechaza.",
+        "en": "From the moment someone asks to send money until SPEI settles or rejects it."
+      },
+      "subdomain": {
+        "type": "core",
+        "rationale": {
+          "es-MX": "Mover dinero en segundos, con límites claros y devoluciones sin fricción, es la razón por la que la gente nos elige.",
+          "en": "Moving money in seconds, with clear limits and frictionless refunds, is the reason people choose us."
+        }
+      }
+    },
+    {
+      "codeName": "Cards",
+      "label": {
+        "es-MX": "Tarjetas",
+        "en": "Cards"
+      },
+      "description": {
+        "es-MX": "La tarjeta con la que se gasta el saldo de la cuenta.",
+        "en": "The card used to spend the account balance."
+      },
+      "subdomain": {
+        "type": "supporting",
+        "rationale": {
+          "es-MX": "Hay que emitir y bloquear tarjetas bien, pero el procesador hace el trabajo pesado y no nos diferencia de otras billeteras.",
+          "en": "Cards must be issued and blocked properly, but the processor does the heavy lifting and it does not set us apart from other wallets."
+        }
+      }
+    }
+  ],
+  "contextRelations": [
+    {
+      "type": "upstreamDownstream",
+      "upstream": "Onboarding",
+      "downstream": "Accounts",
+      "upstreamRoles": ["PublishedLanguage"],
+      "downstreamRoles": [],
+      "customerSupplier": true,
+      "via": ["IdentityVerified"],
+      "description": {
+        "es-MX": "Alta de clientes publica la identidad verificada y Cuentas abre una cuenta por cada una; Cuentas puede pedirle ajustes.",
+        "en": "Onboarding publishes the verified identity and Accounts opens one account for each; Accounts can ask it for changes."
+      }
+    },
+    {
+      "type": "sharedKernel",
+      "a": "Accounts",
+      "b": "Transfers",
+      "shared": ["Money", "Clabe"],
+      "description": {
+        "es-MX": "Cuentas y Transferencias comparten el modelo de dinero y de CLABE; cualquier cambio en ellos se acuerda entre los dos equipos.",
+        "en": "Accounts and Transfers share the model of money and CLABE; any change to them is agreed between both teams."
+      }
+    },
+    {
+      "type": "upstreamDownstream",
+      "upstream": "Accounts",
+      "downstream": "Cards",
+      "upstreamRoles": ["OpenHostService", "PublishedLanguage"],
+      "downstreamRoles": ["Conformist"],
+      "customerSupplier": false,
+      "via": ["AccountFrozen"],
+      "description": {
+        "es-MX": "Cuentas publica sus eventos de forma estable y Tarjetas se adapta a ellos tal cual, sin negociar.",
+        "en": "Accounts publishes its events in a stable way and Cards adapts to them as they are, without negotiating."
+      }
+    },
+    {
+      "type": "separateWays",
+      "a": "Onboarding",
+      "b": "Transfers",
+      "description": {
+        "es-MX": "Alta de clientes y Transferencias no necesitan hablarse: cuando alguien envía dinero, su identidad ya está verificada.",
+        "en": "Onboarding and Transfers do not need to talk: by the time someone sends money, their identity is already verified."
+      }
+    },
+    {
+      "type": "separateWays",
+      "a": "Transfers",
+      "b": "Cards",
+      "description": {
+        "es-MX": "Transferencias y Tarjetas siguen caminos separados: cada una toca el saldo solo a través de Cuentas.",
+        "en": "Transfers and Cards go their separate ways: each one touches the balance only through Accounts."
+      }
+    }
+  ],
+  "ambiguousTerm": {
+    "codeName": "Customer",
+    "label": {
+      "es-MX": "Cliente",
+      "en": "Customer"
+    },
+    "meanings": [
+      {
+        "context": "Onboarding",
+        "concept": "IdentityVerification",
+        "definition": {
+          "es-MX": "Una persona cuya identidad hay que comprobar: su nombre, su CURP y los documentos que entrega.",
+          "en": "A person whose identity must be proven: their name, their CURP and the documents they submit."
+        },
+        "showcaseFields": ["applicantName", "curp"]
+      },
+      {
+        "context": "Accounts",
+        "concept": "Account",
+        "definition": {
+          "es-MX": "El dueño de un saldo: una CLABE, un monto disponible y un límite diario.",
+          "en": "The owner of a balance: a CLABE, an available amount and a daily limit."
+        },
+        "showcaseFields": ["holderName", "clabe", "balance"]
+      },
+      {
+        "context": "Transfers",
+        "concept": "Transfer",
+        "definition": {
+          "es-MX": "Quien envía o recibe dinero: solo importan un nombre, un número de cuenta y el banco.",
+          "en": "Whoever sends or receives money: only a name, an account number and the bank matter."
+        },
+        "showcaseFields": ["payeeName", "payeeAccount", "payeeInstitution"]
+      },
+      {
+        "context": "Cards",
+        "concept": "Card",
+        "definition": {
+          "es-MX": "El tarjetahabiente: un plástico con sus últimos cuatro dígitos y un límite por compra.",
+          "en": "The cardholder: a piece of plastic with its last four digits and a per-purchase limit."
+        },
+        "showcaseFields": ["lastFour", "purchaseLimit"]
+      }
+    ]
+  },
+  "antiCorruptionLayer": {
+    "context": "Transfers",
+    "externalSystem": "SpeiNetwork",
+    "domainType": "Transfer",
+    "externalRoot": "SpeiPaymentOrder",
+    "externalTypes": [
+      {
+        "codeName": "SpeiPaymentOrder",
+        "label": {
+          "es-MX": "Orden de pago SPEI",
+          "en": "SPEI payment order"
+        },
+        "description": {
+          "es-MX": "El documento que espera SPEI para mover dinero, con sus nombres en español y sus formatos propios.",
+          "en": "The document SPEI expects to move money, with its Spanish names and its own formats."
+        },
+        "wireName": "ordenPago",
+        "fields": [
+          {
+            "codeName": "originFolio",
+            "label": {
+              "es-MX": "Folio de origen",
+              "en": "Origin folio"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "folioOrigen"
+          },
+          {
+            "codeName": "trackingKey",
+            "label": {
+              "es-MX": "Clave de rastreo",
+              "en": "Tracking key"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "claveRastreo"
+          },
+          {
+            "codeName": "operationDate",
+            "label": {
+              "es-MX": "Fecha de operación",
+              "en": "Operation date"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "fechaOperacion"
+          },
+          {
+            "codeName": "amount",
+            "label": {
+              "es-MX": "Monto",
+              "en": "Amount"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "monto"
+          },
+          {
+            "codeName": "paymentType",
+            "label": {
+              "es-MX": "Tipo de pago",
+              "en": "Payment type"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "integer"
+            },
+            "wireName": "tipoPago"
+          },
+          {
+            "codeName": "company",
+            "label": {
+              "es-MX": "Empresa",
+              "en": "Company"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "empresa"
+          },
+          {
+            "codeName": "counterpartInstitution",
+            "label": {
+              "es-MX": "Institución contraparte",
+              "en": "Counterpart institution"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "institucionContraparte"
+          },
+          {
+            "codeName": "payerAccountType",
+            "label": {
+              "es-MX": "Tipo de cuenta ordenante",
+              "en": "Payer account type"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "tipoCuentaOrdenante"
+          },
+          {
+            "codeName": "payerAccount",
+            "label": {
+              "es-MX": "Cuenta ordenante",
+              "en": "Payer account"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "cuentaOrdenante"
+          },
+          {
+            "codeName": "payeeAccountType",
+            "label": {
+              "es-MX": "Tipo de cuenta beneficiario",
+              "en": "Payee account type"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "tipoCuentaBeneficiario"
+          },
+          {
+            "codeName": "payeeName",
+            "label": {
+              "es-MX": "Nombre del beneficiario",
+              "en": "Payee name"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "nombreBeneficiario"
+          },
+          {
+            "codeName": "payeeAccount",
+            "label": {
+              "es-MX": "Cuenta del beneficiario",
+              "en": "Payee account"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "cuentaBeneficiario"
+          },
+          {
+            "codeName": "paymentConcept",
+            "label": {
+              "es-MX": "Concepto de pago",
+              "en": "Payment concept"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "conceptoPago"
+          }
+        ]
+      }
+    ],
+    "translation": [
+      {
+        "op": "rename",
+        "domainField": "transferId",
+        "externalField": "originFolio"
+      },
+      {
+        "op": "rename",
+        "domainField": "trackingKey",
+        "externalField": "trackingKey"
+      },
+      {
+        "op": "format",
+        "domainField": "requestedOn",
+        "externalField": "operationDate",
+        "format": "isoDate"
+      },
+      {
+        "op": "format",
+        "domainField": "amount",
+        "externalField": "amount",
+        "format": "minorUnitsToDecimalString"
+      },
+      {
+        "op": "constant",
+        "externalField": "paymentType",
+        "value": 1
+      },
+      {
+        "op": "constant",
+        "externalField": "company",
+        "value": "MXWALLET"
+      },
+      {
+        "op": "rename",
+        "domainField": "payeeInstitution",
+        "externalField": "counterpartInstitution"
+      },
+      {
+        "op": "constant",
+        "externalField": "payerAccountType",
+        "value": "40"
+      },
+      {
+        "op": "rename",
+        "domainField": "payerAccount",
+        "externalField": "payerAccount"
+      },
+      {
+        "op": "mapCode",
+        "domainField": "payeeAccountKind",
+        "externalField": "payeeAccountType",
+        "table": {
+          "Clabe": "40",
+          "PhoneNumber": "10",
+          "DebitCard": "3"
+        }
+      },
+      {
+        "op": "rename",
+        "domainField": "payeeName",
+        "externalField": "payeeName"
+      },
+      {
+        "op": "rename",
+        "domainField": "payeeAccount",
+        "externalField": "payeeAccount"
+      },
+      {
+        "op": "rename",
+        "domainField": "concept",
+        "externalField": "paymentConcept"
+      }
+    ]
+  }
+}

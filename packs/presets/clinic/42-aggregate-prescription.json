@@ -1,0 +1,586 @@
+{
+  "aggregates": [
+    {
+      "codeName": "Prescription",
+      "label": {
+        "es-MX": "Receta",
+        "en": "Prescription"
+      },
+      "description": {
+        "es-MX": "La orden del médico para que alguien reciba medicamentos, desde que se redacta hasta que se surte o se cancela.",
+        "en": "The physician's order for someone to receive medication, from drafting until it is filled or cancelled."
+      },
+      "context": "Pharmacy",
+      "identity": "prescriptionId",
+      "fields": [
+        {
+          "codeName": "prescriptionId",
+          "label": {
+            "es-MX": "Receta",
+            "en": "Prescription"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PrescriptionId"
+          }
+        },
+        {
+          "codeName": "consultationId",
+          "label": {
+            "es-MX": "Consulta",
+            "en": "Consultation"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ConsultationId"
+          }
+        },
+        {
+          "codeName": "patientId",
+          "label": {
+            "es-MX": "Paciente",
+            "en": "Patient"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PatientId"
+          }
+        },
+        {
+          "codeName": "recipient",
+          "label": {
+            "es-MX": "Destinatario",
+            "en": "Recipient"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DispenseRecipient"
+          }
+        },
+        {
+          "codeName": "items",
+          "label": {
+            "es-MX": "Medicamentos",
+            "en": "Medications"
+          },
+          "type": {
+            "kind": "list",
+            "of": {
+              "kind": "entity",
+              "ref": "PrescriptionItem"
+            }
+          }
+        }
+      ],
+      "derived": [
+        {
+          "codeName": "totalUnits",
+          "label": {
+            "es-MX": "Piezas recetadas",
+            "en": "Prescribed units"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UnitCount"
+          },
+          "expression": {
+            "op": "sumOf",
+            "collection": {
+              "op": "field",
+              "name": "items"
+            },
+            "term": {
+              "op": "field",
+              "name": "units"
+            }
+          }
+        }
+      ],
+      "entities": [
+        {
+          "codeName": "PrescriptionItem",
+          "label": {
+            "es-MX": "Medicamento recetado",
+            "en": "Prescribed medication"
+          },
+          "description": {
+            "es-MX": "Un medicamento de la receta, con su dosis y las piezas autorizadas.",
+            "en": "A medication in the prescription, with its dose and the authorized units."
+          },
+          "identity": "medicationCode",
+          "fields": [
+            {
+              "codeName": "medicationCode",
+              "label": {
+                "es-MX": "Clave del medicamento",
+                "en": "Medication code"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "MedicationCode"
+              }
+            },
+            {
+              "codeName": "dose",
+              "label": {
+                "es-MX": "Dosis",
+                "en": "Dose"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "DoseInstruction"
+              }
+            },
+            {
+              "codeName": "units",
+              "label": {
+                "es-MX": "Piezas",
+                "en": "Units"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "UnitCount"
+              }
+            }
+          ],
+          "derived": []
+        }
+      ],
+      "states": [
+        {
+          "codeName": "Draft",
+          "label": {
+            "es-MX": "Borrador",
+            "en": "Draft"
+          },
+          "description": {
+            "es-MX": "La receta todavía no se abre.",
+            "en": "The prescription has not been opened yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Writing",
+          "label": {
+            "es-MX": "En redacción",
+            "en": "Writing"
+          },
+          "description": {
+            "es-MX": "El médico agrega los medicamentos.",
+            "en": "The physician is adding the medications."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Issued",
+          "label": {
+            "es-MX": "Emitida",
+            "en": "Issued"
+          },
+          "description": {
+            "es-MX": "Firmada y lista para surtirse en farmacia.",
+            "en": "Signed and ready to be filled at the pharmacy."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Dispensed",
+          "label": {
+            "es-MX": "Surtida",
+            "en": "Dispensed"
+          },
+          "description": {
+            "es-MX": "Farmacia entregó las piezas.",
+            "en": "The pharmacy handed over the units."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "dispensedUnits",
+              "label": {
+                "es-MX": "Piezas surtidas",
+                "en": "Dispensed units"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "UnitCount"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Cancelled",
+          "label": {
+            "es-MX": "Cancelada",
+            "en": "Cancelled"
+          },
+          "description": {
+            "es-MX": "Se canceló antes de surtirse.",
+            "en": "It was cancelled before being filled."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "cancellationReason",
+              "label": {
+                "es-MX": "Motivo de cancelación",
+                "en": "Cancellation reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "CancellationReason"
+              }
+            }
+          ]
+        }
+      ],
+      "initialState": "Draft",
+      "rules": [
+        {
+          "codeName": "PrescriptionNeedsItems",
+          "label": {
+            "es-MX": "La receta debe tener medicamentos",
+            "en": "The prescription must have medications"
+          },
+          "description": {
+            "es-MX": "No se emite una receta vacía.",
+            "en": "An empty prescription is never issued."
+          },
+          "predicate": {
+            "kind": "notEmpty",
+            "value": {
+              "op": "field",
+              "name": "items"
+            }
+          },
+          "message": {
+            "es-MX": "Una receta necesita al menos un medicamento.",
+            "en": "A prescription needs at least one medication."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "StartPrescription",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "IssuePrescription",
+              "args": {}
+            }
+          }
+        },
+        {
+          "codeName": "AllergyCheckMustBeDone",
+          "label": {
+            "es-MX": "Antes de surtir se revisan las alergias",
+            "en": "Allergies are checked before dispensing"
+          },
+          "description": {
+            "es-MX": "Farmacia confirma que revisó las alergias de quien recibe el medicamento.",
+            "en": "The pharmacy confirms it checked the allergies of whoever receives the medication."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "allergyChecked"
+            },
+            "operator": "==",
+            "right": {
+              "op": "literal",
+              "value": true
+            }
+          },
+          "message": {
+            "es-MX": "Confirma que revisaste las alergias antes de surtir.",
+            "en": "Confirm that you checked the allergies before dispensing."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "StartPrescription",
+                "args": {}
+              },
+              {
+                "command": "AddPrescriptionItem",
+                "args": {
+                  "units": 2
+                }
+              },
+              {
+                "command": "IssuePrescription",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "DispenseMedication",
+              "args": {
+                "dispensedUnits": 1,
+                "allergyChecked": false
+              }
+            }
+          }
+        },
+        {
+          "codeName": "DispensedUnitsWithinPrescribed",
+          "label": {
+            "es-MX": "No se surten más piezas de las recetadas",
+            "en": "No more units than prescribed are dispensed"
+          },
+          "description": {
+            "es-MX": "Las piezas entregadas no pueden pasar del total que autorizó el médico.",
+            "en": "The units handed over cannot exceed the total the physician authorized."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "dispensedUnits"
+            },
+            "operator": "<=",
+            "right": {
+              "op": "field",
+              "name": "totalUnits"
+            }
+          },
+          "message": {
+            "es-MX": "Las piezas surtidas no pueden pasar de las recetadas.",
+            "en": "The dispensed units cannot exceed the prescribed ones."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "StartPrescription",
+                "args": {}
+              },
+              {
+                "command": "AddPrescriptionItem",
+                "args": {
+                  "units": 2
+                }
+              },
+              {
+                "command": "IssuePrescription",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "DispenseMedication",
+              "args": {
+                "dispensedUnits": 5,
+                "allergyChecked": true
+              }
+            }
+          }
+        },
+        {
+          "codeName": "PrescriptionItemsWithinLimit",
+          "label": {
+            "es-MX": "Una receta lleva hasta 5 medicamentos",
+            "en": "A prescription holds up to 5 medications"
+          },
+          "description": {
+            "es-MX": "Más de cinco medicamentos distintos exigen revisión del médico en una nueva receta.",
+            "en": "More than five different medications call for the physician to review them in a new prescription."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "count",
+              "collection": {
+                "op": "field",
+                "name": "items"
+              }
+            },
+            "operator": "<=",
+            "right": {
+              "op": "literal",
+              "value": 5
+            }
+          },
+          "message": {
+            "es-MX": "Una receta admite como máximo 5 medicamentos.",
+            "en": "A prescription allows at most 5 medications."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "StartPrescription",
+                "args": {}
+              },
+              {
+                "command": "AddPrescriptionItem",
+                "args": {}
+              },
+              {
+                "command": "AddPrescriptionItem",
+                "args": {}
+              },
+              {
+                "command": "AddPrescriptionItem",
+                "args": {}
+              },
+              {
+                "command": "AddPrescriptionItem",
+                "args": {}
+              },
+              {
+                "command": "AddPrescriptionItem",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "AddPrescriptionItem",
+              "args": {}
+            }
+          }
+        }
+      ],
+      "invariants": ["PrescriptionItemsWithinLimit"],
+      "transitions": [
+        {
+          "command": "StartPrescription",
+          "from": ["Draft"],
+          "to": "Writing",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "consultationId",
+              "value": {
+                "op": "arg",
+                "name": "consultationId"
+              }
+            },
+            {
+              "op": "set",
+              "field": "patientId",
+              "value": {
+                "op": "arg",
+                "name": "patientId"
+              }
+            },
+            {
+              "op": "set",
+              "field": "recipient",
+              "value": {
+                "op": "arg",
+                "name": "recipient"
+              }
+            }
+          ],
+          "emits": ["PrescriptionStarted"]
+        },
+        {
+          "command": "AddPrescriptionItem",
+          "from": ["Writing"],
+          "to": "Writing",
+          "guards": [],
+          "effects": [
+            {
+              "op": "append",
+              "field": "items",
+              "value": {
+                "op": "construct",
+                "type": "PrescriptionItem",
+                "fields": [
+                  {
+                    "name": "medicationCode",
+                    "value": {
+                      "op": "arg",
+                      "name": "medicationCode"
+                    }
+                  },
+                  {
+                    "name": "dose",
+                    "value": {
+                      "op": "arg",
+                      "name": "dose"
+                    }
+                  },
+                  {
+                    "name": "units",
+                    "value": {
+                      "op": "arg",
+                      "name": "units"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "emits": ["PrescriptionItemAdded"]
+        },
+        {
+          "command": "IssuePrescription",
+          "from": ["Writing"],
+          "to": "Issued",
+          "guards": ["PrescriptionNeedsItems"],
+          "effects": [],
+          "emits": ["PrescriptionIssued"]
+        },
+        {
+          "command": "DispenseMedication",
+          "from": ["Issued"],
+          "to": "Dispensed",
+          "guards": ["AllergyCheckMustBeDone", "DispensedUnitsWithinPrescribed"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "dispensedUnits",
+              "value": {
+                "op": "arg",
+                "name": "dispensedUnits"
+              }
+            }
+          ],
+          "emits": ["MedicationDispensed"]
+        },
+        {
+          "command": "CancelPrescription",
+          "from": ["Writing", "Issued"],
+          "to": "Cancelled",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "cancellationReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["PrescriptionCancelled"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "StartPrescription",
+          "args": {}
+        },
+        {
+          "command": "AddPrescriptionItem",
+          "args": {
+            "units": 2
+          }
+        },
+        {
+          "command": "IssuePrescription",
+          "args": {}
+        },
+        {
+          "command": "DispenseMedication",
+          "args": {
+            "dispensedUnits": 2,
+            "allergyChecked": true
+          }
+        }
+      ]
+    }
+  ]
+}

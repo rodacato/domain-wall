@@ -1,0 +1,791 @@
+{
+  "aggregates": [
+    {
+      "codeName": "Invoice",
+      "label": {
+        "es-MX": "Factura",
+        "en": "Invoice"
+      },
+      "description": {
+        "es-MX": "La cuenta de una consulta: sus cargos, su total y cómo se paga, ya sea en recepción o a través de la aseguradora.",
+        "en": "The account of a consultation: its charges, its total and how it gets paid, either at the front desk or through the insurer."
+      },
+      "context": "Billing",
+      "identity": "invoiceId",
+      "fields": [
+        {
+          "codeName": "invoiceId",
+          "label": {
+            "es-MX": "Factura",
+            "en": "Invoice"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "InvoiceId"
+          }
+        },
+        {
+          "codeName": "consultationId",
+          "label": {
+            "es-MX": "Consulta",
+            "en": "Consultation"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ConsultationId"
+          }
+        },
+        {
+          "codeName": "payer",
+          "label": {
+            "es-MX": "Pagador",
+            "en": "Payer"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Payer"
+          }
+        },
+        {
+          "codeName": "lines",
+          "label": {
+            "es-MX": "Cargos",
+            "en": "Charges"
+          },
+          "type": {
+            "kind": "list",
+            "of": {
+              "kind": "entity",
+              "ref": "ChargeLine"
+            }
+          }
+        },
+        {
+          "codeName": "serviceDate",
+          "label": {
+            "es-MX": "Fecha del servicio",
+            "en": "Service date"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "primitive",
+              "name": "date"
+            }
+          }
+        },
+        {
+          "codeName": "diagnosisCode",
+          "label": {
+            "es-MX": "Clave del diagnóstico",
+            "en": "Diagnosis code"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "DiagnosisCode"
+            }
+          }
+        },
+        {
+          "codeName": "policyNumber",
+          "label": {
+            "es-MX": "Número de póliza",
+            "en": "Policy number"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "PolicyNumber"
+            }
+          }
+        },
+        {
+          "codeName": "coverage",
+          "label": {
+            "es-MX": "Cobertura",
+            "en": "Coverage"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "CoverageKind"
+            }
+          }
+        }
+      ],
+      "derived": [
+        {
+          "codeName": "total",
+          "label": {
+            "es-MX": "Total",
+            "en": "Total"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          },
+          "expression": {
+            "op": "sumOf",
+            "collection": {
+              "op": "field",
+              "name": "lines"
+            },
+            "term": {
+              "op": "field",
+              "name": "subtotal"
+            }
+          }
+        }
+      ],
+      "entities": [
+        {
+          "codeName": "ChargeLine",
+          "label": {
+            "es-MX": "Línea de cargo",
+            "en": "Charge line"
+          },
+          "description": {
+            "es-MX": "Un servicio cobrado, con su cantidad y el precio que tenía al momento de cobrarlo.",
+            "en": "A charged service, with its quantity and the price it had when charged."
+          },
+          "identity": "serviceCode",
+          "fields": [
+            {
+              "codeName": "serviceCode",
+              "label": {
+                "es-MX": "Clave del servicio",
+                "en": "Service code"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ServiceCode"
+              }
+            },
+            {
+              "codeName": "description",
+              "label": {
+                "es-MX": "Descripción",
+                "en": "Description"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ChargeDescription"
+              }
+            },
+            {
+              "codeName": "quantity",
+              "label": {
+                "es-MX": "Cantidad",
+                "en": "Quantity"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "UnitCount"
+              }
+            },
+            {
+              "codeName": "unitPrice",
+              "label": {
+                "es-MX": "Precio unitario",
+                "en": "Unit price"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "Money"
+              }
+            }
+          ],
+          "derived": [
+            {
+              "codeName": "subtotal",
+              "label": {
+                "es-MX": "Subtotal",
+                "en": "Subtotal"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "Money"
+              },
+              "expression": {
+                "op": "arithmetic",
+                "operator": "multiply",
+                "left": {
+                  "op": "field",
+                  "name": "unitPrice"
+                },
+                "right": {
+                  "op": "field",
+                  "name": "quantity"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "states": [
+        {
+          "codeName": "Draft",
+          "label": {
+            "es-MX": "Borrador",
+            "en": "Draft"
+          },
+          "description": {
+            "es-MX": "La factura todavía no se abre.",
+            "en": "The invoice has not been opened yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Open",
+          "label": {
+            "es-MX": "Abierta",
+            "en": "Open"
+          },
+          "description": {
+            "es-MX": "Recepción agrega los cargos de la consulta.",
+            "en": "The front desk adds the consultation's charges."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Issued",
+          "label": {
+            "es-MX": "Emitida",
+            "en": "Issued"
+          },
+          "description": {
+            "es-MX": "Tiene su total y espera pago o reclamo.",
+            "en": "It has its total and awaits payment or a claim."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "ClaimFiled",
+          "label": {
+            "es-MX": "Reclamo presentado",
+            "en": "Claim filed"
+          },
+          "description": {
+            "es-MX": "La aseguradora tiene el reclamo y todavía no responde.",
+            "en": "The insurer has the claim and has not replied yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Settled",
+          "label": {
+            "es-MX": "Liquidada por la aseguradora",
+            "en": "Settled by the insurer"
+          },
+          "description": {
+            "es-MX": "La aseguradora pagó el reclamo.",
+            "en": "The insurer paid the claim."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "claimReference",
+              "label": {
+                "es-MX": "Referencia del siniestro",
+                "en": "Claim reference"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ClaimReference"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Paid",
+          "label": {
+            "es-MX": "Pagada",
+            "en": "Paid"
+          },
+          "description": {
+            "es-MX": "Se cobró el total exacto en recepción.",
+            "en": "The exact total was collected at the front desk."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "paymentMethod",
+              "label": {
+                "es-MX": "Forma de pago",
+                "en": "Payment method"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "PaymentMethod"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Voided",
+          "label": {
+            "es-MX": "Anulada",
+            "en": "Voided"
+          },
+          "description": {
+            "es-MX": "Se anuló antes de cobrarse.",
+            "en": "It was voided before being collected."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "voidReason",
+              "label": {
+                "es-MX": "Motivo de anulación",
+                "en": "Void reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "CancellationReason"
+              }
+            }
+          ]
+        }
+      ],
+      "initialState": "Draft",
+      "rules": [
+        {
+          "codeName": "InvoiceNeedsCharges",
+          "label": {
+            "es-MX": "La factura debe tener cargos",
+            "en": "The invoice must have charges"
+          },
+          "description": {
+            "es-MX": "No se emite una factura sin ningún servicio cobrado.",
+            "en": "An invoice is never issued without any charged service."
+          },
+          "predicate": {
+            "kind": "notEmpty",
+            "value": {
+              "op": "field",
+              "name": "lines"
+            }
+          },
+          "message": {
+            "es-MX": "Una factura necesita al menos un cargo.",
+            "en": "An invoice needs at least one charge."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenInvoice",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "IssueInvoice",
+              "args": {}
+            }
+          }
+        },
+        {
+          "codeName": "PaymentMustEqualTotal",
+          "label": {
+            "es-MX": "El pago debe ser igual al total",
+            "en": "The payment must equal the total"
+          },
+          "description": {
+            "es-MX": "Solo se acepta el pago exacto de la factura.",
+            "en": "Only the exact payment of the invoice is accepted."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "amount"
+            },
+            "operator": "==",
+            "right": {
+              "op": "field",
+              "name": "total"
+            }
+          },
+          "message": {
+            "es-MX": "El pago debe ser igual al total de la factura.",
+            "en": "The payment must equal the invoice total."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenInvoice",
+                "args": {}
+              },
+              {
+                "command": "AddCharge",
+                "args": {
+                  "quantity": 2,
+                  "unitPrice": 35000
+                }
+              },
+              {
+                "command": "IssueInvoice",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "RegisterPayment",
+              "args": {
+                "amount": 1,
+                "paymentMethod": "Cash"
+              }
+            }
+          }
+        },
+        {
+          "codeName": "SettlementWithinInvoice",
+          "label": {
+            "es-MX": "La aseguradora no paga más que la factura",
+            "en": "The insurer cannot pay more than the invoice"
+          },
+          "description": {
+            "es-MX": "Lo liquidado debe ser positivo y no pasar del total facturado.",
+            "en": "The settled amount must be positive and not exceed the invoiced total."
+          },
+          "predicate": {
+            "kind": "all",
+            "of": [
+              {
+                "kind": "compare",
+                "left": {
+                  "op": "arg",
+                  "name": "settledAmount"
+                },
+                "operator": "<=",
+                "right": {
+                  "op": "field",
+                  "name": "total"
+                }
+              },
+              {
+                "kind": "compare",
+                "left": {
+                  "op": "arg",
+                  "name": "settledAmount"
+                },
+                "operator": ">",
+                "right": {
+                  "op": "literal",
+                  "value": 0
+                }
+              }
+            ]
+          },
+          "message": {
+            "es-MX": "El monto liquidado debe ser mayor a cero y no pasar del total.",
+            "en": "The settled amount must be above zero and not exceed the total."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenInvoice",
+                "args": {}
+              },
+              {
+                "command": "AddCharge",
+                "args": {
+                  "quantity": 1,
+                  "unitPrice": 45000
+                }
+              },
+              {
+                "command": "IssueInvoice",
+                "args": {}
+              },
+              {
+                "command": "FileInsuranceClaim",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "SettleClaim",
+              "args": {
+                "settledAmount": 5000000
+              }
+            }
+          }
+        },
+        {
+          "codeName": "ChargeLinesWithinLimit",
+          "label": {
+            "es-MX": "Una factura lleva hasta 6 cargos",
+            "en": "An invoice holds up to 6 charges"
+          },
+          "description": {
+            "es-MX": "Con más de seis cargos conviene dividir la cuenta en otra factura.",
+            "en": "With more than six charges the account is better split into another invoice."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "count",
+              "collection": {
+                "op": "field",
+                "name": "lines"
+              }
+            },
+            "operator": "<=",
+            "right": {
+              "op": "literal",
+              "value": 6
+            }
+          },
+          "message": {
+            "es-MX": "Una factura admite como máximo 6 cargos.",
+            "en": "An invoice allows at most 6 charges."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenInvoice",
+                "args": {}
+              },
+              {
+                "command": "AddCharge",
+                "args": {}
+              },
+              {
+                "command": "AddCharge",
+                "args": {}
+              },
+              {
+                "command": "AddCharge",
+                "args": {}
+              },
+              {
+                "command": "AddCharge",
+                "args": {}
+              },
+              {
+                "command": "AddCharge",
+                "args": {}
+              },
+              {
+                "command": "AddCharge",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "AddCharge",
+              "args": {}
+            }
+          }
+        }
+      ],
+      "invariants": ["ChargeLinesWithinLimit"],
+      "transitions": [
+        {
+          "command": "OpenInvoice",
+          "from": ["Draft"],
+          "to": "Open",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "consultationId",
+              "value": {
+                "op": "arg",
+                "name": "consultationId"
+              }
+            },
+            {
+              "op": "set",
+              "field": "payer",
+              "value": {
+                "op": "arg",
+                "name": "payer"
+              }
+            },
+            {
+              "op": "set",
+              "field": "serviceDate",
+              "value": {
+                "op": "arg",
+                "name": "serviceDate"
+              }
+            },
+            {
+              "op": "set",
+              "field": "diagnosisCode",
+              "value": {
+                "op": "arg",
+                "name": "diagnosisCode"
+              }
+            }
+          ],
+          "emits": ["InvoiceOpened"]
+        },
+        {
+          "command": "AddCharge",
+          "from": ["Open"],
+          "to": "Open",
+          "guards": [],
+          "effects": [
+            {
+              "op": "append",
+              "field": "lines",
+              "value": {
+                "op": "construct",
+                "type": "ChargeLine",
+                "fields": [
+                  {
+                    "name": "serviceCode",
+                    "value": {
+                      "op": "arg",
+                      "name": "serviceCode"
+                    }
+                  },
+                  {
+                    "name": "description",
+                    "value": {
+                      "op": "arg",
+                      "name": "description"
+                    }
+                  },
+                  {
+                    "name": "quantity",
+                    "value": {
+                      "op": "arg",
+                      "name": "quantity"
+                    }
+                  },
+                  {
+                    "name": "unitPrice",
+                    "value": {
+                      "op": "arg",
+                      "name": "unitPrice"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "emits": ["ChargeAdded"]
+        },
+        {
+          "command": "IssueInvoice",
+          "from": ["Open"],
+          "to": "Issued",
+          "guards": ["InvoiceNeedsCharges"],
+          "effects": [],
+          "emits": ["InvoiceIssued"]
+        },
+        {
+          "command": "FileInsuranceClaim",
+          "from": ["Issued"],
+          "to": "ClaimFiled",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "policyNumber",
+              "value": {
+                "op": "arg",
+                "name": "policyNumber"
+              }
+            },
+            {
+              "op": "set",
+              "field": "coverage",
+              "value": {
+                "op": "arg",
+                "name": "coverage"
+              }
+            }
+          ],
+          "emits": ["InsuranceClaimFiled"]
+        },
+        {
+          "command": "SettleClaim",
+          "from": ["ClaimFiled"],
+          "to": "Settled",
+          "guards": ["SettlementWithinInvoice"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "claimReference",
+              "value": {
+                "op": "arg",
+                "name": "claimReference"
+              }
+            }
+          ],
+          "emits": ["ClaimSettled"]
+        },
+        {
+          "command": "RegisterPayment",
+          "from": ["Issued"],
+          "to": "Paid",
+          "guards": ["PaymentMustEqualTotal"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "paymentMethod",
+              "value": {
+                "op": "arg",
+                "name": "paymentMethod"
+              }
+            }
+          ],
+          "emits": ["PaymentRegistered"]
+        },
+        {
+          "command": "VoidInvoice",
+          "from": ["Open", "Issued"],
+          "to": "Voided",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "voidReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["InvoiceVoided"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "OpenInvoice",
+          "args": {}
+        },
+        {
+          "command": "AddCharge",
+          "args": {
+            "quantity": 1,
+            "unitPrice": 45000
+          }
+        },
+        {
+          "command": "IssueInvoice",
+          "args": {}
+        },
+        {
+          "command": "FileInsuranceClaim",
+          "args": {}
+        },
+        {
+          "command": "SettleClaim",
+          "args": {
+            "settledAmount": 45000
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,316 @@
+{
+  "workflow": {
+    "codeName": "ClaimSubmissionWorkflow",
+    "label": {
+      "es-MX": "Flujo de reclamo a la aseguradora",
+      "en": "Insurance claim workflow"
+    },
+    "description": {
+      "es-MX": "El reclamo visto como una línea de ensamblaje: validar, calcular el total, enviarlo a la aseguradora y guardar la factura.",
+      "en": "The claim seen as an assembly line: validate, compute the total, send it to the insurer and save the invoice."
+    },
+    "trigger": "FileInsuranceClaim",
+    "intermediateTypes": [
+      {
+        "codeName": "UnvalidatedClaim",
+        "extends": null,
+        "fields": [
+          {
+            "codeName": "policyNumber",
+            "label": {
+              "es-MX": "Número de póliza",
+              "en": "Policy number"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "coverage",
+            "label": {
+              "es-MX": "Cobertura",
+              "en": "Coverage"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "diagnosisCode",
+            "label": {
+              "es-MX": "Clave del diagnóstico",
+              "en": "Diagnosis code"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "unitPrice",
+            "label": {
+              "es-MX": "Precio unitario",
+              "en": "Unit price"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "integer"
+            }
+          },
+          {
+            "codeName": "quantity",
+            "label": {
+              "es-MX": "Cantidad",
+              "en": "Quantity"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "integer"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "ValidatedClaim",
+        "extends": null,
+        "fields": [
+          {
+            "codeName": "policyNumber",
+            "label": {
+              "es-MX": "Número de póliza",
+              "en": "Policy number"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "PolicyNumber"
+            }
+          },
+          {
+            "codeName": "coverage",
+            "label": {
+              "es-MX": "Cobertura",
+              "en": "Coverage"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "CoverageKind"
+            }
+          },
+          {
+            "codeName": "diagnosisCode",
+            "label": {
+              "es-MX": "Clave del diagnóstico",
+              "en": "Diagnosis code"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "DiagnosisCode"
+            }
+          },
+          {
+            "codeName": "unitPrice",
+            "label": {
+              "es-MX": "Precio unitario",
+              "en": "Unit price"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "Money"
+            }
+          },
+          {
+            "codeName": "quantity",
+            "label": {
+              "es-MX": "Cantidad",
+              "en": "Quantity"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "UnitCount"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "PricedClaim",
+        "extends": "ValidatedClaim",
+        "fields": [
+          {
+            "codeName": "total",
+            "label": {
+              "es-MX": "Total",
+              "en": "Total"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "Money"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "FiledClaim",
+        "extends": "PricedClaim",
+        "fields": [
+          {
+            "codeName": "claimReference",
+            "label": {
+              "es-MX": "Referencia del siniestro",
+              "en": "Claim reference"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "ClaimReference"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "SavedClaim",
+        "extends": "FiledClaim",
+        "fields": [
+          {
+            "codeName": "invoiceId",
+            "label": {
+              "es-MX": "Factura",
+              "en": "Invoice"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "InvoiceId"
+            }
+          }
+        ]
+      }
+    ],
+    "stages": [
+      {
+        "codeName": "ValidateClaim",
+        "label": {
+          "es-MX": "Validar el reclamo",
+          "en": "Validate claim"
+        },
+        "description": {
+          "es-MX": "Convierte los datos crudos en valores del dominio que no pueden ser inválidos.",
+          "en": "Turns raw data into domain values that cannot be invalid."
+        },
+        "input": "UnvalidatedClaim",
+        "output": "ValidatedClaim",
+        "kind": {
+          "type": "validate"
+        },
+        "errors": [
+          {
+            "codeName": "ClaimDataInvalid",
+            "message": {
+              "es-MX": "Algún dato del reclamo no es válido.",
+              "en": "Some claim data is not valid."
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "PriceClaim",
+        "label": {
+          "es-MX": "Calcular el total",
+          "en": "Compute the total"
+        },
+        "description": {
+          "es-MX": "Multiplica el precio unitario por la cantidad.",
+          "en": "Multiplies the unit price by the quantity."
+        },
+        "input": "ValidatedClaim",
+        "output": "PricedClaim",
+        "kind": {
+          "type": "compute",
+          "assigns": [
+            {
+              "field": "total",
+              "expression": {
+                "op": "arithmetic",
+                "operator": "multiply",
+                "left": {
+                  "op": "field",
+                  "name": "unitPrice"
+                },
+                "right": {
+                  "op": "field",
+                  "name": "quantity"
+                }
+              }
+            }
+          ]
+        },
+        "errors": []
+      },
+      {
+        "codeName": "SubmitClaim",
+        "label": {
+          "es-MX": "Enviar a la aseguradora",
+          "en": "Send to the insurer"
+        },
+        "description": {
+          "es-MX": "Pide a la pasarela de la aseguradora que reciba la solicitud de reembolso.",
+          "en": "Asks the insurer's gateway to receive the reimbursement request."
+        },
+        "input": "PricedClaim",
+        "output": "FiledClaim",
+        "kind": {
+          "type": "callPort",
+          "port": {
+            "codeName": "InsurerClaimsPort",
+            "operation": "submitClaim",
+            "description": {
+              "es-MX": "Envía la solicitud de reembolso y devuelve la referencia del siniestro.",
+              "en": "Sends the reimbursement request and returns the claim reference."
+            }
+          }
+        },
+        "errors": [
+          {
+            "codeName": "InsurerRejectedClaim",
+            "message": {
+              "es-MX": "La aseguradora rechazó el reclamo.",
+              "en": "The insurer rejected the claim."
+            }
+          },
+          {
+            "codeName": "InsurerGatewayUnavailable",
+            "message": {
+              "es-MX": "La pasarela de la aseguradora no responde.",
+              "en": "The insurer's gateway is not responding."
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "SaveClaim",
+        "label": {
+          "es-MX": "Guardar la factura",
+          "en": "Save the invoice"
+        },
+        "description": {
+          "es-MX": "Guarda la factura con su reclamo y publica sus eventos.",
+          "en": "Saves the invoice with its claim and publishes its events."
+        },
+        "input": "FiledClaim",
+        "output": "SavedClaim",
+        "kind": {
+          "type": "commit"
+        },
+        "errors": [
+          {
+            "codeName": "ClaimCouldNotBeSaved",
+            "message": {
+              "es-MX": "No se pudo guardar la factura.",
+              "en": "The invoice could not be saved."
+            }
+          }
+        ]
+      }
+    ],
+    "produces": ["InsuranceClaimFiled"]
+  }
+}

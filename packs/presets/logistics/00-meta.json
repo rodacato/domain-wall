@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "meta": {
+    "packId": "logistics",
+    "origin": "preset",
+    "locales": ["es-MX", "en"],
+    "generation": null
+  },
+  "business": {
+    "codeName": "LastMileLogistics",
+    "name": {
+      "es-MX": "Logística de Última Milla",
+      "en": "Last Mile Logistics"
+    },
+    "description": {
+      "es-MX": "Una empresa de reparto de última milla en la Ciudad de México: recibe paquetes de comercios, arma rutas, entrega en la puerta y liquida el cobro contra entrega.",
+      "en": "A last-mile delivery company in Mexico City: it receives parcels from merchants, builds routes, delivers at the door and settles cash on delivery."
+    }
+  }
+}

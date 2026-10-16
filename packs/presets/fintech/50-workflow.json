@@ -1,0 +1,360 @@
+{
+  "workflow": {
+    "codeName": "TransferWorkflow",
+    "label": {
+      "es-MX": "Flujo de transferencia",
+      "en": "Transfer workflow"
+    },
+    "description": {
+      "es-MX": "Enviar dinero visto como una línea de ensamblaje: validar los datos, calcular el cargo, mandar la orden a SPEI y guardar la transferencia.",
+      "en": "Sending money seen as an assembly line: validate the data, compute the charge, send the order to SPEI and save the transfer."
+    },
+    "trigger": "RequestTransfer",
+    "intermediateTypes": [
+      {
+        "codeName": "UnvalidatedTransfer",
+        "extends": null,
+        "fields": [
+          {
+            "codeName": "payerAccount",
+            "label": {
+              "es-MX": "Cuenta ordenante",
+              "en": "Payer account"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "payeeName",
+            "label": {
+              "es-MX": "Beneficiario",
+              "en": "Payee"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "payeeAccount",
+            "label": {
+              "es-MX": "Cuenta del beneficiario",
+              "en": "Payee account"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "payeeAccountKind",
+            "label": {
+              "es-MX": "Tipo de cuenta",
+              "en": "Account kind"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "payeeInstitution",
+            "label": {
+              "es-MX": "Banco del beneficiario",
+              "en": "Payee bank"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "amount",
+            "label": {
+              "es-MX": "Monto",
+              "en": "Amount"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "integer"
+            }
+          },
+          {
+            "codeName": "concept",
+            "label": {
+              "es-MX": "Concepto",
+              "en": "Concept"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "ValidatedTransfer",
+        "extends": null,
+        "fields": [
+          {
+            "codeName": "payerAccount",
+            "label": {
+              "es-MX": "Cuenta ordenante",
+              "en": "Payer account"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "Clabe"
+            }
+          },
+          {
+            "codeName": "payeeName",
+            "label": {
+              "es-MX": "Beneficiario",
+              "en": "Payee"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "FullName"
+            }
+          },
+          {
+            "codeName": "payeeAccount",
+            "label": {
+              "es-MX": "Cuenta del beneficiario",
+              "en": "Payee account"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "PayeeAccountNumber"
+            }
+          },
+          {
+            "codeName": "payeeAccountKind",
+            "label": {
+              "es-MX": "Tipo de cuenta",
+              "en": "Account kind"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "PayeeAccountKind"
+            }
+          },
+          {
+            "codeName": "payeeInstitution",
+            "label": {
+              "es-MX": "Banco del beneficiario",
+              "en": "Payee bank"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "InstitutionCode"
+            }
+          },
+          {
+            "codeName": "amount",
+            "label": {
+              "es-MX": "Monto",
+              "en": "Amount"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "Money"
+            }
+          },
+          {
+            "codeName": "concept",
+            "label": {
+              "es-MX": "Concepto",
+              "en": "Concept"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "TransferConcept"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "PricedTransfer",
+        "extends": "ValidatedTransfer",
+        "fields": [
+          {
+            "codeName": "totalDebit",
+            "label": {
+              "es-MX": "Total a debitar",
+              "en": "Total to debit"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "Money"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "SubmittedTransfer",
+        "extends": "PricedTransfer",
+        "fields": [
+          {
+            "codeName": "trackingKey",
+            "label": {
+              "es-MX": "Clave de rastreo",
+              "en": "Tracking key"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "TrackingKey"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "CommittedTransfer",
+        "extends": "SubmittedTransfer",
+        "fields": [
+          {
+            "codeName": "transferId",
+            "label": {
+              "es-MX": "Transferencia",
+              "en": "Transfer"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "TransferId"
+            }
+          }
+        ]
+      }
+    ],
+    "stages": [
+      {
+        "codeName": "ValidateTransfer",
+        "label": {
+          "es-MX": "Validar la transferencia",
+          "en": "Validate the transfer"
+        },
+        "description": {
+          "es-MX": "Convierte los datos crudos del formulario en valores del dominio que no pueden ser inválidos.",
+          "en": "Turns the raw form data into domain values that cannot be invalid."
+        },
+        "input": "UnvalidatedTransfer",
+        "output": "ValidatedTransfer",
+        "kind": {
+          "type": "validate"
+        },
+        "errors": [
+          {
+            "codeName": "TransferDataInvalid",
+            "message": {
+              "es-MX": "Algún dato de la transferencia no es válido.",
+              "en": "Some transfer data is not valid."
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "PriceTransfer",
+        "label": {
+          "es-MX": "Calcular el cargo",
+          "en": "Compute the charge"
+        },
+        "description": {
+          "es-MX": "Suma al monto la comisión fija de $3.50 por operación para saber cuánto se cobra en total.",
+          "en": "Adds the flat $3.50 fee per operation to the amount to know how much is charged in total."
+        },
+        "input": "ValidatedTransfer",
+        "output": "PricedTransfer",
+        "kind": {
+          "type": "compute",
+          "assigns": [
+            {
+              "field": "totalDebit",
+              "expression": {
+                "op": "arithmetic",
+                "operator": "add",
+                "left": {
+                  "op": "field",
+                  "name": "amount"
+                },
+                "right": {
+                  "op": "literal",
+                  "value": 350
+                }
+              }
+            }
+          ]
+        },
+        "errors": []
+      },
+      {
+        "codeName": "SubmitToSpei",
+        "label": {
+          "es-MX": "Mandar la orden a SPEI",
+          "en": "Send the order to SPEI"
+        },
+        "description": {
+          "es-MX": "Pide a SPEI que mueva el dinero y recibe la clave de rastreo del pago.",
+          "en": "Asks SPEI to move the money and receives the payment's tracking key."
+        },
+        "input": "PricedTransfer",
+        "output": "SubmittedTransfer",
+        "kind": {
+          "type": "callPort",
+          "port": {
+            "codeName": "SpeiPort",
+            "operation": "submitPayment",
+            "description": {
+              "es-MX": "Registra una orden de pago en SPEI y devuelve su clave de rastreo.",
+              "en": "Registers a payment order in SPEI and returns its tracking key."
+            }
+          }
+        },
+        "errors": [
+          {
+            "codeName": "SpeiUnavailable",
+            "message": {
+              "es-MX": "SPEI no responde en este momento.",
+              "en": "SPEI is not responding right now."
+            }
+          },
+          {
+            "codeName": "SpeiRefusedOrder",
+            "message": {
+              "es-MX": "SPEI no aceptó la orden de pago.",
+              "en": "SPEI did not accept the payment order."
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "CommitTransfer",
+        "label": {
+          "es-MX": "Guardar la transferencia",
+          "en": "Save the transfer"
+        },
+        "description": {
+          "es-MX": "Guarda la transferencia y publica sus eventos.",
+          "en": "Saves the transfer and publishes its events."
+        },
+        "input": "SubmittedTransfer",
+        "output": "CommittedTransfer",
+        "kind": {
+          "type": "commit"
+        },
+        "errors": [
+          {
+            "codeName": "TransferCouldNotBeSaved",
+            "message": {
+              "es-MX": "No se pudo guardar la transferencia.",
+              "en": "The transfer could not be saved."
+            }
+          }
+        ]
+      }
+    ],
+    "produces": ["TransferRequested", "TransferSubmitted"]
+  }
+}

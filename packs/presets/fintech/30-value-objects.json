@@ -1,0 +1,714 @@
+{
+  "valueObjects": [
+    {
+      "kind": "scalar",
+      "codeName": "VerificationId",
+      "label": {
+        "es-MX": "Verificación",
+        "en": "Verification"
+      },
+      "description": {
+        "es-MX": "Identificador de una verificación de identidad.",
+        "en": "Identifier of an identity verification."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "ver_[a-z0-9]{8}",
+          "errorCode": "VerificationIdMalformed",
+          "message": {
+            "es-MX": "El identificador de verificación debe empezar con ver_ seguido de 8 caracteres.",
+            "en": "The identifier of a verification must start with ver_ followed by 8 characters."
+          },
+          "invalidExamples": ["VER_12345678", "ver_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["ver_5k8d2n6w"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "AccountId",
+      "label": {
+        "es-MX": "Cuenta",
+        "en": "Account"
+      },
+      "description": {
+        "es-MX": "Identificador de una cuenta de la billetera.",
+        "en": "Identifier of a wallet account."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "acc_[a-z0-9]{8}",
+          "errorCode": "AccountIdMalformed",
+          "message": {
+            "es-MX": "El identificador de cuenta debe empezar con acc_ seguido de 8 caracteres.",
+            "en": "The identifier of an account must start with acc_ followed by 8 characters."
+          },
+          "invalidExamples": ["ACC_12345678", "acc_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["acc_7q2m9x1d"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "TransferId",
+      "label": {
+        "es-MX": "Transferencia",
+        "en": "Transfer"
+      },
+      "description": {
+        "es-MX": "Identificador de una transferencia.",
+        "en": "Identifier of a transfer."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "trf_[a-z0-9]{8}",
+          "errorCode": "TransferIdMalformed",
+          "message": {
+            "es-MX": "El identificador de transferencia debe empezar con trf_ seguido de 8 caracteres.",
+            "en": "The identifier of a transfer must start with trf_ followed by 8 characters."
+          },
+          "invalidExamples": ["TRF_12345678", "trf_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["trf_3b6f8j1k"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "CardId",
+      "label": {
+        "es-MX": "Tarjeta",
+        "en": "Card"
+      },
+      "description": {
+        "es-MX": "Identificador de una tarjeta.",
+        "en": "Identifier of a card."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "crd_[a-z0-9]{8}",
+          "errorCode": "CardIdMalformed",
+          "message": {
+            "es-MX": "El identificador de tarjeta debe empezar con crd_ seguido de 8 caracteres.",
+            "en": "The identifier of a card must start with crd_ followed by 8 characters."
+          },
+          "invalidExamples": ["CRD_12345678", "crd_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["crd_9w4y6e2l"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "DocumentReference",
+      "label": {
+        "es-MX": "Documento",
+        "en": "Document"
+      },
+      "description": {
+        "es-MX": "Identificador del archivo de un documento entregado.",
+        "en": "Identifier of the file of a submitted document."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "doc_[a-z0-9]{8}",
+          "errorCode": "DocumentReferenceMalformed",
+          "message": {
+            "es-MX": "El identificador de documento debe empezar con doc_ seguido de 8 caracteres.",
+            "en": "The identifier of a document must start with doc_ followed by 8 characters."
+          },
+          "invalidExamples": ["DOC_12345678", "doc_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["doc_4h8d2n6w"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "Money",
+      "label": {
+        "es-MX": "Dinero",
+        "en": "Money"
+      },
+      "description": {
+        "es-MX": "Un monto en centavos de peso mexicano, nunca negativo.",
+        "en": "An amount in Mexican peso cents, never negative."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 0,
+          "errorCode": "MoneyCannotBeNegative",
+          "message": {
+            "es-MX": "El monto no puede ser negativo.",
+            "en": "The amount cannot be negative."
+          },
+          "invalidExamples": [-1, -500]
+        }
+      ],
+      "examples": {
+        "valid": [0, 25000, 150000]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "PurchaseLimit",
+      "label": {
+        "es-MX": "Límite de compra",
+        "en": "Purchase limit"
+      },
+      "description": {
+        "es-MX": "El monto máximo, en centavos, que una tarjeta autoriza en una sola compra.",
+        "en": "The most, in cents, that a card authorizes in a single purchase."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 0,
+          "errorCode": "PurchaseLimitCannotBeNegative",
+          "message": {
+            "es-MX": "El límite no puede ser negativo.",
+            "en": "The limit cannot be negative."
+          },
+          "invalidExamples": [-1]
+        },
+        {
+          "kind": "max",
+          "value": 20000000,
+          "errorCode": "PurchaseLimitTooHigh",
+          "message": {
+            "es-MX": "El límite de compra no puede pasar de $200,000.",
+            "en": "The purchase limit cannot exceed $200,000."
+          },
+          "invalidExamples": [20000001]
+        }
+      ],
+      "examples": {
+        "valid": [1500000, 500000]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "MatchScore",
+      "label": {
+        "es-MX": "Coincidencia biométrica",
+        "en": "Biometric match"
+      },
+      "description": {
+        "es-MX": "Qué tanto coincide la selfie con la foto del documento, de 0 a 100.",
+        "en": "How closely the selfie matches the document photo, from 0 to 100."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 0,
+          "errorCode": "MatchScoreBelowZero",
+          "message": {
+            "es-MX": "La coincidencia no puede ser menor a 0.",
+            "en": "The match cannot be below 0."
+          },
+          "invalidExamples": [-1]
+        },
+        {
+          "kind": "max",
+          "value": 100,
+          "errorCode": "MatchScoreAboveHundred",
+          "message": {
+            "es-MX": "La coincidencia no puede pasar de 100.",
+            "en": "The match cannot exceed 100."
+          },
+          "invalidExamples": [101]
+        }
+      ],
+      "examples": {
+        "valid": [92, 80]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "Age",
+      "label": {
+        "es-MX": "Edad",
+        "en": "Age"
+      },
+      "description": {
+        "es-MX": "La edad en años cumplidos de quien solicita una cuenta.",
+        "en": "The age in full years of the person applying for an account."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 0,
+          "errorCode": "AgeCannotBeNegative",
+          "message": {
+            "es-MX": "La edad no puede ser negativa.",
+            "en": "The age cannot be negative."
+          },
+          "invalidExamples": [-1]
+        },
+        {
+          "kind": "max",
+          "value": 120,
+          "errorCode": "AgeTooHigh",
+          "message": {
+            "es-MX": "La edad no puede pasar de 120 años.",
+            "en": "The age cannot exceed 120 years."
+          },
+          "invalidExamples": [121]
+        }
+      ],
+      "examples": {
+        "valid": [34, 18]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "Clabe",
+      "label": {
+        "es-MX": "CLABE",
+        "en": "CLABE"
+      },
+      "description": {
+        "es-MX": "La Clave Bancaria Estandarizada de 18 dígitos que identifica una cuenta en SPEI.",
+        "en": "The 18-digit standardized bank key that identifies an account in SPEI."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[0-9]{18}",
+          "errorCode": "ClabeMalformed",
+          "message": {
+            "es-MX": "La CLABE debe tener 18 dígitos.",
+            "en": "The CLABE must have 18 digits."
+          },
+          "invalidExamples": ["12345", "64618015700000000A", "6461801570000000041"]
+        }
+      ],
+      "examples": {
+        "valid": ["646180157000000004", "012180001234567899"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "PayeeAccountNumber",
+      "label": {
+        "es-MX": "Cuenta del beneficiario",
+        "en": "Payee account number"
+      },
+      "description": {
+        "es-MX": "El número con el que se identifica a quien recibe: celular de 10 dígitos, tarjeta de 16 o CLABE de 18.",
+        "en": "The number that identifies the receiver: a 10-digit mobile phone, a 16-digit card or an 18-digit CLABE."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[0-9]{10}|[0-9]{16}|[0-9]{18}",
+          "errorCode": "PayeeAccountNumberMalformed",
+          "message": {
+            "es-MX": "La cuenta debe ser un celular de 10 dígitos, una tarjeta de 16 o una CLABE de 18.",
+            "en": "The account must be a 10-digit phone, a 16-digit card or an 18-digit CLABE."
+          },
+          "invalidExamples": ["12345", "55123456789", "ABCDEFGHIJ"]
+        }
+      ],
+      "examples": {
+        "valid": ["012180001234567899", "5512345678", "4152313456789012"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "InstitutionCode",
+      "label": {
+        "es-MX": "Clave de institución",
+        "en": "Institution code"
+      },
+      "description": {
+        "es-MX": "La clave de cinco dígitos que Banxico asigna a cada banco participante en SPEI.",
+        "en": "The five-digit code that Banxico assigns to each bank taking part in SPEI."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[0-9]{5}",
+          "errorCode": "InstitutionCodeMalformed",
+          "message": {
+            "es-MX": "La clave de institución debe tener 5 dígitos.",
+            "en": "The institution code must have 5 digits."
+          },
+          "invalidExamples": ["1234", "ABCDE", "123456"]
+        }
+      ],
+      "examples": {
+        "valid": ["40012", "40072"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "TrackingKey",
+      "label": {
+        "es-MX": "Clave de rastreo",
+        "en": "Tracking key"
+      },
+      "description": {
+        "es-MX": "La clave que identifica un pago SPEI de punta a punta: de 8 a 30 letras mayúsculas o dígitos.",
+        "en": "The key that identifies a SPEI payment end to end: 8 to 30 uppercase letters or digits."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[A-Z0-9]{8,30}",
+          "errorCode": "TrackingKeyMalformed",
+          "message": {
+            "es-MX": "La clave de rastreo debe tener de 8 a 30 letras mayúsculas o dígitos.",
+            "en": "The tracking key must have 8 to 30 uppercase letters or digits."
+          },
+          "invalidExamples": ["short", "lowercase1234567890", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"]
+        }
+      ],
+      "examples": {
+        "valid": ["MXW20261015A1B2C3D4"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "TransferConcept",
+      "label": {
+        "es-MX": "Concepto de pago",
+        "en": "Payment concept"
+      },
+      "description": {
+        "es-MX": "El texto que acompaña a una transferencia y que ve quien la recibe; SPEI admite hasta 40 caracteres.",
+        "en": "The text that goes with a transfer and that the receiver sees; SPEI allows up to 40 characters."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 1,
+          "errorCode": "TransferConceptEmpty",
+          "message": {
+            "es-MX": "El concepto no puede estar vacío.",
+            "en": "The concept cannot be empty."
+          },
+          "invalidExamples": [""]
+        },
+        {
+          "kind": "maxLength",
+          "value": 40,
+          "errorCode": "TransferConceptTooLong",
+          "message": {
+            "es-MX": "El concepto no puede pasar de 40 caracteres.",
+            "en": "The concept cannot exceed 40 characters."
+          },
+          "invalidExamples": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+        }
+      ],
+      "examples": {
+        "valid": ["Renta de octubre", "Cena del viernes"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "FullName",
+      "label": {
+        "es-MX": "Nombre completo",
+        "en": "Full name"
+      },
+      "description": {
+        "es-MX": "El nombre completo de una persona.",
+        "en": "The full name of a person."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 3,
+          "errorCode": "FullNameTooShort",
+          "message": {
+            "es-MX": "El nombre debe tener al menos 3 caracteres.",
+            "en": "The name must have at least 3 characters."
+          },
+          "invalidExamples": ["ab"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 80,
+          "errorCode": "FullNameTooLong",
+          "message": {
+            "es-MX": "El nombre no puede pasar de 80 caracteres.",
+            "en": "The name cannot exceed 80 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["Valeria Hernández Gómez", "Jorge Luis Paredes"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "Curp",
+      "label": {
+        "es-MX": "CURP",
+        "en": "CURP"
+      },
+      "description": {
+        "es-MX": "Clave Única de Registro de Población: 18 caracteres con iniciales, fecha de nacimiento, sexo y entidad.",
+        "en": "Mexico's unique population registry key: 18 characters with initials, birth date, sex and state."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9][0-9]",
+          "errorCode": "CurpMalformed",
+          "message": {
+            "es-MX": "La CURP no tiene el formato correcto.",
+            "en": "The CURP does not have the right format."
+          },
+          "invalidExamples": ["gahm900315mdfrrr05", "GAHM90", "GAHM900315XDFRRR05"]
+        }
+      ],
+      "examples": {
+        "valid": ["GAHM900315MDFRRR05"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ReasonText",
+      "label": {
+        "es-MX": "Motivo",
+        "en": "Reason"
+      },
+      "description": {
+        "es-MX": "La explicación de una decisión: por qué se rechazó, congeló o bloqueó algo.",
+        "en": "The explanation of a decision: why something was rejected, frozen or blocked."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 3,
+          "errorCode": "ReasonTextTooShort",
+          "message": {
+            "es-MX": "El motivo debe tener al menos 3 caracteres.",
+            "en": "The reason must have at least 3 characters."
+          },
+          "invalidExamples": ["aa"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 200,
+          "errorCode": "ReasonTextTooLong",
+          "message": {
+            "es-MX": "El motivo no puede pasar de 200 caracteres.",
+            "en": "The reason cannot exceed 200 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["Document photo is blurry"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "LastFour",
+      "label": {
+        "es-MX": "Últimos cuatro dígitos",
+        "en": "Last four digits"
+      },
+      "description": {
+        "es-MX": "Los últimos cuatro dígitos del número de una tarjeta, lo único que la billetera muestra.",
+        "en": "The last four digits of a card number, the only part the wallet shows."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[0-9]{4}",
+          "errorCode": "LastFourMalformed",
+          "message": {
+            "es-MX": "Deben ser exactamente 4 dígitos.",
+            "en": "They must be exactly 4 digits."
+          },
+          "invalidExamples": ["482", "48a1", "48211"]
+        }
+      ],
+      "examples": {
+        "valid": ["4821"]
+      }
+    },
+    {
+      "kind": "enum",
+      "codeName": "KycLevel",
+      "label": {
+        "es-MX": "Nivel de verificación",
+        "en": "Verification level"
+      },
+      "description": {
+        "es-MX": "Qué tanto se comprobó la identidad de una persona; de él dependen los límites y los productos.",
+        "en": "How much of a person's identity was proven; limits and products depend on it."
+      },
+      "members": [
+        {
+          "codeName": "Basic",
+          "label": {
+            "es-MX": "Básico",
+            "en": "Basic"
+          }
+        },
+        {
+          "codeName": "Full",
+          "label": {
+            "es-MX": "Completo",
+            "en": "Full"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "enum",
+      "codeName": "PayeeAccountKind",
+      "label": {
+        "es-MX": "Tipo de cuenta del beneficiario",
+        "en": "Payee account kind"
+      },
+      "description": {
+        "es-MX": "Con qué dato se identifica a quien recibe una transferencia.",
+        "en": "Which piece of data identifies the receiver of a transfer."
+      },
+      "members": [
+        {
+          "codeName": "Clabe",
+          "label": {
+            "es-MX": "CLABE",
+            "en": "CLABE"
+          }
+        },
+        {
+          "codeName": "PhoneNumber",
+          "label": {
+            "es-MX": "Número de celular",
+            "en": "Mobile phone number"
+          }
+        },
+        {
+          "codeName": "DebitCard",
+          "label": {
+            "es-MX": "Tarjeta de débito",
+            "en": "Debit card"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "enum",
+      "codeName": "DocumentType",
+      "label": {
+        "es-MX": "Tipo de documento",
+        "en": "Document type"
+      },
+      "description": {
+        "es-MX": "Qué documento entrega una persona para comprobar su identidad.",
+        "en": "Which document a person hands over to prove their identity."
+      },
+      "members": [
+        {
+          "codeName": "VoterCredential",
+          "label": {
+            "es-MX": "Credencial para votar",
+            "en": "Voter credential"
+          }
+        },
+        {
+          "codeName": "Passport",
+          "label": {
+            "es-MX": "Pasaporte",
+            "en": "Passport"
+          }
+        },
+        {
+          "codeName": "ResidenceCard",
+          "label": {
+            "es-MX": "Tarjeta de residente",
+            "en": "Residence card"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "record",
+      "codeName": "IdentityDocument",
+      "label": {
+        "es-MX": "Documento de identidad",
+        "en": "Identity document"
+      },
+      "description": {
+        "es-MX": "Un documento que una persona entrega para verificarse: de qué tipo es y dónde está su archivo.",
+        "en": "A document a person submits to get verified: what kind it is and where its file is."
+      },
+      "fields": [
+        {
+          "codeName": "documentType",
+          "label": {
+            "es-MX": "Tipo",
+            "en": "Type"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DocumentType"
+          }
+        },
+        {
+          "codeName": "reference",
+          "label": {
+            "es-MX": "Archivo",
+            "en": "File"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DocumentReference"
+          }
+        }
+      ],
+      "examples": {
+        "valid": [
+          {
+            "documentType": "VoterCredential",
+            "reference": "doc_4h8d2n6w"
+          }
+        ]
+      }
+    }
+  ]
+}

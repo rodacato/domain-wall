@@ -1,0 +1,342 @@
+{
+  "changeScenarios": {
+    "businessChange": {
+      "story": {
+        "es-MX": "Cambio del negocio: una cuenta congelada ya no puede recibir depósitos, porque se estaban usando para estacionar fondos.",
+        "en": "Business change: a frozen account can no longer receive deposits, because they were being used to park funds."
+      },
+      "patch": [
+        {
+          "op": "restrictTransition",
+          "aggregate": "Account",
+          "command": "ReceiveDeposit",
+          "removeFrom": ["Frozen"]
+        }
+      ]
+    },
+    "evolution": {
+      "story": {
+        "es-MX": "Revisión de transferencias grandes: las transferencias de más de $25,000 deben pasar por un analista de cumplimiento antes de enviarse a SPEI.",
+        "en": "Large-transfer review: transfers above $25,000 must go through a compliance analyst before being sent to SPEI."
+      },
+      "patch": [
+        {
+          "op": "addEvent",
+          "event": {
+            "codeName": "TransferHeld",
+            "label": {
+              "es-MX": "Transferencia retenida",
+              "en": "Transfer held"
+            },
+            "description": {
+              "es-MX": "Un analista de cumplimiento retuvo la transferencia para revisarla.",
+              "en": "A compliance analyst held the transfer to review it."
+            },
+            "context": "Transfers",
+            "sequence": 12.1,
+            "payload": [
+              {
+                "codeName": "transferId",
+                "label": {
+                  "es-MX": "Transferencia",
+                  "en": "Transfer"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "TransferId"
+                }
+              },
+              {
+                "codeName": "reason",
+                "label": {
+                  "es-MX": "Motivo",
+                  "en": "Reason"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "ReasonText"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addEvent",
+          "event": {
+            "codeName": "TransferReleased",
+            "label": {
+              "es-MX": "Transferencia liberada",
+              "en": "Transfer released"
+            },
+            "description": {
+              "es-MX": "El analista terminó la revisión y dejó salir la transferencia.",
+              "en": "The analyst finished the review and let the transfer go out."
+            },
+            "context": "Transfers",
+            "sequence": 12.2,
+            "payload": [
+              {
+                "codeName": "transferId",
+                "label": {
+                  "es-MX": "Transferencia",
+                  "en": "Transfer"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "TransferId"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addCommand",
+          "command": {
+            "codeName": "HoldTransfer",
+            "label": {
+              "es-MX": "Retener transferencia",
+              "en": "Hold transfer"
+            },
+            "description": {
+              "es-MX": "Detener una transferencia grande para que una persona la revise.",
+              "en": "Stop a large transfer so that a person can review it."
+            },
+            "context": "Transfers",
+            "issuedBy": {
+              "kind": "actor",
+              "ref": "ComplianceAnalyst"
+            },
+            "handledBy": "Transfer",
+            "params": [
+              {
+                "codeName": "reason",
+                "label": {
+                  "es-MX": "Motivo",
+                  "en": "Reason"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "ReasonText"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addCommand",
+          "command": {
+            "codeName": "ReleaseTransfer",
+            "label": {
+              "es-MX": "Liberar transferencia",
+              "en": "Release transfer"
+            },
+            "description": {
+              "es-MX": "Aprobar la revisión y mandar la orden a SPEI con su clave de rastreo.",
+              "en": "Approve the review and send the order to SPEI with its tracking key."
+            },
+            "context": "Transfers",
+            "issuedBy": {
+              "kind": "actor",
+              "ref": "ComplianceAnalyst"
+            },
+            "handledBy": "Transfer",
+            "params": [
+              {
+                "codeName": "trackingKey",
+                "label": {
+                  "es-MX": "Clave de rastreo",
+                  "en": "Tracking key"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "TrackingKey"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addState",
+          "aggregate": "Transfer",
+          "state": {
+            "codeName": "UnderReview",
+            "label": {
+              "es-MX": "En revisión",
+              "en": "Under review"
+            },
+            "description": {
+              "es-MX": "Un analista revisa la transferencia antes de que salga.",
+              "en": "An analyst is reviewing the transfer before it goes out."
+            },
+            "terminal": false,
+            "data": [
+              {
+                "codeName": "holdReason",
+                "label": {
+                  "es-MX": "Motivo de retención",
+                  "en": "Hold reason"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "ReasonText"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addRule",
+          "aggregate": "Transfer",
+          "rule": {
+            "codeName": "AutoSubmitLimit",
+            "label": {
+              "es-MX": "Solo las transferencias chicas salen solas",
+              "en": "Only small transfers go out on their own"
+            },
+            "description": {
+              "es-MX": "Una transferencia de más de $25,000 no sale a SPEI sin que un analista la revise.",
+              "en": "A transfer above $25,000 does not go out to SPEI without an analyst reviewing it."
+            },
+            "predicate": {
+              "kind": "compare",
+              "left": {
+                "op": "field",
+                "name": "amount"
+              },
+              "operator": "<=",
+              "right": {
+                "op": "literal",
+                "value": 2500000
+              }
+            },
+            "message": {
+              "es-MX": "Esta transferencia necesita revisión antes de enviarse.",
+              "en": "This transfer needs a review before it is sent."
+            },
+            "violation": {
+              "given": [
+                {
+                  "command": "RequestTransfer",
+                  "args": {
+                    "amount": 3000000,
+                    "concept": "Compra de refrigerador"
+                  }
+                }
+              ],
+              "when": {
+                "command": "SubmitTransfer",
+                "args": {
+                  "trackingKey": "MXW20261015A1B2C3D4"
+                }
+              }
+            }
+          }
+        },
+        {
+          "op": "restrictTransition",
+          "aggregate": "Transfer",
+          "command": "SubmitTransfer",
+          "removeFrom": ["Requested"]
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "Transfer",
+          "transition": {
+            "command": "SubmitTransfer",
+            "from": ["Requested"],
+            "to": "Submitted",
+            "guards": ["AutoSubmitLimit"],
+            "effects": [
+              {
+                "op": "set",
+                "field": "trackingKey",
+                "value": {
+                  "op": "arg",
+                  "name": "trackingKey"
+                }
+              }
+            ],
+            "emits": ["TransferSubmitted"]
+          }
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "Transfer",
+          "transition": {
+            "command": "HoldTransfer",
+            "from": ["Requested"],
+            "to": "UnderReview",
+            "guards": [],
+            "effects": [
+              {
+                "op": "set",
+                "field": "holdReason",
+                "value": {
+                  "op": "arg",
+                  "name": "reason"
+                }
+              }
+            ],
+            "emits": ["TransferHeld"]
+          }
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "Transfer",
+          "transition": {
+            "command": "ReleaseTransfer",
+            "from": ["UnderReview"],
+            "to": "Submitted",
+            "guards": [],
+            "effects": [
+              {
+                "op": "set",
+                "field": "trackingKey",
+                "value": {
+                  "op": "arg",
+                  "name": "trackingKey"
+                }
+              }
+            ],
+            "emits": ["TransferReleased", "TransferSubmitted"]
+          }
+        },
+        {
+          "op": "replaceWalkthrough",
+          "aggregate": "Transfer",
+          "walkthrough": [
+            {
+              "command": "RequestTransfer",
+              "args": {
+                "payerAccount": "646180157000000004",
+                "payeeName": "Jorge Luis Paredes",
+                "payeeAccount": "012180001234567899",
+                "payeeAccountKind": "Clabe",
+                "payeeInstitution": "40012",
+                "amount": 3000000,
+                "concept": "Compra de refrigerador",
+                "requestedOn": "2026-10-15"
+              }
+            },
+            {
+              "command": "HoldTransfer",
+              "args": {
+                "reason": "Amount above the automatic limit"
+              }
+            },
+            {
+              "command": "ReleaseTransfer",
+              "args": {
+                "trackingKey": "MXW20261015A1B2C3D4"
+              }
+            },
+            {
+              "command": "SettleTransfer",
+              "args": {}
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,504 @@
+{
+  "changeScenarios": {
+    "businessChange": {
+      "story": {
+        "es-MX": "Cambio del negocio: si una entrega ya tuvo un intento fallido, el cliente ya no puede cancelarla; el paquete debe regresar al remitente.",
+        "en": "Business change: if a delivery has already had a failed attempt, the customer can no longer cancel it; the parcel must go back to the sender."
+      },
+      "patch": [
+        {
+          "op": "restrictTransition",
+          "aggregate": "Delivery",
+          "command": "CancelDelivery",
+          "removeFrom": ["AttemptFailed"]
+        }
+      ]
+    },
+    "evolution": {
+      "story": {
+        "es-MX": "Puntos de recolección: tras un intento fallido, el repartidor puede dejar el paquete en un punto de recolección donde el cliente lo recoge en un máximo de 5 días.",
+        "en": "Pickup points: after a failed attempt, the driver can leave the parcel at a pickup point where the customer collects it within 5 days at most."
+      },
+      "patch": [
+        {
+          "op": "addValueObject",
+          "valueObject": {
+            "kind": "scalar",
+            "codeName": "PickupPointCode",
+            "label": {
+              "es-MX": "Punto de recolección",
+              "en": "Pickup point"
+            },
+            "description": {
+              "es-MX": "Identificador de un punto de recolección donde el cliente recoge su paquete.",
+              "en": "Identifier of a pickup point where the customer collects their parcel."
+            },
+            "base": "string",
+            "constraints": [
+              {
+                "kind": "pattern",
+                "value": "pkp_[a-z0-9]{6}",
+                "errorCode": "PickupPointCodeMalformed",
+                "message": {
+                  "es-MX": "El punto de recolección debe empezar con pkp_ seguido de 6 caracteres.",
+                  "en": "The pickup point must start with pkp_ followed by 6 characters."
+                },
+                "invalidExamples": ["PKP_123456", "pkp_12"]
+              }
+            ],
+            "examples": {
+              "valid": ["pkp_4m9x2c"]
+            }
+          }
+        },
+        {
+          "op": "addValueObject",
+          "valueObject": {
+            "kind": "scalar",
+            "codeName": "RetentionDays",
+            "label": {
+              "es-MX": "Días de resguardo",
+              "en": "Retention days"
+            },
+            "description": {
+              "es-MX": "Cuántos días guarda el punto de recolección un paquete: al menos 1.",
+              "en": "How many days the pickup point keeps a parcel: at least 1."
+            },
+            "base": "integer",
+            "constraints": [
+              {
+                "kind": "min",
+                "value": 1,
+                "errorCode": "RetentionDaysMustBePositive",
+                "message": {
+                  "es-MX": "Los días de resguardo deben ser al menos 1.",
+                  "en": "The retention days must be at least 1."
+                },
+                "invalidExamples": [0, -2]
+              }
+            ],
+            "examples": {
+              "valid": [3, 5]
+            }
+          }
+        },
+        {
+          "op": "addEvent",
+          "event": {
+            "codeName": "DeliveryLeftAtPickupPoint",
+            "label": {
+              "es-MX": "Paquete dejado en punto de recolección",
+              "en": "Parcel left at a pickup point"
+            },
+            "description": {
+              "es-MX": "Tras el intento fallido, el repartidor dejó el paquete en un punto de recolección.",
+              "en": "After the failed attempt, the driver left the parcel at a pickup point."
+            },
+            "context": "Doorstep",
+            "sequence": 9.1,
+            "payload": [
+              {
+                "codeName": "deliveryId",
+                "label": {
+                  "es-MX": "Entrega",
+                  "en": "Delivery"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "DeliveryId"
+                }
+              },
+              {
+                "codeName": "pickupPointId",
+                "label": {
+                  "es-MX": "Punto de recolección",
+                  "en": "Pickup point"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "PickupPointCode"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addEvent",
+          "event": {
+            "codeName": "PickupDeadlineExpired",
+            "label": {
+              "es-MX": "Venció el plazo de recolección",
+              "en": "Pickup deadline expired"
+            },
+            "description": {
+              "es-MX": "El cliente no recogió el paquete a tiempo y el punto lo regresa.",
+              "en": "The customer did not collect the parcel in time and the point sends it back."
+            },
+            "context": "Doorstep",
+            "sequence": 18.1,
+            "payload": [
+              {
+                "codeName": "deliveryId",
+                "label": {
+                  "es-MX": "Entrega",
+                  "en": "Delivery"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "DeliveryId"
+                }
+              },
+              {
+                "codeName": "retentionDays",
+                "label": {
+                  "es-MX": "Días de resguardo",
+                  "en": "Retention days"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "RetentionDays"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addCommand",
+          "command": {
+            "codeName": "LeaveAtPickupPoint",
+            "label": {
+              "es-MX": "Dejar en punto de recolección",
+              "en": "Leave at pickup point"
+            },
+            "description": {
+              "es-MX": "Dejar el paquete en un punto de recolección y fijar cuántos días se guarda.",
+              "en": "Leave the parcel at a pickup point and set how many days it is kept."
+            },
+            "context": "Doorstep",
+            "issuedBy": {
+              "kind": "actor",
+              "ref": "Driver"
+            },
+            "handledBy": "Delivery",
+            "params": [
+              {
+                "codeName": "pickupPointId",
+                "label": {
+                  "es-MX": "Punto de recolección",
+                  "en": "Pickup point"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "PickupPointCode"
+                }
+              },
+              {
+                "codeName": "retentionDays",
+                "label": {
+                  "es-MX": "Días de resguardo",
+                  "en": "Retention days"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "RetentionDays"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addCommand",
+          "command": {
+            "codeName": "CollectFromPickupPoint",
+            "label": {
+              "es-MX": "Recoger en punto de recolección",
+              "en": "Collect from pickup point"
+            },
+            "description": {
+              "es-MX": "El cliente recoge su paquete con evidencia y el pago exacto.",
+              "en": "The customer collects the parcel with proof and the exact payment."
+            },
+            "context": "Doorstep",
+            "issuedBy": {
+              "kind": "actor",
+              "ref": "Customer"
+            },
+            "handledBy": "Delivery",
+            "params": [
+              {
+                "codeName": "proof",
+                "label": {
+                  "es-MX": "Evidencia de entrega",
+                  "en": "Proof of delivery"
+                },
+                "type": {
+                  "kind": "optional",
+                  "of": {
+                    "kind": "valueObject",
+                    "ref": "ProofOfDelivery"
+                  }
+                }
+              },
+              {
+                "codeName": "cashCollected",
+                "label": {
+                  "es-MX": "Efectivo cobrado",
+                  "en": "Cash collected"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "Money"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addCommand",
+          "command": {
+            "codeName": "ExpirePickup",
+            "label": {
+              "es-MX": "Vencer la recolección",
+              "en": "Expire the pickup"
+            },
+            "description": {
+              "es-MX": "Cerrar el plazo de un paquete que nadie recogió y devolverlo.",
+              "en": "Close the deadline of a parcel nobody collected and return it."
+            },
+            "context": "Doorstep",
+            "issuedBy": {
+              "kind": "actor",
+              "ref": "Dispatcher"
+            },
+            "handledBy": "Delivery",
+            "params": []
+          }
+        },
+        {
+          "op": "addState",
+          "aggregate": "Delivery",
+          "state": {
+            "codeName": "AtPickupPoint",
+            "label": {
+              "es-MX": "En punto de recolección",
+              "en": "At pickup point"
+            },
+            "description": {
+              "es-MX": "El paquete espera al cliente en un punto de recolección.",
+              "en": "The parcel waits for the customer at a pickup point."
+            },
+            "terminal": false,
+            "data": [
+              {
+                "codeName": "pickupPointId",
+                "label": {
+                  "es-MX": "Punto de recolección",
+                  "en": "Pickup point"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "PickupPointCode"
+                }
+              },
+              {
+                "codeName": "retentionDays",
+                "label": {
+                  "es-MX": "Días de resguardo",
+                  "en": "Retention days"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "RetentionDays"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addRule",
+          "aggregate": "Delivery",
+          "rule": {
+            "codeName": "PickupRetentionWithinLimit",
+            "label": {
+              "es-MX": "El resguardo tiene un máximo de días",
+              "en": "The retention has a maximum number of days"
+            },
+            "description": {
+              "es-MX": "Un punto de recolección guarda el paquete 5 días como máximo.",
+              "en": "A pickup point keeps the parcel for 5 days at most."
+            },
+            "predicate": {
+              "kind": "compare",
+              "left": {
+                "op": "arg",
+                "name": "retentionDays"
+              },
+              "operator": "<=",
+              "right": {
+                "op": "literal",
+                "value": 5
+              }
+            },
+            "message": {
+              "es-MX": "El paquete puede esperar como máximo 5 días.",
+              "en": "The parcel can wait 5 days at most."
+            },
+            "violation": {
+              "given": [
+                {
+                  "command": "ScheduleDelivery",
+                  "args": {
+                    "parcelId": "pcl_8w4y6e2l",
+                    "recipientName": "Mariana López",
+                    "address": {
+                      "street": "Calle Durango 215",
+                      "neighborhood": "Roma Norte",
+                      "city": "Ciudad de México",
+                      "postalCode": "06700"
+                    },
+                    "deliveryDate": "2026-03-14",
+                    "windowStartHour": 9,
+                    "windowEndHour": 13,
+                    "cashToCollect": 45000
+                  }
+                },
+                {
+                  "command": "StartDelivery",
+                  "args": {
+                    "driverId": "drv_5t1x8r4n"
+                  }
+                },
+                {
+                  "command": "ReportFailedAttempt",
+                  "args": {
+                    "reason": "NobodyHome"
+                  }
+                }
+              ],
+              "when": {
+                "command": "LeaveAtPickupPoint",
+                "args": {
+                  "retentionDays": 6
+                }
+              }
+            }
+          }
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "Delivery",
+          "transition": {
+            "command": "LeaveAtPickupPoint",
+            "from": ["AttemptFailed"],
+            "to": "AtPickupPoint",
+            "guards": ["PickupRetentionWithinLimit"],
+            "effects": [
+              {
+                "op": "set",
+                "field": "pickupPointId",
+                "value": {
+                  "op": "arg",
+                  "name": "pickupPointId"
+                }
+              },
+              {
+                "op": "set",
+                "field": "retentionDays",
+                "value": {
+                  "op": "arg",
+                  "name": "retentionDays"
+                }
+              }
+            ],
+            "emits": ["DeliveryLeftAtPickupPoint"]
+          }
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "Delivery",
+          "transition": {
+            "command": "CollectFromPickupPoint",
+            "from": ["AtPickupPoint"],
+            "to": "Delivered",
+            "guards": ["DeliveryNeedsProof", "CollectedCashMustMatchDue"],
+            "effects": [
+              {
+                "op": "set",
+                "field": "proof",
+                "value": {
+                  "op": "arg",
+                  "name": "proof"
+                }
+              }
+            ],
+            "emits": ["DeliveryCompleted"]
+          }
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "Delivery",
+          "transition": {
+            "command": "ExpirePickup",
+            "from": ["AtPickupPoint"],
+            "to": "ReturnedToSender",
+            "guards": [],
+            "effects": [],
+            "emits": ["PickupDeadlineExpired", "DeliveryReturned"]
+          }
+        },
+        {
+          "op": "replaceWalkthrough",
+          "aggregate": "Delivery",
+          "walkthrough": [
+            {
+              "command": "ScheduleDelivery",
+              "args": {
+                "parcelId": "pcl_8w4y6e2l",
+                "recipientName": "Mariana López",
+                "address": {
+                  "street": "Calle Durango 215",
+                  "neighborhood": "Roma Norte",
+                  "city": "Ciudad de México",
+                  "postalCode": "06700"
+                },
+                "deliveryDate": "2026-03-14",
+                "windowStartHour": 9,
+                "windowEndHour": 13,
+                "cashToCollect": 45000
+              }
+            },
+            {
+              "command": "StartDelivery",
+              "args": {
+                "driverId": "drv_5t1x8r4n"
+              }
+            },
+            {
+              "command": "ReportFailedAttempt",
+              "args": {
+                "reason": "NobodyHome"
+              }
+            },
+            {
+              "command": "LeaveAtPickupPoint",
+              "args": {
+                "pickupPointId": "pkp_4m9x2c",
+                "retentionDays": 5
+              }
+            },
+            {
+              "command": "CollectFromPickupPoint",
+              "args": {
+                "proof": {
+                  "proofKind": "Photo",
+                  "evidenceRef": "evd_4k8m2q7x"
+                },
+                "cashCollected": 45000
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

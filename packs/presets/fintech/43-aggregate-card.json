@@ -1,0 +1,425 @@
+{
+  "aggregates": [
+    {
+      "codeName": "Card",
+      "label": {
+        "es-MX": "Tarjeta",
+        "en": "Card"
+      },
+      "description": {
+        "es-MX": "La tarjeta que gasta el saldo de una cuenta: se pide, se emite, se activa y puede bloquearse o cancelarse.",
+        "en": "The card that spends an account's balance: it is requested, issued, activated and can be blocked or cancelled."
+      },
+      "context": "Cards",
+      "identity": "cardId",
+      "fields": [
+        {
+          "codeName": "cardId",
+          "label": {
+            "es-MX": "Tarjeta",
+            "en": "Card"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CardId"
+          }
+        },
+        {
+          "codeName": "accountId",
+          "label": {
+            "es-MX": "Cuenta",
+            "en": "Account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AccountId"
+          }
+        },
+        {
+          "codeName": "lastFour",
+          "label": {
+            "es-MX": "Últimos cuatro dígitos",
+            "en": "Last four digits"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "LastFour"
+            }
+          }
+        },
+        {
+          "codeName": "purchaseLimit",
+          "label": {
+            "es-MX": "Límite por compra",
+            "en": "Purchase limit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PurchaseLimit"
+          }
+        }
+      ],
+      "derived": [],
+      "entities": [],
+      "states": [
+        {
+          "codeName": "Draft",
+          "label": {
+            "es-MX": "Borrador",
+            "en": "Draft"
+          },
+          "description": {
+            "es-MX": "La tarjeta todavía no se pide.",
+            "en": "The card has not been requested yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Requested",
+          "label": {
+            "es-MX": "Solicitada",
+            "en": "Requested"
+          },
+          "description": {
+            "es-MX": "El titular la pidió y el procesador la está fabricando.",
+            "en": "The holder requested it and the processor is producing it."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Issued",
+          "label": {
+            "es-MX": "Emitida",
+            "en": "Issued"
+          },
+          "description": {
+            "es-MX": "La tarjeta existe, pero el titular aún no la activa.",
+            "en": "The card exists but the holder has not activated it yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Active",
+          "label": {
+            "es-MX": "Activa",
+            "en": "Active"
+          },
+          "description": {
+            "es-MX": "La tarjeta autoriza compras dentro de su límite.",
+            "en": "The card authorizes purchases within its limit."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Blocked",
+          "label": {
+            "es-MX": "Bloqueada",
+            "en": "Blocked"
+          },
+          "description": {
+            "es-MX": "La tarjeta no autoriza compras hasta que se desbloquee.",
+            "en": "The card authorizes no purchases until it is unblocked."
+          },
+          "terminal": false,
+          "data": [
+            {
+              "codeName": "blockReason",
+              "label": {
+                "es-MX": "Motivo de bloqueo",
+                "en": "Block reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ReasonText"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Cancelled",
+          "label": {
+            "es-MX": "Cancelada",
+            "en": "Cancelled"
+          },
+          "description": {
+            "es-MX": "La tarjeta se dio de baja para siempre.",
+            "en": "The card was retired for good."
+          },
+          "terminal": true,
+          "data": []
+        }
+      ],
+      "initialState": "Draft",
+      "rules": [
+        {
+          "codeName": "CardRequiresFullKyc",
+          "label": {
+            "es-MX": "La tarjeta exige identidad verificada al 100%",
+            "en": "The card requires a fully verified identity"
+          },
+          "description": {
+            "es-MX": "Solo las personas con verificación completa pueden pedir una tarjeta.",
+            "en": "Only people with full verification can request a card."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "kycLevel"
+            },
+            "operator": "==",
+            "right": {
+              "op": "literal",
+              "value": "Full"
+            }
+          },
+          "message": {
+            "es-MX": "Completa tu verificación de identidad para pedir una tarjeta.",
+            "en": "Complete your identity verification to request a card."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "RequestCard",
+              "args": {
+                "kycLevel": "Basic"
+              }
+            }
+          }
+        },
+        {
+          "codeName": "PurchaseMustBePositive",
+          "label": {
+            "es-MX": "La compra debe ser mayor a cero",
+            "en": "The purchase must be greater than zero"
+          },
+          "description": {
+            "es-MX": "La red no autoriza compras de cero pesos.",
+            "en": "The network does not authorize purchases of zero pesos."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "amount"
+            },
+            "operator": ">",
+            "right": {
+              "op": "literal",
+              "value": 0
+            }
+          },
+          "message": {
+            "es-MX": "El monto de la compra debe ser mayor a cero.",
+            "en": "The purchase amount must be greater than zero."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "RequestCard",
+                "args": {
+                  "kycLevel": "Full"
+                }
+              },
+              {
+                "command": "IssueCard",
+                "args": {}
+              },
+              {
+                "command": "ActivateCard",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "AuthorizePurchase",
+              "args": {
+                "amount": 0
+              }
+            }
+          }
+        },
+        {
+          "codeName": "PurchaseWithinLimit",
+          "label": {
+            "es-MX": "La compra cabe en el límite de la tarjeta",
+            "en": "The purchase fits the card's limit"
+          },
+          "description": {
+            "es-MX": "Una compra no puede pasar del límite por compra de la tarjeta.",
+            "en": "A purchase cannot exceed the card's per-purchase limit."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "amount"
+            },
+            "operator": "<=",
+            "right": {
+              "op": "field",
+              "name": "purchaseLimit"
+            }
+          },
+          "message": {
+            "es-MX": "La compra supera el límite de tu tarjeta.",
+            "en": "The purchase exceeds your card's limit."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "RequestCard",
+                "args": {
+                  "kycLevel": "Full"
+                }
+              },
+              {
+                "command": "IssueCard",
+                "args": {}
+              },
+              {
+                "command": "ActivateCard",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "AuthorizePurchase",
+              "args": {
+                "amount": 1500001
+              }
+            }
+          }
+        }
+      ],
+      "invariants": [],
+      "transitions": [
+        {
+          "command": "RequestCard",
+          "from": ["Draft"],
+          "to": "Requested",
+          "guards": ["CardRequiresFullKyc"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "accountId",
+              "value": {
+                "op": "arg",
+                "name": "accountId"
+              }
+            }
+          ],
+          "emits": ["CardRequested"]
+        },
+        {
+          "command": "IssueCard",
+          "from": ["Requested"],
+          "to": "Issued",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "lastFour",
+              "value": {
+                "op": "arg",
+                "name": "lastFour"
+              }
+            }
+          ],
+          "emits": ["CardIssued"]
+        },
+        {
+          "command": "ActivateCard",
+          "from": ["Issued"],
+          "to": "Active",
+          "guards": [],
+          "effects": [],
+          "emits": ["CardActivated"]
+        },
+        {
+          "command": "AuthorizePurchase",
+          "from": ["Active"],
+          "to": "Active",
+          "guards": ["PurchaseMustBePositive", "PurchaseWithinLimit"],
+          "effects": [],
+          "emits": ["PurchaseAuthorized"]
+        },
+        {
+          "command": "BlockCard",
+          "from": ["Active"],
+          "to": "Blocked",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "blockReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["CardBlocked"]
+        },
+        {
+          "command": "UnblockCard",
+          "from": ["Blocked"],
+          "to": "Active",
+          "guards": [],
+          "effects": [],
+          "emits": ["CardUnblocked"]
+        },
+        {
+          "command": "CancelCard",
+          "from": ["Active", "Blocked"],
+          "to": "Cancelled",
+          "guards": [],
+          "effects": [],
+          "emits": ["CardCancelled"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "RequestCard",
+          "args": {
+            "kycLevel": "Full"
+          }
+        },
+        {
+          "command": "IssueCard",
+          "args": {
+            "lastFour": "4821"
+          }
+        },
+        {
+          "command": "ActivateCard",
+          "args": {}
+        },
+        {
+          "command": "AuthorizePurchase",
+          "args": {
+            "amount": 89900
+          }
+        },
+        {
+          "command": "BlockCard",
+          "args": {
+            "reason": "Account frozen by compliance"
+          }
+        },
+        {
+          "command": "UnblockCard",
+          "args": {}
+        },
+        {
+          "command": "CancelCard",
+          "args": {}
+        }
+      ]
+    }
+  ]
+}

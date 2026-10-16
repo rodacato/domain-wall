@@ -1,0 +1,301 @@
+{
+  "dialogues": {
+    "whyDdd.change": [
+      {
+        "speaker": "Valeria",
+        "text": {
+          "es-MX": "Nos llegó un cambio: ya no queremos retirar de golpe un curso que sigue publicado. Hay estudiantes a media cursada y se quedarían sin su contenido.",
+          "en": "A change came in: we no longer want to retire a course that is still published in one step. There are students halfway through who would lose their content."
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Y yo termino contestando reclamos. Primero hay que dejar de vender y avisar; después sí se retira.",
+          "en": "And I end up answering complaints. First we stop selling and let people know; only then do we retire it."
+        }
+      },
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "Suena a una sola regla. Veamos en cuántos lugares del código tenemos que tocar para cambiarla.",
+          "en": "That sounds like a single rule. Let's see how many places in the code we have to touch to change it."
+        }
+      }
+    ],
+    "ubiquity.intro": [
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "Antes de programar, hablemos el mismo idioma. Daniela, ¿cómo le llamas a lo que tiene alguien que ya pagó un curso?",
+          "en": "Before coding, let's speak the same language. Daniela, what do you call what someone has once they have paid for a course?"
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Una inscripción. Cada {{term:Enrollment}} es de una persona en una cohorte, con su pago, su acceso y su avance.",
+          "en": "An enrollment. Every {{term:Enrollment}} belongs to one person in one cohort, with its payment, its access and its progress."
+        }
+      },
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "Perfecto. Esa palabra entra al glosario y la usaremos igual en las conversaciones, en los tableros y en el código.",
+          "en": "Perfect. That word goes into the glossary and we will use it the same way in conversations, on boards and in code."
+        }
+      }
+    ],
+    "ubiquity.ambiguity": [
+      {
+        "speaker": "Valeria",
+        "text": {
+          "es-MX": "Cuando yo digo «curso», pienso en las lecciones que armó el instructor y en el precio del catálogo.",
+          "en": "When I say “course”, I think of the lessons the instructor put together and the catalog price."
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Pues para mí un «curso» es el lugar que compró alguien: su cohorte, su pago y su progreso.",
+          "en": "For me a “course” is the seat someone bought: their cohort, their payment and their progress."
+        }
+      },
+      {
+        "speaker": "Ignacio",
+        "text": {
+          "es-MX": "Y para mí es el examen, con su calificación mínima y sus intentos. Tres personas, tres significados.",
+          "en": "And for me it is the exam, with its passing score and its attempts. Three people, three meanings."
+        }
+      },
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "Una misma palabra con significados distintos: {{term:Course}} es ambigua. La resolveremos separando contextos.",
+          "en": "One word with different meanings: {{term:Course}} is ambiguous. We will resolve it by separating contexts."
+        }
+      }
+    ],
+    "storming.kickoff": [
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "Contemos la historia de un estudiante con eventos: cosas que ya pasaron, escritas en pasado, en naranja.",
+          "en": "Let's tell a student's story through events: things that already happened, written in the past tense, in orange."
+        }
+      },
+      {
+        "speaker": "Valeria",
+        "text": {
+          "es-MX": "Primero el instructor publica su curso: {{term:CoursePublished}}. Luego alguien se inscribe y paga: {{term:EnrollmentPaid}}.",
+          "en": "First the instructor publishes the course: {{term:CoursePublished}}. Then someone enrolls and pays: {{term:EnrollmentPaid}}."
+        }
+      },
+      {
+        "speaker": "Ignacio",
+        "text": {
+          "es-MX": "Y cuando aprueba mi examen empieza lo importante: {{term:AssessmentPassed}} abre el camino hacia la constancia.",
+          "en": "And when they pass my exam the important part starts: {{term:AssessmentPassed}} opens the way to the certificate."
+        }
+      }
+    ],
+    "storming.commands": [
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "Cada evento nace de una decisión. ¿Qué se pidió para que ocurriera {{term:AssessmentPassed}}?",
+          "en": "Every event comes from a decision. What was asked for {{term:AssessmentPassed}} to happen?"
+        }
+      },
+      {
+        "speaker": "Ignacio",
+        "text": {
+          "es-MX": "El servicio de calificación pide {{term:PassAttempt}}, pero solo si la calificación alcanza el mínimo del examen.",
+          "en": "The grading service issues {{term:PassAttempt}}, but only if the score reaches the exam's passing mark."
+        }
+      },
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "Esa condición es una regla del dominio. La vamos a guardar en el agregado, no en la pantalla.",
+          "en": "That condition is a domain rule. We will keep it in the aggregate, not on the screen."
+        }
+      }
+    ],
+    "contexts.split": [
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "Ya vimos que «curso» significa varias cosas. Dibujemos fronteras: dentro de cada una, la palabra tiene un solo significado.",
+          "en": "We saw that “course” means several things. Let's draw boundaries: inside each one, the word has a single meaning."
+        }
+      },
+      {
+        "speaker": "Valeria",
+        "text": {
+          "es-MX": "En {{term:Catalog}} un curso es una {{term:CourseOffering}}: título, lecciones y precio.",
+          "en": "In {{term:Catalog}} a course is a {{term:CourseOffering}}: title, lessons and price."
+        }
+      },
+      {
+        "speaker": "Ignacio",
+        "text": {
+          "es-MX": "En {{term:Examining}} es una {{term:Assessment}}: calificación mínima e intentos, y nada más.",
+          "en": "In {{term:Examining}} it is an {{term:Assessment}}: passing score and attempts, nothing else."
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Y en {{term:Enrolling}} es una {{term:Enrollment}}, con su cohorte y su pago.",
+          "en": "And in {{term:Enrolling}} it is an {{term:Enrollment}}, with its cohort and its payment."
+        }
+      }
+    ],
+    "contexts.mapping": [
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "¿Cómo se hablan los contextos? {{term:Catalog}} publica cursos y {{term:Enrolling}} los consume.",
+          "en": "How do the contexts talk to each other? {{term:Catalog}} publishes courses and {{term:Enrolling}} consumes them."
+        }
+      },
+      {
+        "speaker": "Valeria",
+        "text": {
+          "es-MX": "Con el registro nacional no hay negociación: su formato es el que es, con abreviaturas y códigos propios.",
+          "en": "There is no negotiating with the national registry: its format is what it is, with its own abbreviations and codes."
+        }
+      },
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "Eso pide una capa anticorrupción: traducimos en la frontera hacia {{term:NationalCertificateRegistry}} y nuestro dominio sigue hablando su propio idioma.",
+          "en": "That calls for an anticorruption layer: we translate at the border toward {{term:NationalCertificateRegistry}} and our domain keeps speaking its own language."
+        }
+      }
+    ],
+    "subdomains.focus": [
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "No todo merece el mismo esfuerzo. Valeria, ¿qué nos distingue de otra academia en línea?",
+          "en": "Not everything deserves the same effort. Valeria, what sets us apart from another online academy?"
+        }
+      },
+      {
+        "speaker": "Valeria",
+        "text": {
+          "es-MX": "Que nuestros exámenes son serios y el estudiante se siente acompañado. Una constancia nuestra significa algo.",
+          "en": "That our exams are serious and students feel supported. A certificate from us means something."
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Registrar constancias, en cambio, funciona igual para todas las academias. Ahí conviene no inventar nada.",
+          "en": "Registering certificates, on the other hand, works the same for every academy. There it pays not to invent anything."
+        }
+      }
+    ],
+    "tactical.aggregate": [
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "Veamos la {{term:Enrollment}}. ¿Qué nunca debería poder pasar con una inscripción?",
+          "en": "Let's look at the {{term:Enrollment}}. What should never be possible with an enrollment?"
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Que alguien pague un monto distinto al precio, o que devolvamos el dinero cuando ya completó media cursada.",
+          "en": "That someone pays an amount different from the price, or that we refund the money when they are already halfway through."
+        }
+      },
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "Esas son reglas del agregado: el reembolso solo antes de la primera lección. Cualquier comando que las rompa se rechaza con un error claro.",
+          "en": "Those are rules of the aggregate: refunds only before the first lesson. Any command that breaks them is rejected with a clear error."
+        }
+      }
+    ],
+    "functional.pipeline": [
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "Mira la inscripción como una línea de ensamblaje: validar los datos, calcular el monto, cobrar y guardar.",
+          "en": "Look at enrolling as an assembly line: validate the data, compute the amount, charge and save."
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Y si el cobro falla, la inscripción no sigue por la línea principal: se desvía y le avisamos al estudiante.",
+          "en": "And if the charge fails, the enrollment does not continue on the main line: it gets diverted and we notify the student."
+        }
+      },
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "Exacto. Cada etapa recibe un tipo y devuelve otro, y los errores son valores, no sorpresas.",
+          "en": "Exactly. Each stage takes one type and returns another, and errors are values, not surprises."
+        }
+      }
+    ],
+    "architecture.ports": [
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "El dominio no debe saber con qué proveedor cobramos. Solo pide «cobra este monto».",
+          "en": "The domain must not know which provider we charge with. It only asks “charge this amount”."
+        }
+      },
+      {
+        "speaker": "Ignacio",
+        "text": {
+          "es-MX": "Entonces {{term:PaymentProcessor}} y {{term:ExamGradingService}} también son puertos, y cada proveedor es un adaptador que se puede cambiar.",
+          "en": "So {{term:PaymentProcessor}} and {{term:ExamGradingService}} are ports too, and each provider is an adapter you can swap."
+        }
+      },
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "Y las dependencias apuntan hacia el dominio, nunca al revés.",
+          "en": "And dependencies point toward the domain, never the other way around."
+        }
+      }
+    ],
+    "evolution.request": [
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Tengo un problema: muchos estudiantes piden pausar su acceso por trabajo o por viajes, y hoy el tiempo corre aunque no estudien.",
+          "en": "I have a problem: many students ask to pause their access because of work or travel, and today the clock keeps running even if they do not study."
+        }
+      },
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "Entonces entre «activa» y «completada» falta un estado que el modelo nunca nombró: la pausa.",
+          "en": "So between “active” and “completed” there is a state the model never named: the pause."
+        }
+      },
+      {
+        "speaker": "Daniela",
+        "text": {
+          "es-MX": "Eso. Y no queremos pausas eternas: máximo 30 días cada vez.",
+          "en": "Right. And we do not want endless pauses: 30 days at most each time."
+        }
+      },
+      {
+        "speaker": "Tomas",
+        "text": {
+          "es-MX": "Un concepto implícito que ahora hacemos explícito. Refactoricemos la inscripción.",
+          "en": "An implicit concept we now make explicit. Let's refactor the enrollment."
+        }
+      }
+    ]
+  }
+}

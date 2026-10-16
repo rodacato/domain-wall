@@ -1,0 +1,338 @@
+{
+  "workflow": {
+    "codeName": "PlanRouteStopWorkflow",
+    "label": {
+      "es-MX": "Flujo para planear una parada",
+      "en": "Plan route stop workflow"
+    },
+    "description": {
+      "es-MX": "Agregar una parada vista como línea de ensamblaje: validar, calcular la carga, ordenar con el optimizador y guardar.",
+      "en": "Adding a stop seen as an assembly line: validate, compute the load, order with the optimizer and save."
+    },
+    "trigger": "AddRouteStop",
+    "intermediateTypes": [
+      {
+        "codeName": "UnvalidatedStopRequest",
+        "extends": null,
+        "fields": [
+          {
+            "codeName": "routeId",
+            "label": {
+              "es-MX": "Ruta",
+              "en": "Route"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "stopId",
+            "label": {
+              "es-MX": "Parada",
+              "en": "Stop"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "parcelId",
+            "label": {
+              "es-MX": "Paquete",
+              "en": "Parcel"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "weightGrams",
+            "label": {
+              "es-MX": "Peso en gramos",
+              "en": "Weight in grams"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "integer"
+            }
+          },
+          {
+            "codeName": "postalCode",
+            "label": {
+              "es-MX": "Código postal",
+              "en": "Postal code"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "currentLoadGrams",
+            "label": {
+              "es-MX": "Carga actual en gramos",
+              "en": "Current load in grams"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "integer"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "ValidatedStopRequest",
+        "extends": null,
+        "fields": [
+          {
+            "codeName": "routeId",
+            "label": {
+              "es-MX": "Ruta",
+              "en": "Route"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "RouteId"
+            }
+          },
+          {
+            "codeName": "stopId",
+            "label": {
+              "es-MX": "Parada",
+              "en": "Stop"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "StopId"
+            }
+          },
+          {
+            "codeName": "parcelId",
+            "label": {
+              "es-MX": "Paquete",
+              "en": "Parcel"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "ParcelId"
+            }
+          },
+          {
+            "codeName": "weightGrams",
+            "label": {
+              "es-MX": "Peso en gramos",
+              "en": "Weight in grams"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "WeightGrams"
+            }
+          },
+          {
+            "codeName": "postalCode",
+            "label": {
+              "es-MX": "Código postal",
+              "en": "Postal code"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "PostalCode"
+            }
+          },
+          {
+            "codeName": "currentLoadGrams",
+            "label": {
+              "es-MX": "Carga actual en gramos",
+              "en": "Current load in grams"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "LoadGrams"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "LoadCheckedStopRequest",
+        "extends": "ValidatedStopRequest",
+        "fields": [
+          {
+            "codeName": "projectedLoadGrams",
+            "label": {
+              "es-MX": "Carga proyectada en gramos",
+              "en": "Projected load in grams"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "LoadGrams"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "SequencedStopRequest",
+        "extends": "LoadCheckedStopRequest",
+        "fields": [
+          {
+            "codeName": "position",
+            "label": {
+              "es-MX": "Posición en la ruta",
+              "en": "Position on the route"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "StopPosition"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "PlannedStop",
+        "extends": "SequencedStopRequest",
+        "fields": [
+          {
+            "codeName": "stopsOnRoute",
+            "label": {
+              "es-MX": "Paradas en la ruta",
+              "en": "Stops on the route"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "StopCount"
+            }
+          }
+        ]
+      }
+    ],
+    "stages": [
+      {
+        "codeName": "ValidateStopRequest",
+        "label": {
+          "es-MX": "Validar la parada",
+          "en": "Validate the stop"
+        },
+        "description": {
+          "es-MX": "Convierte los datos crudos en valores del dominio que no pueden ser inválidos.",
+          "en": "Turns raw data into domain values that cannot be invalid."
+        },
+        "input": "UnvalidatedStopRequest",
+        "output": "ValidatedStopRequest",
+        "kind": {
+          "type": "validate"
+        },
+        "errors": [
+          {
+            "codeName": "StopRequestInvalid",
+            "message": {
+              "es-MX": "Algún dato de la parada no es válido.",
+              "en": "Some stop data is not valid."
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "ComputeProjectedLoad",
+        "label": {
+          "es-MX": "Calcular la carga proyectada",
+          "en": "Compute the projected load"
+        },
+        "description": {
+          "es-MX": "Suma el peso del paquete a la carga que ya lleva la ruta.",
+          "en": "Adds the parcel's weight to the load the route already carries."
+        },
+        "input": "ValidatedStopRequest",
+        "output": "LoadCheckedStopRequest",
+        "kind": {
+          "type": "compute",
+          "assigns": [
+            {
+              "field": "projectedLoadGrams",
+              "expression": {
+                "op": "arithmetic",
+                "operator": "add",
+                "left": {
+                  "op": "field",
+                  "name": "currentLoadGrams"
+                },
+                "right": {
+                  "op": "field",
+                  "name": "weightGrams"
+                }
+              }
+            }
+          ]
+        },
+        "errors": []
+      },
+      {
+        "codeName": "SequenceStop",
+        "label": {
+          "es-MX": "Ordenar la parada en la ruta",
+          "en": "Sequence the stop on the route"
+        },
+        "description": {
+          "es-MX": "Pide al optimizador de rutas el lugar que le toca a la parada.",
+          "en": "Asks the route optimizer for the place the stop should take."
+        },
+        "input": "LoadCheckedStopRequest",
+        "output": "SequencedStopRequest",
+        "kind": {
+          "type": "callPort",
+          "port": {
+            "codeName": "RouteOptimizerPort",
+            "operation": "insertStop",
+            "description": {
+              "es-MX": "Calcula en qué posición de la ruta conviene insertar una parada.",
+              "en": "Works out in which position of the route a stop is best inserted."
+            }
+          }
+        },
+        "errors": [
+          {
+            "codeName": "RouteOptimizerUnavailable",
+            "message": {
+              "es-MX": "El optimizador de rutas no responde.",
+              "en": "The route optimizer is not responding."
+            }
+          },
+          {
+            "codeName": "AddressNotRoutable",
+            "message": {
+              "es-MX": "El optimizador no encontró cómo llegar a esa dirección.",
+              "en": "The optimizer could not find a way to reach that address."
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "CommitRouteStop",
+        "label": {
+          "es-MX": "Guardar la parada",
+          "en": "Save the stop"
+        },
+        "description": {
+          "es-MX": "Guarda la parada en la ruta y publica sus eventos.",
+          "en": "Saves the stop on the route and publishes its events."
+        },
+        "input": "SequencedStopRequest",
+        "output": "PlannedStop",
+        "kind": {
+          "type": "commit"
+        },
+        "errors": [
+          {
+            "codeName": "RouteStopCouldNotBeSaved",
+            "message": {
+              "es-MX": "No se pudo guardar la parada en la ruta.",
+              "en": "The stop could not be saved on the route."
+            }
+          }
+        ]
+      }
+    ],
+    "produces": ["RouteStopAdded"]
+  }
+}

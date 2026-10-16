@@ -1,0 +1,301 @@
+{
+  "dialogues": {
+    "whyDdd.change": [
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "Equipo, llegó un cambio del negocio: si una entrega ya tuvo un intento fallido, el cliente ya no puede cancelarla. El paquete debe regresar al comercio.",
+          "en": "Team, a business change just came in: once a delivery has had a failed attempt, the customer can no longer cancel it. The parcel must go back to the merchant."
+        }
+      },
+      {
+        "speaker": "Rosario",
+        "text": {
+          "es-MX": "Tiene sentido. Cada intento fallido nos cuesta gasolina y tiempo, y luego llegan cancelaciones para no pagar el envío.",
+          "en": "Makes sense. Every failed attempt costs us fuel and time, and then the cancellations show up so nobody pays for the shipping."
+        }
+      },
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "Suena a una sola regla. Veamos en cuántos lugares del código tenemos que tocar para cambiarla.",
+          "en": "That sounds like a single rule. Let's see how many places in the code we have to touch to change it."
+        }
+      }
+    ],
+    "ubiquity.intro": [
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "Antes de programar, hablemos igual. Nacho, ¿cómo le dices a lo que te toca llevar hasta una puerta?",
+          "en": "Before coding, let's speak the same language. Nacho, what do you call what you have to carry to a door?"
+        }
+      },
+      {
+        "speaker": "Nacho",
+        "text": {
+          "es-MX": "Una entrega. Cuando me asignan una {{term:Delivery}}, sé que hay un destinatario, una ventana de horario y a veces dinero por cobrar.",
+          "en": "A delivery. When I get assigned a {{term:Delivery}}, I know there is a recipient, a time window and sometimes cash to collect."
+        }
+      },
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "Perfecto. Esa palabra entra al glosario y la usaremos igual en la plática, en los tableros y en el código.",
+          "en": "Perfect. That word goes into the glossary and we will use it the same way in conversation, on boards and in code."
+        }
+      }
+    ],
+    "ubiquity.ambiguity": [
+      {
+        "speaker": "Valeria",
+        "text": {
+          "es-MX": "Cuando yo digo «paquete», hablo de la caja que escaneo en el hub: guía, peso y casillero.",
+          "en": "When I say “package”, I mean the box I scan at the hub: label, weight and bin."
+        }
+      },
+      {
+        "speaker": "Rosario",
+        "text": {
+          "es-MX": "Para mí es una parada de la ruta: cuánto pesa y cuánto espacio le queda a la camioneta.",
+          "en": "For me it is a stop on the route: how much it weighs and how much room the van has left."
+        }
+      },
+      {
+        "speaker": "Nacho",
+        "text": {
+          "es-MX": "Y para mí es la persona en la puerta: su nombre, su dirección y si me tiene que pagar.",
+          "en": "And for me it is the person at the door: their name, their address and whether they have to pay me."
+        }
+      },
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "Tres personas, tres significados para {{term:Package}}. Una misma palabra con significados distintos es una ambigüedad, y la resolveremos separando contextos.",
+          "en": "Three people, three meanings for {{term:Package}}. One word with different meanings is an ambiguity, and we will resolve it by separating contexts."
+        }
+      }
+    ],
+    "storming.kickoff": [
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "Vamos a contar la historia de un paquete con eventos: cosas que ya pasaron, escritas en pasado, en naranja.",
+          "en": "Let's tell the story of a parcel through events: things that already happened, written in the past tense, in orange."
+        }
+      },
+      {
+        "speaker": "Valeria",
+        "text": {
+          "es-MX": "Todo empieza en mi andén: {{term:ParcelReceived}} y, cuando lo dejo en su casillero, {{term:ParcelSorted}}.",
+          "en": "It all starts on my dock: {{term:ParcelReceived}} and, once I put it in its bin, {{term:ParcelSorted}}."
+        }
+      },
+      {
+        "speaker": "Rosario",
+        "text": {
+          "es-MX": "Con eso armo la ruta. Cuando el repartidor sale con la camioneta cargada, ocurre {{term:RouteStarted}}.",
+          "en": "With that I build the route. When the driver leaves with a loaded van, {{term:RouteStarted}} happens."
+        }
+      }
+    ],
+    "storming.commands": [
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "Cada evento nace de una decisión. ¿Qué se pidió para que ocurriera {{term:DeliveryCompleted}}?",
+          "en": "Every event comes from a decision. What was asked for {{term:DeliveryCompleted}} to happen?"
+        }
+      },
+      {
+        "speaker": "Nacho",
+        "text": {
+          "es-MX": "Yo pido {{term:CompleteDelivery}}, pero solo si traigo evidencia de que se entregó y el efectivo cuadra con lo que debía cobrar.",
+          "en": "I issue {{term:CompleteDelivery}}, but only if I have proof that it was handed over and the cash matches what I was due to collect."
+        }
+      },
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "Esa condición es una regla del dominio. La vamos a guardar en el agregado, no en la app del repartidor.",
+          "en": "That condition is a domain rule. We will keep it in the aggregate, not in the driver's app."
+        }
+      }
+    ],
+    "contexts.split": [
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "Ya vimos que «paquete» significa varias cosas. Dibujemos fronteras: dentro de cada una, la palabra tiene un solo significado.",
+          "en": "We saw that “package” means several things. Let's draw boundaries: inside each one, the word has a single meaning."
+        }
+      },
+      {
+        "speaker": "Valeria",
+        "text": {
+          "es-MX": "Entonces en {{term:Warehouse}} un paquete es un {{term:Parcel}}: guía, peso y casillero, y nada más.",
+          "en": "So in {{term:Warehouse}} a package is a {{term:Parcel}}: label, weight and bin, and nothing else."
+        }
+      },
+      {
+        "speaker": "Rosario",
+        "text": {
+          "es-MX": "Y en {{term:Dispatching}} es una {{term:RouteStop}}: lo que pesa y a qué código postal va.",
+          "en": "And in {{term:Dispatching}} it is a {{term:RouteStop}}: what it weighs and which postal code it goes to."
+        }
+      },
+      {
+        "speaker": "Nacho",
+        "text": {
+          "es-MX": "En {{term:Doorstep}} es una {{term:Delivery}}: quién recibe, en qué horario y cuánto hay que cobrar.",
+          "en": "In {{term:Doorstep}} it is a {{term:Delivery}}: who receives it, at what time and how much to collect."
+        }
+      }
+    ],
+    "contexts.mapping": [
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "¿Cómo se hablan los contextos? {{term:Warehouse}} y {{term:Dispatching}} avanzan juntos, y {{term:Dispatching}} publica el plan que {{term:Doorstep}} sigue.",
+          "en": "How do the contexts talk to each other? {{term:Warehouse}} and {{term:Dispatching}} move together, and {{term:Dispatching}} publishes the plan that {{term:Doorstep}} follows."
+        }
+      },
+      {
+        "speaker": "Valeria",
+        "text": {
+          "es-MX": "Con {{term:BankTransferService}} no hay negociación: su formato de transferencia es el que es, con sus claves y sus códigos.",
+          "en": "There is no negotiating with {{term:BankTransferService}}: its transfer format is what it is, with its own keys and codes."
+        }
+      },
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "Eso pide una capa anticorrupción: traducimos en la frontera y nuestro dominio sigue hablando su propio idioma.",
+          "en": "That calls for an anticorruption layer: we translate at the border and our domain keeps speaking its own language."
+        }
+      }
+    ],
+    "subdomains.focus": [
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "No todo merece el mismo esfuerzo. Rosario, ¿qué nos hace distintos de otra empresa de paquetería?",
+          "en": "Not everything deserves the same effort. Rosario, what makes us different from another courier company?"
+        }
+      },
+      {
+        "speaker": "Rosario",
+        "text": {
+          "es-MX": "Armar rutas que quepan en la camioneta y respeten la ventana de cada cliente. Ahí ganamos o perdemos dinero.",
+          "en": "Building routes that fit in the van and respect each customer's window. That is where we win or lose money."
+        }
+      },
+      {
+        "speaker": "Valeria",
+        "text": {
+          "es-MX": "Conciliar el efectivo y pagar a los comercios, en cambio, funciona igual en cualquier negocio. Ahí conviene no inventar nada.",
+          "en": "Reconciling cash and paying merchants, on the other hand, works the same in any business. There it pays not to invent anything."
+        }
+      }
+    ],
+    "tactical.aggregate": [
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "Veamos la {{term:Route}}. ¿Qué nunca debería poder pasar con una ruta?",
+          "en": "Let's look at the {{term:Route}}. What should never be possible with a route?"
+        }
+      },
+      {
+        "speaker": "Rosario",
+        "text": {
+          "es-MX": "Que la camioneta salga con más de 150 kilos, o que una ruta tenga más de ocho paradas. Ni cabe ni se alcanza a repartir.",
+          "en": "That the van leaves with more than 150 kilos, or that a route has more than eight stops. It would not fit and it could not be finished."
+        }
+      },
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "Esas son invariantes. El agregado las protege: cualquier comando que las rompa se rechaza con un error claro.",
+          "en": "Those are invariants. The aggregate protects them: any command that breaks them is rejected with a clear error."
+        }
+      }
+    ],
+    "functional.pipeline": [
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "Mira agregar una parada como una línea de ensamblaje: validar los datos, calcular la carga, pedir el orden al optimizador y guardar.",
+          "en": "Look at adding a stop as an assembly line: validate the data, compute the load, ask the optimizer for the order and save."
+        }
+      },
+      {
+        "speaker": "Rosario",
+        "text": {
+          "es-MX": "Y si el optimizador no responde, la parada no sigue por la línea principal: se desvía y me avisan.",
+          "en": "And if the optimizer does not respond, the stop does not continue on the main line: it gets diverted and I get notified."
+        }
+      },
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "Exacto. Cada etapa recibe un tipo y devuelve otro, y los errores son valores, no sorpresas.",
+          "en": "Exactly. Each stage takes one type and returns another, and errors are values, not surprises."
+        }
+      }
+    ],
+    "architecture.ports": [
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "El dominio no debe saber qué proveedor de mapas usamos. Solo pide «ordena estas paradas».",
+          "en": "The domain must not know which mapping provider we use. It only asks “order these stops”."
+        }
+      },
+      {
+        "speaker": "Valeria",
+        "text": {
+          "es-MX": "Entonces el escáner del hub y el banco también son puertos, y cada proveedor es un adaptador que se puede cambiar.",
+          "en": "So the hub scanner and the bank are ports too, and each provider is an adapter you can swap."
+        }
+      },
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "Y las dependencias apuntan hacia el dominio, nunca al revés.",
+          "en": "And dependencies point toward the domain, never the other way around."
+        }
+      }
+    ],
+    "evolution.request": [
+      {
+        "speaker": "Rosario",
+        "text": {
+          "es-MX": "Tenemos un problema: muchos clientes no están en casa durante la ventana y el repartidor regresa al hub con el paquete.",
+          "en": "We have a problem: many customers are not home during the window and the driver comes back to the hub with the parcel."
+        }
+      },
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "O sea que después de un intento fallido hay un paso que el modelo nunca nombró: dejarlo en un punto de recolección.",
+          "en": "So after a failed attempt there is a step the model never named: leaving it at a pickup point."
+        }
+      },
+      {
+        "speaker": "Nacho",
+        "text": {
+          "es-MX": "Eso. Y el cliente tiene cinco días como máximo para ir por él.",
+          "en": "Right. And the customer has five days at most to go and get it."
+        }
+      },
+      {
+        "speaker": "Camila",
+        "text": {
+          "es-MX": "Un concepto implícito que ahora hacemos explícito. Refactoricemos la entrega.",
+          "en": "An implicit concept we now make explicit. Let's refactor the delivery."
+        }
+      }
+    ]
+  }
+}

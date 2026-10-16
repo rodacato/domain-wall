@@ -1,0 +1,350 @@
+{
+  "changeScenarios": {
+    "businessChange": {
+      "story": {
+        "es-MX": "Cambio del negocio: un curso publicado ya no puede retirarse directamente; primero hay que despublicarlo para dejar de venderlo, porque hay estudiantes cursándolo.",
+        "en": "Business change: a published course can no longer be retired directly; it must first be unpublished to stop selling it, because students are still taking it."
+      },
+      "patch": [
+        {
+          "op": "restrictTransition",
+          "aggregate": "CourseOffering",
+          "command": "RetireCourse",
+          "removeFrom": ["Published"]
+        }
+      ]
+    },
+    "evolution": {
+      "story": {
+        "es-MX": "Pausa de acceso: un estudiante con inscripción activa puede pausarla hasta 30 días y reanudarla después, sin perder su progreso.",
+        "en": "Access pause: a student with an active enrollment can pause it for up to 30 days and resume it later, without losing progress."
+      },
+      "patch": [
+        {
+          "op": "addValueObject",
+          "valueObject": {
+            "kind": "scalar",
+            "codeName": "PauseDays",
+            "label": {
+              "es-MX": "Días de pausa",
+              "en": "Pause days"
+            },
+            "description": {
+              "es-MX": "Cuántos días pausa su acceso un estudiante; al menos uno.",
+              "en": "How many days a student pauses their access; at least one."
+            },
+            "base": "integer",
+            "constraints": [
+              {
+                "kind": "min",
+                "value": 1,
+                "errorCode": "PauseDaysMustBePositive",
+                "message": {
+                  "es-MX": "La pausa debe ser de al menos 1 día.",
+                  "en": "The pause must be at least 1 day."
+                },
+                "invalidExamples": [0, -2]
+              }
+            ],
+            "examples": {
+              "valid": [7, 14, 30]
+            }
+          }
+        },
+        {
+          "op": "addEvent",
+          "event": {
+            "codeName": "EnrollmentPaused",
+            "label": {
+              "es-MX": "Inscripción en pausa",
+              "en": "Enrollment paused"
+            },
+            "description": {
+              "es-MX": "El estudiante pausó su acceso por unos días.",
+              "en": "The student paused their access for a few days."
+            },
+            "context": "Enrolling",
+            "sequence": 5.1,
+            "payload": [
+              {
+                "codeName": "enrollmentId",
+                "label": {
+                  "es-MX": "Inscripción",
+                  "en": "Enrollment"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "EnrollmentId"
+                }
+              },
+              {
+                "codeName": "pauseDays",
+                "label": {
+                  "es-MX": "Días de pausa",
+                  "en": "Pause days"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "PauseDays"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addEvent",
+          "event": {
+            "codeName": "EnrollmentResumed",
+            "label": {
+              "es-MX": "Inscripción reanudada",
+              "en": "Enrollment resumed"
+            },
+            "description": {
+              "es-MX": "El estudiante volvió a su curso después de la pausa.",
+              "en": "The student returned to their course after the pause."
+            },
+            "context": "Enrolling",
+            "sequence": 5.2,
+            "payload": [
+              {
+                "codeName": "enrollmentId",
+                "label": {
+                  "es-MX": "Inscripción",
+                  "en": "Enrollment"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "EnrollmentId"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addCommand",
+          "command": {
+            "codeName": "PauseEnrollment",
+            "label": {
+              "es-MX": "Pausar inscripción",
+              "en": "Pause enrollment"
+            },
+            "description": {
+              "es-MX": "Pausar el acceso por un número de días, con un máximo.",
+              "en": "Pause access for a number of days, up to a maximum."
+            },
+            "context": "Enrolling",
+            "issuedBy": {
+              "kind": "actor",
+              "ref": "Student"
+            },
+            "handledBy": "Enrollment",
+            "params": [
+              {
+                "codeName": "pauseDays",
+                "label": {
+                  "es-MX": "Días de pausa",
+                  "en": "Pause days"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "PauseDays"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addCommand",
+          "command": {
+            "codeName": "ResumeEnrollment",
+            "label": {
+              "es-MX": "Reanudar inscripción",
+              "en": "Resume enrollment"
+            },
+            "description": {
+              "es-MX": "Volver a estudiar después de una pausa.",
+              "en": "Go back to studying after a pause."
+            },
+            "context": "Enrolling",
+            "issuedBy": {
+              "kind": "actor",
+              "ref": "Student"
+            },
+            "handledBy": "Enrollment",
+            "params": []
+          }
+        },
+        {
+          "op": "addState",
+          "aggregate": "Enrollment",
+          "state": {
+            "codeName": "OnHold",
+            "label": {
+              "es-MX": "En pausa",
+              "en": "On hold"
+            },
+            "description": {
+              "es-MX": "El acceso está detenido y el progreso se conserva.",
+              "en": "Access is stopped and progress is kept."
+            },
+            "terminal": false,
+            "data": [
+              {
+                "codeName": "pauseDays",
+                "label": {
+                  "es-MX": "Días de pausa",
+                  "en": "Pause days"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "PauseDays"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addRule",
+          "aggregate": "Enrollment",
+          "rule": {
+            "codeName": "PauseWithinLimit",
+            "label": {
+              "es-MX": "La pausa tiene un máximo de días",
+              "en": "The pause has a maximum number of days"
+            },
+            "description": {
+              "es-MX": "Una pausa dura como máximo 30 días.",
+              "en": "A pause lasts 30 days at most."
+            },
+            "predicate": {
+              "kind": "compare",
+              "left": {
+                "op": "arg",
+                "name": "pauseDays"
+              },
+              "operator": "<=",
+              "right": {
+                "op": "literal",
+                "value": 30
+              }
+            },
+            "message": {
+              "es-MX": "Una pausa no puede pasar de 30 días.",
+              "en": "A pause cannot exceed 30 days."
+            },
+            "violation": {
+              "given": [
+                {
+                  "command": "RequestEnrollment",
+                  "args": {
+                    "price": 90000,
+                    "totalLessons": 2
+                  }
+                },
+                {
+                  "command": "ConfirmEnrollmentPayment",
+                  "args": {
+                    "amount": 90000,
+                    "accessUntil": "2027-10-01"
+                  }
+                }
+              ],
+              "when": {
+                "command": "PauseEnrollment",
+                "args": {
+                  "pauseDays": 31
+                }
+              }
+            }
+          }
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "Enrollment",
+          "transition": {
+            "command": "PauseEnrollment",
+            "from": ["Active"],
+            "to": "OnHold",
+            "guards": ["PauseWithinLimit"],
+            "effects": [
+              {
+                "op": "set",
+                "field": "pauseDays",
+                "value": {
+                  "op": "arg",
+                  "name": "pauseDays"
+                }
+              }
+            ],
+            "emits": ["EnrollmentPaused"]
+          }
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "Enrollment",
+          "transition": {
+            "command": "ResumeEnrollment",
+            "from": ["OnHold"],
+            "to": "Active",
+            "guards": [],
+            "effects": [],
+            "emits": ["EnrollmentResumed"]
+          }
+        },
+        {
+          "op": "replaceWalkthrough",
+          "aggregate": "Enrollment",
+          "walkthrough": [
+            {
+              "command": "RequestEnrollment",
+              "args": {
+                "studentId": "stu_2m6q8v1c",
+                "courseId": "crs_4k8w2n6p",
+                "cohortCode": "2026-Q4",
+                "price": 90000,
+                "totalLessons": 2
+              }
+            },
+            {
+              "command": "ConfirmEnrollmentPayment",
+              "args": {
+                "amount": 90000,
+                "accessUntil": "2027-10-01"
+              }
+            },
+            {
+              "command": "PauseEnrollment",
+              "args": {
+                "pauseDays": 14
+              }
+            },
+            {
+              "command": "ResumeEnrollment",
+              "args": {}
+            },
+            {
+              "command": "CompleteLesson",
+              "args": {
+                "lessonId": "les_7h3j9d5x"
+              }
+            },
+            {
+              "command": "CompleteLesson",
+              "args": {
+                "lessonId": "les_1b5n8c2v"
+              }
+            },
+            {
+              "command": "FinishCourse",
+              "args": {}
+            },
+            {
+              "command": "GraduateEnrollment",
+              "args": {}
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

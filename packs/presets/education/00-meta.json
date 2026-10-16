@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "meta": {
+    "packId": "education",
+    "origin": "preset",
+    "locales": ["es-MX", "en"],
+    "generation": null
+  },
+  "business": {
+    "codeName": "OnlineAcademy",
+    "name": {
+      "es-MX": "Academia en Línea",
+      "en": "Online Academy"
+    },
+    "description": {
+      "es-MX": "Una academia en línea que vende cursos, evalúa a sus estudiantes y emite constancias registradas ante el registro nacional.",
+      "en": "An online academy that sells courses, assesses its students and issues certificates recorded with the national registry."
+    }
+  }
+}

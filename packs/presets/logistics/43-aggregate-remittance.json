@@ -1,0 +1,491 @@
+{
+  "aggregates": [
+    {
+      "codeName": "CashRemittance",
+      "label": {
+        "es-MX": "Liquidación de cobro",
+        "en": "Cash remittance"
+      },
+      "description": {
+        "es-MX": "El efectivo cobrado contra entrega que se concilia y se paga al comercio.",
+        "en": "The cash collected on delivery that is reconciled and paid to the merchant."
+      },
+      "context": "Settlement",
+      "identity": "remittanceId",
+      "fields": [
+        {
+          "codeName": "remittanceId",
+          "label": {
+            "es-MX": "Liquidación",
+            "en": "Remittance"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RemittanceId"
+          }
+        },
+        {
+          "codeName": "deliveryId",
+          "label": {
+            "es-MX": "Entrega",
+            "en": "Delivery"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DeliveryId"
+          }
+        },
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        },
+        {
+          "codeName": "beneficiaryAccount",
+          "label": {
+            "es-MX": "Cuenta del comercio",
+            "en": "Merchant account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "BeneficiaryAccount"
+          }
+        },
+        {
+          "codeName": "accountType",
+          "label": {
+            "es-MX": "Tipo de cuenta",
+            "en": "Account type"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "BeneficiaryAccountType"
+          }
+        },
+        {
+          "codeName": "fee",
+          "label": {
+            "es-MX": "Comisión",
+            "en": "Fee"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ],
+      "derived": [
+        {
+          "codeName": "netAmount",
+          "label": {
+            "es-MX": "Monto neto",
+            "en": "Net amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          },
+          "expression": {
+            "op": "arithmetic",
+            "operator": "subtract",
+            "left": {
+              "op": "field",
+              "name": "amount"
+            },
+            "right": {
+              "op": "field",
+              "name": "fee"
+            }
+          }
+        }
+      ],
+      "entities": [],
+      "states": [
+        {
+          "codeName": "Pending",
+          "label": {
+            "es-MX": "Pendiente",
+            "en": "Pending"
+          },
+          "description": {
+            "es-MX": "Aún no se registra ningún cobro.",
+            "en": "No cash has been recorded yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Collected",
+          "label": {
+            "es-MX": "Cobrado",
+            "en": "Collected"
+          },
+          "description": {
+            "es-MX": "El repartidor cobró el efectivo y falta depositarlo.",
+            "en": "The driver collected the cash and it still has to be deposited."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Deposited",
+          "label": {
+            "es-MX": "Depositado",
+            "en": "Deposited"
+          },
+          "description": {
+            "es-MX": "El efectivo ya está en caja.",
+            "en": "The cash is now with the cashier."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "AwaitingPayout",
+          "label": {
+            "es-MX": "Pago en trámite",
+            "en": "Awaiting payout"
+          },
+          "description": {
+            "es-MX": "Se pidió la transferencia y el banco aún no responde.",
+            "en": "The transfer was requested and the bank has not answered yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "PaidOut",
+          "label": {
+            "es-MX": "Liquidado",
+            "en": "Paid out"
+          },
+          "description": {
+            "es-MX": "El banco confirmó la transferencia al comercio.",
+            "en": "The bank confirmed the transfer to the merchant."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "bankFolio",
+              "label": {
+                "es-MX": "Folio del banco",
+                "en": "Bank folio"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "BankReceiptFolio"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "PayoutFailed",
+          "label": {
+            "es-MX": "Pago fallido",
+            "en": "Payout failed"
+          },
+          "description": {
+            "es-MX": "El banco rechazó la transferencia; se puede reintentar.",
+            "en": "The bank rejected the transfer; it can be retried."
+          },
+          "terminal": false,
+          "data": [
+            {
+              "codeName": "rejectionReason",
+              "label": {
+                "es-MX": "Motivo de rechazo",
+                "en": "Rejection reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "RejectionReason"
+              }
+            }
+          ]
+        }
+      ],
+      "initialState": "Pending",
+      "rules": [
+        {
+          "codeName": "CollectionMustHaveAmount",
+          "label": {
+            "es-MX": "El cobro debe tener un monto",
+            "en": "The collection must have an amount"
+          },
+          "description": {
+            "es-MX": "Solo las entregas con cobro generan una liquidación.",
+            "en": "Only deliveries with a cash charge generate a remittance."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "amount"
+            },
+            "operator": ">",
+            "right": {
+              "op": "literal",
+              "value": 0
+            }
+          },
+          "message": {
+            "es-MX": "El monto cobrado debe ser mayor a cero.",
+            "en": "The collected amount must be greater than zero."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "RecordCollection",
+              "args": {
+                "amount": 0
+              }
+            }
+          }
+        },
+        {
+          "codeName": "DepositMustMatchCollection",
+          "label": {
+            "es-MX": "El depósito debe igualar lo cobrado",
+            "en": "The deposit must equal what was collected"
+          },
+          "description": {
+            "es-MX": "Caja solo acepta el depósito exacto de lo cobrado.",
+            "en": "The cashier only accepts the exact deposit of what was collected."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "depositedAmount"
+            },
+            "operator": "==",
+            "right": {
+              "op": "field",
+              "name": "amount"
+            }
+          },
+          "message": {
+            "es-MX": "El depósito debe ser igual al efectivo cobrado.",
+            "en": "The deposit must equal the collected cash."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "RecordCollection",
+                "args": {
+                  "amount": 45000
+                }
+              }
+            ],
+            "when": {
+              "command": "DepositCash",
+              "args": {
+                "depositedAmount": 44000
+              }
+            }
+          }
+        },
+        {
+          "codeName": "FeeCannotExceedAmount",
+          "label": {
+            "es-MX": "La comisión no supera el monto",
+            "en": "The fee cannot exceed the amount"
+          },
+          "description": {
+            "es-MX": "Al comercio no se le descuenta más de lo que se cobró en la entrega.",
+            "en": "The merchant is never charged more than what was collected at delivery."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "fee"
+            },
+            "operator": "<=",
+            "right": {
+              "op": "field",
+              "name": "amount"
+            }
+          },
+          "message": {
+            "es-MX": "La comisión no puede ser mayor al monto cobrado.",
+            "en": "The fee cannot be greater than the collected amount."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "RecordCollection",
+                "args": {
+                  "amount": 45000
+                }
+              },
+              {
+                "command": "DepositCash",
+                "args": {
+                  "depositedAmount": 45000
+                }
+              }
+            ],
+            "when": {
+              "command": "RequestPayout",
+              "args": {
+                "fee": 50000
+              }
+            }
+          }
+        }
+      ],
+      "invariants": [],
+      "transitions": [
+        {
+          "command": "RecordCollection",
+          "from": ["Pending"],
+          "to": "Collected",
+          "guards": ["CollectionMustHaveAmount"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "deliveryId",
+              "value": {
+                "op": "arg",
+                "name": "deliveryId"
+              }
+            },
+            {
+              "op": "set",
+              "field": "amount",
+              "value": {
+                "op": "arg",
+                "name": "amount"
+              }
+            }
+          ],
+          "emits": ["CashCollectionRecorded"]
+        },
+        {
+          "command": "DepositCash",
+          "from": ["Collected"],
+          "to": "Deposited",
+          "guards": ["DepositMustMatchCollection"],
+          "effects": [],
+          "emits": ["CashDeposited"]
+        },
+        {
+          "command": "RequestPayout",
+          "from": ["Deposited", "PayoutFailed"],
+          "to": "AwaitingPayout",
+          "guards": ["FeeCannotExceedAmount"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "beneficiaryAccount",
+              "value": {
+                "op": "arg",
+                "name": "beneficiaryAccount"
+              }
+            },
+            {
+              "op": "set",
+              "field": "accountType",
+              "value": {
+                "op": "arg",
+                "name": "accountType"
+              }
+            },
+            {
+              "op": "set",
+              "field": "fee",
+              "value": {
+                "op": "arg",
+                "name": "fee"
+              }
+            }
+          ],
+          "emits": ["PayoutRequested"]
+        },
+        {
+          "command": "ConfirmPayout",
+          "from": ["AwaitingPayout"],
+          "to": "PaidOut",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "bankFolio",
+              "value": {
+                "op": "arg",
+                "name": "bankFolio"
+              }
+            }
+          ],
+          "emits": ["PayoutConfirmed"]
+        },
+        {
+          "command": "RejectPayout",
+          "from": ["AwaitingPayout"],
+          "to": "PayoutFailed",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "rejectionReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["PayoutRejected"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "RecordCollection",
+          "args": {
+            "amount": 45000
+          }
+        },
+        {
+          "command": "DepositCash",
+          "args": {
+            "depositedAmount": 45000
+          }
+        },
+        {
+          "command": "RequestPayout",
+          "args": {
+            "beneficiaryAccount": "646180110400000007",
+            "accountType": "Clabe",
+            "fee": 3500
+          }
+        },
+        {
+          "command": "RejectPayout",
+          "args": {
+            "reason": "Beneficiary account does not exist"
+          }
+        },
+        {
+          "command": "RequestPayout",
+          "args": {
+            "beneficiaryAccount": "646180110400000015",
+            "accountType": "Clabe",
+            "fee": 3500
+          }
+        },
+        {
+          "command": "ConfirmPayout",
+          "args": {
+            "bankFolio": "20260314001"
+          }
+        }
+      ]
+    }
+  ]
+}

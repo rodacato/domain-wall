@@ -1,0 +1,459 @@
+{
+  "aggregates": [
+    {
+      "codeName": "IdentityVerification",
+      "label": {
+        "es-MX": "Verificación de identidad",
+        "en": "Identity verification"
+      },
+      "description": {
+        "es-MX": "El proceso con el que una persona comprueba quién es, desde que da su CURP hasta que el proveedor la aprueba o la rechaza.",
+        "en": "The process by which a person proves who they are, from giving their CURP until the provider approves or rejects them."
+      },
+      "context": "Onboarding",
+      "identity": "verificationId",
+      "fields": [
+        {
+          "codeName": "verificationId",
+          "label": {
+            "es-MX": "Verificación",
+            "en": "Verification"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "VerificationId"
+          }
+        },
+        {
+          "codeName": "applicantName",
+          "label": {
+            "es-MX": "Nombre del solicitante",
+            "en": "Applicant name"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "FullName"
+          }
+        },
+        {
+          "codeName": "curp",
+          "label": {
+            "es-MX": "CURP",
+            "en": "CURP"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Curp"
+          }
+        },
+        {
+          "codeName": "documents",
+          "label": {
+            "es-MX": "Documentos",
+            "en": "Documents"
+          },
+          "type": {
+            "kind": "list",
+            "of": {
+              "kind": "valueObject",
+              "ref": "IdentityDocument"
+            }
+          }
+        }
+      ],
+      "derived": [],
+      "entities": [],
+      "states": [
+        {
+          "codeName": "NotStarted",
+          "label": {
+            "es-MX": "Sin iniciar",
+            "en": "Not started"
+          },
+          "description": {
+            "es-MX": "La persona todavía no empieza su verificación.",
+            "en": "The person has not started their verification yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "AwaitingDocuments",
+          "label": {
+            "es-MX": "Esperando documentos",
+            "en": "Awaiting documents"
+          },
+          "description": {
+            "es-MX": "Ya dio sus datos y falta que entregue sus documentos.",
+            "en": "They gave their details and still have to submit their documents."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "UnderReview",
+          "label": {
+            "es-MX": "En revisión",
+            "en": "Under review"
+          },
+          "description": {
+            "es-MX": "El proveedor está comparando la selfie con los documentos.",
+            "en": "The provider is comparing the selfie with the documents."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Verified",
+          "label": {
+            "es-MX": "Verificada",
+            "en": "Verified"
+          },
+          "description": {
+            "es-MX": "La identidad quedó comprobada con un nivel de verificación.",
+            "en": "The identity was proven at a verification level."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "kycLevel",
+              "label": {
+                "es-MX": "Nivel de verificación",
+                "en": "Verification level"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "KycLevel"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Rejected",
+          "label": {
+            "es-MX": "Rechazada",
+            "en": "Rejected"
+          },
+          "description": {
+            "es-MX": "El proveedor no pudo comprobar la identidad.",
+            "en": "The provider could not prove the identity."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "rejectionReason",
+              "label": {
+                "es-MX": "Motivo de rechazo",
+                "en": "Rejection reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ReasonText"
+              }
+            }
+          ]
+        }
+      ],
+      "initialState": "NotStarted",
+      "rules": [
+        {
+          "codeName": "ApplicantMustBeAdult",
+          "label": {
+            "es-MX": "El solicitante debe ser mayor de edad",
+            "en": "The applicant must be an adult"
+          },
+          "description": {
+            "es-MX": "Solo las personas de 18 años o más pueden abrir una cuenta.",
+            "en": "Only people aged 18 or over can open an account."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "age"
+            },
+            "operator": ">=",
+            "right": {
+              "op": "literal",
+              "value": 18
+            }
+          },
+          "message": {
+            "es-MX": "Para abrir una cuenta necesitas tener al menos 18 años.",
+            "en": "You need to be at least 18 years old to open an account."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "StartVerification",
+              "args": {
+                "age": 17
+              }
+            }
+          }
+        },
+        {
+          "codeName": "DocumentsRequired",
+          "label": {
+            "es-MX": "La verificación necesita documentos",
+            "en": "The verification needs documents"
+          },
+          "description": {
+            "es-MX": "Sin documentos no hay nada que comparar con la selfie.",
+            "en": "Without documents there is nothing to compare with the selfie."
+          },
+          "predicate": {
+            "kind": "notEmpty",
+            "value": {
+              "op": "arg",
+              "name": "documents"
+            }
+          },
+          "message": {
+            "es-MX": "Entrega al menos un documento para continuar.",
+            "en": "Submit at least one document to continue."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "StartVerification",
+                "args": {
+                  "age": 34
+                }
+              }
+            ],
+            "when": {
+              "command": "SubmitDocuments",
+              "args": {
+                "documents": []
+              }
+            }
+          }
+        },
+        {
+          "codeName": "AtMostThreeDocuments",
+          "label": {
+            "es-MX": "Máximo tres documentos por verificación",
+            "en": "At most three documents per verification"
+          },
+          "description": {
+            "es-MX": "El proveedor solo analiza hasta tres documentos por persona.",
+            "en": "The provider only analyzes up to three documents per person."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "count",
+              "collection": {
+                "op": "field",
+                "name": "documents"
+              }
+            },
+            "operator": "<=",
+            "right": {
+              "op": "literal",
+              "value": 3
+            }
+          },
+          "message": {
+            "es-MX": "Solo puedes entregar hasta tres documentos.",
+            "en": "You can only submit up to three documents."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "StartVerification",
+                "args": {
+                  "age": 34
+                }
+              }
+            ],
+            "when": {
+              "command": "SubmitDocuments",
+              "args": {
+                "documents": [
+                  {
+                    "documentType": "VoterCredential",
+                    "reference": "doc_4h8d2n6w"
+                  },
+                  {
+                    "documentType": "VoterCredential",
+                    "reference": "doc_4h8d2n6w"
+                  },
+                  {
+                    "documentType": "VoterCredential",
+                    "reference": "doc_4h8d2n6w"
+                  },
+                  {
+                    "documentType": "VoterCredential",
+                    "reference": "doc_4h8d2n6w"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "codeName": "MatchScoreIsSufficient",
+          "label": {
+            "es-MX": "La coincidencia biométrica debe ser suficiente",
+            "en": "The biometric match must be sufficient"
+          },
+          "description": {
+            "es-MX": "La selfie debe coincidir al menos 80 de 100 con la foto del documento.",
+            "en": "The selfie must match the document photo at least 80 out of 100."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "matchScore"
+            },
+            "operator": ">=",
+            "right": {
+              "op": "literal",
+              "value": 80
+            }
+          },
+          "message": {
+            "es-MX": "La selfie no coincide lo suficiente con el documento.",
+            "en": "The selfie does not match the document closely enough."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "StartVerification",
+                "args": {
+                  "age": 34
+                }
+              },
+              {
+                "command": "SubmitDocuments",
+                "args": {
+                  "documents": [
+                    {
+                      "documentType": "VoterCredential",
+                      "reference": "doc_4h8d2n6w"
+                    }
+                  ]
+                }
+              }
+            ],
+            "when": {
+              "command": "ApproveIdentity",
+              "args": {
+                "matchScore": 79,
+                "kycLevel": "Full"
+              }
+            }
+          }
+        }
+      ],
+      "invariants": ["AtMostThreeDocuments"],
+      "transitions": [
+        {
+          "command": "StartVerification",
+          "from": ["NotStarted"],
+          "to": "AwaitingDocuments",
+          "guards": ["ApplicantMustBeAdult"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "applicantName",
+              "value": {
+                "op": "arg",
+                "name": "applicantName"
+              }
+            },
+            {
+              "op": "set",
+              "field": "curp",
+              "value": {
+                "op": "arg",
+                "name": "curp"
+              }
+            }
+          ],
+          "emits": ["VerificationStarted"]
+        },
+        {
+          "command": "SubmitDocuments",
+          "from": ["AwaitingDocuments"],
+          "to": "UnderReview",
+          "guards": ["DocumentsRequired"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "documents",
+              "value": {
+                "op": "arg",
+                "name": "documents"
+              }
+            }
+          ],
+          "emits": ["DocumentsSubmitted"]
+        },
+        {
+          "command": "ApproveIdentity",
+          "from": ["UnderReview"],
+          "to": "Verified",
+          "guards": ["MatchScoreIsSufficient"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "kycLevel",
+              "value": {
+                "op": "arg",
+                "name": "kycLevel"
+              }
+            }
+          ],
+          "emits": ["IdentityVerified"]
+        },
+        {
+          "command": "RejectIdentity",
+          "from": ["UnderReview"],
+          "to": "Rejected",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "rejectionReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["IdentityRejected"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "StartVerification",
+          "args": {
+            "age": 34
+          }
+        },
+        {
+          "command": "SubmitDocuments",
+          "args": {
+            "documents": [
+              {
+                "documentType": "VoterCredential",
+                "reference": "doc_4h8d2n6w"
+              }
+            ]
+          }
+        },
+        {
+          "command": "ApproveIdentity",
+          "args": {
+            "matchScore": 92,
+            "kycLevel": "Full"
+          }
+        }
+      ]
+    }
+  ]
+}

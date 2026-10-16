@@ -1,0 +1,339 @@
+{
+  "contexts": [
+    {
+      "codeName": "Catalog",
+      "label": {
+        "es-MX": "Catálogo",
+        "en": "Catalog"
+      },
+      "description": {
+        "es-MX": "Donde los instructores arman y publican los cursos.",
+        "en": "Where instructors build and publish courses."
+      },
+      "subdomain": {
+        "type": "supporting",
+        "rationale": {
+          "es-MX": "Necesitamos un buen catálogo, pero armar y publicar cursos funciona como en cualquier academia y no nos distingue.",
+          "en": "We need a good catalog, but building and publishing courses works like in any academy and does not set us apart."
+        }
+      }
+    },
+    {
+      "codeName": "Enrolling",
+      "label": {
+        "es-MX": "Inscripciones",
+        "en": "Enrollment"
+      },
+      "description": {
+        "es-MX": "Desde que alguien pide su lugar en una cohorte hasta que se gradúa.",
+        "en": "From the moment someone asks for a seat in a cohort until they graduate."
+      },
+      "subdomain": {
+        "type": "core",
+        "rationale": {
+          "es-MX": "Cobrar, dar acceso y acompañar el avance del estudiante es el corazón del negocio: ahí se gana o se pierde la confianza.",
+          "en": "Charging, granting access and following the student's progress is the heart of the business: trust is won or lost there."
+        }
+      }
+    },
+    {
+      "codeName": "Examining",
+      "label": {
+        "es-MX": "Evaluaciones",
+        "en": "Assessment"
+      },
+      "description": {
+        "es-MX": "Los exámenes, los intentos y la calificación que demuestran lo aprendido.",
+        "en": "The exams, attempts and grades that prove what was learned."
+      },
+      "subdomain": {
+        "type": "core",
+        "rationale": {
+          "es-MX": "Que nuestro examen sea riguroso y justo es lo que le da valor a una constancia de la academia.",
+          "en": "An exam that is rigorous and fair is what gives an academy certificate its value."
+        }
+      }
+    },
+    {
+      "codeName": "Certification",
+      "label": {
+        "es-MX": "Certificación",
+        "en": "Certification"
+      },
+      "description": {
+        "es-MX": "Constancias oficiales registradas ante el registro nacional.",
+        "en": "Official certificates recorded with the national registry."
+      },
+      "subdomain": {
+        "type": "generic",
+        "rationale": {
+          "es-MX": "Registrar constancias sigue un formato oficial igual para todas las academias; conviene aislarlo y no reinventarlo.",
+          "en": "Registering certificates follows an official format that is the same for every academy; it is better to isolate it than to reinvent it."
+        }
+      }
+    }
+  ],
+  "contextRelations": [
+    {
+      "type": "upstreamDownstream",
+      "upstream": "Catalog",
+      "downstream": "Enrolling",
+      "upstreamRoles": ["OpenHostService", "PublishedLanguage"],
+      "downstreamRoles": [],
+      "customerSupplier": true,
+      "via": ["CoursePublished"],
+      "description": {
+        "es-MX": "El Catálogo publica un lenguaje estable de cursos e Inscripciones lo consume; Inscripciones puede pedirle cambios.",
+        "en": "Catalog publishes a stable course language and Enrollment consumes it; Enrollment can ask it for changes."
+      }
+    },
+    {
+      "type": "partnership",
+      "a": "Enrolling",
+      "b": "Examining",
+      "shared": [],
+      "description": {
+        "es-MX": "Inscripciones y Evaluaciones avanzan juntas: terminar el curso abre el examen y aprobarlo gradúa al estudiante, así que coordinan sus cambios.",
+        "en": "Enrollment and Assessment move together: finishing the course opens the exam and passing it graduates the student, so they coordinate their changes."
+      }
+    },
+    {
+      "type": "upstreamDownstream",
+      "upstream": "Examining",
+      "downstream": "Certification",
+      "upstreamRoles": ["PublishedLanguage"],
+      "downstreamRoles": ["Conformist"],
+      "customerSupplier": false,
+      "via": ["AssessmentPassed"],
+      "description": {
+        "es-MX": "Certificación recibe los exámenes aprobados tal como Evaluaciones los publica, sin negociar su formato.",
+        "en": "Certification receives passed exams exactly as Assessment publishes them, without negotiating their format."
+      }
+    },
+    {
+      "type": "separateWays",
+      "a": "Catalog",
+      "b": "Examining",
+      "description": {
+        "es-MX": "El Catálogo y Evaluaciones no necesitan hablarse: cada uno sigue su camino.",
+        "en": "Catalog and Assessment do not need to talk to each other: each goes its own way."
+      }
+    }
+  ],
+  "ambiguousTerm": {
+    "codeName": "Course",
+    "label": {
+      "es-MX": "Curso",
+      "en": "Course"
+    },
+    "meanings": [
+      {
+        "context": "Catalog",
+        "concept": "CourseOffering",
+        "definition": {
+          "es-MX": "La oferta que publica el instructor: título, lecciones, duración y precio.",
+          "en": "The offering the instructor publishes: title, lessons, duration and price."
+        },
+        "showcaseFields": ["title", "totalMinutes", "price"]
+      },
+      {
+        "context": "Enrolling",
+        "concept": "Enrollment",
+        "definition": {
+          "es-MX": "El lugar que compró una persona: en qué cohorte está, cuánto pagó y cuánto ha avanzado.",
+          "en": "The seat a person bought: which cohort they are in, how much they paid and how far they have progressed."
+        },
+        "showcaseFields": ["courseId", "cohortCode", "price", "lessonsCompleted"]
+      },
+      {
+        "context": "Examining",
+        "concept": "Assessment",
+        "definition": {
+          "es-MX": "El examen que demuestra lo aprendido: calificación mínima e intentos permitidos.",
+          "en": "The exam that proves what was learned: passing score and allowed attempts."
+        },
+        "showcaseFields": ["passingScore", "attempts"]
+      },
+      {
+        "context": "Certification",
+        "concept": "Certificate",
+        "definition": {
+          "es-MX": "La constancia que acredita el curso: horas de estudio, área temática y calificación final.",
+          "en": "The certificate that attests the course: study hours, thematic area and final score."
+        },
+        "showcaseFields": ["courseId", "hours", "area", "finalScore"]
+      }
+    ]
+  },
+  "antiCorruptionLayer": {
+    "context": "Certification",
+    "externalSystem": "NationalCertificateRegistry",
+    "domainType": "Certificate",
+    "externalRoot": "RegistryRecord",
+    "externalTypes": [
+      {
+        "codeName": "RegistryRecord",
+        "label": {
+          "es-MX": "Registro de constancia",
+          "en": "Certificate registry record"
+        },
+        "description": {
+          "es-MX": "El documento que exige el registro nacional, con abreviaturas y códigos propios.",
+          "en": "The document the national registry requires, with its own abbreviations and codes."
+        },
+        "wireName": "REG_CONSTANCIA",
+        "fields": [
+          {
+            "codeName": "version",
+            "label": {
+              "es-MX": "Versión del esquema",
+              "en": "Schema version"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "VER_ESQ"
+          },
+          {
+            "codeName": "internalFolio",
+            "label": {
+              "es-MX": "Folio interno",
+              "en": "Internal folio"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "FOLIO_INT"
+          },
+          {
+            "codeName": "holderCurp",
+            "label": {
+              "es-MX": "CURP de la persona titular",
+              "en": "Holder CURP"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "CURP"
+          },
+          {
+            "codeName": "courseHours",
+            "label": {
+              "es-MX": "Horas del curso",
+              "en": "Course hours"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "integer"
+            },
+            "wireName": "DUR_HRS"
+          },
+          {
+            "codeName": "thematicArea",
+            "label": {
+              "es-MX": "Área temática",
+              "en": "Thematic area"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "AREA_TEM"
+          },
+          {
+            "codeName": "score",
+            "label": {
+              "es-MX": "Calificación",
+              "en": "Score"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "integer"
+            },
+            "wireName": "CALIF"
+          },
+          {
+            "codeName": "distinction",
+            "label": {
+              "es-MX": "Mención",
+              "en": "Distinction"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "MENCION"
+          },
+          {
+            "codeName": "issueDate",
+            "label": {
+              "es-MX": "Fecha de expedición",
+              "en": "Issue date"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "FEC_EXP"
+          }
+        ]
+      }
+    ],
+    "translation": [
+      {
+        "op": "constant",
+        "externalField": "version",
+        "value": "1.0"
+      },
+      {
+        "op": "rename",
+        "domainField": "certificateId",
+        "externalField": "internalFolio"
+      },
+      {
+        "op": "rename",
+        "domainField": "holderCurp",
+        "externalField": "holderCurp"
+      },
+      {
+        "op": "rename",
+        "domainField": "hours",
+        "externalField": "courseHours"
+      },
+      {
+        "op": "mapCode",
+        "domainField": "area",
+        "externalField": "thematicArea",
+        "table": {
+          "Technology": "TI",
+          "Business": "AD",
+          "Health": "SA",
+          "Languages": "ID"
+        }
+      },
+      {
+        "op": "rename",
+        "domainField": "finalScore",
+        "externalField": "score"
+      },
+      {
+        "op": "mapCode",
+        "domainField": "distinction",
+        "externalField": "distinction",
+        "table": {
+          "Standard": "N",
+          "Honors": "H"
+        }
+      },
+      {
+        "op": "format",
+        "domainField": "issuedOn",
+        "externalField": "issueDate",
+        "format": "isoDate"
+      }
+    ]
+  }
+}

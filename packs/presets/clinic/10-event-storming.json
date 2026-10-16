@@ -1,0 +1,2207 @@
+{
+  "experts": [
+    {
+      "codeName": "Octavio",
+      "name": "Octavio Barrera",
+      "role": {
+        "es-MX": "Líder técnico de los sistemas de la clínica",
+        "en": "Clinic systems tech lead"
+      },
+      "avatarSeed": "octavio"
+    },
+    {
+      "codeName": "Marisol",
+      "name": "Marisol Fuentes",
+      "role": {
+        "es-MX": "Médica general de la clínica",
+        "en": "Clinic general practitioner"
+      },
+      "avatarSeed": "marisol"
+    },
+    {
+      "codeName": "Gerardo",
+      "name": "Gerardo Pineda",
+      "role": {
+        "es-MX": "Recepción y cobranza",
+        "en": "Front desk and billing"
+      },
+      "avatarSeed": "gerardo"
+    },
+    {
+      "codeName": "Alma",
+      "name": "Alma Treviño",
+      "role": {
+        "es-MX": "Farmacéutica responsable",
+        "en": "Pharmacist in charge"
+      },
+      "avatarSeed": "alma"
+    }
+  ],
+  "actors": [
+    {
+      "codeName": "Neighbor",
+      "label": {
+        "es-MX": "Vecino",
+        "en": "Neighbor"
+      },
+      "description": {
+        "es-MX": "Persona del barrio que pide cita, se atiende y paga en la clínica.",
+        "en": "Person from the neighborhood who books, is seen and pays at the clinic."
+      }
+    },
+    {
+      "codeName": "Receptionist",
+      "label": {
+        "es-MX": "Recepcionista",
+        "en": "Receptionist"
+      },
+      "description": {
+        "es-MX": "Quien agenda, recibe a la gente y se encarga de cobrar.",
+        "en": "The person who books, welcomes people and takes care of charging."
+      }
+    },
+    {
+      "codeName": "Physician",
+      "label": {
+        "es-MX": "Médico",
+        "en": "Physician"
+      },
+      "description": {
+        "es-MX": "Quien consulta, diagnostica y receta.",
+        "en": "The one who sees patients, diagnoses and prescribes."
+      }
+    },
+    {
+      "codeName": "Pharmacist",
+      "label": {
+        "es-MX": "Farmacéutico",
+        "en": "Pharmacist"
+      },
+      "description": {
+        "es-MX": "Quien revisa y surte las recetas.",
+        "en": "The one who reviews and fills prescriptions."
+      }
+    }
+  ],
+  "externalSystems": [
+    {
+      "codeName": "InsurerClaimsGateway",
+      "label": {
+        "es-MX": "Pasarela de siniestros de la aseguradora",
+        "en": "Insurer claims gateway"
+      },
+      "description": {
+        "es-MX": "Servicio de la aseguradora que recibe solicitudes de reembolso y responde con su resolución.",
+        "en": "The insurer's service that receives reimbursement requests and replies with its decision."
+      }
+    },
+    {
+      "codeName": "SmsGateway",
+      "label": {
+        "es-MX": "Pasarela de SMS",
+        "en": "SMS gateway"
+      },
+      "description": {
+        "es-MX": "Servicio que envía los recordatorios por mensaje de texto y entrega las respuestas.",
+        "en": "Service that sends reminders by text message and delivers the replies."
+      }
+    },
+    {
+      "codeName": "PaymentTerminal",
+      "label": {
+        "es-MX": "Terminal de cobro",
+        "en": "Payment terminal"
+      },
+      "description": {
+        "es-MX": "Equipo de recepción que cobra con tarjeta o registra efectivo y transferencias.",
+        "en": "Front-desk device that charges cards or records cash and transfers."
+      }
+    }
+  ],
+  "events": [
+    {
+      "codeName": "AppointmentRequested",
+      "label": {
+        "es-MX": "Cita solicitada",
+        "en": "Appointment requested"
+      },
+      "description": {
+        "es-MX": "Un vecino pidió una cita y dijo para qué la necesita.",
+        "en": "A neighbor asked for an appointment and said what it is for."
+      },
+      "context": "Scheduling",
+      "sequence": 1,
+      "payload": [
+        {
+          "codeName": "appointmentId",
+          "label": {
+            "es-MX": "Cita",
+            "en": "Appointment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AppointmentId"
+          }
+        },
+        {
+          "codeName": "patientId",
+          "label": {
+            "es-MX": "Paciente",
+            "en": "Patient"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PatientId"
+          }
+        },
+        {
+          "codeName": "visitReason",
+          "label": {
+            "es-MX": "Motivo de la visita",
+            "en": "Visit reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "VisitReason"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AppointmentBooked",
+      "label": {
+        "es-MX": "Cita agendada",
+        "en": "Appointment booked"
+      },
+      "description": {
+        "es-MX": "Recepción reservó fecha y hora dentro del horario de la clínica.",
+        "en": "The front desk reserved a date and time within the clinic's hours."
+      },
+      "context": "Scheduling",
+      "sequence": 2,
+      "payload": [
+        {
+          "codeName": "appointmentId",
+          "label": {
+            "es-MX": "Cita",
+            "en": "Appointment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AppointmentId"
+          }
+        },
+        {
+          "codeName": "visitDate",
+          "label": {
+            "es-MX": "Fecha de la visita",
+            "en": "Visit date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        },
+        {
+          "codeName": "startHour",
+          "label": {
+            "es-MX": "Hora de inicio",
+            "en": "Start hour"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ClinicHour"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ReminderSent",
+      "label": {
+        "es-MX": "Recordatorio enviado",
+        "en": "Reminder sent"
+      },
+      "description": {
+        "es-MX": "Se mandó un SMS para recordar la cita.",
+        "en": "An SMS was sent to remind the person of the appointment."
+      },
+      "context": "Scheduling",
+      "sequence": 3,
+      "payload": [
+        {
+          "codeName": "appointmentId",
+          "label": {
+            "es-MX": "Cita",
+            "en": "Appointment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AppointmentId"
+          }
+        },
+        {
+          "codeName": "reminderCount",
+          "label": {
+            "es-MX": "Recordatorios enviados",
+            "en": "Reminders sent"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReminderCount"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AppointmentConfirmed",
+      "label": {
+        "es-MX": "Cita confirmada",
+        "en": "Appointment confirmed"
+      },
+      "description": {
+        "es-MX": "La persona respondió que sí asistirá.",
+        "en": "The person replied that they will attend."
+      },
+      "context": "Scheduling",
+      "sequence": 4,
+      "payload": [
+        {
+          "codeName": "appointmentId",
+          "label": {
+            "es-MX": "Cita",
+            "en": "Appointment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AppointmentId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PatientCheckedIn",
+      "label": {
+        "es-MX": "Paciente registrado en recepción",
+        "en": "Patient checked in at the front desk"
+      },
+      "description": {
+        "es-MX": "La persona llegó a la clínica y ya espera su turno.",
+        "en": "The person arrived at the clinic and is waiting for their turn."
+      },
+      "context": "Scheduling",
+      "sequence": 5,
+      "payload": [
+        {
+          "codeName": "appointmentId",
+          "label": {
+            "es-MX": "Cita",
+            "en": "Appointment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AppointmentId"
+          }
+        },
+        {
+          "codeName": "patientId",
+          "label": {
+            "es-MX": "Paciente",
+            "en": "Patient"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PatientId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ConsultationOpened",
+      "label": {
+        "es-MX": "Consulta abierta",
+        "en": "Consultation opened"
+      },
+      "description": {
+        "es-MX": "Se abrió el expediente de la consulta con el perfil clínico de la persona.",
+        "en": "The consultation file was opened with the person's clinical profile."
+      },
+      "context": "ClinicalCare",
+      "sequence": 6,
+      "payload": [
+        {
+          "codeName": "consultationId",
+          "label": {
+            "es-MX": "Consulta",
+            "en": "Consultation"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ConsultationId"
+          }
+        },
+        {
+          "codeName": "appointmentId",
+          "label": {
+            "es-MX": "Cita",
+            "en": "Appointment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AppointmentId"
+          }
+        },
+        {
+          "codeName": "patientId",
+          "label": {
+            "es-MX": "Paciente",
+            "en": "Patient"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PatientId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ConsultationStarted",
+      "label": {
+        "es-MX": "Consulta iniciada",
+        "en": "Consultation started"
+      },
+      "description": {
+        "es-MX": "El médico llamó a la persona y empezó la consulta.",
+        "en": "The physician called the person in and the consultation began."
+      },
+      "context": "ClinicalCare",
+      "sequence": 7,
+      "payload": [
+        {
+          "codeName": "consultationId",
+          "label": {
+            "es-MX": "Consulta",
+            "en": "Consultation"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ConsultationId"
+          }
+        },
+        {
+          "codeName": "appointmentId",
+          "label": {
+            "es-MX": "Cita",
+            "en": "Appointment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AppointmentId"
+          }
+        },
+        {
+          "codeName": "startedAt",
+          "label": {
+            "es-MX": "Inicio de la consulta",
+            "en": "Consultation start"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "timestamp"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AppointmentAttended",
+      "label": {
+        "es-MX": "Cita atendida",
+        "en": "Appointment attended"
+      },
+      "description": {
+        "es-MX": "La cita quedó cumplida porque la consulta ya comenzó.",
+        "en": "The appointment is fulfilled because the consultation has begun."
+      },
+      "context": "Scheduling",
+      "sequence": 8,
+      "payload": [
+        {
+          "codeName": "appointmentId",
+          "label": {
+            "es-MX": "Cita",
+            "en": "Appointment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AppointmentId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ObservationRecorded",
+      "label": {
+        "es-MX": "Observación registrada",
+        "en": "Observation recorded"
+      },
+      "description": {
+        "es-MX": "El médico anotó un síntoma, un signo o un resultado.",
+        "en": "The physician noted a symptom, a sign or a test result."
+      },
+      "context": "ClinicalCare",
+      "sequence": 9,
+      "payload": [
+        {
+          "codeName": "consultationId",
+          "label": {
+            "es-MX": "Consulta",
+            "en": "Consultation"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ConsultationId"
+          }
+        },
+        {
+          "codeName": "observationId",
+          "label": {
+            "es-MX": "Observación",
+            "en": "Observation"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ObservationId"
+          }
+        },
+        {
+          "codeName": "kind",
+          "label": {
+            "es-MX": "Tipo",
+            "en": "Kind"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ObservationKind"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DiagnosisRecorded",
+      "label": {
+        "es-MX": "Diagnóstico registrado",
+        "en": "Diagnosis recorded"
+      },
+      "description": {
+        "es-MX": "El médico fijó un diagnóstico con su clave CIE-10.",
+        "en": "The physician set a diagnosis with its ICD-10 code."
+      },
+      "context": "ClinicalCare",
+      "sequence": 10,
+      "payload": [
+        {
+          "codeName": "consultationId",
+          "label": {
+            "es-MX": "Consulta",
+            "en": "Consultation"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ConsultationId"
+          }
+        },
+        {
+          "codeName": "diagnosis",
+          "label": {
+            "es-MX": "Diagnóstico",
+            "en": "Diagnosis"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DiagnosisCode"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PrescriptionStarted",
+      "label": {
+        "es-MX": "Receta iniciada",
+        "en": "Prescription started"
+      },
+      "description": {
+        "es-MX": "A partir del diagnóstico se abrió una receta en borrador.",
+        "en": "A draft prescription was opened from the diagnosis."
+      },
+      "context": "Pharmacy",
+      "sequence": 11,
+      "payload": [
+        {
+          "codeName": "prescriptionId",
+          "label": {
+            "es-MX": "Receta",
+            "en": "Prescription"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PrescriptionId"
+          }
+        },
+        {
+          "codeName": "consultationId",
+          "label": {
+            "es-MX": "Consulta",
+            "en": "Consultation"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ConsultationId"
+          }
+        },
+        {
+          "codeName": "patientId",
+          "label": {
+            "es-MX": "Paciente",
+            "en": "Patient"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PatientId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PrescriptionItemAdded",
+      "label": {
+        "es-MX": "Medicamento agregado a la receta",
+        "en": "Medication added to the prescription"
+      },
+      "description": {
+        "es-MX": "El médico sumó un medicamento con su dosis y sus piezas.",
+        "en": "The physician added a medication with its dose and units."
+      },
+      "context": "Pharmacy",
+      "sequence": 12,
+      "payload": [
+        {
+          "codeName": "prescriptionId",
+          "label": {
+            "es-MX": "Receta",
+            "en": "Prescription"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PrescriptionId"
+          }
+        },
+        {
+          "codeName": "medicationCode",
+          "label": {
+            "es-MX": "Clave del medicamento",
+            "en": "Medication code"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "MedicationCode"
+          }
+        },
+        {
+          "codeName": "units",
+          "label": {
+            "es-MX": "Piezas",
+            "en": "Units"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UnitCount"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PrescriptionIssued",
+      "label": {
+        "es-MX": "Receta emitida",
+        "en": "Prescription issued"
+      },
+      "description": {
+        "es-MX": "La receta se firmó y quedó lista para surtirse.",
+        "en": "The prescription was signed and is ready to be filled."
+      },
+      "context": "Pharmacy",
+      "sequence": 13,
+      "payload": [
+        {
+          "codeName": "prescriptionId",
+          "label": {
+            "es-MX": "Receta",
+            "en": "Prescription"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PrescriptionId"
+          }
+        },
+        {
+          "codeName": "totalUnits",
+          "label": {
+            "es-MX": "Piezas recetadas",
+            "en": "Prescribed units"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UnitCount"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "MedicationDispensed",
+      "label": {
+        "es-MX": "Medicamento surtido",
+        "en": "Medication dispensed"
+      },
+      "description": {
+        "es-MX": "Farmacia entregó las piezas después de revisar las alergias.",
+        "en": "The pharmacy handed over the units after checking allergies."
+      },
+      "context": "Pharmacy",
+      "sequence": 14,
+      "payload": [
+        {
+          "codeName": "prescriptionId",
+          "label": {
+            "es-MX": "Receta",
+            "en": "Prescription"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PrescriptionId"
+          }
+        },
+        {
+          "codeName": "dispensedUnits",
+          "label": {
+            "es-MX": "Piezas surtidas",
+            "en": "Dispensed units"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UnitCount"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ConsultationClosed",
+      "label": {
+        "es-MX": "Consulta cerrada",
+        "en": "Consultation closed"
+      },
+      "description": {
+        "es-MX": "La consulta terminó con diagnóstico y fecha de seguimiento.",
+        "en": "The consultation ended with a diagnosis and a follow-up window."
+      },
+      "context": "ClinicalCare",
+      "sequence": 15,
+      "payload": [
+        {
+          "codeName": "consultationId",
+          "label": {
+            "es-MX": "Consulta",
+            "en": "Consultation"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ConsultationId"
+          }
+        },
+        {
+          "codeName": "followUpDays",
+          "label": {
+            "es-MX": "Días para el seguimiento",
+            "en": "Follow-up days"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "FollowUpDays"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "InvoiceOpened",
+      "label": {
+        "es-MX": "Factura abierta",
+        "en": "Invoice opened"
+      },
+      "description": {
+        "es-MX": "Al cerrar la consulta se abrió la cuenta por cobrar.",
+        "en": "When the consultation closed, the account to charge was opened."
+      },
+      "context": "Billing",
+      "sequence": 16,
+      "payload": [
+        {
+          "codeName": "invoiceId",
+          "label": {
+            "es-MX": "Factura",
+            "en": "Invoice"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "InvoiceId"
+          }
+        },
+        {
+          "codeName": "consultationId",
+          "label": {
+            "es-MX": "Consulta",
+            "en": "Consultation"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ConsultationId"
+          }
+        },
+        {
+          "codeName": "serviceDate",
+          "label": {
+            "es-MX": "Fecha del servicio",
+            "en": "Service date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ChargeAdded",
+      "label": {
+        "es-MX": "Cargo agregado a la factura",
+        "en": "Charge added to the invoice"
+      },
+      "description": {
+        "es-MX": "Recepción sumó un servicio con su cantidad y su precio.",
+        "en": "The front desk added a service with its quantity and price."
+      },
+      "context": "Billing",
+      "sequence": 17,
+      "payload": [
+        {
+          "codeName": "invoiceId",
+          "label": {
+            "es-MX": "Factura",
+            "en": "Invoice"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "InvoiceId"
+          }
+        },
+        {
+          "codeName": "serviceCode",
+          "label": {
+            "es-MX": "Clave del servicio",
+            "en": "Service code"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ServiceCode"
+          }
+        },
+        {
+          "codeName": "unitPrice",
+          "label": {
+            "es-MX": "Precio unitario",
+            "en": "Unit price"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "InvoiceIssued",
+      "label": {
+        "es-MX": "Factura emitida",
+        "en": "Invoice issued"
+      },
+      "description": {
+        "es-MX": "La factura quedó con su total y ya puede cobrarse.",
+        "en": "The invoice has its total and can now be collected."
+      },
+      "context": "Billing",
+      "sequence": 18,
+      "payload": [
+        {
+          "codeName": "invoiceId",
+          "label": {
+            "es-MX": "Factura",
+            "en": "Invoice"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "InvoiceId"
+          }
+        },
+        {
+          "codeName": "total",
+          "label": {
+            "es-MX": "Total",
+            "en": "Total"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "InsuranceClaimFiled",
+      "label": {
+        "es-MX": "Reclamo enviado a la aseguradora",
+        "en": "Claim filed with the insurer"
+      },
+      "description": {
+        "es-MX": "Se presentó la solicitud de reembolso con la póliza de la persona.",
+        "en": "The reimbursement request was submitted with the person's policy."
+      },
+      "context": "Billing",
+      "sequence": 19,
+      "payload": [
+        {
+          "codeName": "invoiceId",
+          "label": {
+            "es-MX": "Factura",
+            "en": "Invoice"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "InvoiceId"
+          }
+        },
+        {
+          "codeName": "policyNumber",
+          "label": {
+            "es-MX": "Número de póliza",
+            "en": "Policy number"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PolicyNumber"
+          }
+        },
+        {
+          "codeName": "coverage",
+          "label": {
+            "es-MX": "Cobertura",
+            "en": "Coverage"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CoverageKind"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ClaimSettled",
+      "label": {
+        "es-MX": "Reclamo liquidado",
+        "en": "Claim settled"
+      },
+      "description": {
+        "es-MX": "La aseguradora pagó el reclamo y dio su referencia.",
+        "en": "The insurer paid the claim and gave its reference."
+      },
+      "context": "Billing",
+      "sequence": 20,
+      "payload": [
+        {
+          "codeName": "invoiceId",
+          "label": {
+            "es-MX": "Factura",
+            "en": "Invoice"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "InvoiceId"
+          }
+        },
+        {
+          "codeName": "claimReference",
+          "label": {
+            "es-MX": "Referencia del siniestro",
+            "en": "Claim reference"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ClaimReference"
+          }
+        },
+        {
+          "codeName": "settledAmount",
+          "label": {
+            "es-MX": "Monto liquidado",
+            "en": "Settled amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PaymentRegistered",
+      "label": {
+        "es-MX": "Pago registrado",
+        "en": "Payment registered"
+      },
+      "description": {
+        "es-MX": "La terminal de cobro reportó el pago exacto de la factura.",
+        "en": "The payment terminal reported the exact payment of the invoice."
+      },
+      "context": "Billing",
+      "sequence": 21,
+      "payload": [
+        {
+          "codeName": "invoiceId",
+          "label": {
+            "es-MX": "Factura",
+            "en": "Invoice"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "InvoiceId"
+          }
+        },
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        },
+        {
+          "codeName": "paymentMethod",
+          "label": {
+            "es-MX": "Forma de pago",
+            "en": "Payment method"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PaymentMethod"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AppointmentCancelled",
+      "label": {
+        "es-MX": "Cita cancelada",
+        "en": "Appointment cancelled"
+      },
+      "description": {
+        "es-MX": "La cita se canceló antes de que comenzara.",
+        "en": "The appointment was cancelled before it started."
+      },
+      "context": "Scheduling",
+      "sequence": 22,
+      "payload": [
+        {
+          "codeName": "appointmentId",
+          "label": {
+            "es-MX": "Cita",
+            "en": "Appointment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AppointmentId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CancellationReason"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PrescriptionCancelled",
+      "label": {
+        "es-MX": "Receta cancelada",
+        "en": "Prescription cancelled"
+      },
+      "description": {
+        "es-MX": "La receta se canceló antes de surtirse.",
+        "en": "The prescription was cancelled before being filled."
+      },
+      "context": "Pharmacy",
+      "sequence": 23,
+      "payload": [
+        {
+          "codeName": "prescriptionId",
+          "label": {
+            "es-MX": "Receta",
+            "en": "Prescription"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PrescriptionId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CancellationReason"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "InvoiceVoided",
+      "label": {
+        "es-MX": "Factura anulada",
+        "en": "Invoice voided"
+      },
+      "description": {
+        "es-MX": "La factura se anuló por un error antes de cobrarse.",
+        "en": "The invoice was voided because of a mistake before being collected."
+      },
+      "context": "Billing",
+      "sequence": 24,
+      "payload": [
+        {
+          "codeName": "invoiceId",
+          "label": {
+            "es-MX": "Factura",
+            "en": "Invoice"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "InvoiceId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CancellationReason"
+          }
+        }
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "codeName": "RequestAppointment",
+      "label": {
+        "es-MX": "Pedir cita",
+        "en": "Request appointment"
+      },
+      "description": {
+        "es-MX": "Pedir una cita diciendo quién es y para qué la necesita.",
+        "en": "Ask for an appointment saying who the person is and what it is for."
+      },
+      "context": "Scheduling",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Neighbor"
+      },
+      "handledBy": "Appointment",
+      "params": [
+        {
+          "codeName": "patientId",
+          "label": {
+            "es-MX": "Paciente",
+            "en": "Patient"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PatientId"
+          }
+        },
+        {
+          "codeName": "contact",
+          "label": {
+            "es-MX": "Contacto",
+            "en": "Contact"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ContactCard"
+          }
+        },
+        {
+          "codeName": "visitReason",
+          "label": {
+            "es-MX": "Motivo de la visita",
+            "en": "Visit reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "VisitReason"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "BookAppointment",
+      "label": {
+        "es-MX": "Agendar cita",
+        "en": "Book appointment"
+      },
+      "description": {
+        "es-MX": "Reservar fecha y hora dentro del horario de la clínica.",
+        "en": "Reserve a date and time within the clinic's hours."
+      },
+      "context": "Scheduling",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Receptionist"
+      },
+      "handledBy": "Appointment",
+      "params": [
+        {
+          "codeName": "visitDate",
+          "label": {
+            "es-MX": "Fecha de la visita",
+            "en": "Visit date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        },
+        {
+          "codeName": "startHour",
+          "label": {
+            "es-MX": "Hora de inicio",
+            "en": "Start hour"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ClinicHour"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "SendReminder",
+      "label": {
+        "es-MX": "Enviar recordatorio",
+        "en": "Send reminder"
+      },
+      "description": {
+        "es-MX": "Mandar un SMS para recordar la cita.",
+        "en": "Send an SMS to remind the person of the appointment."
+      },
+      "context": "Scheduling",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "RemindWhenBooked"
+      },
+      "handledBy": "Appointment",
+      "params": []
+    },
+    {
+      "codeName": "ConfirmAppointment",
+      "label": {
+        "es-MX": "Confirmar cita",
+        "en": "Confirm appointment"
+      },
+      "description": {
+        "es-MX": "Registrar que la persona respondió que asistirá.",
+        "en": "Record that the person replied they will attend."
+      },
+      "context": "Scheduling",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "SmsGateway"
+      },
+      "handledBy": "Appointment",
+      "params": []
+    },
+    {
+      "codeName": "CheckInPatient",
+      "label": {
+        "es-MX": "Registrar llegada",
+        "en": "Check in patient"
+      },
+      "description": {
+        "es-MX": "Anotar que la persona llegó y espera su turno.",
+        "en": "Note that the person arrived and is waiting for their turn."
+      },
+      "context": "Scheduling",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Receptionist"
+      },
+      "handledBy": "Appointment",
+      "params": []
+    },
+    {
+      "codeName": "MarkAppointmentAttended",
+      "label": {
+        "es-MX": "Marcar cita como atendida",
+        "en": "Mark appointment as attended"
+      },
+      "description": {
+        "es-MX": "Reflejar en la cita que la consulta ya comenzó.",
+        "en": "Reflect on the appointment that the consultation has begun."
+      },
+      "context": "Scheduling",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "CompleteAppointmentWhenStarted"
+      },
+      "handledBy": "Appointment",
+      "params": []
+    },
+    {
+      "codeName": "CancelAppointment",
+      "label": {
+        "es-MX": "Cancelar cita",
+        "en": "Cancel appointment"
+      },
+      "description": {
+        "es-MX": "Cancelar la cita indicando el motivo.",
+        "en": "Cancel the appointment giving a reason."
+      },
+      "context": "Scheduling",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Neighbor"
+      },
+      "handledBy": "Appointment",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CancellationReason"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "OpenConsultation",
+      "label": {
+        "es-MX": "Abrir consulta",
+        "en": "Open consultation"
+      },
+      "description": {
+        "es-MX": "Abrir el expediente de la consulta con el perfil clínico.",
+        "en": "Open the consultation file with the clinical profile."
+      },
+      "context": "ClinicalCare",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "OpenConsultationWhenCheckedIn"
+      },
+      "handledBy": "Consultation",
+      "params": [
+        {
+          "codeName": "appointmentId",
+          "label": {
+            "es-MX": "Cita",
+            "en": "Appointment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AppointmentId"
+          }
+        },
+        {
+          "codeName": "patientId",
+          "label": {
+            "es-MX": "Paciente",
+            "en": "Patient"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PatientId"
+          }
+        },
+        {
+          "codeName": "profile",
+          "label": {
+            "es-MX": "Perfil clínico",
+            "en": "Clinical profile"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ClinicalProfile"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "StartConsultation",
+      "label": {
+        "es-MX": "Iniciar consulta",
+        "en": "Start consultation"
+      },
+      "description": {
+        "es-MX": "Llamar a la persona y empezar la consulta.",
+        "en": "Call the person in and begin the consultation."
+      },
+      "context": "ClinicalCare",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Physician"
+      },
+      "handledBy": "Consultation",
+      "params": [
+        {
+          "codeName": "startedAt",
+          "label": {
+            "es-MX": "Inicio de la consulta",
+            "en": "Consultation start"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "timestamp"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RecordObservation",
+      "label": {
+        "es-MX": "Registrar observación",
+        "en": "Record observation"
+      },
+      "description": {
+        "es-MX": "Anotar un síntoma, un signo o un resultado de estudio.",
+        "en": "Note a symptom, a sign or a test result."
+      },
+      "context": "ClinicalCare",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Physician"
+      },
+      "handledBy": "Consultation",
+      "params": [
+        {
+          "codeName": "observationId",
+          "label": {
+            "es-MX": "Observación",
+            "en": "Observation"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ObservationId"
+          }
+        },
+        {
+          "codeName": "kind",
+          "label": {
+            "es-MX": "Tipo",
+            "en": "Kind"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ObservationKind"
+          }
+        },
+        {
+          "codeName": "note",
+          "label": {
+            "es-MX": "Nota",
+            "en": "Note"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ObservationNote"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RecordDiagnosis",
+      "label": {
+        "es-MX": "Registrar diagnóstico",
+        "en": "Record diagnosis"
+      },
+      "description": {
+        "es-MX": "Fijar el diagnóstico con su clave CIE-10.",
+        "en": "Set the diagnosis with its ICD-10 code."
+      },
+      "context": "ClinicalCare",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Physician"
+      },
+      "handledBy": "Consultation",
+      "params": [
+        {
+          "codeName": "diagnosis",
+          "label": {
+            "es-MX": "Diagnóstico",
+            "en": "Diagnosis"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DiagnosisCode"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CloseConsultation",
+      "label": {
+        "es-MX": "Cerrar consulta",
+        "en": "Close consultation"
+      },
+      "description": {
+        "es-MX": "Terminar la consulta fijando en cuántos días vuelve la persona.",
+        "en": "End the consultation setting in how many days the person returns."
+      },
+      "context": "ClinicalCare",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Physician"
+      },
+      "handledBy": "Consultation",
+      "params": [
+        {
+          "codeName": "followUpDays",
+          "label": {
+            "es-MX": "Días para el seguimiento",
+            "en": "Follow-up days"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "FollowUpDays"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "StartPrescription",
+      "label": {
+        "es-MX": "Iniciar receta",
+        "en": "Start prescription"
+      },
+      "description": {
+        "es-MX": "Abrir la receta en borrador para quien recibirá el medicamento.",
+        "en": "Open the draft prescription for whoever will receive the medication."
+      },
+      "context": "Pharmacy",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "StartPrescriptionWhenDiagnosed"
+      },
+      "handledBy": "Prescription",
+      "params": [
+        {
+          "codeName": "consultationId",
+          "label": {
+            "es-MX": "Consulta",
+            "en": "Consultation"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ConsultationId"
+          }
+        },
+        {
+          "codeName": "patientId",
+          "label": {
+            "es-MX": "Paciente",
+            "en": "Patient"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PatientId"
+          }
+        },
+        {
+          "codeName": "recipient",
+          "label": {
+            "es-MX": "Destinatario",
+            "en": "Recipient"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DispenseRecipient"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AddPrescriptionItem",
+      "label": {
+        "es-MX": "Agregar medicamento",
+        "en": "Add medication"
+      },
+      "description": {
+        "es-MX": "Sumar un medicamento con su dosis y sus piezas.",
+        "en": "Add a medication with its dose and units."
+      },
+      "context": "Pharmacy",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Physician"
+      },
+      "handledBy": "Prescription",
+      "params": [
+        {
+          "codeName": "medicationCode",
+          "label": {
+            "es-MX": "Clave del medicamento",
+            "en": "Medication code"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "MedicationCode"
+          }
+        },
+        {
+          "codeName": "dose",
+          "label": {
+            "es-MX": "Dosis",
+            "en": "Dose"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DoseInstruction"
+          }
+        },
+        {
+          "codeName": "units",
+          "label": {
+            "es-MX": "Piezas",
+            "en": "Units"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UnitCount"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "IssuePrescription",
+      "label": {
+        "es-MX": "Emitir receta",
+        "en": "Issue prescription"
+      },
+      "description": {
+        "es-MX": "Firmar la receta para que pueda surtirse.",
+        "en": "Sign the prescription so it can be filled."
+      },
+      "context": "Pharmacy",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Physician"
+      },
+      "handledBy": "Prescription",
+      "params": []
+    },
+    {
+      "codeName": "DispenseMedication",
+      "label": {
+        "es-MX": "Surtir medicamento",
+        "en": "Dispense medication"
+      },
+      "description": {
+        "es-MX": "Entregar las piezas después de revisar las alergias.",
+        "en": "Hand over the units after checking allergies."
+      },
+      "context": "Pharmacy",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Pharmacist"
+      },
+      "handledBy": "Prescription",
+      "params": [
+        {
+          "codeName": "dispensedUnits",
+          "label": {
+            "es-MX": "Piezas surtidas",
+            "en": "Dispensed units"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UnitCount"
+          }
+        },
+        {
+          "codeName": "allergyChecked",
+          "label": {
+            "es-MX": "Alergias revisadas",
+            "en": "Allergies checked"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "boolean"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CancelPrescription",
+      "label": {
+        "es-MX": "Cancelar receta",
+        "en": "Cancel prescription"
+      },
+      "description": {
+        "es-MX": "Cancelar la receta indicando el motivo.",
+        "en": "Cancel the prescription giving a reason."
+      },
+      "context": "Pharmacy",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Pharmacist"
+      },
+      "handledBy": "Prescription",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CancellationReason"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "OpenInvoice",
+      "label": {
+        "es-MX": "Abrir factura",
+        "en": "Open invoice"
+      },
+      "description": {
+        "es-MX": "Abrir la cuenta por cobrar de una consulta.",
+        "en": "Open the account to charge for a consultation."
+      },
+      "context": "Billing",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "OpenInvoiceWhenConsultationClosed"
+      },
+      "handledBy": "Invoice",
+      "params": [
+        {
+          "codeName": "consultationId",
+          "label": {
+            "es-MX": "Consulta",
+            "en": "Consultation"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ConsultationId"
+          }
+        },
+        {
+          "codeName": "payer",
+          "label": {
+            "es-MX": "Pagador",
+            "en": "Payer"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Payer"
+          }
+        },
+        {
+          "codeName": "serviceDate",
+          "label": {
+            "es-MX": "Fecha del servicio",
+            "en": "Service date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        },
+        {
+          "codeName": "diagnosisCode",
+          "label": {
+            "es-MX": "Clave del diagnóstico",
+            "en": "Diagnosis code"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DiagnosisCode"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AddCharge",
+      "label": {
+        "es-MX": "Agregar cargo",
+        "en": "Add charge"
+      },
+      "description": {
+        "es-MX": "Sumar un servicio con su cantidad y su precio.",
+        "en": "Add a service with its quantity and price."
+      },
+      "context": "Billing",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Receptionist"
+      },
+      "handledBy": "Invoice",
+      "params": [
+        {
+          "codeName": "serviceCode",
+          "label": {
+            "es-MX": "Clave del servicio",
+            "en": "Service code"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ServiceCode"
+          }
+        },
+        {
+          "codeName": "description",
+          "label": {
+            "es-MX": "Descripción",
+            "en": "Description"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ChargeDescription"
+          }
+        },
+        {
+          "codeName": "quantity",
+          "label": {
+            "es-MX": "Cantidad",
+            "en": "Quantity"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UnitCount"
+          }
+        },
+        {
+          "codeName": "unitPrice",
+          "label": {
+            "es-MX": "Precio unitario",
+            "en": "Unit price"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "IssueInvoice",
+      "label": {
+        "es-MX": "Emitir factura",
+        "en": "Issue invoice"
+      },
+      "description": {
+        "es-MX": "Fijar el total de la factura para poder cobrarla.",
+        "en": "Fix the invoice total so it can be collected."
+      },
+      "context": "Billing",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Receptionist"
+      },
+      "handledBy": "Invoice",
+      "params": []
+    },
+    {
+      "codeName": "FileInsuranceClaim",
+      "label": {
+        "es-MX": "Presentar reclamo",
+        "en": "File insurance claim"
+      },
+      "description": {
+        "es-MX": "Presentar el reclamo a la aseguradora con la póliza y la cobertura.",
+        "en": "File the claim with the insurer using the policy and coverage."
+      },
+      "context": "Billing",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Receptionist"
+      },
+      "handledBy": "Invoice",
+      "params": [
+        {
+          "codeName": "policyNumber",
+          "label": {
+            "es-MX": "Número de póliza",
+            "en": "Policy number"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PolicyNumber"
+          }
+        },
+        {
+          "codeName": "coverage",
+          "label": {
+            "es-MX": "Cobertura",
+            "en": "Coverage"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CoverageKind"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "SettleClaim",
+      "label": {
+        "es-MX": "Liquidar reclamo",
+        "en": "Settle claim"
+      },
+      "description": {
+        "es-MX": "Registrar el pago y la referencia que devuelve la aseguradora.",
+        "en": "Record the payment and the reference returned by the insurer."
+      },
+      "context": "Billing",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "InsurerClaimsGateway"
+      },
+      "handledBy": "Invoice",
+      "params": [
+        {
+          "codeName": "claimReference",
+          "label": {
+            "es-MX": "Referencia del siniestro",
+            "en": "Claim reference"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ClaimReference"
+          }
+        },
+        {
+          "codeName": "settledAmount",
+          "label": {
+            "es-MX": "Monto liquidado",
+            "en": "Settled amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RegisterPayment",
+      "label": {
+        "es-MX": "Registrar pago",
+        "en": "Register payment"
+      },
+      "description": {
+        "es-MX": "Registrar lo que cobró la terminal y de qué forma.",
+        "en": "Record what the terminal collected and how."
+      },
+      "context": "Billing",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "PaymentTerminal"
+      },
+      "handledBy": "Invoice",
+      "params": [
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        },
+        {
+          "codeName": "paymentMethod",
+          "label": {
+            "es-MX": "Forma de pago",
+            "en": "Payment method"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PaymentMethod"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "VoidInvoice",
+      "label": {
+        "es-MX": "Anular factura",
+        "en": "Void invoice"
+      },
+      "description": {
+        "es-MX": "Anular la factura indicando el motivo.",
+        "en": "Void the invoice giving a reason."
+      },
+      "context": "Billing",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Receptionist"
+      },
+      "handledBy": "Invoice",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CancellationReason"
+          }
+        }
+      ]
+    }
+  ],
+  "policies": [
+    {
+      "codeName": "RemindWhenBooked",
+      "label": {
+        "es-MX": "Cuando se agenda, mandar recordatorio",
+        "en": "When booked, send a reminder"
+      },
+      "description": {
+        "es-MX": "Apenas se agenda la cita, la Agenda pide un SMS de recordatorio.",
+        "en": "As soon as the appointment is booked, Scheduling asks for a reminder SMS."
+      },
+      "context": "Scheduling",
+      "when": "AppointmentBooked",
+      "then": "SendReminder"
+    },
+    {
+      "codeName": "OpenConsultationWhenCheckedIn",
+      "label": {
+        "es-MX": "Cuando llega, abrir la consulta",
+        "en": "When they arrive, open the consultation"
+      },
+      "description": {
+        "es-MX": "En cuanto recepción registra la llegada, Atención clínica abre el expediente.",
+        "en": "As soon as the front desk registers the arrival, Clinical care opens the file."
+      },
+      "context": "ClinicalCare",
+      "when": "PatientCheckedIn",
+      "then": "OpenConsultation"
+    },
+    {
+      "codeName": "CompleteAppointmentWhenStarted",
+      "label": {
+        "es-MX": "Cuando empieza la consulta, cumplir la cita",
+        "en": "When the consultation starts, fulfill the appointment"
+      },
+      "description": {
+        "es-MX": "La cita sigue a la consulta: queda atendida cuando el médico empieza.",
+        "en": "The appointment follows the consultation: it is attended once the physician begins."
+      },
+      "context": "Scheduling",
+      "when": "ConsultationStarted",
+      "then": "MarkAppointmentAttended"
+    },
+    {
+      "codeName": "StartPrescriptionWhenDiagnosed",
+      "label": {
+        "es-MX": "Cuando hay diagnóstico, abrir la receta",
+        "en": "When diagnosed, start the prescription"
+      },
+      "description": {
+        "es-MX": "Cada diagnóstico registrado abre una receta en borrador en Farmacia.",
+        "en": "Every recorded diagnosis opens a draft prescription in Pharmacy."
+      },
+      "context": "Pharmacy",
+      "when": "DiagnosisRecorded",
+      "then": "StartPrescription"
+    },
+    {
+      "codeName": "OpenInvoiceWhenConsultationClosed",
+      "label": {
+        "es-MX": "Cuando cierra la consulta, abrir la factura",
+        "en": "When the consultation closes, open the invoice"
+      },
+      "description": {
+        "es-MX": "Cobranza abre la cuenta apenas termina la consulta.",
+        "en": "Billing opens the account as soon as the consultation ends."
+      },
+      "context": "Billing",
+      "when": "ConsultationClosed",
+      "then": "OpenInvoice"
+    }
+  ],
+  "readModels": [
+    {
+      "codeName": "DailyAgenda",
+      "label": {
+        "es-MX": "Agenda del día",
+        "en": "Daily agenda"
+      },
+      "description": {
+        "es-MX": "La pantalla de recepción con las citas de hoy y su estado.",
+        "en": "The front-desk screen with today's appointments and their status."
+      },
+      "context": "Scheduling",
+      "fields": [
+        {
+          "codeName": "appointmentId",
+          "label": {
+            "es-MX": "Cita",
+            "en": "Appointment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AppointmentId"
+          }
+        },
+        {
+          "codeName": "visitDate",
+          "label": {
+            "es-MX": "Fecha de la visita",
+            "en": "Visit date"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "primitive",
+              "name": "date"
+            }
+          }
+        },
+        {
+          "codeName": "startHour",
+          "label": {
+            "es-MX": "Hora de inicio",
+            "en": "Start hour"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "ClinicHour"
+            }
+          }
+        }
+      ],
+      "fedBy": ["AppointmentBooked", "AppointmentConfirmed", "AppointmentCancelled"],
+      "usedBy": ["Receptionist", "Physician"]
+    },
+    {
+      "codeName": "WaitingRoomBoard",
+      "label": {
+        "es-MX": "Tablero de sala de espera",
+        "en": "Waiting room board"
+      },
+      "description": {
+        "es-MX": "Quién espera, quién está en consulta y quién ya terminó.",
+        "en": "Who is waiting, who is in a consultation and who is done."
+      },
+      "context": "ClinicalCare",
+      "fields": [
+        {
+          "codeName": "consultationId",
+          "label": {
+            "es-MX": "Consulta",
+            "en": "Consultation"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ConsultationId"
+          }
+        },
+        {
+          "codeName": "patientId",
+          "label": {
+            "es-MX": "Paciente",
+            "en": "Patient"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PatientId"
+          }
+        }
+      ],
+      "fedBy": ["ConsultationOpened", "ConsultationStarted", "ConsultationClosed"],
+      "usedBy": ["Physician", "Receptionist"]
+    },
+    {
+      "codeName": "PendingPrescriptions",
+      "label": {
+        "es-MX": "Recetas por surtir",
+        "en": "Prescriptions to fill"
+      },
+      "description": {
+        "es-MX": "Las recetas emitidas que Farmacia aún no entrega.",
+        "en": "Issued prescriptions that the pharmacy has not handed over yet."
+      },
+      "context": "Pharmacy",
+      "fields": [
+        {
+          "codeName": "prescriptionId",
+          "label": {
+            "es-MX": "Receta",
+            "en": "Prescription"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PrescriptionId"
+          }
+        },
+        {
+          "codeName": "totalUnits",
+          "label": {
+            "es-MX": "Piezas recetadas",
+            "en": "Prescribed units"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UnitCount"
+          }
+        }
+      ],
+      "fedBy": ["PrescriptionIssued", "MedicationDispensed", "PrescriptionCancelled"],
+      "usedBy": ["Pharmacist"]
+    }
+  ]
+}

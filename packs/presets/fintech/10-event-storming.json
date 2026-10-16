@@ -1,0 +1,1992 @@
+{
+  "experts": [
+    {
+      "codeName": "Daniela",
+      "name": "Daniela Cruz",
+      "role": {
+        "es-MX": "Líder técnica de la billetera",
+        "en": "Wallet tech lead"
+      },
+      "avatarSeed": "daniela"
+    },
+    {
+      "codeName": "Mariana",
+      "name": "Mariana Ochoa",
+      "role": {
+        "es-MX": "Oficial de cumplimiento (PLD y KYC)",
+        "en": "Compliance officer (AML and KYC)"
+      },
+      "avatarSeed": "mariana"
+    },
+    {
+      "codeName": "Ricardo",
+      "name": "Ricardo Fuentes",
+      "role": {
+        "es-MX": "Responsable de operaciones de pagos",
+        "en": "Head of payments operations"
+      },
+      "avatarSeed": "ricardo"
+    },
+    {
+      "codeName": "Emilio",
+      "name": "Emilio Barrera",
+      "role": {
+        "es-MX": "Gerente de producto de tarjetas",
+        "en": "Card product manager"
+      },
+      "avatarSeed": "emilio"
+    }
+  ],
+  "actors": [
+    {
+      "codeName": "Applicant",
+      "label": {
+        "es-MX": "Solicitante",
+        "en": "Applicant"
+      },
+      "description": {
+        "es-MX": "Persona que quiere abrir una cuenta y todavía tiene que comprobar quién es.",
+        "en": "Person who wants to open an account and still has to prove who they are."
+      }
+    },
+    {
+      "codeName": "AccountHolder",
+      "label": {
+        "es-MX": "Titular de la cuenta",
+        "en": "Account holder"
+      },
+      "description": {
+        "es-MX": "Persona verificada que guarda, envía y gasta su dinero con la billetera.",
+        "en": "Verified person who keeps, sends and spends their money with the wallet."
+      }
+    },
+    {
+      "codeName": "ComplianceAnalyst",
+      "label": {
+        "es-MX": "Analista de cumplimiento",
+        "en": "Compliance analyst"
+      },
+      "description": {
+        "es-MX": "Persona del equipo que vigila la prevención de lavado de dinero y congela cuentas.",
+        "en": "Team member who watches over anti-money-laundering and freezes accounts."
+      }
+    },
+    {
+      "codeName": "SupportAgent",
+      "label": {
+        "es-MX": "Agente de soporte",
+        "en": "Support agent"
+      },
+      "description": {
+        "es-MX": "Persona del equipo que atiende a los clientes y resuelve bloqueos.",
+        "en": "Team member who looks after customers and resolves blocks."
+      }
+    }
+  ],
+  "externalSystems": [
+    {
+      "codeName": "SpeiNetwork",
+      "label": {
+        "es-MX": "Red SPEI de Banxico",
+        "en": "Banxico SPEI network"
+      },
+      "description": {
+        "es-MX": "El sistema de pagos interbancarios que mueve el dinero entre bancos y billeteras en segundos.",
+        "en": "The interbank payment system that moves money between banks and wallets in seconds."
+      }
+    },
+    {
+      "codeName": "IdentityProvider",
+      "label": {
+        "es-MX": "Proveedor de identidad",
+        "en": "Identity provider"
+      },
+      "description": {
+        "es-MX": "Servicio externo que valida el documento y compara la selfie con la foto.",
+        "en": "External service that validates the document and compares the selfie with the photo."
+      }
+    },
+    {
+      "codeName": "CardProcessor",
+      "label": {
+        "es-MX": "Procesador de tarjetas",
+        "en": "Card processor"
+      },
+      "description": {
+        "es-MX": "Servicio externo que fabrica las tarjetas y autoriza cada compra en la red.",
+        "en": "External service that produces the cards and authorizes every purchase on the network."
+      }
+    },
+    {
+      "codeName": "DailyCutoff",
+      "label": {
+        "es-MX": "Corte diario",
+        "en": "Daily cutoff"
+      },
+      "description": {
+        "es-MX": "Proceso nocturno que cierra el día y reinicia los acumulados de cada cuenta.",
+        "en": "Nightly process that closes the day and resets every account's running totals."
+      }
+    }
+  ],
+  "events": [
+    {
+      "codeName": "VerificationStarted",
+      "label": {
+        "es-MX": "Verificación iniciada",
+        "en": "Verification started"
+      },
+      "description": {
+        "es-MX": "Una persona empezó a comprobar su identidad con su nombre y su CURP.",
+        "en": "A person started proving their identity with their name and CURP."
+      },
+      "context": "Onboarding",
+      "sequence": 1,
+      "payload": [
+        {
+          "codeName": "verificationId",
+          "label": {
+            "es-MX": "Verificación",
+            "en": "Verification"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "VerificationId"
+          }
+        },
+        {
+          "codeName": "applicantName",
+          "label": {
+            "es-MX": "Nombre",
+            "en": "Name"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "FullName"
+          }
+        },
+        {
+          "codeName": "curp",
+          "label": {
+            "es-MX": "CURP",
+            "en": "CURP"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Curp"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DocumentsSubmitted",
+      "label": {
+        "es-MX": "Documentos entregados",
+        "en": "Documents submitted"
+      },
+      "description": {
+        "es-MX": "El solicitante subió sus documentos y la revisión puede comenzar.",
+        "en": "The applicant uploaded their documents and the review can begin."
+      },
+      "context": "Onboarding",
+      "sequence": 2,
+      "payload": [
+        {
+          "codeName": "verificationId",
+          "label": {
+            "es-MX": "Verificación",
+            "en": "Verification"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "VerificationId"
+          }
+        },
+        {
+          "codeName": "documents",
+          "label": {
+            "es-MX": "Documentos",
+            "en": "Documents"
+          },
+          "type": {
+            "kind": "list",
+            "of": {
+              "kind": "valueObject",
+              "ref": "IdentityDocument"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "IdentityVerified",
+      "label": {
+        "es-MX": "Identidad verificada",
+        "en": "Identity verified"
+      },
+      "description": {
+        "es-MX": "El proveedor confirmó que la persona es quien dice ser.",
+        "en": "The provider confirmed that the person is who they claim to be."
+      },
+      "context": "Onboarding",
+      "sequence": 3,
+      "payload": [
+        {
+          "codeName": "verificationId",
+          "label": {
+            "es-MX": "Verificación",
+            "en": "Verification"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "VerificationId"
+          }
+        },
+        {
+          "codeName": "kycLevel",
+          "label": {
+            "es-MX": "Nivel de verificación",
+            "en": "Verification level"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "KycLevel"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AccountOpened",
+      "label": {
+        "es-MX": "Cuenta abierta",
+        "en": "Account opened"
+      },
+      "description": {
+        "es-MX": "Se abrió la cuenta con su CLABE y un límite diario inicial.",
+        "en": "The account was opened with its CLABE and an initial daily limit."
+      },
+      "context": "Accounts",
+      "sequence": 4,
+      "payload": [
+        {
+          "codeName": "accountId",
+          "label": {
+            "es-MX": "Cuenta",
+            "en": "Account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AccountId"
+          }
+        },
+        {
+          "codeName": "clabe",
+          "label": {
+            "es-MX": "CLABE",
+            "en": "CLABE"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Clabe"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DepositReceived",
+      "label": {
+        "es-MX": "Depósito recibido",
+        "en": "Deposit received"
+      },
+      "description": {
+        "es-MX": "Llegó dinero a la cuenta por SPEI y el saldo subió.",
+        "en": "Money arrived in the account through SPEI and the balance went up."
+      },
+      "context": "Accounts",
+      "sequence": 5,
+      "payload": [
+        {
+          "codeName": "accountId",
+          "label": {
+            "es-MX": "Cuenta",
+            "en": "Account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AccountId"
+          }
+        },
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DailyLimitChanged",
+      "label": {
+        "es-MX": "Límite diario cambiado",
+        "en": "Daily limit changed"
+      },
+      "description": {
+        "es-MX": "El titular ajustó cuánto puede enviar cada día.",
+        "en": "The holder adjusted how much can be sent each day."
+      },
+      "context": "Accounts",
+      "sequence": 6,
+      "payload": [
+        {
+          "codeName": "accountId",
+          "label": {
+            "es-MX": "Cuenta",
+            "en": "Account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AccountId"
+          }
+        },
+        {
+          "codeName": "dailyLimit",
+          "label": {
+            "es-MX": "Límite diario",
+            "en": "Daily limit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CardRequested",
+      "label": {
+        "es-MX": "Tarjeta solicitada",
+        "en": "Card requested"
+      },
+      "description": {
+        "es-MX": "El titular pidió una tarjeta ligada a su cuenta.",
+        "en": "The holder asked for a card linked to their account."
+      },
+      "context": "Cards",
+      "sequence": 7,
+      "payload": [
+        {
+          "codeName": "cardId",
+          "label": {
+            "es-MX": "Tarjeta",
+            "en": "Card"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CardId"
+          }
+        },
+        {
+          "codeName": "accountId",
+          "label": {
+            "es-MX": "Cuenta",
+            "en": "Account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AccountId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CardIssued",
+      "label": {
+        "es-MX": "Tarjeta emitida",
+        "en": "Card issued"
+      },
+      "description": {
+        "es-MX": "El procesador fabricó la tarjeta y devolvió sus últimos cuatro dígitos.",
+        "en": "The processor produced the card and returned its last four digits."
+      },
+      "context": "Cards",
+      "sequence": 8,
+      "payload": [
+        {
+          "codeName": "cardId",
+          "label": {
+            "es-MX": "Tarjeta",
+            "en": "Card"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CardId"
+          }
+        },
+        {
+          "codeName": "lastFour",
+          "label": {
+            "es-MX": "Últimos cuatro dígitos",
+            "en": "Last four digits"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "LastFour"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CardActivated",
+      "label": {
+        "es-MX": "Tarjeta activada",
+        "en": "Card activated"
+      },
+      "description": {
+        "es-MX": "El titular activó su tarjeta y ya puede usarla.",
+        "en": "The holder activated their card and can now use it."
+      },
+      "context": "Cards",
+      "sequence": 9,
+      "payload": [
+        {
+          "codeName": "cardId",
+          "label": {
+            "es-MX": "Tarjeta",
+            "en": "Card"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CardId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PurchaseAuthorized",
+      "label": {
+        "es-MX": "Compra autorizada",
+        "en": "Purchase authorized"
+      },
+      "description": {
+        "es-MX": "La red aprobó una compra dentro del límite de la tarjeta.",
+        "en": "The network approved a purchase within the card's limit."
+      },
+      "context": "Cards",
+      "sequence": 10,
+      "payload": [
+        {
+          "codeName": "cardId",
+          "label": {
+            "es-MX": "Tarjeta",
+            "en": "Card"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CardId"
+          }
+        },
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "TransferRequested",
+      "label": {
+        "es-MX": "Transferencia solicitada",
+        "en": "Transfer requested"
+      },
+      "description": {
+        "es-MX": "El titular pidió enviar dinero a otra cuenta con un monto y un concepto.",
+        "en": "The holder asked to send money to another account with an amount and a concept."
+      },
+      "context": "Transfers",
+      "sequence": 11,
+      "payload": [
+        {
+          "codeName": "transferId",
+          "label": {
+            "es-MX": "Transferencia",
+            "en": "Transfer"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TransferId"
+          }
+        },
+        {
+          "codeName": "payerAccount",
+          "label": {
+            "es-MX": "Cuenta ordenante",
+            "en": "Payer account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Clabe"
+          }
+        },
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AccountDebited",
+      "label": {
+        "es-MX": "Cuenta debitada",
+        "en": "Account debited"
+      },
+      "description": {
+        "es-MX": "Se descontó el monto del saldo y se sumó al acumulado del día.",
+        "en": "The amount was taken from the balance and added to the day's total."
+      },
+      "context": "Accounts",
+      "sequence": 12,
+      "payload": [
+        {
+          "codeName": "accountId",
+          "label": {
+            "es-MX": "Cuenta",
+            "en": "Account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AccountId"
+          }
+        },
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "TransferSubmitted",
+      "label": {
+        "es-MX": "Transferencia enviada a SPEI",
+        "en": "Transfer submitted to SPEI"
+      },
+      "description": {
+        "es-MX": "La orden de pago salió hacia SPEI con su clave de rastreo.",
+        "en": "The payment order left for SPEI with its tracking key."
+      },
+      "context": "Transfers",
+      "sequence": 13,
+      "payload": [
+        {
+          "codeName": "transferId",
+          "label": {
+            "es-MX": "Transferencia",
+            "en": "Transfer"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TransferId"
+          }
+        },
+        {
+          "codeName": "trackingKey",
+          "label": {
+            "es-MX": "Clave de rastreo",
+            "en": "Tracking key"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TrackingKey"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "TransferSettled",
+      "label": {
+        "es-MX": "Transferencia liquidada",
+        "en": "Transfer settled"
+      },
+      "description": {
+        "es-MX": "SPEI confirmó que el banco receptor abonó el dinero.",
+        "en": "SPEI confirmed that the receiving bank credited the money."
+      },
+      "context": "Transfers",
+      "sequence": 14,
+      "payload": [
+        {
+          "codeName": "transferId",
+          "label": {
+            "es-MX": "Transferencia",
+            "en": "Transfer"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TransferId"
+          }
+        },
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "TransferRejected",
+      "label": {
+        "es-MX": "Transferencia rechazada",
+        "en": "Transfer rejected"
+      },
+      "description": {
+        "es-MX": "SPEI o el banco receptor rechazaron la orden de pago.",
+        "en": "SPEI or the receiving bank rejected the payment order."
+      },
+      "context": "Transfers",
+      "sequence": 15,
+      "payload": [
+        {
+          "codeName": "transferId",
+          "label": {
+            "es-MX": "Transferencia",
+            "en": "Transfer"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TransferId"
+          }
+        },
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DebitRefunded",
+      "label": {
+        "es-MX": "Débito devuelto",
+        "en": "Debit refunded"
+      },
+      "description": {
+        "es-MX": "El dinero de una transferencia fallida regresó al saldo de la cuenta.",
+        "en": "The money of a failed transfer went back to the account balance."
+      },
+      "context": "Accounts",
+      "sequence": 16,
+      "payload": [
+        {
+          "codeName": "accountId",
+          "label": {
+            "es-MX": "Cuenta",
+            "en": "Account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AccountId"
+          }
+        },
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AccountFrozen",
+      "label": {
+        "es-MX": "Cuenta congelada",
+        "en": "Account frozen"
+      },
+      "description": {
+        "es-MX": "Cumplimiento congeló la cuenta: ya no puede enviar dinero.",
+        "en": "Compliance froze the account: it can no longer send money."
+      },
+      "context": "Accounts",
+      "sequence": 17,
+      "payload": [
+        {
+          "codeName": "accountId",
+          "label": {
+            "es-MX": "Cuenta",
+            "en": "Account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AccountId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CardBlocked",
+      "label": {
+        "es-MX": "Tarjeta bloqueada",
+        "en": "Card blocked"
+      },
+      "description": {
+        "es-MX": "La tarjeta dejó de autorizar compras porque su cuenta se congeló.",
+        "en": "The card stopped authorizing purchases because its account was frozen."
+      },
+      "context": "Cards",
+      "sequence": 18,
+      "payload": [
+        {
+          "codeName": "cardId",
+          "label": {
+            "es-MX": "Tarjeta",
+            "en": "Card"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CardId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AccountUnfrozen",
+      "label": {
+        "es-MX": "Cuenta descongelada",
+        "en": "Account unfrozen"
+      },
+      "description": {
+        "es-MX": "Cumplimiento levantó el congelamiento y la cuenta volvió a operar.",
+        "en": "Compliance lifted the freeze and the account is operating again."
+      },
+      "context": "Accounts",
+      "sequence": 19,
+      "payload": [
+        {
+          "codeName": "accountId",
+          "label": {
+            "es-MX": "Cuenta",
+            "en": "Account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AccountId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CardUnblocked",
+      "label": {
+        "es-MX": "Tarjeta desbloqueada",
+        "en": "Card unblocked"
+      },
+      "description": {
+        "es-MX": "Soporte desbloqueó la tarjeta y puede volver a comprar.",
+        "en": "Support unblocked the card and it can buy again."
+      },
+      "context": "Cards",
+      "sequence": 20,
+      "payload": [
+        {
+          "codeName": "cardId",
+          "label": {
+            "es-MX": "Tarjeta",
+            "en": "Card"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CardId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DailySpendingReset",
+      "label": {
+        "es-MX": "Acumulado diario reiniciado",
+        "en": "Daily spending reset"
+      },
+      "description": {
+        "es-MX": "El corte diario dejó en cero lo gastado en el día.",
+        "en": "The daily cutoff set the day's spending back to zero."
+      },
+      "context": "Accounts",
+      "sequence": 21,
+      "payload": [
+        {
+          "codeName": "accountId",
+          "label": {
+            "es-MX": "Cuenta",
+            "en": "Account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AccountId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CardCancelled",
+      "label": {
+        "es-MX": "Tarjeta cancelada",
+        "en": "Card cancelled"
+      },
+      "description": {
+        "es-MX": "La tarjeta se canceló para siempre.",
+        "en": "The card was cancelled for good."
+      },
+      "context": "Cards",
+      "sequence": 22,
+      "payload": [
+        {
+          "codeName": "cardId",
+          "label": {
+            "es-MX": "Tarjeta",
+            "en": "Card"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CardId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AccountClosed",
+      "label": {
+        "es-MX": "Cuenta cerrada",
+        "en": "Account closed"
+      },
+      "description": {
+        "es-MX": "El titular cerró su cuenta con el saldo en cero.",
+        "en": "The holder closed their account with a zero balance."
+      },
+      "context": "Accounts",
+      "sequence": 23,
+      "payload": [
+        {
+          "codeName": "accountId",
+          "label": {
+            "es-MX": "Cuenta",
+            "en": "Account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AccountId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "IdentityRejected",
+      "label": {
+        "es-MX": "Identidad rechazada",
+        "en": "Identity rejected"
+      },
+      "description": {
+        "es-MX": "El proveedor no pudo comprobar la identidad y la verificación terminó.",
+        "en": "The provider could not prove the identity and the verification ended."
+      },
+      "context": "Onboarding",
+      "sequence": 24,
+      "payload": [
+        {
+          "codeName": "verificationId",
+          "label": {
+            "es-MX": "Verificación",
+            "en": "Verification"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "VerificationId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "codeName": "StartVerification",
+      "label": {
+        "es-MX": "Iniciar verificación",
+        "en": "Start verification"
+      },
+      "description": {
+        "es-MX": "Empezar a comprobar la identidad con nombre, CURP y edad.",
+        "en": "Start proving identity with name, CURP and age."
+      },
+      "context": "Onboarding",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Applicant"
+      },
+      "handledBy": "IdentityVerification",
+      "params": [
+        {
+          "codeName": "applicantName",
+          "label": {
+            "es-MX": "Nombre",
+            "en": "Name"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "FullName"
+          }
+        },
+        {
+          "codeName": "curp",
+          "label": {
+            "es-MX": "CURP",
+            "en": "CURP"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Curp"
+          }
+        },
+        {
+          "codeName": "age",
+          "label": {
+            "es-MX": "Edad",
+            "en": "Age"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Age"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "SubmitDocuments",
+      "label": {
+        "es-MX": "Entregar documentos",
+        "en": "Submit documents"
+      },
+      "description": {
+        "es-MX": "Subir los documentos que respaldan la identidad.",
+        "en": "Upload the documents that back the identity."
+      },
+      "context": "Onboarding",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Applicant"
+      },
+      "handledBy": "IdentityVerification",
+      "params": [
+        {
+          "codeName": "documents",
+          "label": {
+            "es-MX": "Documentos",
+            "en": "Documents"
+          },
+          "type": {
+            "kind": "list",
+            "of": {
+              "kind": "valueObject",
+              "ref": "IdentityDocument"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ApproveIdentity",
+      "label": {
+        "es-MX": "Aprobar identidad",
+        "en": "Approve identity"
+      },
+      "description": {
+        "es-MX": "Registrar que el proveedor comprobó la identidad y con qué nivel.",
+        "en": "Record that the provider proved the identity and at which level."
+      },
+      "context": "Onboarding",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "IdentityProvider"
+      },
+      "handledBy": "IdentityVerification",
+      "params": [
+        {
+          "codeName": "matchScore",
+          "label": {
+            "es-MX": "Coincidencia biométrica",
+            "en": "Biometric match"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "MatchScore"
+          }
+        },
+        {
+          "codeName": "kycLevel",
+          "label": {
+            "es-MX": "Nivel de verificación",
+            "en": "Verification level"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "KycLevel"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RejectIdentity",
+      "label": {
+        "es-MX": "Rechazar identidad",
+        "en": "Reject identity"
+      },
+      "description": {
+        "es-MX": "Registrar que el proveedor no pudo comprobar la identidad.",
+        "en": "Record that the provider could not prove the identity."
+      },
+      "context": "Onboarding",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "IdentityProvider"
+      },
+      "handledBy": "IdentityVerification",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "OpenAccount",
+      "label": {
+        "es-MX": "Abrir cuenta",
+        "en": "Open account"
+      },
+      "description": {
+        "es-MX": "Crear la cuenta con su CLABE y el límite diario inicial.",
+        "en": "Create the account with its CLABE and the initial daily limit."
+      },
+      "context": "Accounts",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "OpenAccountWhenVerified"
+      },
+      "handledBy": "Account",
+      "params": [
+        {
+          "codeName": "holderName",
+          "label": {
+            "es-MX": "Titular",
+            "en": "Holder"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "FullName"
+          }
+        },
+        {
+          "codeName": "clabe",
+          "label": {
+            "es-MX": "CLABE",
+            "en": "CLABE"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Clabe"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ReceiveDeposit",
+      "label": {
+        "es-MX": "Recibir depósito",
+        "en": "Receive deposit"
+      },
+      "description": {
+        "es-MX": "Abonar al saldo el dinero que llegó por SPEI.",
+        "en": "Credit the balance with the money that arrived through SPEI."
+      },
+      "context": "Accounts",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "SpeiNetwork"
+      },
+      "handledBy": "Account",
+      "params": [
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "SetDailyLimit",
+      "label": {
+        "es-MX": "Cambiar límite diario",
+        "en": "Set daily limit"
+      },
+      "description": {
+        "es-MX": "Decidir cuánto dinero puede salir de la cuenta cada día.",
+        "en": "Decide how much money can leave the account each day."
+      },
+      "context": "Accounts",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "AccountHolder"
+      },
+      "handledBy": "Account",
+      "params": [
+        {
+          "codeName": "dailyLimit",
+          "label": {
+            "es-MX": "Límite diario",
+            "en": "Daily limit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DebitAccount",
+      "label": {
+        "es-MX": "Debitar cuenta",
+        "en": "Debit account"
+      },
+      "description": {
+        "es-MX": "Descontar un monto del saldo para pagar una transferencia.",
+        "en": "Take an amount from the balance to pay for a transfer."
+      },
+      "context": "Accounts",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "DebitWhenTransferRequested"
+      },
+      "handledBy": "Account",
+      "params": [
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RefundDebit",
+      "label": {
+        "es-MX": "Devolver débito",
+        "en": "Refund debit"
+      },
+      "description": {
+        "es-MX": "Regresar al saldo el dinero de una transferencia que no salió.",
+        "en": "Return to the balance the money of a transfer that did not go out."
+      },
+      "context": "Accounts",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "RefundWhenTransferRejected"
+      },
+      "handledBy": "Account",
+      "params": [
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ResetDailySpending",
+      "label": {
+        "es-MX": "Reiniciar acumulado diario",
+        "en": "Reset daily spending"
+      },
+      "description": {
+        "es-MX": "Poner en cero lo gastado en el día al cerrar la jornada.",
+        "en": "Set the day's spending to zero when the day closes."
+      },
+      "context": "Accounts",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "DailyCutoff"
+      },
+      "handledBy": "Account",
+      "params": []
+    },
+    {
+      "codeName": "FreezeAccount",
+      "label": {
+        "es-MX": "Congelar cuenta",
+        "en": "Freeze account"
+      },
+      "description": {
+        "es-MX": "Impedir que la cuenta envíe dinero mientras se investiga.",
+        "en": "Stop the account from sending money while it is investigated."
+      },
+      "context": "Accounts",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "ComplianceAnalyst"
+      },
+      "handledBy": "Account",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "UnfreezeAccount",
+      "label": {
+        "es-MX": "Descongelar cuenta",
+        "en": "Unfreeze account"
+      },
+      "description": {
+        "es-MX": "Levantar el congelamiento y devolver la cuenta a operación normal.",
+        "en": "Lift the freeze and return the account to normal operation."
+      },
+      "context": "Accounts",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "ComplianceAnalyst"
+      },
+      "handledBy": "Account",
+      "params": []
+    },
+    {
+      "codeName": "CloseAccount",
+      "label": {
+        "es-MX": "Cerrar cuenta",
+        "en": "Close account"
+      },
+      "description": {
+        "es-MX": "Cerrar la cuenta de forma definitiva; solo se permite sin saldo.",
+        "en": "Close the account for good; it is only allowed without a balance."
+      },
+      "context": "Accounts",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "AccountHolder"
+      },
+      "handledBy": "Account",
+      "params": []
+    },
+    {
+      "codeName": "RequestTransfer",
+      "label": {
+        "es-MX": "Solicitar transferencia",
+        "en": "Request transfer"
+      },
+      "description": {
+        "es-MX": "Pedir el envío de dinero a otra cuenta con su concepto.",
+        "en": "Ask to send money to another account with its concept."
+      },
+      "context": "Transfers",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "AccountHolder"
+      },
+      "handledBy": "Transfer",
+      "params": [
+        {
+          "codeName": "payerAccount",
+          "label": {
+            "es-MX": "Cuenta ordenante",
+            "en": "Payer account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Clabe"
+          }
+        },
+        {
+          "codeName": "payeeName",
+          "label": {
+            "es-MX": "Beneficiario",
+            "en": "Payee"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "FullName"
+          }
+        },
+        {
+          "codeName": "payeeAccount",
+          "label": {
+            "es-MX": "Cuenta del beneficiario",
+            "en": "Payee account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PayeeAccountNumber"
+          }
+        },
+        {
+          "codeName": "payeeAccountKind",
+          "label": {
+            "es-MX": "Tipo de cuenta",
+            "en": "Account kind"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PayeeAccountKind"
+          }
+        },
+        {
+          "codeName": "payeeInstitution",
+          "label": {
+            "es-MX": "Banco del beneficiario",
+            "en": "Payee bank"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "InstitutionCode"
+          }
+        },
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        },
+        {
+          "codeName": "concept",
+          "label": {
+            "es-MX": "Concepto",
+            "en": "Concept"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "TransferConcept"
+            }
+          }
+        },
+        {
+          "codeName": "requestedOn",
+          "label": {
+            "es-MX": "Fecha de operación",
+            "en": "Operation date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "SubmitTransfer",
+      "label": {
+        "es-MX": "Enviar transferencia a SPEI",
+        "en": "Submit transfer to SPEI"
+      },
+      "description": {
+        "es-MX": "Mandar la orden de pago a SPEI con su clave de rastreo.",
+        "en": "Send the payment order to SPEI with its tracking key."
+      },
+      "context": "Transfers",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "SubmitWhenFundsDebited"
+      },
+      "handledBy": "Transfer",
+      "params": [
+        {
+          "codeName": "trackingKey",
+          "label": {
+            "es-MX": "Clave de rastreo",
+            "en": "Tracking key"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TrackingKey"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "SettleTransfer",
+      "label": {
+        "es-MX": "Liquidar transferencia",
+        "en": "Settle transfer"
+      },
+      "description": {
+        "es-MX": "Registrar que SPEI confirmó el abono al banco receptor.",
+        "en": "Record that SPEI confirmed the credit to the receiving bank."
+      },
+      "context": "Transfers",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "SpeiNetwork"
+      },
+      "handledBy": "Transfer",
+      "params": []
+    },
+    {
+      "codeName": "RejectTransfer",
+      "label": {
+        "es-MX": "Rechazar transferencia",
+        "en": "Reject transfer"
+      },
+      "description": {
+        "es-MX": "Registrar que SPEI rechazó la orden de pago y por qué.",
+        "en": "Record that SPEI rejected the payment order and why."
+      },
+      "context": "Transfers",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "SpeiNetwork"
+      },
+      "handledBy": "Transfer",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RequestCard",
+      "label": {
+        "es-MX": "Solicitar tarjeta",
+        "en": "Request card"
+      },
+      "description": {
+        "es-MX": "Pedir una tarjeta ligada a una cuenta; exige identidad completa.",
+        "en": "Ask for a card linked to an account; it requires a full identity."
+      },
+      "context": "Cards",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "AccountHolder"
+      },
+      "handledBy": "Card",
+      "params": [
+        {
+          "codeName": "accountId",
+          "label": {
+            "es-MX": "Cuenta",
+            "en": "Account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AccountId"
+          }
+        },
+        {
+          "codeName": "kycLevel",
+          "label": {
+            "es-MX": "Nivel de verificación",
+            "en": "Verification level"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "KycLevel"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "IssueCard",
+      "label": {
+        "es-MX": "Emitir tarjeta",
+        "en": "Issue card"
+      },
+      "description": {
+        "es-MX": "Registrar que el procesador fabricó la tarjeta.",
+        "en": "Record that the processor produced the card."
+      },
+      "context": "Cards",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "CardProcessor"
+      },
+      "handledBy": "Card",
+      "params": [
+        {
+          "codeName": "lastFour",
+          "label": {
+            "es-MX": "Últimos cuatro dígitos",
+            "en": "Last four digits"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "LastFour"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ActivateCard",
+      "label": {
+        "es-MX": "Activar tarjeta",
+        "en": "Activate card"
+      },
+      "description": {
+        "es-MX": "Dejar la tarjeta lista para comprar.",
+        "en": "Make the card ready to buy with."
+      },
+      "context": "Cards",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "AccountHolder"
+      },
+      "handledBy": "Card",
+      "params": []
+    },
+    {
+      "codeName": "AuthorizePurchase",
+      "label": {
+        "es-MX": "Autorizar compra",
+        "en": "Authorize purchase"
+      },
+      "description": {
+        "es-MX": "Aprobar una compra si cabe dentro del límite de la tarjeta.",
+        "en": "Approve a purchase if it fits within the card's limit."
+      },
+      "context": "Cards",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "CardProcessor"
+      },
+      "handledBy": "Card",
+      "params": [
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "BlockCard",
+      "label": {
+        "es-MX": "Bloquear tarjeta",
+        "en": "Block card"
+      },
+      "description": {
+        "es-MX": "Impedir compras con la tarjeta mientras su cuenta esté congelada.",
+        "en": "Prevent purchases with the card while its account is frozen."
+      },
+      "context": "Cards",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "BlockCardWhenAccountFrozen"
+      },
+      "handledBy": "Card",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "UnblockCard",
+      "label": {
+        "es-MX": "Desbloquear tarjeta",
+        "en": "Unblock card"
+      },
+      "description": {
+        "es-MX": "Permitir otra vez las compras con la tarjeta.",
+        "en": "Allow purchases with the card again."
+      },
+      "context": "Cards",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "SupportAgent"
+      },
+      "handledBy": "Card",
+      "params": []
+    },
+    {
+      "codeName": "CancelCard",
+      "label": {
+        "es-MX": "Cancelar tarjeta",
+        "en": "Cancel card"
+      },
+      "description": {
+        "es-MX": "Dar de baja la tarjeta de forma definitiva.",
+        "en": "Retire the card for good."
+      },
+      "context": "Cards",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "AccountHolder"
+      },
+      "handledBy": "Card",
+      "params": []
+    }
+  ],
+  "policies": [
+    {
+      "codeName": "OpenAccountWhenVerified",
+      "label": {
+        "es-MX": "Cuando se verifica la identidad, abrir la cuenta",
+        "en": "When identity is verified, open the account"
+      },
+      "description": {
+        "es-MX": "Cada persona verificada recibe su cuenta sin pedir nada más.",
+        "en": "Every verified person gets an account without asking for anything else."
+      },
+      "context": "Accounts",
+      "when": "IdentityVerified",
+      "then": "OpenAccount"
+    },
+    {
+      "codeName": "DebitWhenTransferRequested",
+      "label": {
+        "es-MX": "Cuando se pide una transferencia, debitar la cuenta",
+        "en": "When a transfer is requested, debit the account"
+      },
+      "description": {
+        "es-MX": "El dinero sale del saldo antes de que la orden viaje a SPEI.",
+        "en": "The money leaves the balance before the order travels to SPEI."
+      },
+      "context": "Accounts",
+      "when": "TransferRequested",
+      "then": "DebitAccount"
+    },
+    {
+      "codeName": "SubmitWhenFundsDebited",
+      "label": {
+        "es-MX": "Cuando se debita la cuenta, enviar a SPEI",
+        "en": "When the account is debited, submit to SPEI"
+      },
+      "description": {
+        "es-MX": "Solo se manda la orden de pago cuando el dinero ya se apartó.",
+        "en": "The payment order is only sent once the money has been set aside."
+      },
+      "context": "Transfers",
+      "when": "AccountDebited",
+      "then": "SubmitTransfer"
+    },
+    {
+      "codeName": "RefundWhenTransferRejected",
+      "label": {
+        "es-MX": "Cuando SPEI rechaza, devolver el dinero",
+        "en": "When SPEI rejects, refund the money"
+      },
+      "description": {
+        "es-MX": "Una transferencia rechazada nunca se queda con el dinero de la persona.",
+        "en": "A rejected transfer never keeps the person's money."
+      },
+      "context": "Accounts",
+      "when": "TransferRejected",
+      "then": "RefundDebit"
+    },
+    {
+      "codeName": "BlockCardWhenAccountFrozen",
+      "label": {
+        "es-MX": "Cuando se congela la cuenta, bloquear la tarjeta",
+        "en": "When the account is frozen, block the card"
+      },
+      "description": {
+        "es-MX": "Una cuenta congelada tampoco puede gastar con su tarjeta.",
+        "en": "A frozen account cannot spend with its card either."
+      },
+      "context": "Cards",
+      "when": "AccountFrozen",
+      "then": "BlockCard"
+    }
+  ],
+  "readModels": [
+    {
+      "codeName": "BalanceOverview",
+      "label": {
+        "es-MX": "Resumen de saldo",
+        "en": "Balance overview"
+      },
+      "description": {
+        "es-MX": "La pantalla principal: saldo, límite diario y cuánto se ha gastado hoy.",
+        "en": "The main screen: balance, daily limit and how much has been spent today."
+      },
+      "context": "Accounts",
+      "fields": [
+        {
+          "codeName": "accountId",
+          "label": {
+            "es-MX": "Cuenta",
+            "en": "Account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AccountId"
+          }
+        },
+        {
+          "codeName": "balance",
+          "label": {
+            "es-MX": "Saldo",
+            "en": "Balance"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        },
+        {
+          "codeName": "dailyLimit",
+          "label": {
+            "es-MX": "Límite diario",
+            "en": "Daily limit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ],
+      "fedBy": [
+        "AccountOpened",
+        "DepositReceived",
+        "AccountDebited",
+        "DebitRefunded",
+        "DailyLimitChanged"
+      ],
+      "usedBy": ["AccountHolder"]
+    },
+    {
+      "codeName": "TransferTracker",
+      "label": {
+        "es-MX": "Seguimiento de transferencias",
+        "en": "Transfer tracker"
+      },
+      "description": {
+        "es-MX": "El comprobante en vivo de cada transferencia, con su clave de rastreo.",
+        "en": "The live receipt of every transfer, with its tracking key."
+      },
+      "context": "Transfers",
+      "fields": [
+        {
+          "codeName": "transferId",
+          "label": {
+            "es-MX": "Transferencia",
+            "en": "Transfer"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TransferId"
+          }
+        },
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        },
+        {
+          "codeName": "trackingKey",
+          "label": {
+            "es-MX": "Clave de rastreo",
+            "en": "Tracking key"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "TrackingKey"
+            }
+          }
+        }
+      ],
+      "fedBy": ["TransferRequested", "TransferSubmitted", "TransferSettled", "TransferRejected"],
+      "usedBy": ["AccountHolder", "SupportAgent"]
+    },
+    {
+      "codeName": "ComplianceQueue",
+      "label": {
+        "es-MX": "Cola de cumplimiento",
+        "en": "Compliance queue"
+      },
+      "description": {
+        "es-MX": "Las verificaciones en curso que el equipo de cumplimiento tiene que vigilar.",
+        "en": "The verifications in progress that the compliance team has to watch."
+      },
+      "context": "Onboarding",
+      "fields": [
+        {
+          "codeName": "verificationId",
+          "label": {
+            "es-MX": "Verificación",
+            "en": "Verification"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "VerificationId"
+          }
+        },
+        {
+          "codeName": "applicantName",
+          "label": {
+            "es-MX": "Nombre",
+            "en": "Name"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "FullName"
+          }
+        }
+      ],
+      "fedBy": [
+        "VerificationStarted",
+        "DocumentsSubmitted",
+        "IdentityVerified",
+        "IdentityRejected"
+      ],
+      "usedBy": ["ComplianceAnalyst"]
+    }
+  ]
+}

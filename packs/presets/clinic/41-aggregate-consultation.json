@@ -1,0 +1,587 @@
+{
+  "aggregates": [
+    {
+      "codeName": "Consultation",
+      "label": {
+        "es-MX": "Consulta",
+        "en": "Consultation"
+      },
+      "description": {
+        "es-MX": "El encuentro clínico entre el médico y una persona: lo que observa, el diagnóstico y cuándo debe volver.",
+        "en": "The clinical encounter between the physician and a person: what is observed, the diagnosis and when they should return."
+      },
+      "context": "ClinicalCare",
+      "identity": "consultationId",
+      "fields": [
+        {
+          "codeName": "consultationId",
+          "label": {
+            "es-MX": "Consulta",
+            "en": "Consultation"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ConsultationId"
+          }
+        },
+        {
+          "codeName": "appointmentId",
+          "label": {
+            "es-MX": "Cita",
+            "en": "Appointment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AppointmentId"
+          }
+        },
+        {
+          "codeName": "patientId",
+          "label": {
+            "es-MX": "Paciente",
+            "en": "Patient"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PatientId"
+          }
+        },
+        {
+          "codeName": "profile",
+          "label": {
+            "es-MX": "Perfil clínico",
+            "en": "Clinical profile"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ClinicalProfile"
+          }
+        },
+        {
+          "codeName": "observations",
+          "label": {
+            "es-MX": "Observaciones",
+            "en": "Observations"
+          },
+          "type": {
+            "kind": "list",
+            "of": {
+              "kind": "entity",
+              "ref": "Observation"
+            }
+          }
+        },
+        {
+          "codeName": "diagnosis",
+          "label": {
+            "es-MX": "Diagnóstico",
+            "en": "Diagnosis"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "DiagnosisCode"
+            }
+          }
+        }
+      ],
+      "derived": [],
+      "entities": [
+        {
+          "codeName": "Observation",
+          "label": {
+            "es-MX": "Observación",
+            "en": "Observation"
+          },
+          "description": {
+            "es-MX": "Algo que el médico anotó durante la consulta: un síntoma, un signo o un resultado.",
+            "en": "Something the physician noted during the consultation: a symptom, a sign or a result."
+          },
+          "identity": "observationId",
+          "fields": [
+            {
+              "codeName": "observationId",
+              "label": {
+                "es-MX": "Observación",
+                "en": "Observation"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ObservationId"
+              }
+            },
+            {
+              "codeName": "kind",
+              "label": {
+                "es-MX": "Tipo",
+                "en": "Kind"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ObservationKind"
+              }
+            },
+            {
+              "codeName": "note",
+              "label": {
+                "es-MX": "Nota",
+                "en": "Note"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ObservationNote"
+              }
+            }
+          ],
+          "derived": []
+        }
+      ],
+      "states": [
+        {
+          "codeName": "Pending",
+          "label": {
+            "es-MX": "Pendiente",
+            "en": "Pending"
+          },
+          "description": {
+            "es-MX": "La consulta existe pero la persona aún no llega.",
+            "en": "The consultation exists but the person has not arrived yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Waiting",
+          "label": {
+            "es-MX": "En espera",
+            "en": "Waiting"
+          },
+          "description": {
+            "es-MX": "El expediente está abierto y la persona espera en la sala.",
+            "en": "The file is open and the person waits in the waiting room."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "InProgress",
+          "label": {
+            "es-MX": "En consulta",
+            "en": "In progress"
+          },
+          "description": {
+            "es-MX": "El médico atiende a la persona y registra lo que observa.",
+            "en": "The physician is seeing the person and recording what is observed."
+          },
+          "terminal": false,
+          "data": [
+            {
+              "codeName": "startedAt",
+              "label": {
+                "es-MX": "Inicio de la consulta",
+                "en": "Consultation start"
+              },
+              "type": {
+                "kind": "primitive",
+                "name": "timestamp"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Closed",
+          "label": {
+            "es-MX": "Cerrada",
+            "en": "Closed"
+          },
+          "description": {
+            "es-MX": "La consulta terminó con su diagnóstico y fecha de seguimiento.",
+            "en": "The consultation ended with its diagnosis and follow-up date."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "followUpDays",
+              "label": {
+                "es-MX": "Días para el seguimiento",
+                "en": "Follow-up days"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "FollowUpDays"
+              }
+            }
+          ]
+        }
+      ],
+      "initialState": "Pending",
+      "rules": [
+        {
+          "codeName": "DiagnosisNeedsObservations",
+          "label": {
+            "es-MX": "El diagnóstico se apoya en observaciones",
+            "en": "A diagnosis rests on observations"
+          },
+          "description": {
+            "es-MX": "No se diagnostica sin haber anotado al menos una observación.",
+            "en": "Nobody is diagnosed without at least one recorded observation."
+          },
+          "predicate": {
+            "kind": "notEmpty",
+            "value": {
+              "op": "field",
+              "name": "observations"
+            }
+          },
+          "message": {
+            "es-MX": "Registra al menos una observación antes del diagnóstico.",
+            "en": "Record at least one observation before the diagnosis."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenConsultation",
+                "args": {}
+              },
+              {
+                "command": "StartConsultation",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "RecordDiagnosis",
+              "args": {}
+            }
+          }
+        },
+        {
+          "codeName": "DiagnosisRequiredToClose",
+          "label": {
+            "es-MX": "No se cierra la consulta sin diagnóstico",
+            "en": "A consultation cannot close without a diagnosis"
+          },
+          "description": {
+            "es-MX": "Toda consulta termina con un diagnóstico registrado.",
+            "en": "Every consultation ends with a recorded diagnosis."
+          },
+          "predicate": {
+            "kind": "present",
+            "value": {
+              "op": "field",
+              "name": "diagnosis"
+            }
+          },
+          "message": {
+            "es-MX": "Falta registrar el diagnóstico para cerrar la consulta.",
+            "en": "The diagnosis must be recorded to close the consultation."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenConsultation",
+                "args": {}
+              },
+              {
+                "command": "StartConsultation",
+                "args": {}
+              },
+              {
+                "command": "RecordObservation",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "CloseConsultation",
+              "args": {}
+            }
+          }
+        },
+        {
+          "codeName": "FollowUpWithinLimit",
+          "label": {
+            "es-MX": "El seguimiento no pasa de 90 días",
+            "en": "Follow-up cannot exceed 90 days"
+          },
+          "description": {
+            "es-MX": "Más allá de tres meses ya no es seguimiento, es una consulta nueva.",
+            "en": "Beyond three months it is no longer follow-up, it is a new consultation."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "followUpDays"
+            },
+            "operator": "<=",
+            "right": {
+              "op": "literal",
+              "value": 90
+            }
+          },
+          "message": {
+            "es-MX": "El seguimiento puede ser dentro de 90 días como máximo.",
+            "en": "Follow-up can be at most 90 days away."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenConsultation",
+                "args": {}
+              },
+              {
+                "command": "StartConsultation",
+                "args": {}
+              },
+              {
+                "command": "RecordObservation",
+                "args": {}
+              },
+              {
+                "command": "RecordDiagnosis",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "CloseConsultation",
+              "args": {
+                "followUpDays": 120
+              }
+            }
+          }
+        },
+        {
+          "codeName": "ObservationsWithinLimit",
+          "label": {
+            "es-MX": "Una consulta registra hasta 8 observaciones",
+            "en": "A consultation records up to 8 observations"
+          },
+          "description": {
+            "es-MX": "Lo que no cabe en 8 observaciones merece su propia consulta de seguimiento.",
+            "en": "Whatever does not fit in 8 observations deserves its own follow-up consultation."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "count",
+              "collection": {
+                "op": "field",
+                "name": "observations"
+              }
+            },
+            "operator": "<=",
+            "right": {
+              "op": "literal",
+              "value": 8
+            }
+          },
+          "message": {
+            "es-MX": "Una consulta admite como máximo 8 observaciones.",
+            "en": "A consultation allows at most 8 observations."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenConsultation",
+                "args": {}
+              },
+              {
+                "command": "StartConsultation",
+                "args": {}
+              },
+              {
+                "command": "RecordObservation",
+                "args": {}
+              },
+              {
+                "command": "RecordObservation",
+                "args": {}
+              },
+              {
+                "command": "RecordObservation",
+                "args": {}
+              },
+              {
+                "command": "RecordObservation",
+                "args": {}
+              },
+              {
+                "command": "RecordObservation",
+                "args": {}
+              },
+              {
+                "command": "RecordObservation",
+                "args": {}
+              },
+              {
+                "command": "RecordObservation",
+                "args": {}
+              },
+              {
+                "command": "RecordObservation",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "RecordObservation",
+              "args": {}
+            }
+          }
+        }
+      ],
+      "invariants": ["ObservationsWithinLimit"],
+      "transitions": [
+        {
+          "command": "OpenConsultation",
+          "from": ["Pending"],
+          "to": "Waiting",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "appointmentId",
+              "value": {
+                "op": "arg",
+                "name": "appointmentId"
+              }
+            },
+            {
+              "op": "set",
+              "field": "patientId",
+              "value": {
+                "op": "arg",
+                "name": "patientId"
+              }
+            },
+            {
+              "op": "set",
+              "field": "profile",
+              "value": {
+                "op": "arg",
+                "name": "profile"
+              }
+            }
+          ],
+          "emits": ["ConsultationOpened"]
+        },
+        {
+          "command": "StartConsultation",
+          "from": ["Waiting"],
+          "to": "InProgress",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "startedAt",
+              "value": {
+                "op": "arg",
+                "name": "startedAt"
+              }
+            }
+          ],
+          "emits": ["ConsultationStarted"]
+        },
+        {
+          "command": "RecordObservation",
+          "from": ["InProgress"],
+          "to": "InProgress",
+          "guards": [],
+          "effects": [
+            {
+              "op": "append",
+              "field": "observations",
+              "value": {
+                "op": "construct",
+                "type": "Observation",
+                "fields": [
+                  {
+                    "name": "observationId",
+                    "value": {
+                      "op": "arg",
+                      "name": "observationId"
+                    }
+                  },
+                  {
+                    "name": "kind",
+                    "value": {
+                      "op": "arg",
+                      "name": "kind"
+                    }
+                  },
+                  {
+                    "name": "note",
+                    "value": {
+                      "op": "arg",
+                      "name": "note"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "emits": ["ObservationRecorded"]
+        },
+        {
+          "command": "RecordDiagnosis",
+          "from": ["InProgress"],
+          "to": "InProgress",
+          "guards": ["DiagnosisNeedsObservations"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "diagnosis",
+              "value": {
+                "op": "arg",
+                "name": "diagnosis"
+              }
+            }
+          ],
+          "emits": ["DiagnosisRecorded"]
+        },
+        {
+          "command": "CloseConsultation",
+          "from": ["InProgress"],
+          "to": "Closed",
+          "guards": ["DiagnosisRequiredToClose", "FollowUpWithinLimit"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "followUpDays",
+              "value": {
+                "op": "arg",
+                "name": "followUpDays"
+              }
+            }
+          ],
+          "emits": ["ConsultationClosed"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "OpenConsultation",
+          "args": {}
+        },
+        {
+          "command": "StartConsultation",
+          "args": {
+            "startedAt": "2026-03-10T10:00:00Z"
+          }
+        },
+        {
+          "command": "RecordObservation",
+          "args": {}
+        },
+        {
+          "command": "RecordDiagnosis",
+          "args": {}
+        },
+        {
+          "command": "CloseConsultation",
+          "args": {
+            "followUpDays": 14
+          }
+        }
+      ]
+    }
+  ]
+}

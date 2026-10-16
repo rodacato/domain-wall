@@ -1,0 +1,612 @@
+{
+  "aggregates": [
+    {
+      "codeName": "Route",
+      "label": {
+        "es-MX": "Ruta",
+        "en": "Route"
+      },
+      "description": {
+        "es-MX": "El recorrido de un repartidor en un turno: sus paradas, su carga y su estado.",
+        "en": "A driver's trip during a shift: its stops, its load and its status."
+      },
+      "context": "Dispatching",
+      "identity": "routeId",
+      "fields": [
+        {
+          "codeName": "routeId",
+          "label": {
+            "es-MX": "Ruta",
+            "en": "Route"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RouteId"
+          }
+        },
+        {
+          "codeName": "stops",
+          "label": {
+            "es-MX": "Paradas",
+            "en": "Stops"
+          },
+          "type": {
+            "kind": "list",
+            "of": {
+              "kind": "entity",
+              "ref": "RouteStop"
+            }
+          }
+        }
+      ],
+      "derived": [
+        {
+          "codeName": "loadGrams",
+          "label": {
+            "es-MX": "Carga en gramos",
+            "en": "Load in grams"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "LoadGrams"
+          },
+          "expression": {
+            "op": "sumOf",
+            "collection": {
+              "op": "field",
+              "name": "stops"
+            },
+            "term": {
+              "op": "field",
+              "name": "weightGrams"
+            }
+          }
+        }
+      ],
+      "entities": [
+        {
+          "codeName": "RouteStop",
+          "label": {
+            "es-MX": "Parada",
+            "en": "Stop"
+          },
+          "description": {
+            "es-MX": "Un punto de la ruta: lleva el peso del paquete y su código postal.",
+            "en": "A point on the route: it carries the parcel's weight and its postal code."
+          },
+          "identity": "stopId",
+          "fields": [
+            {
+              "codeName": "stopId",
+              "label": {
+                "es-MX": "Parada",
+                "en": "Stop"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "StopId"
+              }
+            },
+            {
+              "codeName": "parcelId",
+              "label": {
+                "es-MX": "Paquete",
+                "en": "Parcel"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ParcelId"
+              }
+            },
+            {
+              "codeName": "weightGrams",
+              "label": {
+                "es-MX": "Peso en gramos",
+                "en": "Weight in grams"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "WeightGrams"
+              }
+            },
+            {
+              "codeName": "postalCode",
+              "label": {
+                "es-MX": "Código postal",
+                "en": "Postal code"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "PostalCode"
+              }
+            },
+            {
+              "codeName": "position",
+              "label": {
+                "es-MX": "Posición en la ruta",
+                "en": "Position on the route"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "StopPosition"
+              }
+            }
+          ],
+          "derived": []
+        }
+      ],
+      "states": [
+        {
+          "codeName": "Open",
+          "label": {
+            "es-MX": "Abierta",
+            "en": "Open"
+          },
+          "description": {
+            "es-MX": "La ruta recibe paradas mientras quepan en la camioneta.",
+            "en": "The route takes stops as long as they fit in the van."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Assigned",
+          "label": {
+            "es-MX": "Asignada",
+            "en": "Assigned"
+          },
+          "description": {
+            "es-MX": "La ruta ya tiene repartidor y espera salir.",
+            "en": "The route has a driver and is waiting to leave."
+          },
+          "terminal": false,
+          "data": [
+            {
+              "codeName": "driverId",
+              "label": {
+                "es-MX": "Repartidor",
+                "en": "Driver"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "DriverId"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "InProgress",
+          "label": {
+            "es-MX": "En curso",
+            "en": "In progress"
+          },
+          "description": {
+            "es-MX": "La camioneta salió del hub a repartir.",
+            "en": "The van left the hub to deliver."
+          },
+          "terminal": false,
+          "data": [
+            {
+              "codeName": "departedAt",
+              "label": {
+                "es-MX": "Hora de salida",
+                "en": "Departure time"
+              },
+              "type": {
+                "kind": "primitive",
+                "name": "timestamp"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Completed",
+          "label": {
+            "es-MX": "Terminada",
+            "en": "Completed"
+          },
+          "description": {
+            "es-MX": "El repartidor cerró la ruta y reportó sus paradas.",
+            "en": "The driver closed the route and reported its stops."
+          },
+          "terminal": true,
+          "data": []
+        },
+        {
+          "codeName": "Cancelled",
+          "label": {
+            "es-MX": "Cancelada",
+            "en": "Cancelled"
+          },
+          "description": {
+            "es-MX": "Despacho canceló la ruta antes de salir.",
+            "en": "Dispatching cancelled the route before it left."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "cancellationReason",
+              "label": {
+                "es-MX": "Motivo de cancelación",
+                "en": "Cancellation reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "CancellationReason"
+              }
+            }
+          ]
+        }
+      ],
+      "initialState": "Open",
+      "rules": [
+        {
+          "codeName": "RouteWithinVehicleCapacity",
+          "label": {
+            "es-MX": "La carga cabe en la camioneta",
+            "en": "The load fits in the van"
+          },
+          "description": {
+            "es-MX": "Una camioneta de reparto carga como máximo 150 kg.",
+            "en": "A delivery van carries 150 kg at most."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arithmetic",
+              "operator": "add",
+              "left": {
+                "op": "field",
+                "name": "loadGrams"
+              },
+              "right": {
+                "op": "arg",
+                "name": "weightGrams"
+              }
+            },
+            "operator": "<=",
+            "right": {
+              "op": "literal",
+              "value": 150000
+            }
+          },
+          "message": {
+            "es-MX": "La camioneta no admite más de 150 kg.",
+            "en": "The van cannot carry more than 150 kg."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "AddRouteStop",
+                "args": {
+                  "weightGrams": 100000,
+                  "stopId": "stp_6b2k9c4t",
+                  "parcelId": "pcl_8w4y6e2l",
+                  "postalCode": "06700",
+                  "position": 1
+                }
+              }
+            ],
+            "when": {
+              "command": "AddRouteStop",
+              "args": {
+                "weightGrams": 60000,
+                "stopId": "stp_6b2k9c4t",
+                "parcelId": "pcl_8w4y6e2l",
+                "postalCode": "06700",
+                "position": 1
+              }
+            }
+          }
+        },
+        {
+          "codeName": "RouteStopsWithinLimit",
+          "label": {
+            "es-MX": "La ruta tiene un máximo de paradas",
+            "en": "The route has a maximum number of stops"
+          },
+          "description": {
+            "es-MX": "Una ruta admite hasta 8 paradas para poder terminarse en un turno.",
+            "en": "A route holds up to 8 stops so it can be finished in one shift."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "count",
+              "collection": {
+                "op": "field",
+                "name": "stops"
+              }
+            },
+            "operator": "<=",
+            "right": {
+              "op": "literal",
+              "value": 8
+            }
+          },
+          "message": {
+            "es-MX": "Una ruta admite como máximo 8 paradas.",
+            "en": "A route can have at most 8 stops."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "AddRouteStop",
+                "args": {}
+              },
+              {
+                "command": "AddRouteStop",
+                "args": {}
+              },
+              {
+                "command": "AddRouteStop",
+                "args": {}
+              },
+              {
+                "command": "AddRouteStop",
+                "args": {}
+              },
+              {
+                "command": "AddRouteStop",
+                "args": {}
+              },
+              {
+                "command": "AddRouteStop",
+                "args": {}
+              },
+              {
+                "command": "AddRouteStop",
+                "args": {}
+              },
+              {
+                "command": "AddRouteStop",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "AddRouteStop",
+              "args": {}
+            }
+          }
+        },
+        {
+          "codeName": "RouteMustHaveStops",
+          "label": {
+            "es-MX": "La ruta debe tener paradas",
+            "en": "The route must have stops"
+          },
+          "description": {
+            "es-MX": "No se asigna repartidor a una ruta vacía.",
+            "en": "No driver is assigned to an empty route."
+          },
+          "predicate": {
+            "kind": "notEmpty",
+            "value": {
+              "op": "field",
+              "name": "stops"
+            }
+          },
+          "message": {
+            "es-MX": "Una ruta necesita al menos una parada.",
+            "en": "A route needs at least one stop."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "AssignDriver",
+              "args": {}
+            }
+          }
+        },
+        {
+          "codeName": "DeliveredStopsWithinRoute",
+          "label": {
+            "es-MX": "No se atienden más paradas de las que hay",
+            "en": "No more stops are handled than exist"
+          },
+          "description": {
+            "es-MX": "El cierre no puede reportar más paradas atendidas que las de la ruta.",
+            "en": "The closing report cannot claim more handled stops than the route has."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "deliveredStops"
+            },
+            "operator": "<=",
+            "right": {
+              "op": "count",
+              "collection": {
+                "op": "field",
+                "name": "stops"
+              }
+            }
+          },
+          "message": {
+            "es-MX": "Las paradas atendidas no pueden superar las de la ruta.",
+            "en": "Handled stops cannot exceed the stops on the route."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "AddRouteStop",
+                "args": {}
+              },
+              {
+                "command": "AssignDriver",
+                "args": {}
+              },
+              {
+                "command": "StartRoute",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "CompleteRoute",
+              "args": {
+                "deliveredStops": 5
+              }
+            }
+          }
+        }
+      ],
+      "invariants": ["RouteStopsWithinLimit"],
+      "transitions": [
+        {
+          "command": "AddRouteStop",
+          "from": ["Open"],
+          "to": "Open",
+          "guards": ["RouteWithinVehicleCapacity"],
+          "effects": [
+            {
+              "op": "append",
+              "field": "stops",
+              "value": {
+                "op": "construct",
+                "type": "RouteStop",
+                "fields": [
+                  {
+                    "name": "stopId",
+                    "value": {
+                      "op": "arg",
+                      "name": "stopId"
+                    }
+                  },
+                  {
+                    "name": "parcelId",
+                    "value": {
+                      "op": "arg",
+                      "name": "parcelId"
+                    }
+                  },
+                  {
+                    "name": "weightGrams",
+                    "value": {
+                      "op": "arg",
+                      "name": "weightGrams"
+                    }
+                  },
+                  {
+                    "name": "postalCode",
+                    "value": {
+                      "op": "arg",
+                      "name": "postalCode"
+                    }
+                  },
+                  {
+                    "name": "position",
+                    "value": {
+                      "op": "arg",
+                      "name": "position"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "emits": ["RouteStopAdded"]
+        },
+        {
+          "command": "AssignDriver",
+          "from": ["Open"],
+          "to": "Assigned",
+          "guards": ["RouteMustHaveStops"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "driverId",
+              "value": {
+                "op": "arg",
+                "name": "driverId"
+              }
+            }
+          ],
+          "emits": ["RouteDriverAssigned"]
+        },
+        {
+          "command": "StartRoute",
+          "from": ["Assigned"],
+          "to": "InProgress",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "departedAt",
+              "value": {
+                "op": "arg",
+                "name": "departedAt"
+              }
+            }
+          ],
+          "emits": ["RouteStarted"]
+        },
+        {
+          "command": "CompleteRoute",
+          "from": ["InProgress"],
+          "to": "Completed",
+          "guards": ["DeliveredStopsWithinRoute"],
+          "effects": [],
+          "emits": ["RouteCompleted"]
+        },
+        {
+          "command": "CancelRoute",
+          "from": ["Open", "Assigned"],
+          "to": "Cancelled",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "cancellationReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["RouteCancelled"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "AddRouteStop",
+          "args": {
+            "weightGrams": 2300,
+            "stopId": "stp_6b2k9c4t",
+            "parcelId": "pcl_8w4y6e2l",
+            "postalCode": "06700",
+            "position": 1
+          }
+        },
+        {
+          "command": "AddRouteStop",
+          "args": {
+            "stopId": "stp_7c3m1d5y",
+            "parcelId": "pcl_4n9q2w6e",
+            "weightGrams": 800,
+            "postalCode": "03100",
+            "position": 2
+          }
+        },
+        {
+          "command": "AssignDriver",
+          "args": {
+            "driverId": "drv_5t1x8r4n"
+          }
+        },
+        {
+          "command": "StartRoute",
+          "args": {
+            "departedAt": "2026-03-14T08:30:00Z"
+          }
+        },
+        {
+          "command": "CompleteRoute",
+          "args": {
+            "deliveredStops": 2
+          }
+        }
+      ]
+    }
+  ]
+}

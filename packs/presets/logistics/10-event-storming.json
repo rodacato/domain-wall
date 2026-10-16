@@ -1,0 +1,2053 @@
+{
+  "experts": [
+    {
+      "codeName": "Camila",
+      "name": "Camila Ortega",
+      "role": {
+        "es-MX": "Líder técnica de la plataforma de reparto",
+        "en": "Delivery platform tech lead"
+      },
+      "avatarSeed": "camila"
+    },
+    {
+      "codeName": "Rosario",
+      "name": "Rosario Quintero",
+      "role": {
+        "es-MX": "Despachadora de rutas",
+        "en": "Route dispatcher"
+      },
+      "avatarSeed": "rosario"
+    },
+    {
+      "codeName": "Nacho",
+      "name": "Nacho Peña",
+      "role": {
+        "es-MX": "Repartidor con cinco años en la zona centro",
+        "en": "Driver with five years in the downtown zone"
+      },
+      "avatarSeed": "nacho"
+    },
+    {
+      "codeName": "Valeria",
+      "name": "Valeria Montoya",
+      "role": {
+        "es-MX": "Supervisora del centro de distribución",
+        "en": "Distribution hub supervisor"
+      },
+      "avatarSeed": "valeria"
+    }
+  ],
+  "actors": [
+    {
+      "codeName": "Customer",
+      "label": {
+        "es-MX": "Cliente",
+        "en": "Customer"
+      },
+      "description": {
+        "es-MX": "Quien espera el paquete y elige cuándo recibirlo.",
+        "en": "The person waiting for the parcel who chooses when to receive it."
+      }
+    },
+    {
+      "codeName": "Dispatcher",
+      "label": {
+        "es-MX": "Despachador",
+        "en": "Dispatcher"
+      },
+      "description": {
+        "es-MX": "Planea las rutas del día y asigna a cada repartidor.",
+        "en": "Plans the day's routes and assigns each driver."
+      }
+    },
+    {
+      "codeName": "Driver",
+      "label": {
+        "es-MX": "Repartidor",
+        "en": "Driver"
+      },
+      "description": {
+        "es-MX": "Lleva los paquetes en la camioneta y los entrega en la puerta.",
+        "en": "Carries the parcels in the van and hands them over at the door."
+      }
+    },
+    {
+      "codeName": "HubSupervisor",
+      "label": {
+        "es-MX": "Supervisor del hub",
+        "en": "Hub supervisor"
+      },
+      "description": {
+        "es-MX": "Vigila el almacén: clasifica, devuelve y libera pagos.",
+        "en": "Oversees the warehouse: sorts, returns and releases payouts."
+      }
+    }
+  ],
+  "externalSystems": [
+    {
+      "codeName": "HubScanner",
+      "label": {
+        "es-MX": "Escáner del hub",
+        "en": "Hub scanner"
+      },
+      "description": {
+        "es-MX": "Arco de escaneo que lee la guía y pesa cada paquete al entrar.",
+        "en": "Scanning gate that reads the label and weighs each parcel on entry."
+      }
+    },
+    {
+      "codeName": "RouteOptimizer",
+      "label": {
+        "es-MX": "Optimizador de rutas",
+        "en": "Route optimizer"
+      },
+      "description": {
+        "es-MX": "Servicio de mapas que ordena las paradas y estima tiempos de manejo.",
+        "en": "Mapping service that orders the stops and estimates driving times."
+      }
+    },
+    {
+      "codeName": "BankTransferService",
+      "label": {
+        "es-MX": "Servicio de transferencias SPEI",
+        "en": "SPEI bank transfer service"
+      },
+      "description": {
+        "es-MX": "El banco que ejecuta las transferencias para liquidar a los comercios.",
+        "en": "The bank that executes the transfers that settle merchants."
+      }
+    }
+  ],
+  "events": [
+    {
+      "codeName": "ParcelReceived",
+      "label": {
+        "es-MX": "Paquete recibido en el hub",
+        "en": "Parcel received at the hub"
+      },
+      "description": {
+        "es-MX": "El escáner leyó la guía y registró el peso del paquete.",
+        "en": "The scanner read the label and recorded the parcel's weight."
+      },
+      "context": "Warehouse",
+      "sequence": 1,
+      "payload": [
+        {
+          "codeName": "parcelId",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Parcel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ParcelId"
+          }
+        },
+        {
+          "codeName": "trackingCode",
+          "label": {
+            "es-MX": "Número de guía",
+            "en": "Tracking code"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TrackingCode"
+          }
+        },
+        {
+          "codeName": "weightGrams",
+          "label": {
+            "es-MX": "Peso en gramos",
+            "en": "Weight in grams"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "WeightGrams"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DeliveryScheduled",
+      "label": {
+        "es-MX": "Entrega agendada",
+        "en": "Delivery scheduled"
+      },
+      "description": {
+        "es-MX": "El cliente eligió el día y la ventana de horario para recibir.",
+        "en": "The customer picked the day and time window to receive the parcel."
+      },
+      "context": "Doorstep",
+      "sequence": 2,
+      "payload": [
+        {
+          "codeName": "deliveryId",
+          "label": {
+            "es-MX": "Entrega",
+            "en": "Delivery"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DeliveryId"
+          }
+        },
+        {
+          "codeName": "parcelId",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Parcel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ParcelId"
+          }
+        },
+        {
+          "codeName": "deliveryDate",
+          "label": {
+            "es-MX": "Fecha de entrega",
+            "en": "Delivery date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ParcelSorted",
+      "label": {
+        "es-MX": "Paquete clasificado",
+        "en": "Parcel sorted"
+      },
+      "description": {
+        "es-MX": "El paquete quedó en el casillero de su zona de destino.",
+        "en": "The parcel was placed in the bin of its destination zone."
+      },
+      "context": "Warehouse",
+      "sequence": 3,
+      "payload": [
+        {
+          "codeName": "parcelId",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Parcel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ParcelId"
+          }
+        },
+        {
+          "codeName": "destinationZone",
+          "label": {
+            "es-MX": "Zona de destino",
+            "en": "Destination zone"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ServiceZone"
+          }
+        },
+        {
+          "codeName": "binCode",
+          "label": {
+            "es-MX": "Casillero",
+            "en": "Bin"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "BinCode"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RouteStopAdded",
+      "label": {
+        "es-MX": "Parada agregada a la ruta",
+        "en": "Stop added to the route"
+      },
+      "description": {
+        "es-MX": "Se sumó una parada con su peso a la ruta del día.",
+        "en": "A stop with its weight was added to the day's route."
+      },
+      "context": "Dispatching",
+      "sequence": 4,
+      "payload": [
+        {
+          "codeName": "routeId",
+          "label": {
+            "es-MX": "Ruta",
+            "en": "Route"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RouteId"
+          }
+        },
+        {
+          "codeName": "stopId",
+          "label": {
+            "es-MX": "Parada",
+            "en": "Stop"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StopId"
+          }
+        },
+        {
+          "codeName": "parcelId",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Parcel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ParcelId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RouteDriverAssigned",
+      "label": {
+        "es-MX": "Repartidor asignado a la ruta",
+        "en": "Driver assigned to the route"
+      },
+      "description": {
+        "es-MX": "Despacho asignó a una persona para recorrer la ruta.",
+        "en": "Dispatching assigned a person to drive the route."
+      },
+      "context": "Dispatching",
+      "sequence": 5,
+      "payload": [
+        {
+          "codeName": "routeId",
+          "label": {
+            "es-MX": "Ruta",
+            "en": "Route"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RouteId"
+          }
+        },
+        {
+          "codeName": "driverId",
+          "label": {
+            "es-MX": "Repartidor",
+            "en": "Driver"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DriverId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ParcelLoaded",
+      "label": {
+        "es-MX": "Paquete cargado en la camioneta",
+        "en": "Parcel loaded onto the van"
+      },
+      "description": {
+        "es-MX": "El paquete salió del almacén rumbo a su ruta.",
+        "en": "The parcel left the warehouse on its way to its route."
+      },
+      "context": "Warehouse",
+      "sequence": 6,
+      "payload": [
+        {
+          "codeName": "parcelId",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Parcel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ParcelId"
+          }
+        },
+        {
+          "codeName": "routeId",
+          "label": {
+            "es-MX": "Ruta",
+            "en": "Route"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RouteId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RouteStarted",
+      "label": {
+        "es-MX": "Ruta iniciada",
+        "en": "Route started"
+      },
+      "description": {
+        "es-MX": "El repartidor salió del hub con la camioneta cargada.",
+        "en": "The driver left the hub with a loaded van."
+      },
+      "context": "Dispatching",
+      "sequence": 7,
+      "payload": [
+        {
+          "codeName": "routeId",
+          "label": {
+            "es-MX": "Ruta",
+            "en": "Route"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RouteId"
+          }
+        },
+        {
+          "codeName": "driverId",
+          "label": {
+            "es-MX": "Repartidor",
+            "en": "Driver"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DriverId"
+          }
+        },
+        {
+          "codeName": "departedAt",
+          "label": {
+            "es-MX": "Hora de salida",
+            "en": "Departure time"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "timestamp"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DeliveryStarted",
+      "label": {
+        "es-MX": "Entrega en camino",
+        "en": "Delivery on its way"
+      },
+      "description": {
+        "es-MX": "El paquete va en la camioneta hacia la dirección del cliente.",
+        "en": "The parcel is on the van heading to the customer's address."
+      },
+      "context": "Doorstep",
+      "sequence": 8,
+      "payload": [
+        {
+          "codeName": "deliveryId",
+          "label": {
+            "es-MX": "Entrega",
+            "en": "Delivery"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DeliveryId"
+          }
+        },
+        {
+          "codeName": "driverId",
+          "label": {
+            "es-MX": "Repartidor",
+            "en": "Driver"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DriverId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DeliveryAttemptFailed",
+      "label": {
+        "es-MX": "Intento de entrega fallido",
+        "en": "Delivery attempt failed"
+      },
+      "description": {
+        "es-MX": "El repartidor llegó, pero no pudo entregar el paquete.",
+        "en": "The driver arrived but could not hand over the parcel."
+      },
+      "context": "Doorstep",
+      "sequence": 9,
+      "payload": [
+        {
+          "codeName": "deliveryId",
+          "label": {
+            "es-MX": "Entrega",
+            "en": "Delivery"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DeliveryId"
+          }
+        },
+        {
+          "codeName": "attemptCount",
+          "label": {
+            "es-MX": "Intentos de entrega",
+            "en": "Delivery attempts"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AttemptCount"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DeliveryRescheduled",
+      "label": {
+        "es-MX": "Entrega reagendada",
+        "en": "Delivery rescheduled"
+      },
+      "description": {
+        "es-MX": "El cliente eligió nuevo día y ventana tras el intento fallido.",
+        "en": "The customer chose a new day and window after the failed attempt."
+      },
+      "context": "Doorstep",
+      "sequence": 10,
+      "payload": [
+        {
+          "codeName": "deliveryId",
+          "label": {
+            "es-MX": "Entrega",
+            "en": "Delivery"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DeliveryId"
+          }
+        },
+        {
+          "codeName": "deliveryDate",
+          "label": {
+            "es-MX": "Fecha de entrega",
+            "en": "Delivery date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DeliveryCompleted",
+      "label": {
+        "es-MX": "Entrega completada",
+        "en": "Delivery completed"
+      },
+      "description": {
+        "es-MX": "El paquete llegó a manos del cliente, con evidencia y cobro cuadrado.",
+        "en": "The parcel reached the customer, with proof and the cash matched."
+      },
+      "context": "Doorstep",
+      "sequence": 11,
+      "payload": [
+        {
+          "codeName": "deliveryId",
+          "label": {
+            "es-MX": "Entrega",
+            "en": "Delivery"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DeliveryId"
+          }
+        },
+        {
+          "codeName": "cashCollected",
+          "label": {
+            "es-MX": "Efectivo cobrado",
+            "en": "Cash collected"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CashCollectionRecorded",
+      "label": {
+        "es-MX": "Cobro contra entrega registrado",
+        "en": "Cash on delivery recorded"
+      },
+      "description": {
+        "es-MX": "Liquidación anotó el efectivo que el repartidor cobró.",
+        "en": "Settlement noted the cash the driver collected."
+      },
+      "context": "Settlement",
+      "sequence": 12,
+      "payload": [
+        {
+          "codeName": "remittanceId",
+          "label": {
+            "es-MX": "Liquidación",
+            "en": "Remittance"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RemittanceId"
+          }
+        },
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RouteCompleted",
+      "label": {
+        "es-MX": "Ruta terminada",
+        "en": "Route completed"
+      },
+      "description": {
+        "es-MX": "El repartidor volvió al hub y reportó cuántas paradas cerró.",
+        "en": "The driver returned to the hub and reported how many stops were closed."
+      },
+      "context": "Dispatching",
+      "sequence": 13,
+      "payload": [
+        {
+          "codeName": "routeId",
+          "label": {
+            "es-MX": "Ruta",
+            "en": "Route"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RouteId"
+          }
+        },
+        {
+          "codeName": "deliveredStops",
+          "label": {
+            "es-MX": "Paradas atendidas",
+            "en": "Stops handled"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StopCount"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CashDeposited",
+      "label": {
+        "es-MX": "Efectivo depositado",
+        "en": "Cash deposited"
+      },
+      "description": {
+        "es-MX": "El repartidor entregó en caja el efectivo cobrado.",
+        "en": "The driver handed the collected cash to the cashier."
+      },
+      "context": "Settlement",
+      "sequence": 14,
+      "payload": [
+        {
+          "codeName": "remittanceId",
+          "label": {
+            "es-MX": "Liquidación",
+            "en": "Remittance"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RemittanceId"
+          }
+        },
+        {
+          "codeName": "depositedAmount",
+          "label": {
+            "es-MX": "Monto depositado",
+            "en": "Deposited amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PayoutRequested",
+      "label": {
+        "es-MX": "Pago al comercio solicitado",
+        "en": "Merchant payout requested"
+      },
+      "description": {
+        "es-MX": "Se pidió al banco transferir el monto neto al comercio.",
+        "en": "The bank was asked to transfer the net amount to the merchant."
+      },
+      "context": "Settlement",
+      "sequence": 15,
+      "payload": [
+        {
+          "codeName": "remittanceId",
+          "label": {
+            "es-MX": "Liquidación",
+            "en": "Remittance"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RemittanceId"
+          }
+        },
+        {
+          "codeName": "netAmount",
+          "label": {
+            "es-MX": "Monto neto",
+            "en": "Net amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PayoutConfirmed",
+      "label": {
+        "es-MX": "Pago al comercio confirmado",
+        "en": "Merchant payout confirmed"
+      },
+      "description": {
+        "es-MX": "El banco confirmó la transferencia y devolvió su folio.",
+        "en": "The bank confirmed the transfer and returned its folio."
+      },
+      "context": "Settlement",
+      "sequence": 16,
+      "payload": [
+        {
+          "codeName": "remittanceId",
+          "label": {
+            "es-MX": "Liquidación",
+            "en": "Remittance"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RemittanceId"
+          }
+        },
+        {
+          "codeName": "bankFolio",
+          "label": {
+            "es-MX": "Folio del banco",
+            "en": "Bank folio"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "BankReceiptFolio"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PayoutRejected",
+      "label": {
+        "es-MX": "Pago al comercio rechazado",
+        "en": "Merchant payout rejected"
+      },
+      "description": {
+        "es-MX": "El banco rechazó la transferencia; hay que corregir y reintentar.",
+        "en": "The bank rejected the transfer; it must be fixed and retried."
+      },
+      "context": "Settlement",
+      "sequence": 17,
+      "payload": [
+        {
+          "codeName": "remittanceId",
+          "label": {
+            "es-MX": "Liquidación",
+            "en": "Remittance"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RemittanceId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo de rechazo",
+            "en": "Rejection reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RejectionReason"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DeliveryReturned",
+      "label": {
+        "es-MX": "Entrega devuelta al remitente",
+        "en": "Delivery returned to sender"
+      },
+      "description": {
+        "es-MX": "Tras los intentos fallidos, el paquete regresa al comercio.",
+        "en": "After the failed attempts, the parcel goes back to the merchant."
+      },
+      "context": "Doorstep",
+      "sequence": 18,
+      "payload": [
+        {
+          "codeName": "deliveryId",
+          "label": {
+            "es-MX": "Entrega",
+            "en": "Delivery"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DeliveryId"
+          }
+        },
+        {
+          "codeName": "parcelId",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Parcel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ParcelId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DeliveryCancelled",
+      "label": {
+        "es-MX": "Entrega cancelada",
+        "en": "Delivery cancelled"
+      },
+      "description": {
+        "es-MX": "La entrega se canceló antes de llegar a la puerta.",
+        "en": "The delivery was cancelled before reaching the door."
+      },
+      "context": "Doorstep",
+      "sequence": 19,
+      "payload": [
+        {
+          "codeName": "deliveryId",
+          "label": {
+            "es-MX": "Entrega",
+            "en": "Delivery"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DeliveryId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo de cancelación",
+            "en": "Cancellation reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CancellationReason"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RouteCancelled",
+      "label": {
+        "es-MX": "Ruta cancelada",
+        "en": "Route cancelled"
+      },
+      "description": {
+        "es-MX": "Despacho canceló la ruta antes de que saliera.",
+        "en": "Dispatching cancelled the route before it left."
+      },
+      "context": "Dispatching",
+      "sequence": 20,
+      "payload": [
+        {
+          "codeName": "routeId",
+          "label": {
+            "es-MX": "Ruta",
+            "en": "Route"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RouteId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo de cancelación",
+            "en": "Cancellation reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CancellationReason"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ParcelDamaged",
+      "label": {
+        "es-MX": "Paquete dañado",
+        "en": "Parcel damaged"
+      },
+      "description": {
+        "es-MX": "El paquete llegó o se dañó en el hub y no puede salir.",
+        "en": "The parcel arrived damaged or was damaged at the hub and cannot go out."
+      },
+      "context": "Warehouse",
+      "sequence": 21,
+      "payload": [
+        {
+          "codeName": "parcelId",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Parcel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ParcelId"
+          }
+        },
+        {
+          "codeName": "damageNote",
+          "label": {
+            "es-MX": "Nota de daño",
+            "en": "Damage note"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DamageNote"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ParcelReturnedToMerchant",
+      "label": {
+        "es-MX": "Paquete devuelto al comercio",
+        "en": "Parcel returned to the merchant"
+      },
+      "description": {
+        "es-MX": "El hub devolvió el paquete porque no podía repartirse.",
+        "en": "The hub sent the parcel back because it could not be delivered."
+      },
+      "context": "Warehouse",
+      "sequence": 22,
+      "payload": [
+        {
+          "codeName": "parcelId",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Parcel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ParcelId"
+          }
+        },
+        {
+          "codeName": "trackingCode",
+          "label": {
+            "es-MX": "Número de guía",
+            "en": "Tracking code"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TrackingCode"
+          }
+        }
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "codeName": "ReceiveParcel",
+      "label": {
+        "es-MX": "Recibir paquete",
+        "en": "Receive parcel"
+      },
+      "description": {
+        "es-MX": "Registrar la llegada del paquete con su guía y peso.",
+        "en": "Record the arrival of the parcel with its label and weight."
+      },
+      "context": "Warehouse",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "HubScanner"
+      },
+      "handledBy": "Parcel",
+      "params": [
+        {
+          "codeName": "trackingCode",
+          "label": {
+            "es-MX": "Número de guía",
+            "en": "Tracking code"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TrackingCode"
+          }
+        },
+        {
+          "codeName": "weightGrams",
+          "label": {
+            "es-MX": "Peso en gramos",
+            "en": "Weight in grams"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "WeightGrams"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "SortParcel",
+      "label": {
+        "es-MX": "Clasificar paquete",
+        "en": "Sort parcel"
+      },
+      "description": {
+        "es-MX": "Asignar el paquete a un casillero según su zona.",
+        "en": "Assign the parcel to a bin according to its zone."
+      },
+      "context": "Warehouse",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "HubSupervisor"
+      },
+      "handledBy": "Parcel",
+      "params": [
+        {
+          "codeName": "destinationZone",
+          "label": {
+            "es-MX": "Zona de destino",
+            "en": "Destination zone"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ServiceZone"
+          }
+        },
+        {
+          "codeName": "binCode",
+          "label": {
+            "es-MX": "Casillero",
+            "en": "Bin"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "BinCode"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "LoadParcel",
+      "label": {
+        "es-MX": "Cargar paquete",
+        "en": "Load parcel"
+      },
+      "description": {
+        "es-MX": "Subir el paquete a la camioneta de su ruta.",
+        "en": "Put the parcel onto the van of its route."
+      },
+      "context": "Warehouse",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "LoadParcelWhenRouteAssigned"
+      },
+      "handledBy": "Parcel",
+      "params": [
+        {
+          "codeName": "routeId",
+          "label": {
+            "es-MX": "Ruta",
+            "en": "Route"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RouteId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ReportParcelDamage",
+      "label": {
+        "es-MX": "Reportar paquete dañado",
+        "en": "Report damaged parcel"
+      },
+      "description": {
+        "es-MX": "Dejar constancia del daño y retirar el paquete de la operación.",
+        "en": "Record the damage and take the parcel out of operation."
+      },
+      "context": "Warehouse",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "HubSupervisor"
+      },
+      "handledBy": "Parcel",
+      "params": [
+        {
+          "codeName": "damageNote",
+          "label": {
+            "es-MX": "Nota de daño",
+            "en": "Damage note"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DamageNote"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ReturnParcelToMerchant",
+      "label": {
+        "es-MX": "Devolver paquete al comercio",
+        "en": "Return parcel to merchant"
+      },
+      "description": {
+        "es-MX": "Regresar al comercio un paquete que no se puede repartir.",
+        "en": "Send back to the merchant a parcel that cannot be delivered."
+      },
+      "context": "Warehouse",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "HubSupervisor"
+      },
+      "handledBy": "Parcel",
+      "params": []
+    },
+    {
+      "codeName": "AddRouteStop",
+      "label": {
+        "es-MX": "Agregar parada a la ruta",
+        "en": "Add stop to the route"
+      },
+      "description": {
+        "es-MX": "Sumar la parada de un paquete clasificado a la ruta.",
+        "en": "Add the stop of a sorted parcel to the route."
+      },
+      "context": "Dispatching",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "PlanStopWhenSorted"
+      },
+      "handledBy": "Route",
+      "params": [
+        {
+          "codeName": "stopId",
+          "label": {
+            "es-MX": "Parada",
+            "en": "Stop"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StopId"
+          }
+        },
+        {
+          "codeName": "parcelId",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Parcel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ParcelId"
+          }
+        },
+        {
+          "codeName": "weightGrams",
+          "label": {
+            "es-MX": "Peso en gramos",
+            "en": "Weight in grams"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "WeightGrams"
+          }
+        },
+        {
+          "codeName": "postalCode",
+          "label": {
+            "es-MX": "Código postal",
+            "en": "Postal code"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PostalCode"
+          }
+        },
+        {
+          "codeName": "position",
+          "label": {
+            "es-MX": "Posición en la ruta",
+            "en": "Position on the route"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StopPosition"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AssignDriver",
+      "label": {
+        "es-MX": "Asignar repartidor",
+        "en": "Assign driver"
+      },
+      "description": {
+        "es-MX": "Elegir quién recorrerá la ruta.",
+        "en": "Choose who will drive the route."
+      },
+      "context": "Dispatching",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Dispatcher"
+      },
+      "handledBy": "Route",
+      "params": [
+        {
+          "codeName": "driverId",
+          "label": {
+            "es-MX": "Repartidor",
+            "en": "Driver"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DriverId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "StartRoute",
+      "label": {
+        "es-MX": "Iniciar ruta",
+        "en": "Start route"
+      },
+      "description": {
+        "es-MX": "Salir del hub a repartir con la camioneta cargada.",
+        "en": "Leave the hub to deliver with a loaded van."
+      },
+      "context": "Dispatching",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Driver"
+      },
+      "handledBy": "Route",
+      "params": [
+        {
+          "codeName": "departedAt",
+          "label": {
+            "es-MX": "Hora de salida",
+            "en": "Departure time"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "timestamp"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CompleteRoute",
+      "label": {
+        "es-MX": "Terminar ruta",
+        "en": "Complete route"
+      },
+      "description": {
+        "es-MX": "Cerrar la ruta e informar cuántas paradas se atendieron.",
+        "en": "Close the route and report how many stops were handled."
+      },
+      "context": "Dispatching",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Driver"
+      },
+      "handledBy": "Route",
+      "params": [
+        {
+          "codeName": "deliveredStops",
+          "label": {
+            "es-MX": "Paradas atendidas",
+            "en": "Stops handled"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StopCount"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CancelRoute",
+      "label": {
+        "es-MX": "Cancelar ruta",
+        "en": "Cancel route"
+      },
+      "description": {
+        "es-MX": "Anular una ruta que aún no sale, indicando el motivo.",
+        "en": "Call off a route that has not left yet, giving a reason."
+      },
+      "context": "Dispatching",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Dispatcher"
+      },
+      "handledBy": "Route",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo de cancelación",
+            "en": "Cancellation reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CancellationReason"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ScheduleDelivery",
+      "label": {
+        "es-MX": "Agendar entrega",
+        "en": "Schedule delivery"
+      },
+      "description": {
+        "es-MX": "Elegir día y ventana, y confirmar dirección y cobro.",
+        "en": "Choose the day and window, and confirm address and cash due."
+      },
+      "context": "Doorstep",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Customer"
+      },
+      "handledBy": "Delivery",
+      "params": [
+        {
+          "codeName": "parcelId",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Parcel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ParcelId"
+          }
+        },
+        {
+          "codeName": "recipientName",
+          "label": {
+            "es-MX": "Nombre del destinatario",
+            "en": "Recipient name"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PersonName"
+          }
+        },
+        {
+          "codeName": "address",
+          "label": {
+            "es-MX": "Dirección",
+            "en": "Address"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Address"
+          }
+        },
+        {
+          "codeName": "deliveryDate",
+          "label": {
+            "es-MX": "Fecha de entrega",
+            "en": "Delivery date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        },
+        {
+          "codeName": "windowStartHour",
+          "label": {
+            "es-MX": "Inicio de la ventana",
+            "en": "Window start"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "HourOfDay"
+          }
+        },
+        {
+          "codeName": "windowEndHour",
+          "label": {
+            "es-MX": "Fin de la ventana",
+            "en": "Window end"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "HourOfDay"
+          }
+        },
+        {
+          "codeName": "cashToCollect",
+          "label": {
+            "es-MX": "Efectivo por cobrar",
+            "en": "Cash to collect"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "StartDelivery",
+      "label": {
+        "es-MX": "Iniciar entrega",
+        "en": "Start delivery"
+      },
+      "description": {
+        "es-MX": "Marcar que el paquete ya va en camino con un repartidor.",
+        "en": "Mark that the parcel is now on its way with a driver."
+      },
+      "context": "Doorstep",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "StartDeliveryWhenRouteStarts"
+      },
+      "handledBy": "Delivery",
+      "params": [
+        {
+          "codeName": "driverId",
+          "label": {
+            "es-MX": "Repartidor",
+            "en": "Driver"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DriverId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CompleteDelivery",
+      "label": {
+        "es-MX": "Completar entrega",
+        "en": "Complete delivery"
+      },
+      "description": {
+        "es-MX": "Entregar el paquete con evidencia y el cobro exacto.",
+        "en": "Hand over the parcel with proof and the exact cash."
+      },
+      "context": "Doorstep",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Driver"
+      },
+      "handledBy": "Delivery",
+      "params": [
+        {
+          "codeName": "proof",
+          "label": {
+            "es-MX": "Evidencia de entrega",
+            "en": "Proof of delivery"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "ProofOfDelivery"
+            }
+          }
+        },
+        {
+          "codeName": "cashCollected",
+          "label": {
+            "es-MX": "Efectivo cobrado",
+            "en": "Cash collected"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ReportFailedAttempt",
+      "label": {
+        "es-MX": "Reportar intento fallido",
+        "en": "Report failed attempt"
+      },
+      "description": {
+        "es-MX": "Registrar por qué no se pudo entregar el paquete.",
+        "en": "Record why the parcel could not be handed over."
+      },
+      "context": "Doorstep",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Driver"
+      },
+      "handledBy": "Delivery",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "FailureReason"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RescheduleDelivery",
+      "label": {
+        "es-MX": "Reagendar entrega",
+        "en": "Reschedule delivery"
+      },
+      "description": {
+        "es-MX": "Elegir nuevo día y ventana tras un intento fallido.",
+        "en": "Choose a new day and window after a failed attempt."
+      },
+      "context": "Doorstep",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Customer"
+      },
+      "handledBy": "Delivery",
+      "params": [
+        {
+          "codeName": "deliveryDate",
+          "label": {
+            "es-MX": "Fecha de entrega",
+            "en": "Delivery date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        },
+        {
+          "codeName": "windowStartHour",
+          "label": {
+            "es-MX": "Inicio de la ventana",
+            "en": "Window start"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "HourOfDay"
+          }
+        },
+        {
+          "codeName": "windowEndHour",
+          "label": {
+            "es-MX": "Fin de la ventana",
+            "en": "Window end"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "HourOfDay"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ReturnToSender",
+      "label": {
+        "es-MX": "Devolver al remitente",
+        "en": "Return to sender"
+      },
+      "description": {
+        "es-MX": "Regresar el paquete al comercio tras agotar los intentos.",
+        "en": "Send the parcel back to the merchant after the attempts run out."
+      },
+      "context": "Doorstep",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Dispatcher"
+      },
+      "handledBy": "Delivery",
+      "params": []
+    },
+    {
+      "codeName": "CancelDelivery",
+      "label": {
+        "es-MX": "Cancelar entrega",
+        "en": "Cancel delivery"
+      },
+      "description": {
+        "es-MX": "El cliente anula la entrega indicando el motivo.",
+        "en": "The customer calls off the delivery giving a reason."
+      },
+      "context": "Doorstep",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Customer"
+      },
+      "handledBy": "Delivery",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo de cancelación",
+            "en": "Cancellation reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CancellationReason"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RecordCollection",
+      "label": {
+        "es-MX": "Registrar cobro contra entrega",
+        "en": "Record cash on delivery"
+      },
+      "description": {
+        "es-MX": "Anotar el efectivo que se cobró al entregar.",
+        "en": "Note the cash that was collected at handover."
+      },
+      "context": "Settlement",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "RecordCashWhenDelivered"
+      },
+      "handledBy": "CashRemittance",
+      "params": [
+        {
+          "codeName": "deliveryId",
+          "label": {
+            "es-MX": "Entrega",
+            "en": "Delivery"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DeliveryId"
+          }
+        },
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DepositCash",
+      "label": {
+        "es-MX": "Depositar efectivo",
+        "en": "Deposit cash"
+      },
+      "description": {
+        "es-MX": "Entregar en caja lo cobrado durante la ruta.",
+        "en": "Hand in at the cashier what was collected during the route."
+      },
+      "context": "Settlement",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Driver"
+      },
+      "handledBy": "CashRemittance",
+      "params": [
+        {
+          "codeName": "depositedAmount",
+          "label": {
+            "es-MX": "Monto depositado",
+            "en": "Deposited amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RequestPayout",
+      "label": {
+        "es-MX": "Solicitar pago al comercio",
+        "en": "Request merchant payout"
+      },
+      "description": {
+        "es-MX": "Pedir al banco que transfiera el neto, descontada la comisión.",
+        "en": "Ask the bank to transfer the net amount, after the fee."
+      },
+      "context": "Settlement",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "HubSupervisor"
+      },
+      "handledBy": "CashRemittance",
+      "params": [
+        {
+          "codeName": "beneficiaryAccount",
+          "label": {
+            "es-MX": "Cuenta del comercio",
+            "en": "Merchant account"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "BeneficiaryAccount"
+          }
+        },
+        {
+          "codeName": "accountType",
+          "label": {
+            "es-MX": "Tipo de cuenta",
+            "en": "Account type"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "BeneficiaryAccountType"
+          }
+        },
+        {
+          "codeName": "fee",
+          "label": {
+            "es-MX": "Comisión",
+            "en": "Fee"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ConfirmPayout",
+      "label": {
+        "es-MX": "Confirmar pago",
+        "en": "Confirm payout"
+      },
+      "description": {
+        "es-MX": "Registrar el folio con que el banco confirmó la transferencia.",
+        "en": "Record the folio with which the bank confirmed the transfer."
+      },
+      "context": "Settlement",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "BankTransferService"
+      },
+      "handledBy": "CashRemittance",
+      "params": [
+        {
+          "codeName": "bankFolio",
+          "label": {
+            "es-MX": "Folio del banco",
+            "en": "Bank folio"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "BankReceiptFolio"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RejectPayout",
+      "label": {
+        "es-MX": "Rechazar pago",
+        "en": "Reject payout"
+      },
+      "description": {
+        "es-MX": "Registrar que el banco no pudo ejecutar la transferencia.",
+        "en": "Record that the bank could not execute the transfer."
+      },
+      "context": "Settlement",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "BankTransferService"
+      },
+      "handledBy": "CashRemittance",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo de rechazo",
+            "en": "Rejection reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RejectionReason"
+          }
+        }
+      ]
+    }
+  ],
+  "policies": [
+    {
+      "codeName": "PlanStopWhenSorted",
+      "label": {
+        "es-MX": "Cuando se clasifica, agregar la parada a la ruta",
+        "en": "When sorted, add the stop to the route"
+      },
+      "description": {
+        "es-MX": "Cada paquete clasificado entra como parada en la ruta de su zona.",
+        "en": "Every sorted parcel enters its zone's route as a stop."
+      },
+      "context": "Dispatching",
+      "when": "ParcelSorted",
+      "then": "AddRouteStop"
+    },
+    {
+      "codeName": "LoadParcelWhenRouteAssigned",
+      "label": {
+        "es-MX": "Con repartidor asignado, cargar los paquetes",
+        "en": "Once a driver is assigned, load the parcels"
+      },
+      "description": {
+        "es-MX": "Cuando la ruta tiene repartidor, el hub sube sus paquetes a la camioneta.",
+        "en": "Once the route has a driver, the hub puts its parcels on the van."
+      },
+      "context": "Warehouse",
+      "when": "RouteDriverAssigned",
+      "then": "LoadParcel"
+    },
+    {
+      "codeName": "StartDeliveryWhenRouteStarts",
+      "label": {
+        "es-MX": "Al iniciar la ruta, iniciar cada entrega",
+        "en": "When the route starts, start each delivery"
+      },
+      "description": {
+        "es-MX": "Al salir la camioneta, cada entrega de la ruta pasa a estar en camino.",
+        "en": "When the van leaves, every delivery on the route becomes on its way."
+      },
+      "context": "Doorstep",
+      "when": "RouteStarted",
+      "then": "StartDelivery"
+    },
+    {
+      "codeName": "RecordCashWhenDelivered",
+      "label": {
+        "es-MX": "Al entregar, registrar el cobro",
+        "en": "When delivered, record the cash"
+      },
+      "description": {
+        "es-MX": "Cada entrega completada genera el registro del efectivo cobrado.",
+        "en": "Every completed delivery generates a record of the cash collected."
+      },
+      "context": "Settlement",
+      "when": "DeliveryCompleted",
+      "then": "RecordCollection"
+    }
+  ],
+  "readModels": [
+    {
+      "codeName": "RouteBoard",
+      "label": {
+        "es-MX": "Tablero de rutas",
+        "en": "Route board"
+      },
+      "description": {
+        "es-MX": "Lo que ve Despacho: carga, paradas y repartidor de cada ruta.",
+        "en": "What Dispatching sees: load, stops and driver of each route."
+      },
+      "context": "Dispatching",
+      "fields": [
+        {
+          "codeName": "routeId",
+          "label": {
+            "es-MX": "Ruta",
+            "en": "Route"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RouteId"
+          }
+        },
+        {
+          "codeName": "loadGrams",
+          "label": {
+            "es-MX": "Carga en gramos",
+            "en": "Load in grams"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "LoadGrams"
+          }
+        },
+        {
+          "codeName": "driverId",
+          "label": {
+            "es-MX": "Repartidor",
+            "en": "Driver"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "DriverId"
+            }
+          }
+        }
+      ],
+      "fedBy": ["RouteStopAdded", "RouteDriverAssigned", "RouteStarted", "RouteCompleted"],
+      "usedBy": ["Dispatcher", "Driver"]
+    },
+    {
+      "codeName": "ParcelTracker",
+      "label": {
+        "es-MX": "Seguimiento del paquete",
+        "en": "Parcel tracker"
+      },
+      "description": {
+        "es-MX": "La pantalla con la que el cliente sigue su entrega.",
+        "en": "The screen the customer uses to follow their delivery."
+      },
+      "context": "Doorstep",
+      "fields": [
+        {
+          "codeName": "deliveryId",
+          "label": {
+            "es-MX": "Entrega",
+            "en": "Delivery"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DeliveryId"
+          }
+        },
+        {
+          "codeName": "deliveryDate",
+          "label": {
+            "es-MX": "Fecha de entrega",
+            "en": "Delivery date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        },
+        {
+          "codeName": "attemptCount",
+          "label": {
+            "es-MX": "Intentos de entrega",
+            "en": "Delivery attempts"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AttemptCount"
+          }
+        }
+      ],
+      "fedBy": [
+        "DeliveryScheduled",
+        "DeliveryStarted",
+        "DeliveryAttemptFailed",
+        "DeliveryRescheduled",
+        "DeliveryCompleted"
+      ],
+      "usedBy": ["Customer", "Driver"]
+    },
+    {
+      "codeName": "HubInventory",
+      "label": {
+        "es-MX": "Inventario del hub",
+        "en": "Hub inventory"
+      },
+      "description": {
+        "es-MX": "Qué paquetes hay en el almacén y en qué casillero están.",
+        "en": "Which parcels are in the warehouse and in which bin."
+      },
+      "context": "Warehouse",
+      "fields": [
+        {
+          "codeName": "parcelId",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Parcel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ParcelId"
+          }
+        },
+        {
+          "codeName": "destinationZone",
+          "label": {
+            "es-MX": "Zona de destino",
+            "en": "Destination zone"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ServiceZone"
+          }
+        },
+        {
+          "codeName": "binCode",
+          "label": {
+            "es-MX": "Casillero",
+            "en": "Bin"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "BinCode"
+            }
+          }
+        }
+      ],
+      "fedBy": ["ParcelReceived", "ParcelSorted", "ParcelLoaded"],
+      "usedBy": ["HubSupervisor"]
+    }
+  ]
+}

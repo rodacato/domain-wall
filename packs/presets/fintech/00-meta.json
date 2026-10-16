@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "meta": {
+    "packId": "fintech",
+    "origin": "preset",
+    "locales": ["es-MX", "en"],
+    "generation": null
+  },
+  "business": {
+    "codeName": "DigitalWallet",
+    "name": {
+      "es-MX": "Billetera Digital",
+      "en": "Digital Wallet"
+    },
+    "description": {
+      "es-MX": "Una billetera digital mexicana: abre cuentas a personas con identidad verificada, mueve su dinero por SPEI y les da una tarjeta para pagar.",
+      "en": "A Mexican digital wallet: it opens accounts for people with a verified identity, moves their money over SPEI and gives them a card to pay with."
+    }
+  }
+}

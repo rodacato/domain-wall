@@ -1,0 +1,352 @@
+{
+  "contexts": [
+    {
+      "codeName": "Scheduling",
+      "label": {
+        "es-MX": "Agenda",
+        "en": "Scheduling"
+      },
+      "description": {
+        "es-MX": "Citas, recordatorios y la llegada de cada persona a la clínica.",
+        "en": "Appointments, reminders and each person's arrival at the clinic."
+      },
+      "subdomain": {
+        "type": "core",
+        "rationale": {
+          "es-MX": "Dar cita en la misma semana y reducir las faltas es lo que hace que el barrio nos prefiera sobre otras clínicas.",
+          "en": "Offering same-week appointments and cutting no-shows is why the neighborhood chooses us over other clinics."
+        }
+      }
+    },
+    {
+      "codeName": "ClinicalCare",
+      "label": {
+        "es-MX": "Atención clínica",
+        "en": "Clinical care"
+      },
+      "description": {
+        "es-MX": "La consulta médica: observaciones, diagnóstico y seguimiento.",
+        "en": "The medical consultation: observations, diagnosis and follow-up."
+      },
+      "subdomain": {
+        "type": "core",
+        "rationale": {
+          "es-MX": "El criterio clínico y el seguimiento cercano de cada vecino son nuestro corazón y no se compran hechos.",
+          "en": "Clinical judgment and close follow-up of every neighbor are our heart and cannot be bought off the shelf."
+        }
+      }
+    },
+    {
+      "codeName": "Pharmacy",
+      "label": {
+        "es-MX": "Farmacia",
+        "en": "Pharmacy"
+      },
+      "description": {
+        "es-MX": "Recetas y entrega de medicamentos con revisión de alergias.",
+        "en": "Prescriptions and medication dispensing with allergy checks."
+      },
+      "subdomain": {
+        "type": "supporting",
+        "rationale": {
+          "es-MX": "Surtir bien es indispensable y delicado, pero cualquier farmacia lo hace igual; no es lo que nos distingue.",
+          "en": "Dispensing well is essential and delicate, but every pharmacy does it the same way; it does not set us apart."
+        }
+      }
+    },
+    {
+      "codeName": "Billing",
+      "label": {
+        "es-MX": "Cobranza",
+        "en": "Billing"
+      },
+      "description": {
+        "es-MX": "Facturas, pagos y reclamos a las aseguradoras.",
+        "en": "Invoices, payments and claims to insurers."
+      },
+      "subdomain": {
+        "type": "generic",
+        "rationale": {
+          "es-MX": "Cobrar y reclamar es igual en cualquier consultorio; conviene aislarlo y no inventar nada.",
+          "en": "Charging and claiming works the same in any practice; it is better to isolate it than to invent anything."
+        }
+      }
+    }
+  ],
+  "contextRelations": [
+    {
+      "type": "partnership",
+      "a": "Scheduling",
+      "b": "ClinicalCare",
+      "shared": ["PatientId", "AppointmentId"],
+      "description": {
+        "es-MX": "Agenda y Atención clínica avanzan juntas: la llegada abre la consulta y la consulta cumple la cita. Comparten los identificadores de cita y paciente.",
+        "en": "Scheduling and Clinical care move together: arrival opens the consultation and the consultation fulfills the appointment. They share the appointment and patient identifiers."
+      }
+    },
+    {
+      "type": "upstreamDownstream",
+      "upstream": "ClinicalCare",
+      "downstream": "Pharmacy",
+      "upstreamRoles": ["PublishedLanguage"],
+      "downstreamRoles": [],
+      "customerSupplier": true,
+      "via": ["DiagnosisRecorded"],
+      "description": {
+        "es-MX": "Atención clínica publica el diagnóstico y Farmacia abre la receta a partir de él; Farmacia puede pedirle ajustes al médico.",
+        "en": "Clinical care publishes the diagnosis and Pharmacy opens the prescription from it; Pharmacy can ask the physician for adjustments."
+      }
+    },
+    {
+      "type": "upstreamDownstream",
+      "upstream": "ClinicalCare",
+      "downstream": "Billing",
+      "upstreamRoles": ["OpenHostService", "PublishedLanguage"],
+      "downstreamRoles": ["Conformist"],
+      "customerSupplier": false,
+      "via": ["ConsultationClosed"],
+      "description": {
+        "es-MX": "Cobranza se adapta al lenguaje que publica Atención clínica: cuando una consulta cierra, se abre su factura.",
+        "en": "Billing conforms to the language Clinical care publishes: when a consultation closes, its invoice is opened."
+      }
+    },
+    {
+      "type": "separateWays",
+      "a": "Scheduling",
+      "b": "Pharmacy",
+      "description": {
+        "es-MX": "La Agenda y la Farmacia no necesitan hablarse: cada una sigue su camino.",
+        "en": "Scheduling and Pharmacy do not need to talk to each other: each goes its own way."
+      }
+    }
+  ],
+  "ambiguousTerm": {
+    "codeName": "Patient",
+    "label": {
+      "es-MX": "Paciente",
+      "en": "Patient"
+    },
+    "meanings": [
+      {
+        "context": "Scheduling",
+        "concept": "ContactCard",
+        "definition": {
+          "es-MX": "Una persona a la que podemos llamar: solo importan su nombre y su teléfono para recordarle la cita.",
+          "en": "A person we can phone: only their name and phone number matter to remind them of the appointment."
+        },
+        "showcaseFields": ["fullName", "phone"]
+      },
+      {
+        "context": "ClinicalCare",
+        "concept": "ClinicalProfile",
+        "definition": {
+          "es-MX": "Una historia clínica viva: fecha de nacimiento, alergias y condición crónica.",
+          "en": "A living clinical history: birth date, allergies and chronic condition."
+        },
+        "showcaseFields": ["birthDate", "allergies", "chronicCondition"]
+      },
+      {
+        "context": "Pharmacy",
+        "concept": "DispenseRecipient",
+        "definition": {
+          "es-MX": "Quien se lleva el medicamento: su peso decide la dosis y sus alergias, qué no se le puede dar.",
+          "en": "Whoever takes the medication home: their weight drives the dose and their allergies decide what cannot be given."
+        },
+        "showcaseFields": ["fullName", "weightKg", "allergies"]
+      },
+      {
+        "context": "Billing",
+        "concept": "Payer",
+        "definition": {
+          "es-MX": "Quien paga la factura: su nombre fiscal y su RFC, que puede no ser quien se atendió.",
+          "en": "Whoever pays the invoice: their tax name and tax ID, who may not be the person who was seen."
+        },
+        "showcaseFields": ["fullName", "taxId"]
+      }
+    ]
+  },
+  "antiCorruptionLayer": {
+    "context": "Billing",
+    "externalSystem": "InsurerClaimsGateway",
+    "domainType": "Invoice",
+    "externalRoot": "ReimbursementRequest",
+    "externalTypes": [
+      {
+        "codeName": "ReimbursementRequest",
+        "label": {
+          "es-MX": "Solicitud de reembolso",
+          "en": "Reimbursement request"
+        },
+        "description": {
+          "es-MX": "El documento que exige la aseguradora, con campos en mayúsculas, claves propias e importes como texto decimal.",
+          "en": "The document the insurer requires, with uppercase fields, its own codes and amounts as decimal text."
+        },
+        "wireName": "SOLICITUD_REEMBOLSO",
+        "fields": [
+          {
+            "codeName": "version",
+            "label": {
+              "es-MX": "Versión del esquema",
+              "en": "Schema version"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "VER_ESQUEMA"
+          },
+          {
+            "codeName": "serviceType",
+            "label": {
+              "es-MX": "Tipo de servicio",
+              "en": "Service type"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "TIPO_SERVICIO"
+          },
+          {
+            "codeName": "providerTaxId",
+            "label": {
+              "es-MX": "RFC del prestador",
+              "en": "Provider tax ID"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "RFC_PRESTADOR"
+          },
+          {
+            "codeName": "policyNumber",
+            "label": {
+              "es-MX": "Número de póliza",
+              "en": "Policy number"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "NUM_POLIZA"
+          },
+          {
+            "codeName": "serviceDate",
+            "label": {
+              "es-MX": "Fecha de atención",
+              "en": "Service date"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "FEC_ATENCION"
+          },
+          {
+            "codeName": "diagnosisCode",
+            "label": {
+              "es-MX": "Clave CIE-10",
+              "en": "ICD-10 code"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "CVE_CIE10"
+          },
+          {
+            "codeName": "coverageCode",
+            "label": {
+              "es-MX": "Código de cobertura",
+              "en": "Coverage code"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "COD_COBERTURA"
+          },
+          {
+            "codeName": "totalAmount",
+            "label": {
+              "es-MX": "Importe total",
+              "en": "Total amount"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "IMP_TOTAL"
+          },
+          {
+            "codeName": "currency",
+            "label": {
+              "es-MX": "Moneda",
+              "en": "Currency"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "MONEDA"
+          }
+        ]
+      }
+    ],
+    "translation": [
+      {
+        "op": "constant",
+        "externalField": "version",
+        "value": "2.1"
+      },
+      {
+        "op": "constant",
+        "externalField": "serviceType",
+        "value": "CONSULTA_EXTERNA"
+      },
+      {
+        "op": "constant",
+        "externalField": "providerTaxId",
+        "value": "CVE210315K18"
+      },
+      {
+        "op": "rename",
+        "domainField": "policyNumber",
+        "externalField": "policyNumber"
+      },
+      {
+        "op": "format",
+        "domainField": "serviceDate",
+        "externalField": "serviceDate",
+        "format": "isoDate"
+      },
+      {
+        "op": "rename",
+        "domainField": "diagnosisCode",
+        "externalField": "diagnosisCode"
+      },
+      {
+        "op": "mapCode",
+        "domainField": "coverage",
+        "externalField": "coverageCode",
+        "table": {
+          "Outpatient": "CEX",
+          "MajorMedical": "GMM",
+          "Dental": "ODO"
+        }
+      },
+      {
+        "op": "format",
+        "domainField": "total",
+        "externalField": "totalAmount",
+        "format": "minorUnitsToDecimalString"
+      },
+      {
+        "op": "constant",
+        "externalField": "currency",
+        "value": "MXN"
+      }
+    ]
+  }
+}

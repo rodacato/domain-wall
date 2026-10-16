@@ -1,0 +1,358 @@
+{
+  "aggregates": [
+    {
+      "codeName": "Parcel",
+      "label": {
+        "es-MX": "Bulto",
+        "en": "Parcel"
+      },
+      "description": {
+        "es-MX": "La caja física que llega al hub, se pesa, se clasifica y sale en una camioneta.",
+        "en": "The physical box that arrives at the hub, gets weighed, sorted and leaves on a van."
+      },
+      "context": "Warehouse",
+      "identity": "parcelId",
+      "fields": [
+        {
+          "codeName": "parcelId",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Parcel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ParcelId"
+          }
+        },
+        {
+          "codeName": "trackingCode",
+          "label": {
+            "es-MX": "Número de guía",
+            "en": "Tracking code"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TrackingCode"
+          }
+        },
+        {
+          "codeName": "weightGrams",
+          "label": {
+            "es-MX": "Peso en gramos",
+            "en": "Weight in grams"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "WeightGrams"
+          }
+        },
+        {
+          "codeName": "destinationZone",
+          "label": {
+            "es-MX": "Zona de destino",
+            "en": "Destination zone"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ServiceZone"
+          }
+        }
+      ],
+      "derived": [],
+      "entities": [],
+      "states": [
+        {
+          "codeName": "Expected",
+          "label": {
+            "es-MX": "Esperado",
+            "en": "Expected"
+          },
+          "description": {
+            "es-MX": "El comercio avisó del paquete, pero aún no llega al hub.",
+            "en": "The merchant announced the parcel, but it has not reached the hub yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Received",
+          "label": {
+            "es-MX": "Recibido",
+            "en": "Received"
+          },
+          "description": {
+            "es-MX": "El paquete llegó, se escaneó y se pesó.",
+            "en": "The parcel arrived, was scanned and weighed."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Sorted",
+          "label": {
+            "es-MX": "Clasificado",
+            "en": "Sorted"
+          },
+          "description": {
+            "es-MX": "El paquete está en un casillero de su zona de destino.",
+            "en": "The parcel sits in a bin of its destination zone."
+          },
+          "terminal": false,
+          "data": [
+            {
+              "codeName": "binCode",
+              "label": {
+                "es-MX": "Casillero",
+                "en": "Bin"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "BinCode"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Loaded",
+          "label": {
+            "es-MX": "Cargado",
+            "en": "Loaded"
+          },
+          "description": {
+            "es-MX": "El paquete ya va en la camioneta de su ruta.",
+            "en": "The parcel is on its route's van."
+          },
+          "terminal": true,
+          "data": []
+        },
+        {
+          "codeName": "Damaged",
+          "label": {
+            "es-MX": "Dañado",
+            "en": "Damaged"
+          },
+          "description": {
+            "es-MX": "El paquete se dañó y quedó fuera de la operación.",
+            "en": "The parcel was damaged and is out of operation."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "damageNote",
+              "label": {
+                "es-MX": "Nota de daño",
+                "en": "Damage note"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "DamageNote"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Returned",
+          "label": {
+            "es-MX": "Devuelto",
+            "en": "Returned"
+          },
+          "description": {
+            "es-MX": "El paquete regresó al comercio sin repartirse.",
+            "en": "The parcel went back to the merchant without being delivered."
+          },
+          "terminal": true,
+          "data": []
+        }
+      ],
+      "initialState": "Expected",
+      "rules": [
+        {
+          "codeName": "ParcelWithinWeightLimit",
+          "label": {
+            "es-MX": "El paquete respeta el peso máximo",
+            "en": "The parcel respects the maximum weight"
+          },
+          "description": {
+            "es-MX": "Las camionetas de reparto no aceptan paquetes de más de 25 kg.",
+            "en": "Delivery vans do not take parcels over 25 kg."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "weightGrams"
+            },
+            "operator": "<=",
+            "right": {
+              "op": "literal",
+              "value": 25000
+            }
+          },
+          "message": {
+            "es-MX": "El paquete no puede pesar más de 25 kg.",
+            "en": "The parcel cannot weigh more than 25 kg."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "ReceiveParcel",
+              "args": {
+                "weightGrams": 25001
+              }
+            }
+          }
+        },
+        {
+          "codeName": "DestinationMustBeCovered",
+          "label": {
+            "es-MX": "El destino debe tener cobertura",
+            "en": "The destination must be covered"
+          },
+          "description": {
+            "es-MX": "No se clasifica un paquete cuyo destino está fuera de las zonas de reparto.",
+            "en": "A parcel whose destination is outside the delivery zones is not sorted."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "destinationZone"
+            },
+            "operator": "!=",
+            "right": {
+              "op": "literal",
+              "value": "OutOfCoverage"
+            }
+          },
+          "message": {
+            "es-MX": "El destino está fuera de cobertura.",
+            "en": "The destination is outside coverage."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "ReceiveParcel",
+                "args": {
+                  "trackingCode": "RR123456789MX",
+                  "weightGrams": 2300
+                }
+              }
+            ],
+            "when": {
+              "command": "SortParcel",
+              "args": {
+                "destinationZone": "OutOfCoverage"
+              }
+            }
+          }
+        }
+      ],
+      "invariants": [],
+      "transitions": [
+        {
+          "command": "ReceiveParcel",
+          "from": ["Expected"],
+          "to": "Received",
+          "guards": ["ParcelWithinWeightLimit"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "trackingCode",
+              "value": {
+                "op": "arg",
+                "name": "trackingCode"
+              }
+            },
+            {
+              "op": "set",
+              "field": "weightGrams",
+              "value": {
+                "op": "arg",
+                "name": "weightGrams"
+              }
+            }
+          ],
+          "emits": ["ParcelReceived"]
+        },
+        {
+          "command": "SortParcel",
+          "from": ["Received"],
+          "to": "Sorted",
+          "guards": ["DestinationMustBeCovered"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "destinationZone",
+              "value": {
+                "op": "arg",
+                "name": "destinationZone"
+              }
+            },
+            {
+              "op": "set",
+              "field": "binCode",
+              "value": {
+                "op": "arg",
+                "name": "binCode"
+              }
+            }
+          ],
+          "emits": ["ParcelSorted"]
+        },
+        {
+          "command": "LoadParcel",
+          "from": ["Sorted"],
+          "to": "Loaded",
+          "guards": [],
+          "effects": [],
+          "emits": ["ParcelLoaded"]
+        },
+        {
+          "command": "ReportParcelDamage",
+          "from": ["Received", "Sorted"],
+          "to": "Damaged",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "damageNote",
+              "value": {
+                "op": "arg",
+                "name": "damageNote"
+              }
+            }
+          ],
+          "emits": ["ParcelDamaged"]
+        },
+        {
+          "command": "ReturnParcelToMerchant",
+          "from": ["Received", "Sorted"],
+          "to": "Returned",
+          "guards": [],
+          "effects": [],
+          "emits": ["ParcelReturnedToMerchant"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "ReceiveParcel",
+          "args": {
+            "trackingCode": "RR123456789MX",
+            "weightGrams": 2300
+          }
+        },
+        {
+          "command": "SortParcel",
+          "args": {
+            "destinationZone": "North",
+            "binCode": "B07-12"
+          }
+        },
+        {
+          "command": "LoadParcel",
+          "args": {}
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,652 @@
+{
+  "aggregates": [
+    {
+      "codeName": "Assessment",
+      "label": {
+        "es-MX": "Evaluación",
+        "en": "Assessment"
+      },
+      "description": {
+        "es-MX": "El examen de un estudiante para un curso: su calificación mínima y los intentos que le quedan.",
+        "en": "A student's exam for a course: its passing score and the attempts that remain."
+      },
+      "context": "Examining",
+      "identity": "assessmentId",
+      "fields": [
+        {
+          "codeName": "assessmentId",
+          "label": {
+            "es-MX": "Evaluación",
+            "en": "Assessment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AssessmentId"
+          }
+        },
+        {
+          "codeName": "studentId",
+          "label": {
+            "es-MX": "Estudiante",
+            "en": "Student"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StudentId"
+          }
+        },
+        {
+          "codeName": "courseId",
+          "label": {
+            "es-MX": "Curso",
+            "en": "Course"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CourseId"
+          }
+        },
+        {
+          "codeName": "passingScore",
+          "label": {
+            "es-MX": "Calificación mínima",
+            "en": "Passing score"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Score"
+          }
+        },
+        {
+          "codeName": "attempts",
+          "label": {
+            "es-MX": "Intentos",
+            "en": "Attempts"
+          },
+          "type": {
+            "kind": "list",
+            "of": {
+              "kind": "entity",
+              "ref": "Attempt"
+            }
+          }
+        }
+      ],
+      "derived": [
+        {
+          "codeName": "attemptsTaken",
+          "label": {
+            "es-MX": "Intentos realizados",
+            "en": "Attempts taken"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AttemptCount"
+          },
+          "expression": {
+            "op": "count",
+            "collection": {
+              "op": "field",
+              "name": "attempts"
+            }
+          }
+        }
+      ],
+      "entities": [
+        {
+          "codeName": "Attempt",
+          "label": {
+            "es-MX": "Intento",
+            "en": "Attempt"
+          },
+          "description": {
+            "es-MX": "Un intento del examen que ya fue calificado.",
+            "en": "An exam attempt that has already been graded."
+          },
+          "identity": "attemptNumber",
+          "fields": [
+            {
+              "codeName": "attemptNumber",
+              "label": {
+                "es-MX": "Número de intento",
+                "en": "Attempt number"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "AttemptNumber"
+              }
+            },
+            {
+              "codeName": "score",
+              "label": {
+                "es-MX": "Calificación",
+                "en": "Score"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "Score"
+              }
+            }
+          ],
+          "derived": []
+        }
+      ],
+      "states": [
+        {
+          "codeName": "Locked",
+          "label": {
+            "es-MX": "Bloqueado",
+            "en": "Locked"
+          },
+          "description": {
+            "es-MX": "El examen espera a que el estudiante termine el curso.",
+            "en": "The exam waits for the student to finish the course."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Open",
+          "label": {
+            "es-MX": "Disponible",
+            "en": "Open"
+          },
+          "description": {
+            "es-MX": "Puede iniciarse un intento.",
+            "en": "An attempt can be started."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "InProgress",
+          "label": {
+            "es-MX": "En curso",
+            "en": "In progress"
+          },
+          "description": {
+            "es-MX": "El estudiante está contestando el examen.",
+            "en": "The student is answering the exam."
+          },
+          "terminal": false,
+          "data": [
+            {
+              "codeName": "startedAt",
+              "label": {
+                "es-MX": "Inicio del intento",
+                "en": "Attempt start"
+              },
+              "type": {
+                "kind": "primitive",
+                "name": "timestamp"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Submitted",
+          "label": {
+            "es-MX": "Entregado",
+            "en": "Submitted"
+          },
+          "description": {
+            "es-MX": "Las respuestas esperan su calificación.",
+            "en": "The answers are awaiting their grade."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Passed",
+          "label": {
+            "es-MX": "Aprobado",
+            "en": "Passed"
+          },
+          "description": {
+            "es-MX": "El estudiante aprobó el examen.",
+            "en": "The student passed the exam."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "finalScore",
+              "label": {
+                "es-MX": "Calificación final",
+                "en": "Final score"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "Score"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Exhausted",
+          "label": {
+            "es-MX": "Agotado",
+            "en": "Exhausted"
+          },
+          "description": {
+            "es-MX": "No quedan intentos y el estudiante no aprobó.",
+            "en": "No attempts remain and the student did not pass."
+          },
+          "terminal": true,
+          "data": []
+        }
+      ],
+      "initialState": "Locked",
+      "rules": [
+        {
+          "codeName": "AttemptsRemaining",
+          "label": {
+            "es-MX": "Quedan intentos disponibles",
+            "en": "Attempts remain available"
+          },
+          "description": {
+            "es-MX": "Un examen admite hasta 3 intentos.",
+            "en": "An exam allows up to 3 attempts."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "field",
+              "name": "attemptsTaken"
+            },
+            "operator": "<",
+            "right": {
+              "op": "literal",
+              "value": 3
+            }
+          },
+          "message": {
+            "es-MX": "Ya usaste los 3 intentos de este examen.",
+            "en": "You have already used the 3 attempts of this exam."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenAssessment",
+                "args": {}
+              },
+              {
+                "command": "StartAttempt",
+                "args": {}
+              },
+              {
+                "command": "SubmitAttempt",
+                "args": {}
+              },
+              {
+                "command": "FailAttempt",
+                "args": {
+                  "score": 40
+                }
+              },
+              {
+                "command": "StartAttempt",
+                "args": {}
+              },
+              {
+                "command": "SubmitAttempt",
+                "args": {}
+              },
+              {
+                "command": "FailAttempt",
+                "args": {
+                  "score": 40
+                }
+              },
+              {
+                "command": "StartAttempt",
+                "args": {}
+              },
+              {
+                "command": "SubmitAttempt",
+                "args": {}
+              },
+              {
+                "command": "FailAttempt",
+                "args": {
+                  "score": 40
+                }
+              }
+            ],
+            "when": {
+              "command": "StartAttempt",
+              "args": {}
+            }
+          }
+        },
+        {
+          "codeName": "AttemptsExhausted",
+          "label": {
+            "es-MX": "Solo se cierra un examen sin intentos",
+            "en": "An exam only closes when attempts run out"
+          },
+          "description": {
+            "es-MX": "El examen se cierra cuando el estudiante agotó sus 3 intentos.",
+            "en": "The exam closes when the student has used all 3 attempts."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "field",
+              "name": "attemptsTaken"
+            },
+            "operator": ">=",
+            "right": {
+              "op": "literal",
+              "value": 3
+            }
+          },
+          "message": {
+            "es-MX": "Todavía quedan intentos disponibles.",
+            "en": "There are still attempts available."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenAssessment",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "CloseAssessment",
+              "args": {}
+            }
+          }
+        },
+        {
+          "codeName": "ScoreMeetsPassingMark",
+          "label": {
+            "es-MX": "La calificación alcanza el mínimo",
+            "en": "The score meets the passing mark"
+          },
+          "description": {
+            "es-MX": "Solo se aprueba con una calificación igual o mayor al mínimo del examen.",
+            "en": "A pass requires a score equal to or above the exam's passing score."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "score"
+            },
+            "operator": ">=",
+            "right": {
+              "op": "field",
+              "name": "passingScore"
+            }
+          },
+          "message": {
+            "es-MX": "La calificación no alcanza el mínimo para aprobar.",
+            "en": "The score does not reach the passing mark."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenAssessment",
+                "args": {}
+              },
+              {
+                "command": "StartAttempt",
+                "args": {}
+              },
+              {
+                "command": "SubmitAttempt",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "PassAttempt",
+              "args": {
+                "score": 50
+              }
+            }
+          }
+        },
+        {
+          "codeName": "ScoreIsBelowPassingMark",
+          "label": {
+            "es-MX": "La calificación queda debajo del mínimo",
+            "en": "The score is below the passing mark"
+          },
+          "description": {
+            "es-MX": "Solo se reprueba un intento cuya calificación está por debajo del mínimo.",
+            "en": "Only an attempt whose score is below the passing score is failed."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "score"
+            },
+            "operator": "<",
+            "right": {
+              "op": "field",
+              "name": "passingScore"
+            }
+          },
+          "message": {
+            "es-MX": "La calificación alcanza el mínimo: el intento no puede reprobarse.",
+            "en": "The score meets the passing mark: the attempt cannot be failed."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenAssessment",
+                "args": {}
+              },
+              {
+                "command": "StartAttempt",
+                "args": {}
+              },
+              {
+                "command": "SubmitAttempt",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "FailAttempt",
+              "args": {
+                "score": 90
+              }
+            }
+          }
+        }
+      ],
+      "invariants": [],
+      "transitions": [
+        {
+          "command": "OpenAssessment",
+          "from": ["Locked"],
+          "to": "Open",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "studentId",
+              "value": {
+                "op": "arg",
+                "name": "studentId"
+              }
+            },
+            {
+              "op": "set",
+              "field": "courseId",
+              "value": {
+                "op": "arg",
+                "name": "courseId"
+              }
+            }
+          ],
+          "emits": ["AssessmentOpened"]
+        },
+        {
+          "command": "StartAttempt",
+          "from": ["Open"],
+          "to": "InProgress",
+          "guards": ["AttemptsRemaining"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "startedAt",
+              "value": {
+                "op": "arg",
+                "name": "startedAt"
+              }
+            }
+          ],
+          "emits": ["AttemptStarted"]
+        },
+        {
+          "command": "SubmitAttempt",
+          "from": ["InProgress"],
+          "to": "Submitted",
+          "guards": [],
+          "effects": [],
+          "emits": ["AttemptSubmitted"]
+        },
+        {
+          "command": "PassAttempt",
+          "from": ["Submitted"],
+          "to": "Passed",
+          "guards": ["ScoreMeetsPassingMark"],
+          "effects": [
+            {
+              "op": "append",
+              "field": "attempts",
+              "value": {
+                "op": "construct",
+                "type": "Attempt",
+                "fields": [
+                  {
+                    "name": "attemptNumber",
+                    "value": {
+                      "op": "arithmetic",
+                      "operator": "add",
+                      "left": {
+                        "op": "count",
+                        "collection": {
+                          "op": "field",
+                          "name": "attempts"
+                        }
+                      },
+                      "right": {
+                        "op": "literal",
+                        "value": 1
+                      }
+                    }
+                  },
+                  {
+                    "name": "score",
+                    "value": {
+                      "op": "arg",
+                      "name": "score"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "op": "set",
+              "field": "finalScore",
+              "value": {
+                "op": "arg",
+                "name": "score"
+              }
+            }
+          ],
+          "emits": ["AssessmentPassed"]
+        },
+        {
+          "command": "FailAttempt",
+          "from": ["Submitted"],
+          "to": "Open",
+          "guards": ["ScoreIsBelowPassingMark"],
+          "effects": [
+            {
+              "op": "append",
+              "field": "attempts",
+              "value": {
+                "op": "construct",
+                "type": "Attempt",
+                "fields": [
+                  {
+                    "name": "attemptNumber",
+                    "value": {
+                      "op": "arithmetic",
+                      "operator": "add",
+                      "left": {
+                        "op": "count",
+                        "collection": {
+                          "op": "field",
+                          "name": "attempts"
+                        }
+                      },
+                      "right": {
+                        "op": "literal",
+                        "value": 1
+                      }
+                    }
+                  },
+                  {
+                    "name": "score",
+                    "value": {
+                      "op": "arg",
+                      "name": "score"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "emits": ["AttemptFailed"]
+        },
+        {
+          "command": "CloseAssessment",
+          "from": ["Open"],
+          "to": "Exhausted",
+          "guards": ["AttemptsExhausted"],
+          "effects": [],
+          "emits": ["AssessmentExhausted"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "OpenAssessment",
+          "args": {}
+        },
+        {
+          "command": "StartAttempt",
+          "args": {}
+        },
+        {
+          "command": "SubmitAttempt",
+          "args": {}
+        },
+        {
+          "command": "FailAttempt",
+          "args": {
+            "score": 55
+          }
+        },
+        {
+          "command": "StartAttempt",
+          "args": {}
+        },
+        {
+          "command": "SubmitAttempt",
+          "args": {}
+        },
+        {
+          "command": "PassAttempt",
+          "args": {
+            "score": 85
+          }
+        }
+      ]
+    }
+  ]
+}

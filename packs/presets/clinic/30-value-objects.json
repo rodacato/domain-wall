@@ -1,0 +1,1213 @@
+{
+  "valueObjects": [
+    {
+      "kind": "scalar",
+      "codeName": "AppointmentId",
+      "label": {
+        "es-MX": "Cita",
+        "en": "Appointment"
+      },
+      "description": {
+        "es-MX": "Identificador de una cita.",
+        "en": "Identifier of an appointment."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "apt_[a-z0-9]{8}",
+          "errorCode": "AppointmentIdMalformed",
+          "message": {
+            "es-MX": "El identificador de una cita debe empezar con apt_ seguido de 8 caracteres.",
+            "en": "The identifier of an appointment must start with apt_ followed by 8 characters."
+          },
+          "invalidExamples": ["APT_12345678", "apt_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["apt_4k8m2x7q"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "PatientId",
+      "label": {
+        "es-MX": "Paciente",
+        "en": "Patient"
+      },
+      "description": {
+        "es-MX": "Identificador de un paciente.",
+        "en": "Identifier of a patient."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "pat_[a-z0-9]{8}",
+          "errorCode": "PatientIdMalformed",
+          "message": {
+            "es-MX": "El identificador de un paciente debe empezar con pat_ seguido de 8 caracteres.",
+            "en": "The identifier of a patient must start with pat_ followed by 8 characters."
+          },
+          "invalidExamples": ["PAT_12345678", "pat_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["pat_9d3t6v1c"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ConsultationId",
+      "label": {
+        "es-MX": "Consulta",
+        "en": "Consultation"
+      },
+      "description": {
+        "es-MX": "Identificador de una consulta.",
+        "en": "Identifier of a consultation."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "con_[a-z0-9]{8}",
+          "errorCode": "ConsultationIdMalformed",
+          "message": {
+            "es-MX": "El identificador de una consulta debe empezar con con_ seguido de 8 caracteres.",
+            "en": "The identifier of a consultation must start with con_ followed by 8 characters."
+          },
+          "invalidExamples": ["CON_12345678", "con_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["con_2b5f8j3k"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ObservationId",
+      "label": {
+        "es-MX": "Observación",
+        "en": "Observation"
+      },
+      "description": {
+        "es-MX": "Identificador de una observación.",
+        "en": "Identifier of an observation."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "obs_[a-z0-9]{8}",
+          "errorCode": "ObservationIdMalformed",
+          "message": {
+            "es-MX": "El identificador de una observación debe empezar con obs_ seguido de 8 caracteres.",
+            "en": "The identifier of an observation must start with obs_ followed by 8 characters."
+          },
+          "invalidExamples": ["OBS_12345678", "obs_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["obs_7m1r4z9x"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "PrescriptionId",
+      "label": {
+        "es-MX": "Receta",
+        "en": "Prescription"
+      },
+      "description": {
+        "es-MX": "Identificador de una receta.",
+        "en": "Identifier of a prescription."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "prx_[a-z0-9]{8}",
+          "errorCode": "PrescriptionIdMalformed",
+          "message": {
+            "es-MX": "El identificador de una receta debe empezar con prx_ seguido de 8 caracteres.",
+            "en": "The identifier of a prescription must start with prx_ followed by 8 characters."
+          },
+          "invalidExamples": ["PRX_12345678", "prx_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["prx_5w8y2e6l"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "InvoiceId",
+      "label": {
+        "es-MX": "Factura",
+        "en": "Invoice"
+      },
+      "description": {
+        "es-MX": "Identificador de una factura.",
+        "en": "Identifier of an invoice."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "inv_[a-z0-9]{8}",
+          "errorCode": "InvoiceIdMalformed",
+          "message": {
+            "es-MX": "El identificador de una factura debe empezar con inv_ seguido de 8 caracteres.",
+            "en": "The identifier of an invoice must start with inv_ followed by 8 characters."
+          },
+          "invalidExamples": ["INV_12345678", "inv_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["inv_3c7g1p5s"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "Money",
+      "label": {
+        "es-MX": "Dinero",
+        "en": "Money"
+      },
+      "description": {
+        "es-MX": "Un monto en centavos de peso mexicano, nunca negativo.",
+        "en": "An amount in Mexican peso cents, never negative."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 0,
+          "errorCode": "MoneyCannotBeNegative",
+          "message": {
+            "es-MX": "El monto no puede ser negativo.",
+            "en": "The amount cannot be negative."
+          },
+          "invalidExamples": [-1, -500]
+        }
+      ],
+      "examples": {
+        "valid": [35000, 60000]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "UnitCount",
+      "label": {
+        "es-MX": "Piezas",
+        "en": "Units"
+      },
+      "description": {
+        "es-MX": "Cuántas piezas de un medicamento o servicio: entre 1 y 99.",
+        "en": "How many units of a medication or service: between 1 and 99."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 1,
+          "errorCode": "UnitCountMustBePositive",
+          "message": {
+            "es-MX": "La cantidad debe ser al menos 1.",
+            "en": "The quantity must be at least 1."
+          },
+          "invalidExamples": [0, -3]
+        },
+        {
+          "kind": "max",
+          "value": 99,
+          "errorCode": "UnitCountTooLarge",
+          "message": {
+            "es-MX": "La cantidad no puede pasar de 99.",
+            "en": "The quantity cannot exceed 99."
+          },
+          "invalidExamples": [100]
+        }
+      ],
+      "examples": {
+        "valid": [1, 2, 10]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ClinicHour",
+      "label": {
+        "es-MX": "Hora del día",
+        "en": "Hour of day"
+      },
+      "description": {
+        "es-MX": "La hora de inicio de una cita, de 0 a 23.",
+        "en": "The start hour of an appointment, from 0 to 23."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 0,
+          "errorCode": "ClinicHourTooEarly",
+          "message": {
+            "es-MX": "La hora debe ser al menos 0.",
+            "en": "The hour must be at least 0."
+          },
+          "invalidExamples": [-1]
+        },
+        {
+          "kind": "max",
+          "value": 23,
+          "errorCode": "ClinicHourTooLate",
+          "message": {
+            "es-MX": "La hora no puede pasar de 23.",
+            "en": "The hour cannot exceed 23."
+          },
+          "invalidExamples": [24]
+        }
+      ],
+      "examples": {
+        "valid": [9, 16]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ReminderCount",
+      "label": {
+        "es-MX": "Recordatorios",
+        "en": "Reminders"
+      },
+      "description": {
+        "es-MX": "Cuántos recordatorios se han mandado de una cita.",
+        "en": "How many reminders have been sent for an appointment."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 0,
+          "errorCode": "ReminderCountCannotBeNegative",
+          "message": {
+            "es-MX": "El número de recordatorios debe ser al menos 0.",
+            "en": "The number of reminders must be at least 0."
+          },
+          "invalidExamples": [-1]
+        },
+        {
+          "kind": "max",
+          "value": 3,
+          "errorCode": "ReminderCountTooLarge",
+          "message": {
+            "es-MX": "El número de recordatorios no puede pasar de 3.",
+            "en": "The number of reminders cannot exceed 3."
+          },
+          "invalidExamples": [4]
+        }
+      ],
+      "examples": {
+        "valid": [0, 1]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "FollowUpDays",
+      "label": {
+        "es-MX": "Días de seguimiento",
+        "en": "Follow-up days"
+      },
+      "description": {
+        "es-MX": "En cuántos días debe volver la persona a revisión.",
+        "en": "In how many days the person should come back for a check-up."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 0,
+          "errorCode": "FollowUpDaysCannotBeNegative",
+          "message": {
+            "es-MX": "Los días de seguimiento debe ser al menos 0.",
+            "en": "The follow-up days must be at least 0."
+          },
+          "invalidExamples": [-1]
+        },
+        {
+          "kind": "max",
+          "value": 365,
+          "errorCode": "FollowUpDaysTooLarge",
+          "message": {
+            "es-MX": "Los días de seguimiento no puede pasar de 365.",
+            "en": "The follow-up days cannot exceed 365."
+          },
+          "invalidExamples": [366]
+        }
+      ],
+      "examples": {
+        "valid": [14, 30, 0]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "WeightKg",
+      "label": {
+        "es-MX": "Peso en kilos",
+        "en": "Weight in kilos"
+      },
+      "description": {
+        "es-MX": "El peso de una persona en kilos enteros.",
+        "en": "A person's weight in whole kilos."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 1,
+          "errorCode": "WeightMustBePositive",
+          "message": {
+            "es-MX": "El peso debe ser al menos 1.",
+            "en": "The weight must be at least 1."
+          },
+          "invalidExamples": [0, -5]
+        },
+        {
+          "kind": "max",
+          "value": 300,
+          "errorCode": "WeightTooLarge",
+          "message": {
+            "es-MX": "El peso no puede pasar de 300.",
+            "en": "The weight cannot exceed 300."
+          },
+          "invalidExamples": [301]
+        }
+      ],
+      "examples": {
+        "valid": [68, 12]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "PersonName",
+      "label": {
+        "es-MX": "Nombre de persona",
+        "en": "Person name"
+      },
+      "description": {
+        "es-MX": "El nombre completo de una persona.",
+        "en": "A person's full name."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 3,
+          "errorCode": "PersonNameTooShort",
+          "message": {
+            "es-MX": "El nombre debe tener al menos 3 caracteres.",
+            "en": "The name must have at least 3 characters."
+          },
+          "invalidExamples": ["aa"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 80,
+          "errorCode": "PersonNameTooLong",
+          "message": {
+            "es-MX": "El nombre no puede pasar de 80 caracteres.",
+            "en": "The name cannot exceed 80 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["Rosa Elena Martínez", "Luis Ortega"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "PhoneNumber",
+      "label": {
+        "es-MX": "Teléfono",
+        "en": "Phone number"
+      },
+      "description": {
+        "es-MX": "Teléfono mexicano de diez dígitos, sin lada internacional.",
+        "en": "Ten-digit Mexican phone number, without the country code."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[0-9]{10}",
+          "errorCode": "PhoneNumberMalformed",
+          "message": {
+            "es-MX": "El teléfono debe tener 10 dígitos.",
+            "en": "The phone number must have 10 digits."
+          },
+          "invalidExamples": ["55123", "55-1234-5678", "ABCDEFGHIJ"]
+        }
+      ],
+      "examples": {
+        "valid": ["5512345678", "9515550142"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "VisitReason",
+      "label": {
+        "es-MX": "Motivo de la visita",
+        "en": "Visit reason"
+      },
+      "description": {
+        "es-MX": "Para qué pide la persona su cita.",
+        "en": "What the person needs the appointment for."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 3,
+          "errorCode": "VisitReasonTooShort",
+          "message": {
+            "es-MX": "El motivo debe tener al menos 3 caracteres.",
+            "en": "The reason must have at least 3 characters."
+          },
+          "invalidExamples": ["aa"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 200,
+          "errorCode": "VisitReasonTooLong",
+          "message": {
+            "es-MX": "El motivo no puede pasar de 200 caracteres.",
+            "en": "The reason cannot exceed 200 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["Sore throat and fever"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "CancellationReason",
+      "label": {
+        "es-MX": "Motivo de cancelación",
+        "en": "Cancellation reason"
+      },
+      "description": {
+        "es-MX": "Por qué se canceló, rechazó o anuló algo.",
+        "en": "Why something was cancelled or voided."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 3,
+          "errorCode": "CancellationReasonTooShort",
+          "message": {
+            "es-MX": "El motivo debe tener al menos 3 caracteres.",
+            "en": "The reason must have at least 3 characters."
+          },
+          "invalidExamples": ["aa"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 200,
+          "errorCode": "CancellationReasonTooLong",
+          "message": {
+            "es-MX": "El motivo no puede pasar de 200 caracteres.",
+            "en": "The reason cannot exceed 200 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["Patient could not attend"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "AllergyNote",
+      "label": {
+        "es-MX": "Nota de alergias",
+        "en": "Allergy note"
+      },
+      "description": {
+        "es-MX": "Las alergias conocidas de una persona, en texto libre.",
+        "en": "A person's known allergies, in free text."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 2,
+          "errorCode": "AllergyNoteTooShort",
+          "message": {
+            "es-MX": "La nota de alergias debe tener al menos 2 caracteres.",
+            "en": "The allergy note must have at least 2 characters."
+          },
+          "invalidExamples": ["a"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 200,
+          "errorCode": "AllergyNoteTooLong",
+          "message": {
+            "es-MX": "La nota de alergias no puede pasar de 200 caracteres.",
+            "en": "The allergy note cannot exceed 200 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["None known", "Penicillin"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "DiagnosisCode",
+      "label": {
+        "es-MX": "Clave de diagnóstico",
+        "en": "Diagnosis code"
+      },
+      "description": {
+        "es-MX": "Clave CIE-10: una letra, dos dígitos y, opcionalmente, un punto con otro dígito.",
+        "en": "ICD-10 code: one letter, two digits and, optionally, a dot with one more digit."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[A-Z][0-9]{2}(\\.[0-9])?",
+          "errorCode": "DiagnosisCodeMalformed",
+          "message": {
+            "es-MX": "La clave del diagnóstico no tiene el formato CIE-10.",
+            "en": "The diagnosis code does not have the ICD-10 format."
+          },
+          "invalidExamples": ["j06.9", "J6", "123", "J06.99"]
+        }
+      ],
+      "examples": {
+        "valid": ["J06.9", "I10"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ObservationNote",
+      "label": {
+        "es-MX": "Nota de observación",
+        "en": "Observation note"
+      },
+      "description": {
+        "es-MX": "Lo que el médico anota al observar.",
+        "en": "What the physician writes down when observing."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 3,
+          "errorCode": "ObservationNoteTooShort",
+          "message": {
+            "es-MX": "La nota debe tener al menos 3 caracteres.",
+            "en": "The note must have at least 3 characters."
+          },
+          "invalidExamples": ["aa"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 300,
+          "errorCode": "ObservationNoteTooLong",
+          "message": {
+            "es-MX": "La nota no puede pasar de 300 caracteres.",
+            "en": "The note cannot exceed 300 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["Throat inflamed, temperature 38.2 C"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "MedicationCode",
+      "label": {
+        "es-MX": "Clave del medicamento",
+        "en": "Medication code"
+      },
+      "description": {
+        "es-MX": "Clave del cuadro básico: tres grupos de dígitos y uno final de dos.",
+        "en": "Essential-medicines table code: three digit groups and a final group of two."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[0-9]{3}\\.[0-9]{3}\\.[0-9]{4}\\.[0-9]{2}",
+          "errorCode": "MedicationCodeMalformed",
+          "message": {
+            "es-MX": "La clave del medicamento debe tener el formato 000.000.0000.00.",
+            "en": "The medication code must have the format 000.000.0000.00."
+          },
+          "invalidExamples": ["0100001040", "ABC.000.0104.00", "010.000.0104"]
+        }
+      ],
+      "examples": {
+        "valid": ["010.000.0104.00", "010.000.2501.00"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "DoseInstruction",
+      "label": {
+        "es-MX": "Indicación de dosis",
+        "en": "Dose instruction"
+      },
+      "description": {
+        "es-MX": "Cómo debe tomarse el medicamento.",
+        "en": "How the medication must be taken."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 3,
+          "errorCode": "DoseInstructionTooShort",
+          "message": {
+            "es-MX": "La indicación debe tener al menos 3 caracteres.",
+            "en": "The instruction must have at least 3 characters."
+          },
+          "invalidExamples": ["aa"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 120,
+          "errorCode": "DoseInstructionTooLong",
+          "message": {
+            "es-MX": "La indicación no puede pasar de 120 caracteres.",
+            "en": "The instruction cannot exceed 120 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["1 tablet every 8 hours for 5 days"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ServiceCode",
+      "label": {
+        "es-MX": "Clave de servicio",
+        "en": "Service code"
+      },
+      "description": {
+        "es-MX": "Clave interna de un servicio de la clínica: SRV- y tres dígitos.",
+        "en": "Internal code of a clinic service: SRV- and three digits."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "SRV-[0-9]{3}",
+          "errorCode": "ServiceCodeMalformed",
+          "message": {
+            "es-MX": "La clave del servicio debe ser SRV- seguida de 3 dígitos.",
+            "en": "The service code must be SRV- followed by 3 digits."
+          },
+          "invalidExamples": ["srv-001", "SRV-1", "SRV-ABC"]
+        }
+      ],
+      "examples": {
+        "valid": ["SRV-001", "SRV-014"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ChargeDescription",
+      "label": {
+        "es-MX": "Descripción del cargo",
+        "en": "Charge description"
+      },
+      "description": {
+        "es-MX": "Qué se está cobrando.",
+        "en": "What is being charged."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 3,
+          "errorCode": "ChargeDescriptionTooShort",
+          "message": {
+            "es-MX": "La descripción debe tener al menos 3 caracteres.",
+            "en": "The description must have at least 3 characters."
+          },
+          "invalidExamples": ["aa"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 80,
+          "errorCode": "ChargeDescriptionTooLong",
+          "message": {
+            "es-MX": "La descripción no puede pasar de 80 caracteres.",
+            "en": "The description cannot exceed 80 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["General consultation"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "PolicyNumber",
+      "label": {
+        "es-MX": "Número de póliza",
+        "en": "Policy number"
+      },
+      "description": {
+        "es-MX": "Póliza de la aseguradora: tres letras, guion y siete dígitos.",
+        "en": "Insurer policy: three letters, a dash and seven digits."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[A-Z]{3}-[0-9]{7}",
+          "errorCode": "PolicyNumberMalformed",
+          "message": {
+            "es-MX": "La póliza debe tener 3 letras, un guion y 7 dígitos.",
+            "en": "The policy must have 3 letters, a dash and 7 digits."
+          },
+          "invalidExamples": ["seg-4410928", "SEG-123", "SEG4410928"]
+        }
+      ],
+      "examples": {
+        "valid": ["SEG-4410928", "SEG-1002003"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ClaimReference",
+      "label": {
+        "es-MX": "Referencia del siniestro",
+        "en": "Claim reference"
+      },
+      "description": {
+        "es-MX": "Folio que la aseguradora asigna al reclamo: CLM- y ocho dígitos.",
+        "en": "Reference the insurer assigns to the claim: CLM- and eight digits."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "CLM-[0-9]{8}",
+          "errorCode": "ClaimReferenceMalformed",
+          "message": {
+            "es-MX": "La referencia debe ser CLM- seguida de 8 dígitos.",
+            "en": "The reference must be CLM- followed by 8 digits."
+          },
+          "invalidExamples": ["clm-20260310", "CLM-123", "CLM-ABCDEFGH"]
+        }
+      ],
+      "examples": {
+        "valid": ["CLM-20260310"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "TaxId",
+      "label": {
+        "es-MX": "RFC",
+        "en": "Tax ID"
+      },
+      "description": {
+        "es-MX": "Registro Federal de Contribuyentes: 3 o 4 letras, 6 dígitos de fecha y 3 caracteres de homoclave.",
+        "en": "Mexican taxpayer ID: 3 or 4 letters, 6 date digits and a 3-character suffix."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[A-Z&]{3,4}[0-9]{6}[A-Z0-9]{3}",
+          "errorCode": "TaxIdMalformed",
+          "message": {
+            "es-MX": "El RFC no tiene el formato correcto.",
+            "en": "The tax ID does not have the right format."
+          },
+          "invalidExamples": ["xaxx010101000", "123", "ABC12"]
+        }
+      ],
+      "examples": {
+        "valid": ["XAXX010101000", "MAGR880412H67"]
+      }
+    },
+    {
+      "kind": "enum",
+      "codeName": "ChronicCondition",
+      "label": {
+        "es-MX": "Condición crónica",
+        "en": "Chronic condition"
+      },
+      "description": {
+        "es-MX": "La condición crónica más relevante que conoce el médico.",
+        "en": "The most relevant chronic condition the physician knows about."
+      },
+      "members": [
+        {
+          "codeName": "NoneKnown",
+          "label": {
+            "es-MX": "Ninguna conocida",
+            "en": "None known"
+          }
+        },
+        {
+          "codeName": "Diabetes",
+          "label": {
+            "es-MX": "Diabetes",
+            "en": "Diabetes"
+          }
+        },
+        {
+          "codeName": "Hypertension",
+          "label": {
+            "es-MX": "Hipertensión",
+            "en": "Hypertension"
+          }
+        },
+        {
+          "codeName": "Asthma",
+          "label": {
+            "es-MX": "Asma",
+            "en": "Asthma"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "enum",
+      "codeName": "ObservationKind",
+      "label": {
+        "es-MX": "Tipo de observación",
+        "en": "Observation kind"
+      },
+      "description": {
+        "es-MX": "Qué clase de dato anotó el médico.",
+        "en": "What kind of data the physician noted."
+      },
+      "members": [
+        {
+          "codeName": "Symptom",
+          "label": {
+            "es-MX": "Síntoma",
+            "en": "Symptom"
+          }
+        },
+        {
+          "codeName": "Sign",
+          "label": {
+            "es-MX": "Signo",
+            "en": "Sign"
+          }
+        },
+        {
+          "codeName": "TestResult",
+          "label": {
+            "es-MX": "Resultado de estudio",
+            "en": "Test result"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "enum",
+      "codeName": "CoverageKind",
+      "label": {
+        "es-MX": "Tipo de cobertura",
+        "en": "Coverage kind"
+      },
+      "description": {
+        "es-MX": "Qué cobertura de la póliza se reclama.",
+        "en": "Which coverage of the policy is being claimed."
+      },
+      "members": [
+        {
+          "codeName": "Outpatient",
+          "label": {
+            "es-MX": "Consulta externa",
+            "en": "Outpatient care"
+          }
+        },
+        {
+          "codeName": "MajorMedical",
+          "label": {
+            "es-MX": "Gastos médicos mayores",
+            "en": "Major medical"
+          }
+        },
+        {
+          "codeName": "Dental",
+          "label": {
+            "es-MX": "Dental",
+            "en": "Dental"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "enum",
+      "codeName": "PaymentMethod",
+      "label": {
+        "es-MX": "Forma de pago",
+        "en": "Payment method"
+      },
+      "description": {
+        "es-MX": "Cómo pagó la persona.",
+        "en": "How the person paid."
+      },
+      "members": [
+        {
+          "codeName": "Cash",
+          "label": {
+            "es-MX": "Efectivo",
+            "en": "Cash"
+          }
+        },
+        {
+          "codeName": "Card",
+          "label": {
+            "es-MX": "Tarjeta",
+            "en": "Card"
+          }
+        },
+        {
+          "codeName": "Transfer",
+          "label": {
+            "es-MX": "Transferencia",
+            "en": "Transfer"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "record",
+      "codeName": "ContactCard",
+      "label": {
+        "es-MX": "Ficha de contacto",
+        "en": "Contact card"
+      },
+      "description": {
+        "es-MX": "Nombre y teléfono de quien pide una cita.",
+        "en": "Name and phone of whoever asks for an appointment."
+      },
+      "fields": [
+        {
+          "codeName": "fullName",
+          "label": {
+            "es-MX": "Nombre completo",
+            "en": "Full name"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PersonName"
+          }
+        },
+        {
+          "codeName": "phone",
+          "label": {
+            "es-MX": "Teléfono",
+            "en": "Phone"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PhoneNumber"
+          }
+        }
+      ],
+      "examples": {
+        "valid": [
+          {
+            "fullName": "Rosa Elena Martínez",
+            "phone": "5512345678"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "record",
+      "codeName": "ClinicalProfile",
+      "label": {
+        "es-MX": "Perfil clínico",
+        "en": "Clinical profile"
+      },
+      "description": {
+        "es-MX": "Los datos clínicos básicos de quien se atiende.",
+        "en": "The basic clinical data of the person being seen."
+      },
+      "fields": [
+        {
+          "codeName": "birthDate",
+          "label": {
+            "es-MX": "Fecha de nacimiento",
+            "en": "Birth date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        },
+        {
+          "codeName": "allergies",
+          "label": {
+            "es-MX": "Alergias",
+            "en": "Allergies"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AllergyNote"
+          }
+        },
+        {
+          "codeName": "chronicCondition",
+          "label": {
+            "es-MX": "Condición crónica",
+            "en": "Chronic condition"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ChronicCondition"
+          }
+        }
+      ],
+      "examples": {
+        "valid": [
+          {
+            "birthDate": "1988-04-12",
+            "allergies": "None known",
+            "chronicCondition": "NoneKnown"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "record",
+      "codeName": "DispenseRecipient",
+      "label": {
+        "es-MX": "Destinatario del medicamento",
+        "en": "Medication recipient"
+      },
+      "description": {
+        "es-MX": "Quien recibe el medicamento, con lo que farmacia necesita saber.",
+        "en": "Whoever receives the medication, with what the pharmacy needs to know."
+      },
+      "fields": [
+        {
+          "codeName": "fullName",
+          "label": {
+            "es-MX": "Nombre completo",
+            "en": "Full name"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PersonName"
+          }
+        },
+        {
+          "codeName": "weightKg",
+          "label": {
+            "es-MX": "Peso en kilos",
+            "en": "Weight in kilos"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "WeightKg"
+          }
+        },
+        {
+          "codeName": "allergies",
+          "label": {
+            "es-MX": "Alergias",
+            "en": "Allergies"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AllergyNote"
+          }
+        }
+      ],
+      "examples": {
+        "valid": [
+          {
+            "fullName": "Rosa Elena Martínez",
+            "weightKg": 68,
+            "allergies": "None known"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "record",
+      "codeName": "Payer",
+      "label": {
+        "es-MX": "Pagador",
+        "en": "Payer"
+      },
+      "description": {
+        "es-MX": "Quien paga una factura: su nombre y su RFC.",
+        "en": "Whoever pays an invoice: their name and tax ID."
+      },
+      "fields": [
+        {
+          "codeName": "fullName",
+          "label": {
+            "es-MX": "Nombre completo",
+            "en": "Full name"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PersonName"
+          }
+        },
+        {
+          "codeName": "taxId",
+          "label": {
+            "es-MX": "RFC",
+            "en": "Tax ID"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "TaxId"
+          }
+        }
+      ],
+      "examples": {
+        "valid": [
+          {
+            "fullName": "Rosa Elena Martínez",
+            "taxId": "MAGR880412H67"
+          }
+        ]
+      }
+    }
+  ]
+}

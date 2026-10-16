@@ -1,0 +1,301 @@
+{
+  "dialogues": {
+    "whyDdd.change": [
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "Equipo, llegó un cambio de contabilidad: una factura ya emitida no se puede anular, porque ya se reporta al SAT.",
+          "en": "Team, accounting sent us a change: an invoice that has been issued can no longer be voided, because it is already reported to the tax authority."
+        }
+      },
+      {
+        "speaker": "Gerardo",
+        "text": {
+          "es-MX": "Así es. Si anulo una factura que ya se emitió, me descuadran los reportes del mes y me llaman de la aseguradora.",
+          "en": "Right. If I void an invoice that was already issued, my monthly reports stop adding up and the insurer calls me."
+        }
+      },
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "Suena a una sola regla. Veamos en cuántos lugares del código hay que tocar para cambiarla.",
+          "en": "That sounds like a single rule. Let's see how many places in the code we have to touch to change it."
+        }
+      }
+    ],
+    "ubiquity.intro": [
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "Antes de escribir código, hablemos igual. Marisol, ¿cómo le llamas a lo que ocurre cuando atiendes a alguien?",
+          "en": "Before writing code, let's speak the same language. Marisol, what do you call what happens when you see someone?"
+        }
+      },
+      {
+        "speaker": "Marisol",
+        "text": {
+          "es-MX": "Una consulta. Cuando abro una {{term:Consultation}}, anoto lo que observo, el diagnóstico y en cuántos días debe volver.",
+          "en": "A consultation. When I open a {{term:Consultation}}, I write down what I observe, the diagnosis and in how many days the person should return."
+        }
+      },
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "Perfecto. Esa palabra va al glosario y la usaremos igual en las conversaciones, en los tableros y en el código.",
+          "en": "Perfect. That word goes into the glossary and we will use it the same way in conversations, on boards and in code."
+        }
+      }
+    ],
+    "ubiquity.ambiguity": [
+      {
+        "speaker": "Gerardo",
+        "text": {
+          "es-MX": "Cuando yo digo «paciente», hablo de alguien con un teléfono al que le recuerdo su cita.",
+          "en": "When I say “patient”, I mean someone with a phone number whom I remind about their appointment."
+        }
+      },
+      {
+        "speaker": "Marisol",
+        "text": {
+          "es-MX": "Pues para mí un «paciente» es una historia clínica: su edad, sus alergias y qué le duele hoy.",
+          "en": "Well, for me a “patient” is a clinical history: their age, their allergies and what hurts today."
+        }
+      },
+      {
+        "speaker": "Alma",
+        "text": {
+          "es-MX": "Y para mí es quien se lleva el medicamento: lo que importa es su peso y qué no se le puede dar.",
+          "en": "And for me it is whoever takes the medication home: what matters is their weight and what they must not be given."
+        }
+      },
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "Una misma palabra con significados distintos: eso es una ambigüedad. Y en cobranza ni siquiera es quien se atendió, sino quien paga. La resolveremos separando contextos.",
+          "en": "One word with different meanings: that is an ambiguity. And in billing it is not even the person who was seen, but whoever pays. We will resolve it by separating contexts."
+        }
+      }
+    ],
+    "storming.kickoff": [
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "Vamos a contar la historia de una visita con eventos: cosas que ya pasaron, escritas en pasado, en naranja.",
+          "en": "Let's tell the story of a visit through events: things that already happened, written in the past tense, in orange."
+        }
+      },
+      {
+        "speaker": "Gerardo",
+        "text": {
+          "es-MX": "Todo empieza cuando alguien pide su cita y yo la agendo: {{term:AppointmentRequested}} y luego {{term:AppointmentBooked}}.",
+          "en": "It all starts when someone asks for an appointment and I book it: {{term:AppointmentRequested}} and then {{term:AppointmentBooked}}."
+        }
+      },
+      {
+        "speaker": "Marisol",
+        "text": {
+          "es-MX": "Y cuando la persona llega, {{term:PatientCheckedIn}} me avisa que ya puedo abrir su consulta.",
+          "en": "And when the person arrives, {{term:PatientCheckedIn}} tells me I can open their consultation."
+        }
+      }
+    ],
+    "storming.commands": [
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "Cada evento nace de una decisión. ¿Qué pidió alguien para que ocurriera {{term:ConsultationClosed}}?",
+          "en": "Every event comes from a decision. What did someone ask for so that {{term:ConsultationClosed}} could happen?"
+        }
+      },
+      {
+        "speaker": "Marisol",
+        "text": {
+          "es-MX": "Yo emito {{term:CloseConsultation}}, pero solo si ya registré un diagnóstico y el seguimiento no pasa de 90 días.",
+          "en": "I issue {{term:CloseConsultation}}, but only if I already recorded a diagnosis and the follow-up is no more than 90 days away."
+        }
+      },
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "Esa condición es una regla del dominio. La vamos a guardar en el agregado, no en la pantalla.",
+          "en": "That condition is a domain rule. We will keep it in the aggregate, not on the screen."
+        }
+      }
+    ],
+    "contexts.split": [
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "Ya vimos que «paciente» significa varias cosas. Dibujemos fronteras: dentro de cada una, la palabra tiene un solo significado.",
+          "en": "We saw that “patient” means several things. Let's draw boundaries: inside each one, the word has a single meaning."
+        }
+      },
+      {
+        "speaker": "Gerardo",
+        "text": {
+          "es-MX": "Entonces en {{term:Scheduling}} un paciente es un {{term:ContactCard}}: nombre y teléfono, y nada más.",
+          "en": "So in {{term:Scheduling}} a patient is a {{term:ContactCard}}: name and phone, nothing else."
+        }
+      },
+      {
+        "speaker": "Marisol",
+        "text": {
+          "es-MX": "En {{term:ClinicalCare}} es mi {{term:ClinicalProfile}}: fecha de nacimiento, alergias y condición crónica.",
+          "en": "In {{term:ClinicalCare}} it is my {{term:ClinicalProfile}}: birth date, allergies and chronic condition."
+        }
+      },
+      {
+        "speaker": "Alma",
+        "text": {
+          "es-MX": "Y en {{term:Pharmacy}} es un {{term:DispenseRecipient}}, con su peso y sus alergias para revisar la dosis.",
+          "en": "And in {{term:Pharmacy}} it is a {{term:DispenseRecipient}}, with their weight and allergies so I can check the dose."
+        }
+      }
+    ],
+    "contexts.mapping": [
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "¿Cómo se hablan los contextos? {{term:ClinicalCare}} publica lo que pasa en la consulta y {{term:Pharmacy}} y {{term:Billing}} lo consumen.",
+          "en": "How do the contexts talk to each other? {{term:ClinicalCare}} publishes what happens in the consultation and {{term:Pharmacy}} and {{term:Billing}} consume it."
+        }
+      },
+      {
+        "speaker": "Gerardo",
+        "text": {
+          "es-MX": "Con la aseguradora no hay negociación: su formato de siniestros es el que es, con campos en mayúsculas y claves propias.",
+          "en": "There is no negotiating with the insurer: their claims format is what it is, with uppercase fields and their own codes."
+        }
+      },
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "Eso pide una capa anticorrupción frente a {{term:InsurerClaimsGateway}}: traducimos en la frontera y nuestro dominio sigue hablando su propio idioma.",
+          "en": "That calls for an anticorruption layer against {{term:InsurerClaimsGateway}}: we translate at the border and our domain keeps speaking its own language."
+        }
+      }
+    ],
+    "subdomains.focus": [
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "No todo merece el mismo esfuerzo. Marisol, ¿qué nos hace distintos de otras clínicas?",
+          "en": "Not everything deserves the same effort. Marisol, what makes us different from other clinics?"
+        }
+      },
+      {
+        "speaker": "Marisol",
+        "text": {
+          "es-MX": "Que damos cita rápido y damos seguimiento: el vecino sale con su diagnóstico, su receta y la fecha para volver.",
+          "en": "That we book quickly and follow up: the neighbor leaves with their diagnosis, their prescription and the date to come back."
+        }
+      },
+      {
+        "speaker": "Gerardo",
+        "text": {
+          "es-MX": "Cobrar, en cambio, funciona igual en todos lados. Ahí conviene no inventar nada: {{term:Billing}} es un subdominio genérico.",
+          "en": "Charging, on the other hand, works the same everywhere. There it pays not to invent anything: {{term:Billing}} is a generic subdomain."
+        }
+      }
+    ],
+    "tactical.aggregate": [
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "Veamos la {{term:Prescription}}. ¿Qué nunca debería poder pasar con una receta?",
+          "en": "Let's look at the {{term:Prescription}}. What should never be possible with a prescription?"
+        }
+      },
+      {
+        "speaker": "Alma",
+        "text": {
+          "es-MX": "Que se surta sin revisar alergias, o que me pidan más piezas de las que el médico recetó.",
+          "en": "That it gets filled without checking allergies, or that I am asked for more units than the physician prescribed."
+        }
+      },
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "Esas son reglas del dominio. El agregado las protege: cualquier comando que las rompa se rechaza con un error claro.",
+          "en": "Those are domain rules. The aggregate protects them: any command that breaks them is rejected with a clear error."
+        }
+      }
+    ],
+    "functional.pipeline": [
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "Mira el reclamo como una línea de ensamblaje: validar, calcular el total, enviarlo a la aseguradora y guardar.",
+          "en": "Look at the claim as an assembly line: validate, compute the total, send it to the insurer and save."
+        }
+      },
+      {
+        "speaker": "Gerardo",
+        "text": {
+          "es-MX": "Y si la aseguradora no responde, la factura no se queda a medias: el error sale por otro carril.",
+          "en": "And if the insurer does not respond, the invoice is not left half done: the error goes out on another lane."
+        }
+      },
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "Exacto. Cada etapa recibe un tipo y devuelve otro, y los errores son valores, no sorpresas.",
+          "en": "Exactly. Each stage takes one type and returns another, and errors are values, not surprises."
+        }
+      }
+    ],
+    "architecture.ports": [
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "El dominio no debe saber si guardamos en una base de datos o en memoria. Solo pide «guarda esta factura».",
+          "en": "The domain must not know whether we store in a database or in memory. It only asks “save this invoice”."
+        }
+      },
+      {
+        "speaker": "Gerardo",
+        "text": {
+          "es-MX": "Entonces la aseguradora, el SMS y la terminal de cobro también son puertos, y cada proveedor es un adaptador que se puede cambiar.",
+          "en": "So the insurer, the SMS and the payment terminal are ports too, and each provider is an adapter you can swap."
+        }
+      },
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "Y las dependencias apuntan hacia el dominio, nunca al revés.",
+          "en": "And dependencies point toward the domain, never the other way around."
+        }
+      }
+    ],
+    "evolution.request": [
+      {
+        "speaker": "Marisol",
+        "text": {
+          "es-MX": "Tengo un problema: muchas veces pido estudios de laboratorio y no debería cerrar la consulta hasta que lleguen los resultados.",
+          "en": "I have a problem: I often order lab tests and I should not close the consultation until the results arrive."
+        }
+      },
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "Entonces entre «en consulta» y «cerrada» falta un paso que el modelo nunca nombró: esperar los resultados.",
+          "en": "So between “in progress” and “closed” there is a step the model never named: waiting for the results."
+        }
+      },
+      {
+        "speaker": "Marisol",
+        "text": {
+          "es-MX": "Eso. Y si los resultados salen alterados, el seguimiento tiene que ser en una semana como máximo.",
+          "en": "Right. And if the results come back abnormal, the follow-up has to be within a week at most."
+        }
+      },
+      {
+        "speaker": "Octavio",
+        "text": {
+          "es-MX": "Un concepto implícito que ahora hacemos explícito. Refactoricemos la consulta.",
+          "en": "An implicit concept we now make explicit. Let's refactor the consultation."
+        }
+      }
+    ]
+  }
+}

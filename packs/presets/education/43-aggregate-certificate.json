@@ -1,0 +1,505 @@
+{
+  "aggregates": [
+    {
+      "codeName": "Certificate",
+      "label": {
+        "es-MX": "Constancia",
+        "en": "Certificate"
+      },
+      "description": {
+        "es-MX": "La constancia que acredita que una persona aprobó un curso, tal como se registra ante el registro nacional.",
+        "en": "The certificate proving a person passed a course, as it is recorded with the national registry."
+      },
+      "context": "Certification",
+      "identity": "certificateId",
+      "fields": [
+        {
+          "codeName": "certificateId",
+          "label": {
+            "es-MX": "Constancia",
+            "en": "Certificate"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CertificateId"
+          }
+        },
+        {
+          "codeName": "studentId",
+          "label": {
+            "es-MX": "Estudiante",
+            "en": "Student"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StudentId"
+          }
+        },
+        {
+          "codeName": "courseId",
+          "label": {
+            "es-MX": "Curso",
+            "en": "Course"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CourseId"
+          }
+        },
+        {
+          "codeName": "holderCurp",
+          "label": {
+            "es-MX": "CURP de la persona titular",
+            "en": "Holder CURP"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "Curp"
+            }
+          }
+        },
+        {
+          "codeName": "hours",
+          "label": {
+            "es-MX": "Horas de estudio",
+            "en": "Study hours"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "StudyHours"
+            }
+          }
+        },
+        {
+          "codeName": "area",
+          "label": {
+            "es-MX": "Área temática",
+            "en": "Thematic area"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "ThematicArea"
+            }
+          }
+        },
+        {
+          "codeName": "finalScore",
+          "label": {
+            "es-MX": "Calificación final",
+            "en": "Final score"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "Score"
+            }
+          }
+        },
+        {
+          "codeName": "distinction",
+          "label": {
+            "es-MX": "Mención",
+            "en": "Distinction"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "Distinction"
+            }
+          }
+        },
+        {
+          "codeName": "issuedOn",
+          "label": {
+            "es-MX": "Fecha de emisión",
+            "en": "Issue date"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "primitive",
+              "name": "date"
+            }
+          }
+        }
+      ],
+      "derived": [],
+      "entities": [],
+      "states": [
+        {
+          "codeName": "Draft",
+          "label": {
+            "es-MX": "Borrador",
+            "en": "Draft"
+          },
+          "description": {
+            "es-MX": "La constancia aún no se solicita.",
+            "en": "The certificate has not been requested yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Requested",
+          "label": {
+            "es-MX": "Solicitada",
+            "en": "Requested"
+          },
+          "description": {
+            "es-MX": "Enviada al registro nacional, esperando respuesta.",
+            "en": "Sent to the national registry, awaiting a response."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Registered",
+          "label": {
+            "es-MX": "Registrada",
+            "en": "Registered"
+          },
+          "description": {
+            "es-MX": "El registro la aceptó y devolvió su folio.",
+            "en": "The registry accepted it and returned its folio."
+          },
+          "terminal": false,
+          "data": [
+            {
+              "codeName": "registryFolio",
+              "label": {
+                "es-MX": "Folio de registro",
+                "en": "Registry folio"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "RegistryFolio"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Issued",
+          "label": {
+            "es-MX": "Emitida",
+            "en": "Issued"
+          },
+          "description": {
+            "es-MX": "La constancia ya se entregó al estudiante.",
+            "en": "The certificate has been handed to the student."
+          },
+          "terminal": true,
+          "data": []
+        },
+        {
+          "codeName": "Rejected",
+          "label": {
+            "es-MX": "Rechazada",
+            "en": "Rejected"
+          },
+          "description": {
+            "es-MX": "El registro nacional la rechazó.",
+            "en": "The national registry rejected it."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "rejectionReason",
+              "label": {
+                "es-MX": "Motivo de rechazo",
+                "en": "Rejection reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ReasonText"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Revoked",
+          "label": {
+            "es-MX": "Revocada",
+            "en": "Revoked"
+          },
+          "description": {
+            "es-MX": "Se anuló antes de entregarla.",
+            "en": "It was annulled before being handed over."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "revocationReason",
+              "label": {
+                "es-MX": "Motivo de revocación",
+                "en": "Revocation reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ReasonText"
+              }
+            }
+          ]
+        }
+      ],
+      "initialState": "Draft",
+      "rules": [
+        {
+          "codeName": "CertificateRequiresPassingScore",
+          "label": {
+            "es-MX": "La constancia exige calificación aprobatoria",
+            "en": "A certificate requires a passing score"
+          },
+          "description": {
+            "es-MX": "Solo se solicita una constancia con una calificación final de 70 o más.",
+            "en": "A certificate is only requested with a final score of 70 or more."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "finalScore"
+            },
+            "operator": ">=",
+            "right": {
+              "op": "literal",
+              "value": 70
+            }
+          },
+          "message": {
+            "es-MX": "La calificación final debe ser de al menos 70.",
+            "en": "The final score must be at least 70."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "RequestCertificate",
+              "args": {
+                "finalScore": 50
+              }
+            }
+          }
+        },
+        {
+          "codeName": "HonorsRequireHighScore",
+          "label": {
+            "es-MX": "La mención honorífica exige 90 o más",
+            "en": "Honors require a score of 90 or more"
+          },
+          "description": {
+            "es-MX": "Una constancia con honores solo se pide con una calificación final de 90 o más.",
+            "en": "A certificate with honors is only requested with a final score of 90 or more."
+          },
+          "predicate": {
+            "kind": "any",
+            "of": [
+              {
+                "kind": "compare",
+                "left": {
+                  "op": "arg",
+                  "name": "distinction"
+                },
+                "operator": "==",
+                "right": {
+                  "op": "literal",
+                  "value": "Standard"
+                }
+              },
+              {
+                "kind": "compare",
+                "left": {
+                  "op": "arg",
+                  "name": "finalScore"
+                },
+                "operator": ">=",
+                "right": {
+                  "op": "literal",
+                  "value": 90
+                }
+              }
+            ]
+          },
+          "message": {
+            "es-MX": "La mención honorífica requiere una calificación de 90 o más.",
+            "en": "Honors require a score of 90 or more."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "RequestCertificate",
+              "args": {
+                "finalScore": 75,
+                "distinction": "Honors"
+              }
+            }
+          }
+        }
+      ],
+      "invariants": [],
+      "transitions": [
+        {
+          "command": "RequestCertificate",
+          "from": ["Draft"],
+          "to": "Requested",
+          "guards": ["CertificateRequiresPassingScore", "HonorsRequireHighScore"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "studentId",
+              "value": {
+                "op": "arg",
+                "name": "studentId"
+              }
+            },
+            {
+              "op": "set",
+              "field": "courseId",
+              "value": {
+                "op": "arg",
+                "name": "courseId"
+              }
+            },
+            {
+              "op": "set",
+              "field": "holderCurp",
+              "value": {
+                "op": "arg",
+                "name": "holderCurp"
+              }
+            },
+            {
+              "op": "set",
+              "field": "hours",
+              "value": {
+                "op": "arg",
+                "name": "hours"
+              }
+            },
+            {
+              "op": "set",
+              "field": "area",
+              "value": {
+                "op": "arg",
+                "name": "area"
+              }
+            },
+            {
+              "op": "set",
+              "field": "finalScore",
+              "value": {
+                "op": "arg",
+                "name": "finalScore"
+              }
+            },
+            {
+              "op": "set",
+              "field": "distinction",
+              "value": {
+                "op": "arg",
+                "name": "distinction"
+              }
+            },
+            {
+              "op": "set",
+              "field": "issuedOn",
+              "value": {
+                "op": "arg",
+                "name": "issuedOn"
+              }
+            }
+          ],
+          "emits": ["CertificateRequested"]
+        },
+        {
+          "command": "ConfirmCertificateRegistration",
+          "from": ["Requested"],
+          "to": "Registered",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "registryFolio",
+              "value": {
+                "op": "arg",
+                "name": "registryFolio"
+              }
+            }
+          ],
+          "emits": ["CertificateRegistered"]
+        },
+        {
+          "command": "RejectCertificateRegistration",
+          "from": ["Requested"],
+          "to": "Rejected",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "rejectionReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["CertificateRejected"]
+        },
+        {
+          "command": "IssueCertificate",
+          "from": ["Registered"],
+          "to": "Issued",
+          "guards": [],
+          "effects": [],
+          "emits": ["CertificateIssued"]
+        },
+        {
+          "command": "RevokeCertificate",
+          "from": ["Registered"],
+          "to": "Revoked",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "revocationReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["CertificateRevoked"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "RequestCertificate",
+          "args": {
+            "studentId": "stu_2m6q8v1c",
+            "courseId": "crs_4k8w2n6p",
+            "holderCurp": "MOCV900214MDFRNL08",
+            "hours": 40,
+            "area": "Technology",
+            "finalScore": 92,
+            "distinction": "Honors",
+            "issuedOn": "2026-11-20"
+          }
+        },
+        {
+          "command": "ConfirmCertificateRegistration",
+          "args": {}
+        },
+        {
+          "command": "IssueCertificate",
+          "args": {}
+        }
+      ]
+    }
+  ]
+}

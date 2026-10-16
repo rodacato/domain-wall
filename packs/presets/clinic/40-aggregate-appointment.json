@@ -1,0 +1,472 @@
+{
+  "aggregates": [
+    {
+      "codeName": "Appointment",
+      "label": {
+        "es-MX": "Cita",
+        "en": "Appointment"
+      },
+      "description": {
+        "es-MX": "El compromiso de atender a una persona en una fecha y hora, desde que la pide hasta que se cumple o se cancela.",
+        "en": "The commitment to see a person at a date and time, from the request until it is fulfilled or cancelled."
+      },
+      "context": "Scheduling",
+      "identity": "appointmentId",
+      "fields": [
+        {
+          "codeName": "appointmentId",
+          "label": {
+            "es-MX": "Cita",
+            "en": "Appointment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AppointmentId"
+          }
+        },
+        {
+          "codeName": "patientId",
+          "label": {
+            "es-MX": "Paciente",
+            "en": "Patient"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PatientId"
+          }
+        },
+        {
+          "codeName": "contact",
+          "label": {
+            "es-MX": "Contacto",
+            "en": "Contact"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ContactCard"
+          }
+        },
+        {
+          "codeName": "visitReason",
+          "label": {
+            "es-MX": "Motivo de la visita",
+            "en": "Visit reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "VisitReason"
+          }
+        },
+        {
+          "codeName": "reminderCount",
+          "label": {
+            "es-MX": "Recordatorios enviados",
+            "en": "Reminders sent"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReminderCount"
+          }
+        }
+      ],
+      "derived": [],
+      "entities": [],
+      "states": [
+        {
+          "codeName": "Draft",
+          "label": {
+            "es-MX": "Borrador",
+            "en": "Draft"
+          },
+          "description": {
+            "es-MX": "Todavía nadie ha pedido la cita.",
+            "en": "Nobody has asked for the appointment yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Requested",
+          "label": {
+            "es-MX": "Solicitada",
+            "en": "Requested"
+          },
+          "description": {
+            "es-MX": "La persona pidió la cita y espera que recepción la agende.",
+            "en": "The person asked for the appointment and waits for the front desk to book it."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Booked",
+          "label": {
+            "es-MX": "Agendada",
+            "en": "Booked"
+          },
+          "description": {
+            "es-MX": "Tiene fecha y hora y se le mandan recordatorios.",
+            "en": "It has a date and time and reminders are sent for it."
+          },
+          "terminal": false,
+          "data": [
+            {
+              "codeName": "visitDate",
+              "label": {
+                "es-MX": "Fecha de la visita",
+                "en": "Visit date"
+              },
+              "type": {
+                "kind": "primitive",
+                "name": "date"
+              }
+            },
+            {
+              "codeName": "startHour",
+              "label": {
+                "es-MX": "Hora de inicio",
+                "en": "Start hour"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ClinicHour"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Confirmed",
+          "label": {
+            "es-MX": "Confirmada",
+            "en": "Confirmed"
+          },
+          "description": {
+            "es-MX": "La persona respondió que asistirá.",
+            "en": "The person replied that they will attend."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "CheckedIn",
+          "label": {
+            "es-MX": "En recepción",
+            "en": "Checked in"
+          },
+          "description": {
+            "es-MX": "La persona ya llegó y espera su turno; desde aquí la cita ya no se puede cancelar.",
+            "en": "The person has arrived and waits for their turn; from here the appointment can no longer be cancelled."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Attended",
+          "label": {
+            "es-MX": "Atendida",
+            "en": "Attended"
+          },
+          "description": {
+            "es-MX": "La consulta comenzó y la cita quedó cumplida.",
+            "en": "The consultation began and the appointment is fulfilled."
+          },
+          "terminal": true,
+          "data": []
+        },
+        {
+          "codeName": "Cancelled",
+          "label": {
+            "es-MX": "Cancelada",
+            "en": "Cancelled"
+          },
+          "description": {
+            "es-MX": "Se canceló antes de empezar.",
+            "en": "It was cancelled before starting."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "cancellationReason",
+              "label": {
+                "es-MX": "Motivo de cancelación",
+                "en": "Cancellation reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "CancellationReason"
+              }
+            }
+          ]
+        }
+      ],
+      "initialState": "Draft",
+      "rules": [
+        {
+          "codeName": "AppointmentWithinOpeningHours",
+          "label": {
+            "es-MX": "La cita debe caer en horario de atención",
+            "en": "The appointment must fall within opening hours"
+          },
+          "description": {
+            "es-MX": "La clínica atiende de 8:00 a 20:00 y la última cita empieza a las 19:00.",
+            "en": "The clinic is open from 8:00 to 20:00 and the last appointment starts at 19:00."
+          },
+          "predicate": {
+            "kind": "all",
+            "of": [
+              {
+                "kind": "compare",
+                "left": {
+                  "op": "arg",
+                  "name": "startHour"
+                },
+                "operator": ">=",
+                "right": {
+                  "op": "literal",
+                  "value": 8
+                }
+              },
+              {
+                "kind": "compare",
+                "left": {
+                  "op": "arg",
+                  "name": "startHour"
+                },
+                "operator": "<=",
+                "right": {
+                  "op": "literal",
+                  "value": 19
+                }
+              }
+            ]
+          },
+          "message": {
+            "es-MX": "Las citas empiezan entre las 8:00 y las 19:00 horas.",
+            "en": "Appointments start between 8:00 and 19:00."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "RequestAppointment",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "BookAppointment",
+              "args": {
+                "startHour": 22
+              }
+            }
+          }
+        },
+        {
+          "codeName": "ReminderLimit",
+          "label": {
+            "es-MX": "Máximo dos recordatorios por cita",
+            "en": "At most two reminders per appointment"
+          },
+          "description": {
+            "es-MX": "Más de dos mensajes se vuelven molestos y la gente deja de responder.",
+            "en": "More than two messages become annoying and people stop replying."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "field",
+              "name": "reminderCount"
+            },
+            "operator": "<=",
+            "right": {
+              "op": "literal",
+              "value": 2
+            }
+          },
+          "message": {
+            "es-MX": "Una cita admite como máximo dos recordatorios.",
+            "en": "An appointment allows at most two reminders."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "RequestAppointment",
+                "args": {}
+              },
+              {
+                "command": "BookAppointment",
+                "args": {}
+              },
+              {
+                "command": "SendReminder",
+                "args": {}
+              },
+              {
+                "command": "SendReminder",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "SendReminder",
+              "args": {}
+            }
+          }
+        }
+      ],
+      "invariants": ["ReminderLimit"],
+      "transitions": [
+        {
+          "command": "RequestAppointment",
+          "from": ["Draft"],
+          "to": "Requested",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "patientId",
+              "value": {
+                "op": "arg",
+                "name": "patientId"
+              }
+            },
+            {
+              "op": "set",
+              "field": "contact",
+              "value": {
+                "op": "arg",
+                "name": "contact"
+              }
+            },
+            {
+              "op": "set",
+              "field": "visitReason",
+              "value": {
+                "op": "arg",
+                "name": "visitReason"
+              }
+            }
+          ],
+          "emits": ["AppointmentRequested"]
+        },
+        {
+          "command": "BookAppointment",
+          "from": ["Requested"],
+          "to": "Booked",
+          "guards": ["AppointmentWithinOpeningHours"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "visitDate",
+              "value": {
+                "op": "arg",
+                "name": "visitDate"
+              }
+            },
+            {
+              "op": "set",
+              "field": "startHour",
+              "value": {
+                "op": "arg",
+                "name": "startHour"
+              }
+            }
+          ],
+          "emits": ["AppointmentBooked"]
+        },
+        {
+          "command": "SendReminder",
+          "from": ["Booked"],
+          "to": "Booked",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "reminderCount",
+              "value": {
+                "op": "arithmetic",
+                "operator": "add",
+                "left": {
+                  "op": "field",
+                  "name": "reminderCount"
+                },
+                "right": {
+                  "op": "literal",
+                  "value": 1
+                }
+              }
+            }
+          ],
+          "emits": ["ReminderSent"]
+        },
+        {
+          "command": "ConfirmAppointment",
+          "from": ["Booked"],
+          "to": "Confirmed",
+          "guards": [],
+          "effects": [],
+          "emits": ["AppointmentConfirmed"]
+        },
+        {
+          "command": "CheckInPatient",
+          "from": ["Booked", "Confirmed"],
+          "to": "CheckedIn",
+          "guards": [],
+          "effects": [],
+          "emits": ["PatientCheckedIn"]
+        },
+        {
+          "command": "MarkAppointmentAttended",
+          "from": ["CheckedIn"],
+          "to": "Attended",
+          "guards": [],
+          "effects": [],
+          "emits": ["AppointmentAttended"]
+        },
+        {
+          "command": "CancelAppointment",
+          "from": ["Requested", "Booked", "Confirmed"],
+          "to": "Cancelled",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "cancellationReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["AppointmentCancelled"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "RequestAppointment",
+          "args": {}
+        },
+        {
+          "command": "BookAppointment",
+          "args": {
+            "visitDate": "2026-03-10",
+            "startHour": 10
+          }
+        },
+        {
+          "command": "SendReminder",
+          "args": {}
+        },
+        {
+          "command": "ConfirmAppointment",
+          "args": {}
+        },
+        {
+          "command": "CheckInPatient",
+          "args": {}
+        },
+        {
+          "command": "MarkAppointmentAttended",
+          "args": {}
+        }
+      ]
+    }
+  ]
+}

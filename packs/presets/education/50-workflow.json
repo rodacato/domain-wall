@@ -1,0 +1,338 @@
+{
+  "workflow": {
+    "codeName": "EnrollmentCheckoutWorkflow",
+    "label": {
+      "es-MX": "Flujo de inscripción",
+      "en": "Enrollment checkout workflow"
+    },
+    "description": {
+      "es-MX": "La inscripción vista como una línea de ensamblaje: validar los datos, calcular el monto, cobrar y guardar.",
+      "en": "Enrolling seen as an assembly line: validate the data, compute the amount, charge and save."
+    },
+    "trigger": "RequestEnrollment",
+    "intermediateTypes": [
+      {
+        "codeName": "UnvalidatedEnrollmentRequest",
+        "extends": null,
+        "fields": [
+          {
+            "codeName": "studentId",
+            "label": {
+              "es-MX": "Estudiante",
+              "en": "Student"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "courseId",
+            "label": {
+              "es-MX": "Curso",
+              "en": "Course"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "cohortCode",
+            "label": {
+              "es-MX": "Cohorte",
+              "en": "Cohort"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "listPrice",
+            "label": {
+              "es-MX": "Precio de lista",
+              "en": "List price"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "integer"
+            }
+          },
+          {
+            "codeName": "discount",
+            "label": {
+              "es-MX": "Descuento",
+              "en": "Discount"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "integer"
+            }
+          },
+          {
+            "codeName": "totalLessons",
+            "label": {
+              "es-MX": "Lecciones del curso",
+              "en": "Course lessons"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "integer"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "ValidatedEnrollmentRequest",
+        "extends": null,
+        "fields": [
+          {
+            "codeName": "studentId",
+            "label": {
+              "es-MX": "Estudiante",
+              "en": "Student"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "StudentId"
+            }
+          },
+          {
+            "codeName": "courseId",
+            "label": {
+              "es-MX": "Curso",
+              "en": "Course"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "CourseId"
+            }
+          },
+          {
+            "codeName": "cohortCode",
+            "label": {
+              "es-MX": "Cohorte",
+              "en": "Cohort"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "CohortCode"
+            }
+          },
+          {
+            "codeName": "listPrice",
+            "label": {
+              "es-MX": "Precio de lista",
+              "en": "List price"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "Money"
+            }
+          },
+          {
+            "codeName": "discount",
+            "label": {
+              "es-MX": "Descuento",
+              "en": "Discount"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "Money"
+            }
+          },
+          {
+            "codeName": "totalLessons",
+            "label": {
+              "es-MX": "Lecciones del curso",
+              "en": "Course lessons"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "LessonCount"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "PricedEnrollmentRequest",
+        "extends": "ValidatedEnrollmentRequest",
+        "fields": [
+          {
+            "codeName": "amountDue",
+            "label": {
+              "es-MX": "Monto a cobrar",
+              "en": "Amount due"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "Money"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "PaidEnrollmentRequest",
+        "extends": "PricedEnrollmentRequest",
+        "fields": [
+          {
+            "codeName": "paidAmount",
+            "label": {
+              "es-MX": "Monto cobrado",
+              "en": "Paid amount"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "Money"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "SavedEnrollment",
+        "extends": "PaidEnrollmentRequest",
+        "fields": [
+          {
+            "codeName": "enrollmentId",
+            "label": {
+              "es-MX": "Inscripción",
+              "en": "Enrollment"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "EnrollmentId"
+            }
+          }
+        ]
+      }
+    ],
+    "stages": [
+      {
+        "codeName": "ValidateEnrollmentRequest",
+        "label": {
+          "es-MX": "Validar la inscripción",
+          "en": "Validate the enrollment"
+        },
+        "description": {
+          "es-MX": "Convierte los datos crudos en valores del dominio que no pueden ser inválidos.",
+          "en": "Turns raw data into domain values that cannot be invalid."
+        },
+        "input": "UnvalidatedEnrollmentRequest",
+        "output": "ValidatedEnrollmentRequest",
+        "kind": {
+          "type": "validate"
+        },
+        "errors": [
+          {
+            "codeName": "EnrollmentRequestInvalid",
+            "message": {
+              "es-MX": "Algún dato de la inscripción no es válido.",
+              "en": "Some enrollment data is not valid."
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "PriceEnrollment",
+        "label": {
+          "es-MX": "Calcular el monto",
+          "en": "Compute the amount"
+        },
+        "description": {
+          "es-MX": "Resta el descuento al precio de lista para saber cuánto cobrar.",
+          "en": "Subtracts the discount from the list price to know how much to charge."
+        },
+        "input": "ValidatedEnrollmentRequest",
+        "output": "PricedEnrollmentRequest",
+        "kind": {
+          "type": "compute",
+          "assigns": [
+            {
+              "field": "amountDue",
+              "expression": {
+                "op": "arithmetic",
+                "operator": "subtract",
+                "left": {
+                  "op": "field",
+                  "name": "listPrice"
+                },
+                "right": {
+                  "op": "field",
+                  "name": "discount"
+                }
+              }
+            }
+          ]
+        },
+        "errors": []
+      },
+      {
+        "codeName": "ChargeEnrollment",
+        "label": {
+          "es-MX": "Cobrar",
+          "en": "Charge the payment"
+        },
+        "description": {
+          "es-MX": "Pide al procesador de pagos que cobre el monto.",
+          "en": "Asks the payment processor to charge the amount."
+        },
+        "input": "PricedEnrollmentRequest",
+        "output": "PaidEnrollmentRequest",
+        "kind": {
+          "type": "callPort",
+          "port": {
+            "codeName": "PaymentProcessorPort",
+            "operation": "charge",
+            "description": {
+              "es-MX": "Cobra un monto a la tarjeta del estudiante.",
+              "en": "Charges an amount to the student's card."
+            }
+          }
+        },
+        "errors": [
+          {
+            "codeName": "PaymentDeclined",
+            "message": {
+              "es-MX": "El banco rechazó el pago.",
+              "en": "The bank declined the payment."
+            }
+          },
+          {
+            "codeName": "PaymentProcessorUnavailable",
+            "message": {
+              "es-MX": "El procesador de pagos no responde.",
+              "en": "The payment processor is not responding."
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "SaveEnrollment",
+        "label": {
+          "es-MX": "Guardar la inscripción",
+          "en": "Save the enrollment"
+        },
+        "description": {
+          "es-MX": "Guarda la inscripción y publica sus eventos.",
+          "en": "Saves the enrollment and publishes its events."
+        },
+        "input": "PaidEnrollmentRequest",
+        "output": "SavedEnrollment",
+        "kind": {
+          "type": "commit"
+        },
+        "errors": [
+          {
+            "codeName": "EnrollmentCouldNotBeSaved",
+            "message": {
+              "es-MX": "No se pudo guardar la inscripción.",
+              "en": "The enrollment could not be saved."
+            }
+          }
+        ]
+      }
+    ],
+    "produces": ["EnrollmentRequested", "EnrollmentPaid"]
+  }
+}

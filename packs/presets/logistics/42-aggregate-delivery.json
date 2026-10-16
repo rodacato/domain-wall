@@ -1,0 +1,835 @@
+{
+  "aggregates": [
+    {
+      "codeName": "Delivery",
+      "label": {
+        "es-MX": "Entrega",
+        "en": "Delivery"
+      },
+      "description": {
+        "es-MX": "El compromiso de entregar un paquete a una persona, en un día y una ventana de horario.",
+        "en": "The commitment to hand a parcel to a person, on a day and within a time window."
+      },
+      "context": "Doorstep",
+      "identity": "deliveryId",
+      "fields": [
+        {
+          "codeName": "deliveryId",
+          "label": {
+            "es-MX": "Entrega",
+            "en": "Delivery"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DeliveryId"
+          }
+        },
+        {
+          "codeName": "parcelId",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Parcel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ParcelId"
+          }
+        },
+        {
+          "codeName": "recipientName",
+          "label": {
+            "es-MX": "Nombre del destinatario",
+            "en": "Recipient name"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PersonName"
+          }
+        },
+        {
+          "codeName": "address",
+          "label": {
+            "es-MX": "Dirección",
+            "en": "Address"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Address"
+          }
+        },
+        {
+          "codeName": "deliveryDate",
+          "label": {
+            "es-MX": "Fecha de entrega",
+            "en": "Delivery date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        },
+        {
+          "codeName": "windowStartHour",
+          "label": {
+            "es-MX": "Inicio de la ventana",
+            "en": "Window start"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "HourOfDay"
+          }
+        },
+        {
+          "codeName": "windowEndHour",
+          "label": {
+            "es-MX": "Fin de la ventana",
+            "en": "Window end"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "HourOfDay"
+          }
+        },
+        {
+          "codeName": "cashToCollect",
+          "label": {
+            "es-MX": "Efectivo por cobrar",
+            "en": "Cash to collect"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        },
+        {
+          "codeName": "attemptCount",
+          "label": {
+            "es-MX": "Intentos de entrega",
+            "en": "Delivery attempts"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AttemptCount"
+          }
+        }
+      ],
+      "derived": [],
+      "entities": [],
+      "states": [
+        {
+          "codeName": "Requested",
+          "label": {
+            "es-MX": "Solicitada",
+            "en": "Requested"
+          },
+          "description": {
+            "es-MX": "La entrega existe, pero el cliente aún no elige ventana.",
+            "en": "The delivery exists, but the customer has not chosen a window yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Scheduled",
+          "label": {
+            "es-MX": "Agendada",
+            "en": "Scheduled"
+          },
+          "description": {
+            "es-MX": "Hay día, ventana y dirección confirmados.",
+            "en": "Day, window and address are confirmed."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "OutForDelivery",
+          "label": {
+            "es-MX": "En reparto",
+            "en": "Out for delivery"
+          },
+          "description": {
+            "es-MX": "El repartidor lleva el paquete hacia la puerta del cliente.",
+            "en": "The driver is carrying the parcel to the customer's door."
+          },
+          "terminal": false,
+          "data": [
+            {
+              "codeName": "driverId",
+              "label": {
+                "es-MX": "Repartidor",
+                "en": "Driver"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "DriverId"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Delivered",
+          "label": {
+            "es-MX": "Entregada",
+            "en": "Delivered"
+          },
+          "description": {
+            "es-MX": "El cliente recibió el paquete y quedó evidencia.",
+            "en": "The customer received the parcel and proof was kept."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "proof",
+              "label": {
+                "es-MX": "Evidencia de entrega",
+                "en": "Proof of delivery"
+              },
+              "type": {
+                "kind": "optional",
+                "of": {
+                  "kind": "valueObject",
+                  "ref": "ProofOfDelivery"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "AttemptFailed",
+          "label": {
+            "es-MX": "Intento fallido",
+            "en": "Attempt failed"
+          },
+          "description": {
+            "es-MX": "No se pudo entregar; falta decidir qué sigue.",
+            "en": "The handover failed; what comes next is still to be decided."
+          },
+          "terminal": false,
+          "data": [
+            {
+              "codeName": "failureReason",
+              "label": {
+                "es-MX": "Motivo del intento fallido",
+                "en": "Failed attempt reason"
+              },
+              "type": {
+                "kind": "optional",
+                "of": {
+                  "kind": "valueObject",
+                  "ref": "FailureReason"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "ReturnedToSender",
+          "label": {
+            "es-MX": "Devuelta al remitente",
+            "en": "Returned to sender"
+          },
+          "description": {
+            "es-MX": "El paquete regresó al comercio tras los intentos fallidos.",
+            "en": "The parcel went back to the merchant after the failed attempts."
+          },
+          "terminal": true,
+          "data": []
+        },
+        {
+          "codeName": "Cancelled",
+          "label": {
+            "es-MX": "Cancelada",
+            "en": "Cancelled"
+          },
+          "description": {
+            "es-MX": "El cliente canceló la entrega.",
+            "en": "The customer cancelled the delivery."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "cancellationReason",
+              "label": {
+                "es-MX": "Motivo de cancelación",
+                "en": "Cancellation reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "CancellationReason"
+              }
+            }
+          ]
+        }
+      ],
+      "initialState": "Requested",
+      "rules": [
+        {
+          "codeName": "DeliveryWindowMustBeOrdered",
+          "label": {
+            "es-MX": "La ventana termina después de empezar",
+            "en": "The window ends after it starts"
+          },
+          "description": {
+            "es-MX": "La hora de fin de la ventana debe ser posterior a la de inicio.",
+            "en": "The window's end hour must be later than its start hour."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "windowEndHour"
+            },
+            "operator": ">",
+            "right": {
+              "op": "arg",
+              "name": "windowStartHour"
+            }
+          },
+          "message": {
+            "es-MX": "La ventana de entrega debe terminar después de empezar.",
+            "en": "The delivery window must end after it starts."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "ScheduleDelivery",
+              "args": {
+                "windowStartHour": 14,
+                "windowEndHour": 10
+              }
+            }
+          }
+        },
+        {
+          "codeName": "DeliveryNeedsProof",
+          "label": {
+            "es-MX": "La entrega necesita evidencia",
+            "en": "The delivery needs proof"
+          },
+          "description": {
+            "es-MX": "No se completa una entrega sin firma, foto o código.",
+            "en": "A delivery is not completed without a signature, photo or code."
+          },
+          "predicate": {
+            "kind": "present",
+            "value": {
+              "op": "arg",
+              "name": "proof"
+            }
+          },
+          "message": {
+            "es-MX": "Falta la evidencia de entrega.",
+            "en": "The proof of delivery is missing."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "ScheduleDelivery",
+                "args": {
+                  "parcelId": "pcl_8w4y6e2l",
+                  "recipientName": "Mariana López",
+                  "address": {
+                    "street": "Calle Durango 215",
+                    "neighborhood": "Roma Norte",
+                    "city": "Ciudad de México",
+                    "postalCode": "06700"
+                  },
+                  "deliveryDate": "2026-03-14",
+                  "windowStartHour": 9,
+                  "windowEndHour": 13,
+                  "cashToCollect": 45000
+                }
+              },
+              {
+                "command": "StartDelivery",
+                "args": {
+                  "driverId": "drv_5t1x8r4n"
+                }
+              }
+            ],
+            "when": {
+              "command": "CompleteDelivery",
+              "args": {
+                "cashCollected": 45000
+              }
+            }
+          }
+        },
+        {
+          "codeName": "CollectedCashMustMatchDue",
+          "label": {
+            "es-MX": "El cobro debe ser exacto",
+            "en": "The cash must match what is due"
+          },
+          "description": {
+            "es-MX": "El repartidor debe cobrar exactamente el monto pactado.",
+            "en": "The driver must collect exactly the agreed amount."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "cashCollected"
+            },
+            "operator": "==",
+            "right": {
+              "op": "field",
+              "name": "cashToCollect"
+            }
+          },
+          "message": {
+            "es-MX": "El efectivo cobrado debe ser igual al monto por cobrar.",
+            "en": "The collected cash must equal the amount due."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "ScheduleDelivery",
+                "args": {
+                  "parcelId": "pcl_8w4y6e2l",
+                  "recipientName": "Mariana López",
+                  "address": {
+                    "street": "Calle Durango 215",
+                    "neighborhood": "Roma Norte",
+                    "city": "Ciudad de México",
+                    "postalCode": "06700"
+                  },
+                  "deliveryDate": "2026-03-14",
+                  "windowStartHour": 9,
+                  "windowEndHour": 13,
+                  "cashToCollect": 45000
+                }
+              },
+              {
+                "command": "StartDelivery",
+                "args": {
+                  "driverId": "drv_5t1x8r4n"
+                }
+              }
+            ],
+            "when": {
+              "command": "CompleteDelivery",
+              "args": {
+                "proof": {
+                  "proofKind": "Photo",
+                  "evidenceRef": "evd_4k8m2q7x"
+                },
+                "cashCollected": 1000
+              }
+            }
+          }
+        },
+        {
+          "codeName": "FailedAttemptNeedsReason",
+          "label": {
+            "es-MX": "El intento fallido necesita motivo",
+            "en": "A failed attempt needs a reason"
+          },
+          "description": {
+            "es-MX": "Sin motivo no sabemos si reintentar o devolver el paquete.",
+            "en": "Without a reason we cannot tell whether to retry or return the parcel."
+          },
+          "predicate": {
+            "kind": "present",
+            "value": {
+              "op": "arg",
+              "name": "reason"
+            }
+          },
+          "message": {
+            "es-MX": "Falta el motivo del intento fallido.",
+            "en": "The reason for the failed attempt is missing."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "ScheduleDelivery",
+                "args": {
+                  "parcelId": "pcl_8w4y6e2l",
+                  "recipientName": "Mariana López",
+                  "address": {
+                    "street": "Calle Durango 215",
+                    "neighborhood": "Roma Norte",
+                    "city": "Ciudad de México",
+                    "postalCode": "06700"
+                  },
+                  "deliveryDate": "2026-03-14",
+                  "windowStartHour": 9,
+                  "windowEndHour": 13,
+                  "cashToCollect": 45000
+                }
+              },
+              {
+                "command": "StartDelivery",
+                "args": {
+                  "driverId": "drv_5t1x8r4n"
+                }
+              }
+            ],
+            "when": {
+              "command": "ReportFailedAttempt",
+              "args": {}
+            }
+          }
+        },
+        {
+          "codeName": "DeliveryAttemptsWithinLimit",
+          "label": {
+            "es-MX": "Hay un máximo de intentos de entrega",
+            "en": "There is a maximum number of delivery attempts"
+          },
+          "description": {
+            "es-MX": "Después de 3 intentos fallidos ya no se reagenda: el paquete se devuelve.",
+            "en": "After 3 failed attempts the delivery is no longer rescheduled: the parcel is returned."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "field",
+              "name": "attemptCount"
+            },
+            "operator": "<",
+            "right": {
+              "op": "literal",
+              "value": 3
+            }
+          },
+          "message": {
+            "es-MX": "Ya se agotaron los 3 intentos de entrega.",
+            "en": "The 3 delivery attempts have been used up."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "ScheduleDelivery",
+                "args": {
+                  "parcelId": "pcl_8w4y6e2l",
+                  "recipientName": "Mariana López",
+                  "address": {
+                    "street": "Calle Durango 215",
+                    "neighborhood": "Roma Norte",
+                    "city": "Ciudad de México",
+                    "postalCode": "06700"
+                  },
+                  "deliveryDate": "2026-03-14",
+                  "windowStartHour": 9,
+                  "windowEndHour": 13,
+                  "cashToCollect": 45000
+                }
+              },
+              {
+                "command": "StartDelivery",
+                "args": {
+                  "driverId": "drv_5t1x8r4n"
+                }
+              },
+              {
+                "command": "ReportFailedAttempt",
+                "args": {
+                  "reason": "NobodyHome"
+                }
+              },
+              {
+                "command": "RescheduleDelivery",
+                "args": {
+                  "deliveryDate": "2026-03-15",
+                  "windowStartHour": 9,
+                  "windowEndHour": 13
+                }
+              },
+              {
+                "command": "StartDelivery",
+                "args": {
+                  "driverId": "drv_5t1x8r4n"
+                }
+              },
+              {
+                "command": "ReportFailedAttempt",
+                "args": {
+                  "reason": "NobodyHome"
+                }
+              },
+              {
+                "command": "RescheduleDelivery",
+                "args": {
+                  "deliveryDate": "2026-03-15",
+                  "windowStartHour": 9,
+                  "windowEndHour": 13
+                }
+              },
+              {
+                "command": "StartDelivery",
+                "args": {
+                  "driverId": "drv_5t1x8r4n"
+                }
+              },
+              {
+                "command": "ReportFailedAttempt",
+                "args": {
+                  "reason": "NobodyHome"
+                }
+              }
+            ],
+            "when": {
+              "command": "RescheduleDelivery",
+              "args": {
+                "deliveryDate": "2026-03-15",
+                "windowStartHour": 9,
+                "windowEndHour": 13
+              }
+            }
+          }
+        }
+      ],
+      "invariants": [],
+      "transitions": [
+        {
+          "command": "ScheduleDelivery",
+          "from": ["Requested"],
+          "to": "Scheduled",
+          "guards": ["DeliveryWindowMustBeOrdered"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "parcelId",
+              "value": {
+                "op": "arg",
+                "name": "parcelId"
+              }
+            },
+            {
+              "op": "set",
+              "field": "recipientName",
+              "value": {
+                "op": "arg",
+                "name": "recipientName"
+              }
+            },
+            {
+              "op": "set",
+              "field": "address",
+              "value": {
+                "op": "arg",
+                "name": "address"
+              }
+            },
+            {
+              "op": "set",
+              "field": "deliveryDate",
+              "value": {
+                "op": "arg",
+                "name": "deliveryDate"
+              }
+            },
+            {
+              "op": "set",
+              "field": "windowStartHour",
+              "value": {
+                "op": "arg",
+                "name": "windowStartHour"
+              }
+            },
+            {
+              "op": "set",
+              "field": "windowEndHour",
+              "value": {
+                "op": "arg",
+                "name": "windowEndHour"
+              }
+            },
+            {
+              "op": "set",
+              "field": "cashToCollect",
+              "value": {
+                "op": "arg",
+                "name": "cashToCollect"
+              }
+            }
+          ],
+          "emits": ["DeliveryScheduled"]
+        },
+        {
+          "command": "StartDelivery",
+          "from": ["Scheduled"],
+          "to": "OutForDelivery",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "driverId",
+              "value": {
+                "op": "arg",
+                "name": "driverId"
+              }
+            }
+          ],
+          "emits": ["DeliveryStarted"]
+        },
+        {
+          "command": "CompleteDelivery",
+          "from": ["OutForDelivery"],
+          "to": "Delivered",
+          "guards": ["DeliveryNeedsProof", "CollectedCashMustMatchDue"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "proof",
+              "value": {
+                "op": "arg",
+                "name": "proof"
+              }
+            }
+          ],
+          "emits": ["DeliveryCompleted"]
+        },
+        {
+          "command": "ReportFailedAttempt",
+          "from": ["OutForDelivery"],
+          "to": "AttemptFailed",
+          "guards": ["FailedAttemptNeedsReason"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "failureReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            },
+            {
+              "op": "set",
+              "field": "attemptCount",
+              "value": {
+                "op": "arithmetic",
+                "operator": "add",
+                "left": {
+                  "op": "field",
+                  "name": "attemptCount"
+                },
+                "right": {
+                  "op": "literal",
+                  "value": 1
+                }
+              }
+            }
+          ],
+          "emits": ["DeliveryAttemptFailed"]
+        },
+        {
+          "command": "RescheduleDelivery",
+          "from": ["AttemptFailed"],
+          "to": "Scheduled",
+          "guards": ["DeliveryWindowMustBeOrdered", "DeliveryAttemptsWithinLimit"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "deliveryDate",
+              "value": {
+                "op": "arg",
+                "name": "deliveryDate"
+              }
+            },
+            {
+              "op": "set",
+              "field": "windowStartHour",
+              "value": {
+                "op": "arg",
+                "name": "windowStartHour"
+              }
+            },
+            {
+              "op": "set",
+              "field": "windowEndHour",
+              "value": {
+                "op": "arg",
+                "name": "windowEndHour"
+              }
+            }
+          ],
+          "emits": ["DeliveryRescheduled"]
+        },
+        {
+          "command": "ReturnToSender",
+          "from": ["AttemptFailed"],
+          "to": "ReturnedToSender",
+          "guards": [],
+          "effects": [],
+          "emits": ["DeliveryReturned"]
+        },
+        {
+          "command": "CancelDelivery",
+          "from": ["Requested", "Scheduled", "AttemptFailed"],
+          "to": "Cancelled",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "cancellationReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["DeliveryCancelled"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "ScheduleDelivery",
+          "args": {
+            "parcelId": "pcl_8w4y6e2l",
+            "recipientName": "Mariana López",
+            "address": {
+              "street": "Calle Durango 215",
+              "neighborhood": "Roma Norte",
+              "city": "Ciudad de México",
+              "postalCode": "06700"
+            },
+            "deliveryDate": "2026-03-14",
+            "windowStartHour": 9,
+            "windowEndHour": 13,
+            "cashToCollect": 45000
+          }
+        },
+        {
+          "command": "StartDelivery",
+          "args": {
+            "driverId": "drv_5t1x8r4n"
+          }
+        },
+        {
+          "command": "ReportFailedAttempt",
+          "args": {
+            "reason": "NobodyHome"
+          }
+        },
+        {
+          "command": "RescheduleDelivery",
+          "args": {
+            "deliveryDate": "2026-03-15",
+            "windowStartHour": 10,
+            "windowEndHour": 14
+          }
+        },
+        {
+          "command": "StartDelivery",
+          "args": {
+            "driverId": "drv_5t1x8r4n"
+          }
+        },
+        {
+          "command": "CompleteDelivery",
+          "args": {
+            "proof": {
+              "proofKind": "Photo",
+              "evidenceRef": "evd_4k8m2q7x"
+            },
+            "cashCollected": 45000
+          }
+        }
+      ]
+    }
+  ]
+}

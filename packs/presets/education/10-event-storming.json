@@ -1,0 +1,2102 @@
+{
+  "experts": [
+    {
+      "codeName": "Valeria",
+      "name": "Valeria Montes",
+      "role": {
+        "es-MX": "Directora académica",
+        "en": "Academic director"
+      },
+      "avatarSeed": "valeria"
+    },
+    {
+      "codeName": "Ignacio",
+      "name": "Ignacio Paredes",
+      "role": {
+        "es-MX": "Coordinador de evaluaciones",
+        "en": "Assessment coordinator"
+      },
+      "avatarSeed": "ignacio"
+    },
+    {
+      "codeName": "Daniela",
+      "name": "Daniela Cortés",
+      "role": {
+        "es-MX": "Responsable de inscripciones y cobranza",
+        "en": "Enrollment and billing lead"
+      },
+      "avatarSeed": "daniela"
+    },
+    {
+      "codeName": "Tomas",
+      "name": "Tomás Villaseñor",
+      "role": {
+        "es-MX": "Líder técnico de la plataforma",
+        "en": "Platform tech lead"
+      },
+      "avatarSeed": "tomas"
+    }
+  ],
+  "actors": [
+    {
+      "codeName": "Student",
+      "label": {
+        "es-MX": "Estudiante",
+        "en": "Student"
+      },
+      "description": {
+        "es-MX": "Persona que compra cursos, los estudia y presenta los exámenes.",
+        "en": "Person who buys courses, studies them and takes the exams."
+      }
+    },
+    {
+      "codeName": "Instructor",
+      "label": {
+        "es-MX": "Instructor",
+        "en": "Instructor"
+      },
+      "description": {
+        "es-MX": "Quien arma las lecciones de un curso y lo publica en el catálogo.",
+        "en": "The person who builds a course's lessons and publishes it in the catalog."
+      }
+    },
+    {
+      "codeName": "Registrar",
+      "label": {
+        "es-MX": "Control escolar",
+        "en": "Registrar's office"
+      },
+      "description": {
+        "es-MX": "Equipo que cuida el catálogo y los registros oficiales de la academia.",
+        "en": "Team that looks after the catalog and the academy's official records."
+      }
+    },
+    {
+      "codeName": "SupportAgent",
+      "label": {
+        "es-MX": "Soporte",
+        "en": "Support"
+      },
+      "description": {
+        "es-MX": "Persona del equipo que atiende reclamos y autoriza reembolsos.",
+        "en": "Team member who handles complaints and approves refunds."
+      }
+    }
+  ],
+  "externalSystems": [
+    {
+      "codeName": "PaymentProcessor",
+      "label": {
+        "es-MX": "Procesador de pagos",
+        "en": "Payment processor"
+      },
+      "description": {
+        "es-MX": "Servicio externo que cobra la inscripción a la tarjeta del estudiante.",
+        "en": "External service that charges the enrollment to the student's card."
+      }
+    },
+    {
+      "codeName": "ExamGradingService",
+      "label": {
+        "es-MX": "Servicio de calificación de exámenes",
+        "en": "Exam grading service"
+      },
+      "description": {
+        "es-MX": "Plataforma externa que supervisa el examen y devuelve la calificación de cada intento.",
+        "en": "External platform that proctors the exam and returns the score of each attempt."
+      }
+    },
+    {
+      "codeName": "NationalCertificateRegistry",
+      "label": {
+        "es-MX": "Registro nacional de constancias",
+        "en": "National certificate registry"
+      },
+      "description": {
+        "es-MX": "Servicio oficial que registra las constancias de capacitación y devuelve su folio.",
+        "en": "Official service that records training certificates and returns their folio."
+      }
+    }
+  ],
+  "events": [
+    {
+      "codeName": "LessonAdded",
+      "label": {
+        "es-MX": "Lección agregada al curso",
+        "en": "Lesson added to the course"
+      },
+      "description": {
+        "es-MX": "El instructor sumó una lección al curso en borrador.",
+        "en": "The instructor added a lesson to the draft course."
+      },
+      "context": "Catalog",
+      "sequence": 1,
+      "payload": [
+        {
+          "codeName": "courseId",
+          "label": {
+            "es-MX": "Curso",
+            "en": "Course"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CourseId"
+          }
+        },
+        {
+          "codeName": "lessonId",
+          "label": {
+            "es-MX": "Lección",
+            "en": "Lesson"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "LessonId"
+          }
+        },
+        {
+          "codeName": "durationMinutes",
+          "label": {
+            "es-MX": "Duración en minutos",
+            "en": "Duration in minutes"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DurationMinutes"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CoursePriced",
+      "label": {
+        "es-MX": "Precio del curso definido",
+        "en": "Course price set"
+      },
+      "description": {
+        "es-MX": "El instructor fijó el precio con el que se venderá el curso.",
+        "en": "The instructor set the price at which the course will be sold."
+      },
+      "context": "Catalog",
+      "sequence": 2,
+      "payload": [
+        {
+          "codeName": "courseId",
+          "label": {
+            "es-MX": "Curso",
+            "en": "Course"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CourseId"
+          }
+        },
+        {
+          "codeName": "price",
+          "label": {
+            "es-MX": "Precio",
+            "en": "Price"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CoursePublished",
+      "label": {
+        "es-MX": "Curso publicado",
+        "en": "Course published"
+      },
+      "description": {
+        "es-MX": "El curso quedó visible en el catálogo y ya se puede comprar.",
+        "en": "The course became visible in the catalog and can now be purchased."
+      },
+      "context": "Catalog",
+      "sequence": 3,
+      "payload": [
+        {
+          "codeName": "courseId",
+          "label": {
+            "es-MX": "Curso",
+            "en": "Course"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CourseId"
+          }
+        },
+        {
+          "codeName": "publishedOn",
+          "label": {
+            "es-MX": "Fecha de publicación",
+            "en": "Publication date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "EnrollmentRequested",
+      "label": {
+        "es-MX": "Inscripción solicitada",
+        "en": "Enrollment requested"
+      },
+      "description": {
+        "es-MX": "Una persona pidió su lugar en una cohorte y falta el pago.",
+        "en": "A person asked for a seat in a cohort and payment is pending."
+      },
+      "context": "Enrolling",
+      "sequence": 4,
+      "payload": [
+        {
+          "codeName": "enrollmentId",
+          "label": {
+            "es-MX": "Inscripción",
+            "en": "Enrollment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "EnrollmentId"
+          }
+        },
+        {
+          "codeName": "studentId",
+          "label": {
+            "es-MX": "Estudiante",
+            "en": "Student"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StudentId"
+          }
+        },
+        {
+          "codeName": "courseId",
+          "label": {
+            "es-MX": "Curso",
+            "en": "Course"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CourseId"
+          }
+        },
+        {
+          "codeName": "cohortCode",
+          "label": {
+            "es-MX": "Cohorte",
+            "en": "Cohort"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CohortCode"
+          }
+        },
+        {
+          "codeName": "price",
+          "label": {
+            "es-MX": "Precio",
+            "en": "Price"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "EnrollmentPaid",
+      "label": {
+        "es-MX": "Inscripción pagada",
+        "en": "Enrollment paid"
+      },
+      "description": {
+        "es-MX": "El procesador de pagos confirmó el cobro y el estudiante ya tiene acceso.",
+        "en": "The payment processor confirmed the charge and the student now has access."
+      },
+      "context": "Enrolling",
+      "sequence": 5,
+      "payload": [
+        {
+          "codeName": "enrollmentId",
+          "label": {
+            "es-MX": "Inscripción",
+            "en": "Enrollment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "EnrollmentId"
+          }
+        },
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        },
+        {
+          "codeName": "accessUntil",
+          "label": {
+            "es-MX": "Acceso hasta",
+            "en": "Access until"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "LessonCompleted",
+      "label": {
+        "es-MX": "Lección completada",
+        "en": "Lesson completed"
+      },
+      "description": {
+        "es-MX": "El estudiante terminó una lección del curso.",
+        "en": "The student finished a lesson of the course."
+      },
+      "context": "Enrolling",
+      "sequence": 6,
+      "payload": [
+        {
+          "codeName": "enrollmentId",
+          "label": {
+            "es-MX": "Inscripción",
+            "en": "Enrollment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "EnrollmentId"
+          }
+        },
+        {
+          "codeName": "lessonId",
+          "label": {
+            "es-MX": "Lección",
+            "en": "Lesson"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "LessonId"
+          }
+        },
+        {
+          "codeName": "lessonsCompleted",
+          "label": {
+            "es-MX": "Lecciones completadas",
+            "en": "Completed lessons"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "LessonCount"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CourseFinished",
+      "label": {
+        "es-MX": "Curso terminado",
+        "en": "Course finished"
+      },
+      "description": {
+        "es-MX": "El estudiante completó todas las lecciones y ya puede presentar el examen.",
+        "en": "The student completed every lesson and can now take the exam."
+      },
+      "context": "Enrolling",
+      "sequence": 7,
+      "payload": [
+        {
+          "codeName": "enrollmentId",
+          "label": {
+            "es-MX": "Inscripción",
+            "en": "Enrollment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "EnrollmentId"
+          }
+        },
+        {
+          "codeName": "studentId",
+          "label": {
+            "es-MX": "Estudiante",
+            "en": "Student"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StudentId"
+          }
+        },
+        {
+          "codeName": "courseId",
+          "label": {
+            "es-MX": "Curso",
+            "en": "Course"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CourseId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AssessmentOpened",
+      "label": {
+        "es-MX": "Examen habilitado",
+        "en": "Assessment opened"
+      },
+      "description": {
+        "es-MX": "Se abrió el examen del curso para el estudiante.",
+        "en": "The course exam was opened for the student."
+      },
+      "context": "Examining",
+      "sequence": 8,
+      "payload": [
+        {
+          "codeName": "assessmentId",
+          "label": {
+            "es-MX": "Evaluación",
+            "en": "Assessment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AssessmentId"
+          }
+        },
+        {
+          "codeName": "studentId",
+          "label": {
+            "es-MX": "Estudiante",
+            "en": "Student"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StudentId"
+          }
+        },
+        {
+          "codeName": "courseId",
+          "label": {
+            "es-MX": "Curso",
+            "en": "Course"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CourseId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AttemptStarted",
+      "label": {
+        "es-MX": "Intento iniciado",
+        "en": "Attempt started"
+      },
+      "description": {
+        "es-MX": "El estudiante empezó a contestar el examen.",
+        "en": "The student started answering the exam."
+      },
+      "context": "Examining",
+      "sequence": 9,
+      "payload": [
+        {
+          "codeName": "assessmentId",
+          "label": {
+            "es-MX": "Evaluación",
+            "en": "Assessment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AssessmentId"
+          }
+        },
+        {
+          "codeName": "startedAt",
+          "label": {
+            "es-MX": "Inicio del intento",
+            "en": "Attempt start"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "timestamp"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AttemptSubmitted",
+      "label": {
+        "es-MX": "Intento entregado",
+        "en": "Attempt submitted"
+      },
+      "description": {
+        "es-MX": "El estudiante entregó sus respuestas para que se califiquen.",
+        "en": "The student submitted their answers to be graded."
+      },
+      "context": "Examining",
+      "sequence": 10,
+      "payload": [
+        {
+          "codeName": "assessmentId",
+          "label": {
+            "es-MX": "Evaluación",
+            "en": "Assessment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AssessmentId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AttemptFailed",
+      "label": {
+        "es-MX": "Intento reprobado",
+        "en": "Attempt failed"
+      },
+      "description": {
+        "es-MX": "La calificación quedó por debajo del mínimo y el intento no aprueba.",
+        "en": "The score fell below the passing mark so the attempt does not pass."
+      },
+      "context": "Examining",
+      "sequence": 11,
+      "payload": [
+        {
+          "codeName": "assessmentId",
+          "label": {
+            "es-MX": "Evaluación",
+            "en": "Assessment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AssessmentId"
+          }
+        },
+        {
+          "codeName": "score",
+          "label": {
+            "es-MX": "Calificación",
+            "en": "Score"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Score"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AssessmentPassed",
+      "label": {
+        "es-MX": "Examen aprobado",
+        "en": "Assessment passed"
+      },
+      "description": {
+        "es-MX": "El estudiante alcanzó la calificación mínima del examen.",
+        "en": "The student reached the exam's passing score."
+      },
+      "context": "Examining",
+      "sequence": 12,
+      "payload": [
+        {
+          "codeName": "assessmentId",
+          "label": {
+            "es-MX": "Evaluación",
+            "en": "Assessment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AssessmentId"
+          }
+        },
+        {
+          "codeName": "studentId",
+          "label": {
+            "es-MX": "Estudiante",
+            "en": "Student"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StudentId"
+          }
+        },
+        {
+          "codeName": "courseId",
+          "label": {
+            "es-MX": "Curso",
+            "en": "Course"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CourseId"
+          }
+        },
+        {
+          "codeName": "finalScore",
+          "label": {
+            "es-MX": "Calificación final",
+            "en": "Final score"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Score"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "EnrollmentGraduated",
+      "label": {
+        "es-MX": "Estudiante graduado",
+        "en": "Student graduated"
+      },
+      "description": {
+        "es-MX": "La inscripción se cerró con éxito porque el estudiante aprobó.",
+        "en": "The enrollment closed successfully because the student passed."
+      },
+      "context": "Enrolling",
+      "sequence": 13,
+      "payload": [
+        {
+          "codeName": "enrollmentId",
+          "label": {
+            "es-MX": "Inscripción",
+            "en": "Enrollment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "EnrollmentId"
+          }
+        },
+        {
+          "codeName": "studentId",
+          "label": {
+            "es-MX": "Estudiante",
+            "en": "Student"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StudentId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CertificateRequested",
+      "label": {
+        "es-MX": "Constancia solicitada",
+        "en": "Certificate requested"
+      },
+      "description": {
+        "es-MX": "Se pidió registrar la constancia de un estudiante que aprobó.",
+        "en": "A certificate was requested for a student who passed."
+      },
+      "context": "Certification",
+      "sequence": 14,
+      "payload": [
+        {
+          "codeName": "certificateId",
+          "label": {
+            "es-MX": "Constancia",
+            "en": "Certificate"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CertificateId"
+          }
+        },
+        {
+          "codeName": "studentId",
+          "label": {
+            "es-MX": "Estudiante",
+            "en": "Student"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StudentId"
+          }
+        },
+        {
+          "codeName": "courseId",
+          "label": {
+            "es-MX": "Curso",
+            "en": "Course"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CourseId"
+          }
+        },
+        {
+          "codeName": "finalScore",
+          "label": {
+            "es-MX": "Calificación final",
+            "en": "Final score"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Score"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CertificateRegistered",
+      "label": {
+        "es-MX": "Constancia registrada",
+        "en": "Certificate registered"
+      },
+      "description": {
+        "es-MX": "El registro nacional aceptó la constancia y devolvió su folio.",
+        "en": "The national registry accepted the certificate and returned its folio."
+      },
+      "context": "Certification",
+      "sequence": 15,
+      "payload": [
+        {
+          "codeName": "certificateId",
+          "label": {
+            "es-MX": "Constancia",
+            "en": "Certificate"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CertificateId"
+          }
+        },
+        {
+          "codeName": "registryFolio",
+          "label": {
+            "es-MX": "Folio de registro",
+            "en": "Registry folio"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RegistryFolio"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CertificateIssued",
+      "label": {
+        "es-MX": "Constancia emitida",
+        "en": "Certificate issued"
+      },
+      "description": {
+        "es-MX": "La constancia ya está en manos del estudiante.",
+        "en": "The certificate is now in the student's hands."
+      },
+      "context": "Certification",
+      "sequence": 16,
+      "payload": [
+        {
+          "codeName": "certificateId",
+          "label": {
+            "es-MX": "Constancia",
+            "en": "Certificate"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CertificateId"
+          }
+        },
+        {
+          "codeName": "studentId",
+          "label": {
+            "es-MX": "Estudiante",
+            "en": "Student"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StudentId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "AssessmentExhausted",
+      "label": {
+        "es-MX": "Intentos agotados",
+        "en": "Attempts exhausted"
+      },
+      "description": {
+        "es-MX": "El estudiante usó todos sus intentos sin aprobar.",
+        "en": "The student used every attempt without passing."
+      },
+      "context": "Examining",
+      "sequence": 17,
+      "payload": [
+        {
+          "codeName": "assessmentId",
+          "label": {
+            "es-MX": "Evaluación",
+            "en": "Assessment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "AssessmentId"
+          }
+        },
+        {
+          "codeName": "studentId",
+          "label": {
+            "es-MX": "Estudiante",
+            "en": "Student"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StudentId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CertificateRejected",
+      "label": {
+        "es-MX": "Constancia rechazada",
+        "en": "Certificate rejected"
+      },
+      "description": {
+        "es-MX": "El registro nacional rechazó la constancia.",
+        "en": "The national registry rejected the certificate."
+      },
+      "context": "Certification",
+      "sequence": 18,
+      "payload": [
+        {
+          "codeName": "certificateId",
+          "label": {
+            "es-MX": "Constancia",
+            "en": "Certificate"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CertificateId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CertificateRevoked",
+      "label": {
+        "es-MX": "Constancia revocada",
+        "en": "Certificate revoked"
+      },
+      "description": {
+        "es-MX": "Se anuló una constancia que ya estaba registrada.",
+        "en": "A certificate that was already registered was annulled."
+      },
+      "context": "Certification",
+      "sequence": 19,
+      "payload": [
+        {
+          "codeName": "certificateId",
+          "label": {
+            "es-MX": "Constancia",
+            "en": "Certificate"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CertificateId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "EnrollmentRefunded",
+      "label": {
+        "es-MX": "Inscripción reembolsada",
+        "en": "Enrollment refunded"
+      },
+      "description": {
+        "es-MX": "Se devolvió el pago porque el estudiante aún no empezaba.",
+        "en": "The payment was returned because the student had not started yet."
+      },
+      "context": "Enrolling",
+      "sequence": 20,
+      "payload": [
+        {
+          "codeName": "enrollmentId",
+          "label": {
+            "es-MX": "Inscripción",
+            "en": "Enrollment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "EnrollmentId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "EnrollmentCancelled",
+      "label": {
+        "es-MX": "Inscripción cancelada",
+        "en": "Enrollment cancelled"
+      },
+      "description": {
+        "es-MX": "La inscripción se canceló antes de pagarse.",
+        "en": "The enrollment was cancelled before it was paid."
+      },
+      "context": "Enrolling",
+      "sequence": 21,
+      "payload": [
+        {
+          "codeName": "enrollmentId",
+          "label": {
+            "es-MX": "Inscripción",
+            "en": "Enrollment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "EnrollmentId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CourseUnpublished",
+      "label": {
+        "es-MX": "Curso despublicado",
+        "en": "Course unpublished"
+      },
+      "description": {
+        "es-MX": "El curso dejó de venderse y volvió a borrador.",
+        "en": "The course stopped being sold and went back to draft."
+      },
+      "context": "Catalog",
+      "sequence": 22,
+      "payload": [
+        {
+          "codeName": "courseId",
+          "label": {
+            "es-MX": "Curso",
+            "en": "Course"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CourseId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CourseRetired",
+      "label": {
+        "es-MX": "Curso retirado",
+        "en": "Course retired"
+      },
+      "description": {
+        "es-MX": "El curso salió del catálogo para siempre.",
+        "en": "The course left the catalog for good."
+      },
+      "context": "Catalog",
+      "sequence": 23,
+      "payload": [
+        {
+          "codeName": "courseId",
+          "label": {
+            "es-MX": "Curso",
+            "en": "Course"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CourseId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "codeName": "AddLesson",
+      "label": {
+        "es-MX": "Agregar lección",
+        "en": "Add lesson"
+      },
+      "description": {
+        "es-MX": "Sumar una lección, con su duración, al curso.",
+        "en": "Add a lesson, with its duration, to the course."
+      },
+      "context": "Catalog",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Instructor"
+      },
+      "handledBy": "CourseOffering",
+      "params": [
+        {
+          "codeName": "lessonId",
+          "label": {
+            "es-MX": "Lección",
+            "en": "Lesson"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "LessonId"
+          }
+        },
+        {
+          "codeName": "lessonTitle",
+          "label": {
+            "es-MX": "Título de la lección",
+            "en": "Lesson title"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "LessonTitle"
+          }
+        },
+        {
+          "codeName": "durationMinutes",
+          "label": {
+            "es-MX": "Duración en minutos",
+            "en": "Duration in minutes"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DurationMinutes"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "SetCoursePrice",
+      "label": {
+        "es-MX": "Definir precio",
+        "en": "Set price"
+      },
+      "description": {
+        "es-MX": "Fijar el precio con el que se vende el curso.",
+        "en": "Set the price at which the course is sold."
+      },
+      "context": "Catalog",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Instructor"
+      },
+      "handledBy": "CourseOffering",
+      "params": [
+        {
+          "codeName": "price",
+          "label": {
+            "es-MX": "Precio",
+            "en": "Price"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PublishCourse",
+      "label": {
+        "es-MX": "Publicar curso",
+        "en": "Publish course"
+      },
+      "description": {
+        "es-MX": "Hacer visible el curso en el catálogo.",
+        "en": "Make the course visible in the catalog."
+      },
+      "context": "Catalog",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Instructor"
+      },
+      "handledBy": "CourseOffering",
+      "params": [
+        {
+          "codeName": "publishedOn",
+          "label": {
+            "es-MX": "Fecha de publicación",
+            "en": "Publication date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "UnpublishCourse",
+      "label": {
+        "es-MX": "Despublicar curso",
+        "en": "Unpublish course"
+      },
+      "description": {
+        "es-MX": "Dejar de vender el curso y regresarlo a borrador.",
+        "en": "Stop selling the course and send it back to draft."
+      },
+      "context": "Catalog",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Registrar"
+      },
+      "handledBy": "CourseOffering",
+      "params": []
+    },
+    {
+      "codeName": "RetireCourse",
+      "label": {
+        "es-MX": "Retirar curso",
+        "en": "Retire course"
+      },
+      "description": {
+        "es-MX": "Sacar el curso del catálogo para siempre.",
+        "en": "Take the course out of the catalog for good."
+      },
+      "context": "Catalog",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Registrar"
+      },
+      "handledBy": "CourseOffering",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RequestEnrollment",
+      "label": {
+        "es-MX": "Solicitar inscripción",
+        "en": "Request enrollment"
+      },
+      "description": {
+        "es-MX": "Pedir un lugar en una cohorte de un curso, con su precio.",
+        "en": "Ask for a seat in a cohort of a course, with its price."
+      },
+      "context": "Enrolling",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Student"
+      },
+      "handledBy": "Enrollment",
+      "params": [
+        {
+          "codeName": "studentId",
+          "label": {
+            "es-MX": "Estudiante",
+            "en": "Student"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StudentId"
+          }
+        },
+        {
+          "codeName": "courseId",
+          "label": {
+            "es-MX": "Curso",
+            "en": "Course"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CourseId"
+          }
+        },
+        {
+          "codeName": "cohortCode",
+          "label": {
+            "es-MX": "Cohorte",
+            "en": "Cohort"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CohortCode"
+          }
+        },
+        {
+          "codeName": "price",
+          "label": {
+            "es-MX": "Precio",
+            "en": "Price"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        },
+        {
+          "codeName": "totalLessons",
+          "label": {
+            "es-MX": "Lecciones del curso",
+            "en": "Course lessons"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "LessonCount"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ConfirmEnrollmentPayment",
+      "label": {
+        "es-MX": "Confirmar pago de inscripción",
+        "en": "Confirm enrollment payment"
+      },
+      "description": {
+        "es-MX": "El procesador avisa que el cobro llegó y hasta cuándo dura el acceso.",
+        "en": "The processor reports that the charge arrived and until when access lasts."
+      },
+      "context": "Enrolling",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "PaymentProcessor"
+      },
+      "handledBy": "Enrollment",
+      "params": [
+        {
+          "codeName": "amount",
+          "label": {
+            "es-MX": "Monto",
+            "en": "Amount"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Money"
+          }
+        },
+        {
+          "codeName": "accessUntil",
+          "label": {
+            "es-MX": "Acceso hasta",
+            "en": "Access until"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CompleteLesson",
+      "label": {
+        "es-MX": "Completar lección",
+        "en": "Complete lesson"
+      },
+      "description": {
+        "es-MX": "Marcar una lección como terminada.",
+        "en": "Mark a lesson as finished."
+      },
+      "context": "Enrolling",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Student"
+      },
+      "handledBy": "Enrollment",
+      "params": [
+        {
+          "codeName": "lessonId",
+          "label": {
+            "es-MX": "Lección",
+            "en": "Lesson"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "LessonId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "FinishCourse",
+      "label": {
+        "es-MX": "Terminar curso",
+        "en": "Finish course"
+      },
+      "description": {
+        "es-MX": "Declarar que ya se completaron todas las lecciones.",
+        "en": "Declare that every lesson has been completed."
+      },
+      "context": "Enrolling",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Student"
+      },
+      "handledBy": "Enrollment",
+      "params": []
+    },
+    {
+      "codeName": "GraduateEnrollment",
+      "label": {
+        "es-MX": "Graduar al estudiante",
+        "en": "Graduate the student"
+      },
+      "description": {
+        "es-MX": "Cerrar la inscripción porque el estudiante aprobó el examen.",
+        "en": "Close the enrollment because the student passed the exam."
+      },
+      "context": "Enrolling",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "GraduateEnrollmentWhenAssessmentPassed"
+      },
+      "handledBy": "Enrollment",
+      "params": []
+    },
+    {
+      "codeName": "RefundEnrollment",
+      "label": {
+        "es-MX": "Reembolsar inscripción",
+        "en": "Refund enrollment"
+      },
+      "description": {
+        "es-MX": "Devolver el pago de una inscripción que aún no empieza.",
+        "en": "Return the payment of an enrollment that has not started."
+      },
+      "context": "Enrolling",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "SupportAgent"
+      },
+      "handledBy": "Enrollment",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CancelEnrollment",
+      "label": {
+        "es-MX": "Cancelar inscripción",
+        "en": "Cancel enrollment"
+      },
+      "description": {
+        "es-MX": "Soltar el lugar apartado antes de pagarlo.",
+        "en": "Release the held seat before paying for it."
+      },
+      "context": "Enrolling",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Student"
+      },
+      "handledBy": "Enrollment",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "OpenAssessment",
+      "label": {
+        "es-MX": "Habilitar examen",
+        "en": "Open assessment"
+      },
+      "description": {
+        "es-MX": "Abrir el examen del curso para el estudiante.",
+        "en": "Open the course exam for the student."
+      },
+      "context": "Examining",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "OpenAssessmentWhenCourseFinished"
+      },
+      "handledBy": "Assessment",
+      "params": [
+        {
+          "codeName": "studentId",
+          "label": {
+            "es-MX": "Estudiante",
+            "en": "Student"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StudentId"
+          }
+        },
+        {
+          "codeName": "courseId",
+          "label": {
+            "es-MX": "Curso",
+            "en": "Course"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CourseId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "StartAttempt",
+      "label": {
+        "es-MX": "Iniciar intento",
+        "en": "Start attempt"
+      },
+      "description": {
+        "es-MX": "Empezar a contestar el examen.",
+        "en": "Start answering the exam."
+      },
+      "context": "Examining",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Student"
+      },
+      "handledBy": "Assessment",
+      "params": [
+        {
+          "codeName": "startedAt",
+          "label": {
+            "es-MX": "Inicio del intento",
+            "en": "Attempt start"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "timestamp"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "SubmitAttempt",
+      "label": {
+        "es-MX": "Entregar intento",
+        "en": "Submit attempt"
+      },
+      "description": {
+        "es-MX": "Entregar las respuestas para que se califiquen.",
+        "en": "Hand in the answers to be graded."
+      },
+      "context": "Examining",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Student"
+      },
+      "handledBy": "Assessment",
+      "params": []
+    },
+    {
+      "codeName": "PassAttempt",
+      "label": {
+        "es-MX": "Aprobar intento",
+        "en": "Pass attempt"
+      },
+      "description": {
+        "es-MX": "El servicio de calificación reporta una calificación aprobatoria.",
+        "en": "The grading service reports a passing score."
+      },
+      "context": "Examining",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "ExamGradingService"
+      },
+      "handledBy": "Assessment",
+      "params": [
+        {
+          "codeName": "score",
+          "label": {
+            "es-MX": "Calificación",
+            "en": "Score"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Score"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "FailAttempt",
+      "label": {
+        "es-MX": "Reprobar intento",
+        "en": "Fail attempt"
+      },
+      "description": {
+        "es-MX": "El servicio de calificación reporta una calificación insuficiente.",
+        "en": "The grading service reports an insufficient score."
+      },
+      "context": "Examining",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "ExamGradingService"
+      },
+      "handledBy": "Assessment",
+      "params": [
+        {
+          "codeName": "score",
+          "label": {
+            "es-MX": "Calificación",
+            "en": "Score"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Score"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CloseAssessment",
+      "label": {
+        "es-MX": "Cerrar examen",
+        "en": "Close assessment"
+      },
+      "description": {
+        "es-MX": "Cerrar el examen cuando ya no quedan intentos.",
+        "en": "Close the exam when no attempts remain."
+      },
+      "context": "Examining",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "CloseAssessmentWhenAttemptFailed"
+      },
+      "handledBy": "Assessment",
+      "params": []
+    },
+    {
+      "codeName": "RequestCertificate",
+      "label": {
+        "es-MX": "Solicitar constancia",
+        "en": "Request certificate"
+      },
+      "description": {
+        "es-MX": "Pedir el registro de la constancia de quien aprobó.",
+        "en": "Ask to register the certificate of someone who passed."
+      },
+      "context": "Certification",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "RequestCertificateWhenAssessmentPassed"
+      },
+      "handledBy": "Certificate",
+      "params": [
+        {
+          "codeName": "studentId",
+          "label": {
+            "es-MX": "Estudiante",
+            "en": "Student"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StudentId"
+          }
+        },
+        {
+          "codeName": "courseId",
+          "label": {
+            "es-MX": "Curso",
+            "en": "Course"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CourseId"
+          }
+        },
+        {
+          "codeName": "holderCurp",
+          "label": {
+            "es-MX": "CURP de la persona titular",
+            "en": "Holder CURP"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Curp"
+          }
+        },
+        {
+          "codeName": "hours",
+          "label": {
+            "es-MX": "Horas de estudio",
+            "en": "Study hours"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StudyHours"
+          }
+        },
+        {
+          "codeName": "area",
+          "label": {
+            "es-MX": "Área temática",
+            "en": "Thematic area"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ThematicArea"
+          }
+        },
+        {
+          "codeName": "finalScore",
+          "label": {
+            "es-MX": "Calificación final",
+            "en": "Final score"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Score"
+          }
+        },
+        {
+          "codeName": "distinction",
+          "label": {
+            "es-MX": "Mención",
+            "en": "Distinction"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Distinction"
+          }
+        },
+        {
+          "codeName": "issuedOn",
+          "label": {
+            "es-MX": "Fecha de emisión",
+            "en": "Issue date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ConfirmCertificateRegistration",
+      "label": {
+        "es-MX": "Confirmar registro de la constancia",
+        "en": "Confirm certificate registration"
+      },
+      "description": {
+        "es-MX": "El registro nacional acepta la constancia y entrega su folio.",
+        "en": "The national registry accepts the certificate and returns its folio."
+      },
+      "context": "Certification",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "NationalCertificateRegistry"
+      },
+      "handledBy": "Certificate",
+      "params": [
+        {
+          "codeName": "registryFolio",
+          "label": {
+            "es-MX": "Folio de registro",
+            "en": "Registry folio"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RegistryFolio"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RejectCertificateRegistration",
+      "label": {
+        "es-MX": "Rechazar registro de la constancia",
+        "en": "Reject certificate registration"
+      },
+      "description": {
+        "es-MX": "El registro nacional rechaza la constancia y explica por qué.",
+        "en": "The national registry rejects the certificate and explains why."
+      },
+      "context": "Certification",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "NationalCertificateRegistry"
+      },
+      "handledBy": "Certificate",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "IssueCertificate",
+      "label": {
+        "es-MX": "Emitir constancia",
+        "en": "Issue certificate"
+      },
+      "description": {
+        "es-MX": "Entregar al estudiante su constancia ya registrada.",
+        "en": "Hand the student their already registered certificate."
+      },
+      "context": "Certification",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "IssueCertificateWhenRegistered"
+      },
+      "handledBy": "Certificate",
+      "params": []
+    },
+    {
+      "codeName": "RevokeCertificate",
+      "label": {
+        "es-MX": "Revocar constancia",
+        "en": "Revoke certificate"
+      },
+      "description": {
+        "es-MX": "Anular una constancia registrada con datos incorrectos.",
+        "en": "Annul a registered certificate that has incorrect data."
+      },
+      "context": "Certification",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Registrar"
+      },
+      "handledBy": "Certificate",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    }
+  ],
+  "policies": [
+    {
+      "codeName": "OpenAssessmentWhenCourseFinished",
+      "label": {
+        "es-MX": "Al terminar el curso, habilitar el examen",
+        "en": "When the course is finished, open the exam"
+      },
+      "description": {
+        "es-MX": "Cuando el estudiante termina sus lecciones, Evaluaciones abre su examen.",
+        "en": "When the student finishes the lessons, Assessment opens their exam."
+      },
+      "context": "Examining",
+      "when": "CourseFinished",
+      "then": "OpenAssessment"
+    },
+    {
+      "codeName": "CloseAssessmentWhenAttemptFailed",
+      "label": {
+        "es-MX": "Al reprobar, cerrar el examen si no quedan intentos",
+        "en": "On a failure, close the exam if no attempts remain"
+      },
+      "description": {
+        "es-MX": "Tras cada intento reprobado se intenta cerrar el examen; el agregado solo lo permite cuando ya se agotaron los intentos.",
+        "en": "After each failed attempt, closing the exam is attempted; the aggregate only allows it once the attempts are used up."
+      },
+      "context": "Examining",
+      "when": "AttemptFailed",
+      "then": "CloseAssessment"
+    },
+    {
+      "codeName": "RequestCertificateWhenAssessmentPassed",
+      "label": {
+        "es-MX": "Al aprobar, solicitar la constancia",
+        "en": "When passed, request the certificate"
+      },
+      "description": {
+        "es-MX": "Cada examen aprobado genera su solicitud de constancia.",
+        "en": "Every passed exam generates its certificate request."
+      },
+      "context": "Certification",
+      "when": "AssessmentPassed",
+      "then": "RequestCertificate"
+    },
+    {
+      "codeName": "GraduateEnrollmentWhenAssessmentPassed",
+      "label": {
+        "es-MX": "Al aprobar el examen, graduar al estudiante",
+        "en": "When the exam is passed, graduate the student"
+      },
+      "description": {
+        "es-MX": "Aprobar el examen cierra la inscripción como graduada.",
+        "en": "Passing the exam closes the enrollment as graduated."
+      },
+      "context": "Enrolling",
+      "when": "AssessmentPassed",
+      "then": "GraduateEnrollment"
+    },
+    {
+      "codeName": "IssueCertificateWhenRegistered",
+      "label": {
+        "es-MX": "Al registrarse la constancia, emitirla",
+        "en": "When the certificate is registered, issue it"
+      },
+      "description": {
+        "es-MX": "Apenas el registro devuelve el folio, la constancia se entrega al estudiante.",
+        "en": "As soon as the registry returns the folio, the certificate is handed to the student."
+      },
+      "context": "Certification",
+      "when": "CertificateRegistered",
+      "then": "IssueCertificate"
+    }
+  ],
+  "readModels": [
+    {
+      "codeName": "PublishedCourses",
+      "label": {
+        "es-MX": "Cursos publicados",
+        "en": "Published courses"
+      },
+      "description": {
+        "es-MX": "Lo que ve el estudiante al explorar el catálogo.",
+        "en": "What the student sees when browsing the catalog."
+      },
+      "context": "Catalog",
+      "fields": [
+        {
+          "codeName": "courseId",
+          "label": {
+            "es-MX": "Curso",
+            "en": "Course"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CourseId"
+          }
+        },
+        {
+          "codeName": "title",
+          "label": {
+            "es-MX": "Título",
+            "en": "Title"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CourseTitle"
+          }
+        },
+        {
+          "codeName": "price",
+          "label": {
+            "es-MX": "Precio",
+            "en": "Price"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "Money"
+            }
+          }
+        }
+      ],
+      "fedBy": ["CoursePriced", "CoursePublished", "CourseUnpublished", "CourseRetired"],
+      "usedBy": ["Student", "Instructor"]
+    },
+    {
+      "codeName": "StudentProgress",
+      "label": {
+        "es-MX": "Avance del estudiante",
+        "en": "Student progress"
+      },
+      "description": {
+        "es-MX": "La pantalla con las lecciones completadas y lo que falta para graduarse.",
+        "en": "The screen showing completed lessons and what is left to graduate."
+      },
+      "context": "Enrolling",
+      "fields": [
+        {
+          "codeName": "enrollmentId",
+          "label": {
+            "es-MX": "Inscripción",
+            "en": "Enrollment"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "EnrollmentId"
+          }
+        },
+        {
+          "codeName": "lessonsCompleted",
+          "label": {
+            "es-MX": "Lecciones completadas",
+            "en": "Completed lessons"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "LessonCount"
+          }
+        },
+        {
+          "codeName": "totalLessons",
+          "label": {
+            "es-MX": "Lecciones del curso",
+            "en": "Course lessons"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "LessonCount"
+          }
+        }
+      ],
+      "fedBy": ["EnrollmentPaid", "LessonCompleted", "CourseFinished", "EnrollmentGraduated"],
+      "usedBy": ["Student", "Instructor"]
+    },
+    {
+      "codeName": "CertificateLedger",
+      "label": {
+        "es-MX": "Libro de constancias",
+        "en": "Certificate ledger"
+      },
+      "description": {
+        "es-MX": "Cómo va cada constancia ante el registro nacional.",
+        "en": "How each certificate stands with the national registry."
+      },
+      "context": "Certification",
+      "fields": [
+        {
+          "codeName": "certificateId",
+          "label": {
+            "es-MX": "Constancia",
+            "en": "Certificate"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CertificateId"
+          }
+        },
+        {
+          "codeName": "studentId",
+          "label": {
+            "es-MX": "Estudiante",
+            "en": "Student"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "StudentId"
+          }
+        },
+        {
+          "codeName": "registryFolio",
+          "label": {
+            "es-MX": "Folio de registro",
+            "en": "Registry folio"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "RegistryFolio"
+            }
+          }
+        }
+      ],
+      "fedBy": [
+        "CertificateRequested",
+        "CertificateRegistered",
+        "CertificateRejected",
+        "CertificateIssued",
+        "CertificateRevoked"
+      ],
+      "usedBy": ["Registrar", "Student"]
+    }
+  ]
+}

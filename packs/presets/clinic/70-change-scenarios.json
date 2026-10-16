@@ -1,0 +1,483 @@
+{
+  "changeScenarios": {
+    "businessChange": {
+      "story": {
+        "es-MX": "Cambio del negocio: una factura que ya se emitió no puede anularse, porque desde ese momento se reporta al SAT.",
+        "en": "Business change: an invoice that has already been issued can no longer be voided, because from that moment it is reported to the tax authority."
+      },
+      "patch": [
+        {
+          "op": "restrictTransition",
+          "aggregate": "Invoice",
+          "command": "VoidInvoice",
+          "removeFrom": ["Issued"]
+        }
+      ]
+    },
+    "evolution": {
+      "story": {
+        "es-MX": "Estudios de laboratorio: si el médico los pide, la consulta espera los resultados antes de cerrarse; si salen alterados, el seguimiento es en 7 días o menos.",
+        "en": "Lab tests: when the physician orders them, the consultation waits for the results before closing; if they come back abnormal, the follow-up is within 7 days or less."
+      },
+      "patch": [
+        {
+          "op": "addValueObject",
+          "valueObject": {
+            "kind": "enum",
+            "codeName": "LabPanel",
+            "label": {
+              "es-MX": "Panel de laboratorio",
+              "en": "Lab panel"
+            },
+            "description": {
+              "es-MX": "Qué estudios de laboratorio se piden.",
+              "en": "Which lab tests are ordered."
+            },
+            "members": [
+              {
+                "codeName": "BloodCount",
+                "label": {
+                  "es-MX": "Biometría hemática",
+                  "en": "Complete blood count"
+                }
+              },
+              {
+                "codeName": "Glucose",
+                "label": {
+                  "es-MX": "Glucosa en sangre",
+                  "en": "Blood glucose"
+                }
+              },
+              {
+                "codeName": "Urinalysis",
+                "label": {
+                  "es-MX": "Examen general de orina",
+                  "en": "Urinalysis"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addEvent",
+          "event": {
+            "codeName": "LabTestsOrdered",
+            "label": {
+              "es-MX": "Estudios de laboratorio solicitados",
+              "en": "Lab tests ordered"
+            },
+            "description": {
+              "es-MX": "El médico pidió estudios y la consulta queda esperando los resultados.",
+              "en": "The physician ordered tests and the consultation waits for the results."
+            },
+            "context": "ClinicalCare",
+            "sequence": 9.1,
+            "payload": [
+              {
+                "codeName": "consultationId",
+                "label": {
+                  "es-MX": "Consulta",
+                  "en": "Consultation"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "ConsultationId"
+                }
+              },
+              {
+                "codeName": "panel",
+                "label": {
+                  "es-MX": "Panel de laboratorio",
+                  "en": "Lab panel"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "LabPanel"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addEvent",
+          "event": {
+            "codeName": "LabResultsRecorded",
+            "label": {
+              "es-MX": "Resultados de laboratorio registrados",
+              "en": "Lab results recorded"
+            },
+            "description": {
+              "es-MX": "Llegaron los resultados y el médico los registró, señalando si salieron alterados.",
+              "en": "The results arrived and the physician recorded them, flagging whether they were abnormal."
+            },
+            "context": "ClinicalCare",
+            "sequence": 9.2,
+            "payload": [
+              {
+                "codeName": "consultationId",
+                "label": {
+                  "es-MX": "Consulta",
+                  "en": "Consultation"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "ConsultationId"
+                }
+              },
+              {
+                "codeName": "abnormalResults",
+                "label": {
+                  "es-MX": "Resultados alterados",
+                  "en": "Abnormal results"
+                },
+                "type": {
+                  "kind": "primitive",
+                  "name": "boolean"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addCommand",
+          "command": {
+            "codeName": "OrderLabTests",
+            "label": {
+              "es-MX": "Pedir estudios de laboratorio",
+              "en": "Order lab tests"
+            },
+            "description": {
+              "es-MX": "Solicitar un panel de laboratorio y esperar sus resultados.",
+              "en": "Request a lab panel and wait for its results."
+            },
+            "context": "ClinicalCare",
+            "issuedBy": {
+              "kind": "actor",
+              "ref": "Physician"
+            },
+            "handledBy": "Consultation",
+            "params": [
+              {
+                "codeName": "panel",
+                "label": {
+                  "es-MX": "Panel de laboratorio",
+                  "en": "Lab panel"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "LabPanel"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addCommand",
+          "command": {
+            "codeName": "RecordLabResults",
+            "label": {
+              "es-MX": "Registrar resultados de laboratorio",
+              "en": "Record lab results"
+            },
+            "description": {
+              "es-MX": "Anotar que llegaron los resultados y si alguno salió alterado.",
+              "en": "Note that the results arrived and whether any came back abnormal."
+            },
+            "context": "ClinicalCare",
+            "issuedBy": {
+              "kind": "actor",
+              "ref": "Physician"
+            },
+            "handledBy": "Consultation",
+            "params": [
+              {
+                "codeName": "abnormalResults",
+                "label": {
+                  "es-MX": "Resultados alterados",
+                  "en": "Abnormal results"
+                },
+                "type": {
+                  "kind": "primitive",
+                  "name": "boolean"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addState",
+          "aggregate": "Consultation",
+          "state": {
+            "codeName": "AwaitingResults",
+            "label": {
+              "es-MX": "Esperando resultados",
+              "en": "Awaiting results"
+            },
+            "description": {
+              "es-MX": "Se pidieron estudios y la consulta espera que lleguen.",
+              "en": "Tests were ordered and the consultation waits for them to arrive."
+            },
+            "terminal": false,
+            "data": [
+              {
+                "codeName": "orderedPanel",
+                "label": {
+                  "es-MX": "Panel solicitado",
+                  "en": "Ordered panel"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "LabPanel"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addState",
+          "aggregate": "Consultation",
+          "state": {
+            "codeName": "ResultsReady",
+            "label": {
+              "es-MX": "Resultados listos",
+              "en": "Results ready"
+            },
+            "description": {
+              "es-MX": "Los resultados ya están registrados y el médico puede diagnosticar y cerrar.",
+              "en": "The results are recorded and the physician can diagnose and close."
+            },
+            "terminal": false,
+            "data": [
+              {
+                "codeName": "abnormalResults",
+                "label": {
+                  "es-MX": "Resultados alterados",
+                  "en": "Abnormal results"
+                },
+                "type": {
+                  "kind": "primitive",
+                  "name": "boolean"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addRule",
+          "aggregate": "Consultation",
+          "rule": {
+            "codeName": "AbnormalResultsNeedQuickFollowUp",
+            "label": {
+              "es-MX": "Resultados alterados exigen seguimiento pronto",
+              "en": "Abnormal results need quick follow-up"
+            },
+            "description": {
+              "es-MX": "Si algún resultado salió alterado, la persona vuelve en 7 días como máximo.",
+              "en": "If any result came back abnormal, the person returns within 7 days at most."
+            },
+            "predicate": {
+              "kind": "any",
+              "of": [
+                {
+                  "kind": "not",
+                  "of": {
+                    "kind": "compare",
+                    "left": {
+                      "op": "field",
+                      "name": "abnormalResults"
+                    },
+                    "operator": "==",
+                    "right": {
+                      "op": "literal",
+                      "value": true
+                    }
+                  }
+                },
+                {
+                  "kind": "compare",
+                  "left": {
+                    "op": "arg",
+                    "name": "followUpDays"
+                  },
+                  "operator": "<=",
+                  "right": {
+                    "op": "literal",
+                    "value": 7
+                  }
+                }
+              ]
+            },
+            "message": {
+              "es-MX": "Con resultados alterados el seguimiento es en 7 días o menos.",
+              "en": "With abnormal results the follow-up is within 7 days or less."
+            },
+            "violation": {
+              "given": [
+                {
+                  "command": "OpenConsultation",
+                  "args": {}
+                },
+                {
+                  "command": "StartConsultation",
+                  "args": {}
+                },
+                {
+                  "command": "RecordObservation",
+                  "args": {}
+                },
+                {
+                  "command": "OrderLabTests",
+                  "args": {}
+                },
+                {
+                  "command": "RecordLabResults",
+                  "args": {
+                    "abnormalResults": true
+                  }
+                },
+                {
+                  "command": "RecordDiagnosis",
+                  "args": {}
+                }
+              ],
+              "when": {
+                "command": "CloseConsultation",
+                "args": {
+                  "followUpDays": 30
+                }
+              }
+            }
+          }
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "Consultation",
+          "transition": {
+            "command": "OrderLabTests",
+            "from": ["InProgress"],
+            "to": "AwaitingResults",
+            "guards": [],
+            "effects": [
+              {
+                "op": "set",
+                "field": "orderedPanel",
+                "value": {
+                  "op": "arg",
+                  "name": "panel"
+                }
+              }
+            ],
+            "emits": ["LabTestsOrdered"]
+          }
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "Consultation",
+          "transition": {
+            "command": "RecordLabResults",
+            "from": ["AwaitingResults"],
+            "to": "ResultsReady",
+            "guards": [],
+            "effects": [
+              {
+                "op": "set",
+                "field": "abnormalResults",
+                "value": {
+                  "op": "arg",
+                  "name": "abnormalResults"
+                }
+              }
+            ],
+            "emits": ["LabResultsRecorded"]
+          }
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "Consultation",
+          "transition": {
+            "command": "RecordDiagnosis",
+            "from": ["ResultsReady"],
+            "to": "ResultsReady",
+            "guards": ["DiagnosisNeedsObservations"],
+            "effects": [
+              {
+                "op": "set",
+                "field": "diagnosis",
+                "value": {
+                  "op": "arg",
+                  "name": "diagnosis"
+                }
+              }
+            ],
+            "emits": ["DiagnosisRecorded"]
+          }
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "Consultation",
+          "transition": {
+            "command": "CloseConsultation",
+            "from": ["ResultsReady"],
+            "to": "Closed",
+            "guards": [
+              "DiagnosisRequiredToClose",
+              "FollowUpWithinLimit",
+              "AbnormalResultsNeedQuickFollowUp"
+            ],
+            "effects": [
+              {
+                "op": "set",
+                "field": "followUpDays",
+                "value": {
+                  "op": "arg",
+                  "name": "followUpDays"
+                }
+              }
+            ],
+            "emits": ["ConsultationClosed"]
+          }
+        },
+        {
+          "op": "replaceWalkthrough",
+          "aggregate": "Consultation",
+          "walkthrough": [
+            {
+              "command": "OpenConsultation",
+              "args": {}
+            },
+            {
+              "command": "StartConsultation",
+              "args": {
+                "startedAt": "2026-03-10T10:00:00Z"
+              }
+            },
+            {
+              "command": "RecordObservation",
+              "args": {}
+            },
+            {
+              "command": "OrderLabTests",
+              "args": {}
+            },
+            {
+              "command": "RecordLabResults",
+              "args": {
+                "abnormalResults": false
+              }
+            },
+            {
+              "command": "RecordDiagnosis",
+              "args": {}
+            },
+            {
+              "command": "CloseConsultation",
+              "args": {
+                "followUpDays": 14
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
