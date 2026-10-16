@@ -29,6 +29,8 @@ export interface CodeExercise {
   readonly reference: string;
   /** What a plausible answer mentions: the error code of the rule and the data it reads. */
   readonly required: readonly string[];
+  /** The one required name that may appear inside a string, as error codes often do. */
+  readonly errorCode: string | null;
   /** Of these, a correct answer mentions at least one: the data a rule reads can be named in more than one way. */
   readonly oneOf: readonly string[];
   /** The hole as the learner first sees it: the indentation and a note saying what to do. */
@@ -82,6 +84,10 @@ const GENERIC_WORDS = new Set([
   "none",
   "error",
 ]);
+
+function withoutStrings(text: string): string {
+  return text.replace(/"[^"\n]*"|'[^'\n]*'/g, "");
+}
 
 function identifiersIn(text: string): readonly string[] {
   const words = text.replace(/"[^"]*"/g, "").match(/\b[a-z_][A-Za-z0-9_]*\b/g) ?? [];
@@ -184,6 +190,7 @@ export function deriveCodeExercise(
     after: `${lines.slice(anchor.endLine).join("\n")}\n`,
     reference,
     required: source.errorCode === null ? identifiersIn(reference) : code,
+    errorCode: code[0] ?? null,
     oneOf: source.errorCode === null ? [] : identifiersIn(reference),
     placeholder: `${indentation}${COMMENT_MARKER[language]} ${TODO_MARKER}: write the code here`,
   };
@@ -199,16 +206,24 @@ export function answerStartLine(exercise: CodeExercise): number {
   return exercise.before.split("\n").length;
 }
 
-/** Judges an answer without running it: is it well formed, and does it mention what a correct one must. */
+/** Judges an answer without running it; names in comments, or in strings other than the error code, do not count. */
 export async function checkCodeAnswer(
   exercise: CodeExercise,
   answer: string,
   checker: SyntaxChecker,
 ): Promise<CodeVerdict> {
-  const unfinished = answer.includes(TODO_MARKER) || answer.trim() === "";
-  const issues = await checker.check(exercise.language, assembleSource(exercise, answer));
-  const missing = exercise.required.filter((token) => !mentions(answer, token));
-  if (exercise.oneOf.length > 0 && !exercise.oneOf.some((token) => mentions(answer, token))) {
+  const source = assembleSource(exercise, answer);
+  const issues = await checker.check(exercise.language, source);
+  const code = (await checker.withoutComments(exercise.language, source)).slice(
+    exercise.before.length,
+    source.length - exercise.after.length,
+  );
+  const unfinished = answer.includes(TODO_MARKER) || code.trim() === "";
+  const unquoted = withoutStrings(code);
+  const missing = exercise.required.filter(
+    (token) => !mentions(token === exercise.errorCode ? code : unquoted, token),
+  );
+  if (exercise.oneOf.length > 0 && !exercise.oneOf.some((token) => mentions(unquoted, token))) {
     missing.push(exercise.oneOf.join(" | "));
   }
   return {

@@ -134,6 +134,51 @@ describe("running a code exercise for real", () => {
   });
 });
 
+describe("an answer that only names what the code should do", () => {
+  const CODE_KINDS = [
+    "implementTheRule",
+    "implementTheChange",
+    "addPipelineStage",
+    "implementRepositoryAdapter",
+  ] as const;
+  const COMMENT = { typescript: "//", python: "#", ruby: "#", "ruby-dry": "#" } as const;
+  const cases = PROGRAMMING_LANGUAGES.flatMap((language) =>
+    CODE_KINDS.map((kind) => [language, kind] as const),
+  );
+
+  function exerciseOf(
+    language: (typeof PROGRAMMING_LANGUAGES)[number],
+    kind: (typeof CODE_KINDS)[number],
+  ) {
+    const exercise = deriveCodeExercise(kind, index, evolved, language, templates);
+    if (exercise === undefined) throw new Error("no exercise");
+    const indentation = /^\s*/.exec(exercise.placeholder)?.[0] ?? "";
+    const names = [...exercise.required, ...exercise.oneOf].join(" ");
+    return { exercise, indentation, names };
+  }
+
+  it.each(cases)("%s %s: is refused when the names are in a comment", async (language, kind) => {
+    const { exercise, indentation, names } = exerciseOf(language, kind);
+    const filler = language === "python" ? `\n${indentation}pass` : "";
+
+    const verdict = await checkCodeAnswer(
+      exercise,
+      `${indentation}${COMMENT[language]} ${names}${filler}`,
+      checker,
+    );
+
+    expect(verdict.plausible).toBe(false);
+  });
+
+  it.each(cases)("%s %s: is refused when the names are only a string", async (language, kind) => {
+    const { exercise, indentation, names } = exerciseOf(language, kind);
+
+    const verdict = await checkCodeAnswer(exercise, `${indentation}"${names}"`, checker);
+
+    expect(verdict.plausible).toBe(false);
+  });
+});
+
 describe("an answer that differs from the reference", () => {
   it("is accepted when it says the same thing with other words", async () => {
     const exercise = deriveCodeExercise(
