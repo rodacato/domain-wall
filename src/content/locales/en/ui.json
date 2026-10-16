@@ -127,7 +127,7 @@
       "defaultBadge": "Hand-polished",
       "describe": "Describe your business",
       "describeHint": "A domain generated for you and validated before use.",
-      "soon": "Coming soon"
+      "generatedBadge": "Generated for you"
     },
     "back": "Back",
     "next": "Next",
@@ -472,5 +472,67 @@
     "auto": "Automatic",
     "light": "Light",
     "dark": "Dark"
+  },
+  "generate": {
+    "description": "Describe your business",
+    "placeholder": "A small bakery in Puebla that sells bread by subscription and delivers every morning…",
+    "tooShort": "Write at least {count} characters so the model has something to work with.",
+    "provider": {
+      "label": "Language model",
+      "simulated": "Simulation (no key needed)",
+      "host": "The host application",
+      "anthropic": "Anthropic",
+      "openai": "OpenAI-compatible"
+    },
+    "apiKey": "API key",
+    "model": "Model",
+    "baseUrl": "Server address",
+    "keyNote": "The key stays in this browser and goes only to the provider you chose.",
+    "simulatedNote": "The simulation plays a prepared business through the same checks, including one answer that gets sent back, so you can see how it works.",
+    "start": "Generate",
+    "cancel": "Cancel",
+    "again": "Try again",
+    "use": "Learn with this business",
+    "ready": "“{name}” is ready: it passed every check.",
+    "reused": "You already generated this business: “{name}”.",
+    "pass": {
+      "storm": "Event Storming",
+      "strategy": "Strategy",
+      "model": "Model",
+      "narrative": "Story"
+    },
+    "part": {
+      "business": "business",
+      "experts": "experts",
+      "actors": "actors",
+      "events": "events",
+      "commands": "commands",
+      "policies": "policies",
+      "externalSystems": "external systems",
+      "readModels": "read models",
+      "contexts": "contexts",
+      "contextRelations": "relations",
+      "ambiguousTerm": "ambiguous term",
+      "antiCorruptionLayer": "translation layer",
+      "valueObjects": "value objects",
+      "aggregates": "aggregates",
+      "workflow": "workflow",
+      "dialogues": "conversations",
+      "changeScenarios": "changes"
+    },
+    "status": {
+      "waiting": "Waiting",
+      "running": "Working…",
+      "answered": "Done"
+    },
+    "schemaRefused": "The shape of the last answer was wrong in {count} places; asking again.",
+    "gate": {
+      "schema": "Shape",
+      "meaning": "Meaning"
+    },
+    "sentBack": "Sent back to “{pass}”: {count} problems",
+    "unavailable": "The model could not be reached: {message}",
+    "aborted": "You cancelled the generation.",
+    "exhausted": "The model could not produce a valid business ({count} problems remain)."
   }
 }

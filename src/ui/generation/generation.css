@@ -1,0 +1,142 @@
+.generate {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.generate__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.generate__field textarea,
+.generate__field input,
+.generate__field select {
+  padding: 6px 10px;
+  border: 1px solid var(--ui-border);
+  border-radius: 8px;
+  background: var(--ui-surface);
+  font: inherit;
+  font-weight: 400;
+}
+
+.generate__settings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.generate__note {
+  margin: 0;
+  color: var(--ui-muted);
+  font-size: 13px;
+}
+
+.generate__success {
+  margin: 0;
+  padding: 10px 14px;
+  border-left: 4px solid #2f9e44;
+  border-radius: 6px;
+  background: color-mix(in srgb, #2f9e44 12%, var(--ui-surface));
+}
+
+.generate__failure {
+  margin: 0;
+  padding: 10px 14px;
+  border-left: 4px solid #e03131;
+  border-radius: 6px;
+  background: color-mix(in srgb, #e03131 10%, var(--ui-surface));
+}
+
+.passes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pass {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  align-items: baseline;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--ui-surface);
+  border: 1px dashed var(--ui-border);
+}
+
+.pass--running {
+  border-style: solid;
+  border-color: var(--ui-accent);
+}
+
+.pass--answered {
+  border-style: solid;
+  border-color: #2f9e44;
+}
+
+.pass strong {
+  min-width: 150px;
+}
+
+.pass span {
+  color: var(--ui-muted);
+  font-size: 13px;
+}
+
+.pass__refused {
+  color: #c92a2a;
+}
+
+.gates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gate {
+  padding: 2px 12px;
+  border: 1px dashed var(--ui-border);
+  border-radius: 999px;
+  color: var(--ui-muted);
+  font-size: 12px;
+}
+
+.gate--passed {
+  border-style: solid;
+  border-color: #2f9e44;
+  color: #2b8a3e;
+  font-weight: 700;
+}
+
+.gate--passed::before {
+  content: "✓ ";
+}
+
+.gate--failed {
+  border-color: #e03131;
+  color: #c92a2a;
+}
+
+.refusal {
+  padding: 8px 12px;
+  border-left: 4px solid #e8590c;
+  border-radius: 6px;
+  background: color-mix(in srgb, #e8590c 8%, var(--ui-surface));
+  font-size: 13px;
+}
+
+.refusal ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}

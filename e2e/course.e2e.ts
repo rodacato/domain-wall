@@ -96,3 +96,24 @@ test("the demo plays the course by itself", async ({ page }) => {
   await expect(page.getByRole("button", { name: /Pause/ })).toBeVisible();
   await expect(page.getByText("Step 2 of")).toBeVisible({ timeout: 15_000 });
 });
+
+test("describing a business generates one, checks it, sends a pass back and then teaches with it", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByRole("button", { name: "Next" }).click();
+
+  await page.getByRole("button", { name: /Describe your business/ }).click();
+  await page
+    .getByLabel("Describe your business")
+    .fill("A neighborhood clinic where people book visits");
+  await page.getByRole("button", { name: "Generate", exact: true }).click();
+
+  await expect(page.getByText(/Sent back to “Model”/)).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByText(/is ready: it passed every check/)).toBeVisible({ timeout: 30_000 });
+  await page.getByRole("button", { name: "Learn with this business" }).click();
+  await page.getByRole("button", { name: "Start the course" }).click();
+
+  await expect(page.getByRole("button", { name: "Neighborhood Clinic" })).toBeVisible();
+});

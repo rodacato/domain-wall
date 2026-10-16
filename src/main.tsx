@@ -1,14 +1,20 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import {
+  IndexedDbPackRepository,
   IndexedDbPreferencesRepository,
   IndexedDbProgressRepository,
   openLearnerDatabase,
 } from "./adapters/storage/IndexedDbLearnerStorage";
+import { InMemoryPackRepository } from "./adapters/storage/InMemoryPackRepository";
 import {
   InMemoryPreferencesRepository,
   InMemoryProgressRepository,
 } from "./adapters/storage/InMemoryLearnerStorage";
+import { AnthropicProvider } from "./adapters/llm/AnthropicProvider";
+import { OpenAiCompatibleProvider } from "./adapters/llm/OpenAiCompatibleProvider";
+import { SimulatedLlmProvider } from "./adapters/llm/SimulatedLlmProvider";
+import { HostLlmProvider } from "./adapters/host/HostLlmProvider";
 import { HostRunner } from "./adapters/host/HostRunner";
 import { NoHostBridge } from "./adapters/host/NoHostBridge";
 import { PostMessageHostBridge } from "./adapters/host/PostMessageHostBridge";
@@ -21,7 +27,10 @@ import type { CourseSharedInput } from "./application/CourseSession";
 import type { HostBridge } from "./application/host";
 import { loadCatalogs } from "./application/loadCatalogs";
 import { loadTemplates } from "./application/loadTemplates";
-import { loadPackLibrary, type PackLibrary } from "./application/packLibrary";
+import type { LlmSettings } from "./application/llmSettings";
+import { loadGeneratedPacks, loadPackLibrary, type PackLibrary } from "./application/packLibrary";
+import type { LlmProvider } from "./ports/LlmProvider";
+import type { PackRepository } from "./ports/PackRepository";
 import { loadLearnerState, type LearnerStorage } from "./application/learnerState";
 import syllabusJson from "./content/syllabus.json";
 import { QUANTITY_SAMPLES } from "./content/onboarding/quantitySamples";
@@ -49,17 +58,55 @@ const templateFiles = import.meta.glob("./generation/languages/*/templates/*.mus
   query: "?raw",
 });
 
-async function openStorage(): Promise<LearnerStorage> {
+async function openStorage(): Promise<{
+  readonly storage: LearnerStorage;
+  readonly packs: PackRepository;
+}> {
   const database = await openLearnerDatabase();
   if (!database.ok) {
     return {
-      progress: new InMemoryProgressRepository(),
-      preferences: new InMemoryPreferencesRepository(),
+      storage: {
+        progress: new InMemoryProgressRepository(),
+        preferences: new InMemoryPreferencesRepository(),
+      },
+      packs: new InMemoryPackRepository(),
     };
   }
   return {
-    progress: new IndexedDbProgressRepository(database.value),
-    preferences: new IndexedDbPreferencesRepository(database.value),
+    storage: {
+      progress: new IndexedDbProgressRepository(database.value),
+      preferences: new IndexedDbPreferencesRepository(database.value),
+    },
+    packs: new IndexedDbPackRepository(database.value),
+  };
+}
+
+/** The ways to reach a language model: directly with a key, through the host, or a prepared simulation. */
+function providerFactory(
+  library: PackLibrary,
+  bridge: HostBridge,
+): (settings: LlmSettings) => LlmProvider {
+  return (settings) => {
+    switch (settings.provider) {
+      case "anthropic":
+        return new AnthropicProvider({ apiKey: settings.apiKey, model: settings.model });
+      case "openai":
+        return new OpenAiCompatibleProvider({
+          apiKey: settings.apiKey,
+          model: settings.model,
+          baseUrl: settings.baseUrl,
+        });
+      case "host":
+        return new HostLlmProvider(bridge);
+      case "simulated":
+        return new SimulatedLlmProvider(
+          (library.presets[0] ?? { pack: library.defaultPack }).pack,
+          {
+            failFirst: "model",
+            delayMilliseconds: 900,
+          },
+        );
+    }
   };
 }
 
@@ -110,8 +157,9 @@ async function start(): Promise<void> {
     showIssues(built.error);
     return;
   }
-  const { library, shared } = built.value;
-  const storage = await openStorage();
+  const { shared } = built.value;
+  const { storage, packs } = await openStorage();
+  const library = { ...built.value.library, generated: await loadGeneratedPacks(packs) };
   const bridge = openHostBridge();
   const initial = await loadLearnerState(storage, navigator.languages);
 
@@ -126,6 +174,8 @@ async function start(): Promise<void> {
         syntaxChecker={syntaxChecker}
         bridge={bridge}
         hostRunner={new HostRunner(bridge)}
+        packRepository={packs}
+        createLlmProvider={providerFactory(library, bridge)}
         initial={initial}
       />
     </StrictMode>,

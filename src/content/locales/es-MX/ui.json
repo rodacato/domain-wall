@@ -127,7 +127,7 @@
       "defaultBadge": "Pulido a mano",
       "describe": "Describe tu negocio",
       "describeHint": "Un dominio generado para ti y validado antes de usarse.",
-      "soon": "Próximamente"
+      "generatedBadge": "Generado para ti"
     },
     "back": "Atrás",
     "next": "Siguiente",
@@ -472,5 +472,67 @@
     "auto": "Automático",
     "light": "Claro",
     "dark": "Oscuro"
+  },
+  "generate": {
+    "description": "Describe tu negocio",
+    "placeholder": "Una panadería pequeña en Puebla que vende pan por suscripción y reparte cada mañana…",
+    "tooShort": "Escribe al menos {count} caracteres para que el modelo tenga con qué trabajar.",
+    "provider": {
+      "label": "Modelo de lenguaje",
+      "simulated": "Simulación (sin llave)",
+      "host": "La aplicación anfitriona",
+      "anthropic": "Anthropic",
+      "openai": "Compatible con OpenAI"
+    },
+    "apiKey": "Llave de la API",
+    "model": "Modelo",
+    "baseUrl": "Dirección del servidor",
+    "keyNote": "La llave se queda en este navegador y solo viaja al proveedor que elegiste.",
+    "simulatedNote": "La simulación reproduce un negocio preparado por las mismas revisiones, incluida una respuesta que se devuelve, para que veas cómo funciona.",
+    "start": "Generar",
+    "cancel": "Cancelar",
+    "again": "Intentar de nuevo",
+    "use": "Aprender con este negocio",
+    "ready": "«{name}» está listo: pasó todas las revisiones.",
+    "reused": "Ya generaste este negocio: «{name}».",
+    "pass": {
+      "storm": "Event Storming",
+      "strategy": "Estrategia",
+      "model": "Modelo",
+      "narrative": "Historia"
+    },
+    "part": {
+      "business": "negocio",
+      "experts": "expertos",
+      "actors": "actores",
+      "events": "eventos",
+      "commands": "comandos",
+      "policies": "políticas",
+      "externalSystems": "sistemas externos",
+      "readModels": "modelos de lectura",
+      "contexts": "contextos",
+      "contextRelations": "relaciones",
+      "ambiguousTerm": "término ambiguo",
+      "antiCorruptionLayer": "capa de traducción",
+      "valueObjects": "value objects",
+      "aggregates": "agregados",
+      "workflow": "flujo",
+      "dialogues": "conversaciones",
+      "changeScenarios": "cambios"
+    },
+    "status": {
+      "waiting": "En espera",
+      "running": "Trabajando…",
+      "answered": "Listo"
+    },
+    "schemaRefused": "La forma de la última respuesta falló en {count} lugares; se pide de nuevo.",
+    "gate": {
+      "schema": "Forma",
+      "meaning": "Significado"
+    },
+    "sentBack": "Devuelto a «{pass}»: {count} problemas",
+    "unavailable": "No se pudo contactar al modelo: {message}",
+    "aborted": "Cancelaste la generación.",
+    "exhausted": "El modelo no pudo producir un negocio válido (quedan {count} problemas)."
   }
 }

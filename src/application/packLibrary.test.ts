@@ -48,3 +48,43 @@ describe("packFor", () => {
     expect(packIdOf({ kind: "preset", packId: "clinic" })).toBe("clinic");
   });
 });
+
+describe("generated packs in the library", () => {
+  it("finds a generated pack by its key and falls back to the default for one that is gone", async () => {
+    const { withGeneratedPack } = await import("./packLibrary");
+    const clinicPack = library.presets.find((preset) => preset.packId === "clinic")?.pack;
+    if (clinicPack === undefined) throw new Error("the clinic preset must exist");
+    const withPack = withGeneratedPack(library, { key: "abc", description: "d", pack: clinicPack });
+
+    expect(packFor(withPack, { kind: "generated", packKey: "abc" }).meta.packId).toBe("clinic");
+    expect(packFor(withPack, { kind: "generated", packKey: "gone" }).meta.packId).toBe(
+      "hecho-a-mano",
+    );
+  });
+
+  it("loads stored packs and drops the ones that no longer pass the checks", async () => {
+    const { loadGeneratedPacks } = await import("./packLibrary");
+    const { InMemoryPackRepository } = await import("../adapters/storage/InMemoryPackRepository");
+    const repository = new InMemoryPackRepository();
+    await repository.save({
+      key: "good",
+      createdAt: "x",
+      description: "d",
+      pack: loadDefaultPackJson(),
+    });
+    await repository.save({
+      key: "bad",
+      createdAt: "x",
+      description: "d",
+      pack: { nonsense: true },
+    });
+
+    const loaded = await loadGeneratedPacks(repository);
+
+    expect(loaded.map((entry) => entry.key)).toEqual(["good"]);
+  });
+});
+
+function loadDefaultPackJson(): unknown {
+  return JSON.parse(JSON.stringify(library.defaultPack));
+}

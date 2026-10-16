@@ -1,7 +1,9 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useState, type ReactNode } from "react";
 import type { CourseSession } from "../../application/CourseSession";
-import type { PackLibrary } from "../../application/packLibrary";
+import type { GenerationServices } from "../../application/generationServices";
+import type { GeneratedPack, PackLibrary } from "../../application/packLibrary";
+import { GenerateBusiness } from "../generation/GenerateBusiness";
 import {
   PROGRAMMING_LANGUAGES,
   type ProgrammingLanguageId,
@@ -20,15 +22,26 @@ const LOCALE_NAMES: Readonly<Record<LocaleCode, string>> = {
 interface OnboardingProps {
   readonly session: CourseSession;
   readonly library: PackLibrary;
+  readonly generation: GenerationServices;
+  /** Called when a business has been generated and checked, before the learner starts with it. */
+  readonly onGenerated: (entry: GeneratedPack) => void;
   readonly initial: LearnerPreferences;
   readonly onFinish: (preferences: LearnerPreferences) => void;
 }
 
 /** Three choices made on a blank wall: the language of the course, the language of the code, the business. */
-export function Onboarding({ session, library, initial, onFinish }: OnboardingProps): ReactNode {
+export function Onboarding({
+  session,
+  library,
+  generation,
+  onGenerated,
+  initial,
+  onFinish,
+}: OnboardingProps): ReactNode {
   const { setLocale, t } = useI18n();
   const [step, setStep] = useState(0);
   const [choice, setChoice] = useState(initial);
+  const [describing, setDescribing] = useState(false);
   const [previewed, setPreviewed] = useState<ProgrammingLanguageId>(initial.programmingLanguage);
   const business = library.defaultPack.business;
   const { locale } = choice;
@@ -154,11 +167,46 @@ export function Onboarding({ session, library, initial, onFinish }: OnboardingPr
                       <span className="card__text">{preset.pack.business.description[locale]}</span>
                     </button>
                   ))}
-                  <button className="card card--wide" disabled>
-                    <span className="card__title">{t("ui.onboarding.industry.describe")}</span>
-                    <span className="card__text">{t("ui.onboarding.industry.describeHint")}</span>
-                    <span className="card__badge">{t("ui.onboarding.industry.soon")}</span>
-                  </button>
+                  {library.generated.map((entry) => (
+                    <button
+                      key={entry.key}
+                      className="card card--wide"
+                      aria-pressed={
+                        choice.pack.kind === "generated" && choice.pack.packKey === entry.key
+                      }
+                      onClick={() => {
+                        setChoice({ ...choice, pack: { kind: "generated", packKey: entry.key } });
+                      }}
+                    >
+                      <span className="card__title">{entry.pack.business.name[locale]}</span>
+                      <span className="card__text">{entry.description}</span>
+                      <span className="card__badge">
+                        {t("ui.onboarding.industry.generatedBadge")}
+                      </span>
+                    </button>
+                  ))}
+                  <div className="card card--wide card--form">
+                    <button
+                      className="card__summary"
+                      aria-expanded={describing}
+                      onClick={() => {
+                        setDescribing(!describing);
+                      }}
+                    >
+                      <span className="card__title">{t("ui.onboarding.industry.describe")}</span>
+                      <span className="card__text">{t("ui.onboarding.industry.describeHint")}</span>
+                    </button>
+                    {describing && (
+                      <GenerateBusiness
+                        services={generation}
+                        onReady={(entry) => {
+                          onGenerated(entry);
+                          setChoice({ ...choice, pack: { kind: "generated", packKey: entry.key } });
+                          setDescribing(false);
+                        }}
+                      />
+                    )}
+                  </div>
                 </div>
               </>
             )}

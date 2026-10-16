@@ -6,6 +6,7 @@ import {
 } from "../domain/pack/validation/validateSemantics";
 import type { PackSelection } from "../domain/progress/LearnerPreferences";
 import { ok, type Result } from "../domain/shared/Result";
+import type { PackRepository } from "../ports/PackRepository";
 import type { ValidationIssue } from "../domain/shared/ValidationIssue";
 
 export interface PresetPack {
@@ -17,6 +18,14 @@ export interface PresetPack {
 export interface PackLibrary {
   readonly defaultPack: SemanticallyValidPack;
   readonly presets: readonly PresetPack[];
+  /** Packs generated for this learner, by the key of the request that produced them. */
+  readonly generated: readonly GeneratedPack[];
+}
+
+export interface GeneratedPack {
+  readonly key: string;
+  readonly description: string;
+  readonly pack: SemanticallyValidPack;
 }
 
 const DEFAULT_PATH = /\/packs\/([^/]+)\/[^/]+\.json$/;
@@ -54,11 +63,17 @@ export function loadPackLibrary(
     const pack = validated(parts);
     return pack.ok ? [{ packId, pack: pack.value }] : [];
   });
-  return ok({ defaultPack: defaultPack.value, presets: validPresets });
+  return ok({ defaultPack: defaultPack.value, presets: validPresets, generated: [] });
 }
 
 /** The pack a learner's selection points at; a selection that no longer exists falls back to the default. */
 export function packFor(library: PackLibrary, selection: PackSelection): SemanticallyValidPack {
+  if (selection.kind === "generated") {
+    return (
+      library.generated.find((entry) => entry.key === selection.packKey)?.pack ??
+      library.defaultPack
+    );
+  }
   if (selection.kind === "preset") {
     return (
       library.presets.find((preset) => preset.packId === selection.packId)?.pack ??
@@ -77,4 +92,26 @@ export function packIdOf(selection: PackSelection): string {
     case "generated":
       return selection.packKey;
   }
+}
+
+export function withGeneratedPack(library: PackLibrary, entry: GeneratedPack): PackLibrary {
+  return {
+    ...library,
+    generated: [...library.generated.filter((known) => known.key !== entry.key), entry],
+  };
+}
+
+/** Generated packs that were stored earlier, checked again before they are trusted; any that no longer pass are dropped. */
+export async function loadGeneratedPacks(
+  repository: PackRepository,
+): Promise<readonly GeneratedPack[]> {
+  const stored = await repository.list();
+  if (!stored.ok) return [];
+  return stored.value.flatMap((entry) => {
+    const parsed = parseDomainPack(entry.pack);
+    const checked = parsed.ok ? validateSemantics(parsed.value) : undefined;
+    return checked?.ok === true
+      ? [{ key: entry.key, description: entry.description, pack: checked.value }]
+      : [];
+  });
 }

@@ -4,7 +4,17 @@ import type { CodeRunner, SyntaxChecker } from "../../application/codeExercise";
 import { startCourse, type CourseSharedInput } from "../../application/CourseSession";
 import { conceptCompletedMessage, type HostBridge, type HostMessage } from "../../application/host";
 import type { LearnerState, LearnerStorage } from "../../application/learnerState";
-import { packFor, packIdOf, type PackLibrary } from "../../application/packLibrary";
+import type { GenerationServices } from "../../application/generationServices";
+import type { LlmSettings } from "../../application/llmSettings";
+import {
+  packFor,
+  packIdOf,
+  withGeneratedPack,
+  type GeneratedPack,
+  type PackLibrary,
+} from "../../application/packLibrary";
+import type { LlmProvider } from "../../ports/LlmProvider";
+import type { PackRepository } from "../../ports/PackRepository";
 import type { ConceptId } from "../../domain/course/ConceptId";
 import type { LocaleCode } from "../../domain/locale/LocaleRegistry";
 import type { LearnerPreferences } from "../../domain/progress/LearnerPreferences";
@@ -26,19 +36,26 @@ interface CourseAppProps {
   readonly bridge: HostBridge;
   /** Runs tests through the host; used only once the host says it can. */
   readonly hostRunner: CodeRunner;
+  /** Where generated businesses are kept. */
+  readonly packRepository: PackRepository;
+  /** Builds the provider for the learner's settings: a model reached directly, through the host, or simulated. */
+  readonly createLlmProvider: (settings: LlmSettings) => LlmProvider;
   readonly initial: LearnerState;
 }
 
 /** The whole course: onboarding for a first-time learner, the wall for everyone after. */
 export function CourseApp({
-  library,
+  library: initialLibrary,
   shared,
   storage,
   syntaxChecker,
   bridge,
   hostRunner,
+  packRepository,
+  createLlmProvider,
   initial,
 }: CourseAppProps): ReactNode {
+  const [library, setLibrary] = useState(initialLibrary);
   const learner = useLearner(storage, shared.syllabus, initial);
   const [choosing, setChoosing] = useState(!initial.onboarded);
   const [theme, setTheme] = useTheme();
@@ -97,6 +114,26 @@ export function CourseApp({
   );
   const capabilities = useHost(bridge, onHostMessage);
 
+  const generation = useMemo<GenerationServices>(
+    () => ({
+      createProvider: createLlmProvider,
+      templates: shared.templates,
+      example: library.defaultPack,
+      known: library.generated,
+      hostOffersLlm: capabilities.llm,
+      save: async (entry: GeneratedPack, description: string) => {
+        setLibrary((current) => withGeneratedPack(current, entry));
+        await packRepository.save({
+          key: entry.key,
+          createdAt: new Date().toISOString(),
+          description,
+          pack: entry.pack,
+        });
+      },
+    }),
+    [createLlmProvider, shared.templates, library, capabilities.llm, packRepository],
+  );
+
   const reported = useRef(new Set<string>(Object.keys(initial.progress.completions)));
   useEffect(() => {
     for (const conceptId of Object.keys(progress.completions)) {
@@ -126,6 +163,10 @@ export function CourseApp({
               <Onboarding
                 session={session}
                 library={library}
+                generation={generation}
+                onGenerated={(entry) => {
+                  setLibrary((current) => withGeneratedPack(current, entry));
+                }}
                 initial={preferences}
                 onFinish={(chosen) => {
                   choose(chosen);
