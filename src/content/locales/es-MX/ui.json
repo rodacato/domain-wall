@@ -415,10 +415,29 @@
       "tested": "Pruebas superadas"
     },
     "check": "Revisar",
-    "correct": "Correcto. Muy bien.",
-    "incorrect": "{count} todavía no están en su lugar. Cámbialos y revisa de nuevo.",
+    "correct": "Todo en su lugar. Debajo de cada uno queda el porqué.",
+    "incorrect": "{count} todavía no están en su lugar. Cada uno marcado trae una pista: muévelo y revisa de nuevo.",
     "up": "Subir",
     "down": "Bajar",
+    "mark": {
+      "right": "Bien",
+      "wrong": "Aún no"
+    },
+    "move": {
+      "up": "Pasa antes en el proceso: súbelo.",
+      "down": "Pasa después en el proceso: bájalo."
+    },
+    "reason": {
+      "locateTheRule": "Una regla del negocio vive dentro del agregado que protege. Si vive en una pantalla o en un servicio, cada lugar nuevo tiene que acordarse de repetirla.",
+      "business": "Lo dicen las personas del negocio: aparece en el muro y en sus conversaciones.",
+      "technical": "Es un detalle de cómo está hecho el software; nadie del negocio lo diría en una reunión.",
+      "acl": {
+        "rename": "El dato es el mismo; el otro sistema solo lo llama distinto.",
+        "format": "El dato es el mismo, pero el otro sistema lo escribe en otro formato.",
+        "mapCode": "Cada lado usa sus propios códigos para lo mismo; hay que traducir uno al otro.",
+        "constant": "Nuestro modelo no tiene ese dato: la traducción siempre manda el mismo valor."
+      }
+    },
     "codeSoon": "Este ejercicio necesita código generado que llega en una actualización posterior.",
     "title": {
       "locateTheRule": "¿Dónde vive la regla?",
@@ -465,11 +484,11 @@
       },
       "answer": "Tu código",
       "reveal": "Ver la referencia",
-      "unfinished": "Reemplaza la nota con tu código",
-      "written": "Escribiste algo",
+      "unfinished": "Escribe tu código: la nota y los comentarios no cuentan",
+      "written": "Hay código, no solo comentarios",
       "syntaxValid": "La sintaxis es válida",
       "syntaxIssue": "línea {line}: «{snippet}» inesperado",
-      "mentions": "Menciona de qué trata la regla",
+      "mentions": "Usa los nombres que la solución necesita",
       "missing": "Una respuesta correcta menciona: {tokens}",
       "runsInDojo": "Aquí se revisan la sintaxis y la forma; las pruebas generadas se ejecutan en Dojo.",
       "run": "Correr las pruebas",

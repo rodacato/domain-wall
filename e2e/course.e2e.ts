@@ -74,7 +74,13 @@ test("an exercise without code waits for every answer and then says how it went"
   await expect(check).toBeEnabled();
   await check.click();
 
-  await expect(page.getByText(/not in the right place yet|That is right/)).toBeVisible();
+  await expect(page.getByText(/not in the right place yet|Everything is in place/)).toBeVisible();
+  const rows = page.locator(".classify__row");
+  await expect(rows.locator(".feedback")).toHaveCount(await rows.count());
+  for (const wrong of await page.locator(".classify__row--wrong").all()) {
+    await expect(wrong.getByText("✗ Not yet")).toBeVisible();
+    await expect(wrong.locator(".feedback__hint")).not.toBeEmpty();
+  }
 });
 
 test("a code exercise accepts the reference solution", async ({ page }) => {

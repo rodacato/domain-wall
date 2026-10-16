@@ -27,6 +27,9 @@ function locateTheRule(index: PackIndex): Challenge | undefined {
     items,
     groups: [...places, home],
     solution: Object.fromEntries(items.map((item) => [item.id, home.id])),
+    reasons: Object.fromEntries(
+      items.map((item) => [item.id, ui("ui.exercise.reason.locateTheRule")]),
+    ),
   };
 }
 
@@ -61,6 +64,10 @@ function classifyPhrases(index: PackIndex): Challenge | undefined {
     solution: Object.fromEntries([
       ...business.map((item) => [item.id, "business"] as const),
       ...technical.map((item) => [item.id, "technical"] as const),
+    ]),
+    reasons: Object.fromEntries([
+      ...business.map((item) => [item.id, ui("ui.exercise.reason.business")] as const),
+      ...technical.map((item) => [item.id, ui("ui.exercise.reason.technical")] as const),
     ]),
   };
 }
@@ -103,6 +110,9 @@ function assignNotesToContexts(index: PackIndex): Challenge | undefined {
     .slice(0, MAXIMUM_ITEMS);
   const contexts = index.pack.contexts;
   if (picked.length < 3 || contexts.length < 2) return undefined;
+  const descriptionOf = new Map(
+    contexts.map((context) => [context.codeName, context.description] as const),
+  );
   return {
     type: "classify",
     items: shuffledOtherwise(
@@ -111,6 +121,14 @@ function assignNotesToContexts(index: PackIndex): Challenge | undefined {
     ),
     groups: contexts.map((context) => labeled(context.codeName, context.label)),
     solution: Object.fromEntries(picked.map((entry) => [entry.item.id, entry.context])),
+    reasons: Object.fromEntries(
+      picked.flatMap((entry) => {
+        const description = descriptionOf.get(entry.context);
+        return description === undefined
+          ? []
+          : [[entry.item.id, { kind: "pack", text: description } as const]];
+      }),
+    ),
   };
 }
 
@@ -137,6 +155,9 @@ function classifyAntiCorruption(index: PackIndex): Challenge | undefined {
     ),
     groups: ops.map((op) => keyed(op, `ui.exercise.acl.${op}`)),
     solution: Object.fromEntries(items.map((item) => [item.id, item.op])),
+    reasons: Object.fromEntries(
+      items.map((item) => [item.id, ui(`ui.exercise.reason.acl.${item.op}`)]),
+    ),
   };
 }
 
@@ -152,6 +173,12 @@ function classifySubdomains(index: PackIndex): Challenge | undefined {
     ),
     solution: Object.fromEntries(
       contexts.map((context) => [context.codeName, context.subdomain.type]),
+    ),
+    reasons: Object.fromEntries(
+      contexts.map((context) => [
+        context.codeName,
+        { kind: "pack", text: context.subdomain.rationale } as const,
+      ]),
     ),
   };
 }

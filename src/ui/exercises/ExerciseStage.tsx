@@ -4,6 +4,7 @@ import type { ExerciseKind } from "../../domain/course/Syllabus";
 import {
   checkClassification,
   checkOrder,
+  directionToPlace,
   type ClassifyChallenge,
   type ExerciseText,
   type OrderChallenge,
@@ -116,6 +117,27 @@ function Board({ session, kind, language, evidence, onSolve }: BoardProps): Reac
   );
 }
 
+/** What a checked row says in words, so the colour is never the only signal. */
+function Feedback({
+  right,
+  hint,
+  showHint,
+}: {
+  readonly right: boolean;
+  readonly hint: string | null;
+  readonly showHint: boolean;
+}): ReactNode {
+  const { t } = useI18n();
+  return (
+    <span className={`feedback ${right ? "feedback--right" : "feedback--wrong"}`}>
+      <strong>
+        {right ? `✓ ${t("ui.exercise.mark.right")}` : `✗ ${t("ui.exercise.mark.wrong")}`}
+      </strong>
+      {showHint && hint !== null && <span className="feedback__hint">{hint}</span>}
+    </span>
+  );
+}
+
 interface ChallengeProps<Kind> {
   readonly challenge: Kind;
   readonly verdict: Verdict | null;
@@ -145,6 +167,7 @@ function Classify({
         {challenge.items.map((item) => {
           const isWrong = verdict?.wrong.includes(item.id) === true;
           const isRight = verdict !== null && !verdict.wrong.includes(item.id);
+          const reason = challenge.reasons[item.id];
           return (
             <li
               key={item.id}
@@ -166,6 +189,13 @@ function Classify({
                   </button>
                 ))}
               </span>
+              {verdict !== null && (
+                <Feedback
+                  right={!isWrong}
+                  hint={reason === undefined ? null : text(reason)}
+                  showHint={isWrong || verdict.correct}
+                />
+              )}
             </li>
           );
         })}
@@ -240,6 +270,16 @@ function Ordering({
                   ↓
                 </button>
               </span>
+              {verdict !== null && (
+                <Feedback
+                  right={isRight}
+                  hint={(() => {
+                    const direction = directionToPlace(challenge, order, id);
+                    return direction === null ? null : t(`ui.exercise.move.${direction}`);
+                  })()}
+                  showHint={isWrong}
+                />
+              )}
             </li>
           );
         })}
