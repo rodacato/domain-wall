@@ -33,6 +33,28 @@ describe("the tree-sitter syntax checker", () => {
     },
   );
 
+  it.each([
+    ["typescript", "const total = 1; // OrderMustHaveLines ñ\n/* lines */ total;\n"],
+    ["python", "total = 1  # OrderMustHaveLines ñ\n# lines\npass\n"],
+    ["ruby", "total = 1 # OrderMustHaveLines ñ\n=begin\nlines\n=end\ntotal\n"],
+  ] as const)(
+    "blanks out the comments of %s and keeps every line in place",
+    async (language, source) => {
+      const blanked = await checker.withoutComments(language, source);
+
+      expect(blanked).not.toMatch(/OrderMustHaveLines|lines/);
+      expect(blanked).toContain("total");
+      expect(blanked.split("\n").length).toBe(source.split("\n").length);
+      expect(blanked.length).toBe(source.length);
+    },
+  );
+
+  it("keeps a comment marker that sits inside a string", async () => {
+    const source = 'label = "#{count} lines" # note\n';
+
+    expect(await checker.withoutComments("ruby", source)).toContain('"#{count} lines"');
+  });
+
   it("points at the line where the code breaks", async () => {
     const issues = await checker.check("python", "x = 1\ny = (2 +\nz = 3\n");
 

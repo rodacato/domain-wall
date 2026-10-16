@@ -1,4 +1,4 @@
-import { Language, Parser, type Node } from "web-tree-sitter";
+import { Language, Parser, type Node, type Tree } from "web-tree-sitter";
 import type { ProgrammingLanguageId } from "../../domain/language/ProgrammingLanguage";
 import type { SyntaxChecker, SyntaxIssue } from "../../ports/SyntaxChecker";
 
@@ -62,13 +62,32 @@ export class TreeSitterSyntaxChecker implements SyntaxChecker {
     return loaded;
   }
 
-  async check(language: ProgrammingLanguageId, source: string): Promise<readonly SyntaxIssue[]> {
+  private async parse(language: ProgrammingLanguageId, source: string): Promise<Tree | null> {
     const parser = await this.parserFor();
     parser.setLanguage(await this.languageFor(GRAMMAR_OF[language]));
-    const tree = parser.parse(source);
+    return parser.parse(source);
+  }
+
+  async check(language: ProgrammingLanguageId, source: string): Promise<readonly SyntaxIssue[]> {
+    const tree = await this.parse(language, source);
     if (tree === null) return [{ line: 1, column: 1, kind: "unexpected", snippet: "" }];
     const issues = issuesOf(tree.rootNode);
     tree.delete();
     return issues;
+  }
+
+  async withoutComments(language: ProgrammingLanguageId, source: string): Promise<string> {
+    const tree = await this.parse(language, source);
+    if (tree === null) return source;
+    let blanked = source;
+    for (const comment of tree.rootNode.descendantsOfType("comment")) {
+      const text = blanked.slice(comment.startIndex, comment.endIndex);
+      blanked =
+        blanked.slice(0, comment.startIndex) +
+        text.replace(/[^\n]/g, " ") +
+        blanked.slice(comment.endIndex);
+    }
+    tree.delete();
+    return blanked;
   }
 }

@@ -225,6 +225,7 @@ describe("NoHostBridge and SyntaxCheckRunner", () => {
             ? [{ line: 2, column: 1, kind: "unexpected", snippet: "oops" }]
             : [],
         ),
+      withoutComments: (_language, source) => Promise.resolve(source),
     });
 
     const outcome = await runner.run({
