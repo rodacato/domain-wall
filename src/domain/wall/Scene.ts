@@ -25,6 +25,10 @@ export const LOOK_AT_NOTES = [
   "newNotes",
   "evolutionDiff",
   "breakthrough",
+  "layers",
+  "hexagonal",
+  "portsAdapters",
+  "dependencyRule",
 ] as const;
 export type LookAtNote = (typeof LOOK_AT_NOTES)[number];
 

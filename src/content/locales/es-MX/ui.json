@@ -257,6 +257,18 @@
     },
     "breakthrough": {
       "general": "De vuelta al muro completo, ahora en su versión 2. A veces un cambio revela un concepto que simplifica muchas cosas a la vez. Eso es un avance decisivo, y vale la pena el refactor."
+    },
+    "layers": {
+      "general": "Una arquitectura en capas se ve ordenada, pero sus dependencias bajan hasta la infraestructura. El código más valioso termina dependiendo de lo menos estable."
+    },
+    "hexagonal": {
+      "general": "Voltéala: el dominio está al centro y define lo que necesita como puertos. Todo lo demás, pantallas, bases de datos, pasarelas, se conecta desde afuera."
+    },
+    "portsAdapters": {
+      "general": "Un puerto es una interfaz que pertenece al dominio; un adaptador es el código de afuera que la implementa. Cambia una base SQL por una en memoria y no se mueve una línea del dominio."
+    },
+    "dependencyRule": {
+      "general": "Las dependencias del código fuente apuntan solo hacia adentro. Los adaptadores conocen el dominio; el dominio no sabe nada de los adaptadores. Esa regla es la que mantiene libre el centro."
     }
   },
   "pipeline": {
@@ -287,5 +299,63 @@
   "diff": {
     "header": "{file} · lo que hizo el cambio",
     "unchanged": "{count} líneas sin cambios"
+  },
+  "architecture": {
+    "title": {
+      "layers": "Capas: cada una depende de la de abajo",
+      "hexagon": "El dominio al centro, el mundo exterior alrededor",
+      "swap": "Cambia un adaptador; el dominio ni se entera",
+      "rule": "Las dependencias apuntan hacia adentro"
+    },
+    "layer": {
+      "presentation": {
+        "name": "Presentación",
+        "note": "pantallas, endpoints de la API"
+      },
+      "application": {
+        "name": "Aplicación",
+        "note": "casos de uso que orquestan"
+      },
+      "domain": {
+        "name": "Dominio",
+        "note": "las reglas del negocio"
+      },
+      "infrastructure": {
+        "name": "Infraestructura",
+        "note": "base de datos, pasarela de pagos, SAT"
+      }
+    },
+    "layerCost": "El dominio queda encima de la infraestructura, así que las reglas del negocio terminan dependiendo de cómo se guardan y se envían los datos.",
+    "driving": {
+      "title": "Quién pide",
+      "web": "Pantalla web",
+      "api": "API pública",
+      "job": "Proceso programado"
+    },
+    "driven": {
+      "title": "Lo que el dominio necesita"
+    },
+    "core": "Dominio",
+    "coreNote": "sin framework, sin base de datos",
+    "unchanged": "Dominio: 0 líneas cambiadas",
+    "swapHint": "Elige otro adaptador para cualquier puerto. El dominio solo conoce el puerto.",
+    "adapter": {
+      "repository": {
+        "memory": "En memoria",
+        "sql": "Base de datos SQL"
+      },
+      "gateway": {
+        "fake": "Doble de prueba",
+        "http": "API del banco"
+      },
+      "external": {
+        "fake": "Doble de prueba",
+        "http": "Cliente del SAT"
+      }
+    },
+    "adapterKnowsDomain": "El adaptador de {port} conoce el dominio e implementa el puerto",
+    "domainKnowsAdapter": "El dominio importa el cliente de la base de datos",
+    "tryBreaking": "Intenta que el dominio importe la base de datos",
+    "ruleBroken": "Ahora las reglas del negocio no corren sin una base de datos, y un cambio en cómo se guardan los datos obliga a cambiar el dominio. La flecha siempre debe apuntar hacia adentro."
   }
 }

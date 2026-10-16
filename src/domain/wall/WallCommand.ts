@@ -1,3 +1,4 @@
+import type { ArchitectureView } from "./ArchitectureStage";
 import type { CodeMode, CodeUnit } from "./CodeStage";
 import type { NoteId } from "./Note";
 import type { PipelineView } from "./PipelineStage";
@@ -52,4 +53,5 @@ export type WallCommand =
       readonly interactive?: boolean;
     }
   | { readonly kind: "hidePipeline" }
+  | { readonly kind: "showArchitecture"; readonly view: Exclude<ArchitectureView, "hidden"> }
   | { readonly kind: "evolveModel" };

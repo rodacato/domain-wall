@@ -1,5 +1,6 @@
 import type { PackIndex } from "../../domain/pack/PackIndex";
 import type { Scene } from "../../domain/wall/Scene";
+import { buildArchitectureScene } from "./architectureScene";
 import { buildBoundedContextsScene } from "./boundedContextsScene";
 import { buildContextMapScene } from "./contextMapScene";
 import { buildEventStormingScene } from "./eventStormingScene";
@@ -21,6 +22,7 @@ export function buildScenes(index: PackIndex): readonly Scene[] {
     buildSubdomainsScene(index),
     buildTacticalScene(index),
     buildFunctionalScene(index),
+    buildArchitectureScene(),
     buildEvolutionScene(index),
   ];
 }

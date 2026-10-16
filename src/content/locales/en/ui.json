@@ -257,6 +257,18 @@
     },
     "breakthrough": {
       "general": "Back to the whole wall, now in version 2. Sometimes a change reveals a concept that makes many things simpler at once. That is a breakthrough, and it is worth the refactor."
+    },
+    "layers": {
+      "general": "A layered architecture looks tidy, but its dependencies run downwards, all the way to the infrastructure. The most valuable code ends up depending on the least stable."
+    },
+    "hexagonal": {
+      "general": "Turn it inside out: the domain is at the centre and defines what it needs as ports. Everything else, screens, databases, gateways, plugs in from the outside."
+    },
+    "portsAdapters": {
+      "general": "A port is an interface the domain owns; an adapter is the outside code that implements it. Replace a SQL database with one in memory and not a line of the domain changes."
+    },
+    "dependencyRule": {
+      "general": "Source code dependencies point only inwards. Adapters know the domain; the domain knows nothing of adapters. That one rule is what keeps the centre free."
     }
   },
   "pipeline": {
@@ -287,5 +299,63 @@
   "diff": {
     "header": "{file} · what the change did",
     "unchanged": "{count} unchanged lines"
+  },
+  "architecture": {
+    "title": {
+      "layers": "Layers: each one depends on the one below",
+      "hexagon": "The domain at the centre, the outside world around it",
+      "swap": "Swap an adapter; the domain does not notice",
+      "rule": "Dependencies point inwards"
+    },
+    "layer": {
+      "presentation": {
+        "name": "Presentation",
+        "note": "screens, API endpoints"
+      },
+      "application": {
+        "name": "Application",
+        "note": "use cases that orchestrate"
+      },
+      "domain": {
+        "name": "Domain",
+        "note": "the business rules"
+      },
+      "infrastructure": {
+        "name": "Infrastructure",
+        "note": "database, payment gateway, tax authority"
+      }
+    },
+    "layerCost": "The domain sits on top of the infrastructure, so the business rules end up depending on how data is stored and sent.",
+    "driving": {
+      "title": "Who asks",
+      "web": "Web screen",
+      "api": "Public API",
+      "job": "Scheduled job"
+    },
+    "driven": {
+      "title": "What the domain needs"
+    },
+    "core": "Domain",
+    "coreNote": "no framework, no database",
+    "unchanged": "Domain: 0 lines changed",
+    "swapHint": "Pick another adapter for any port. The domain only knows the port.",
+    "adapter": {
+      "repository": {
+        "memory": "In memory",
+        "sql": "SQL database"
+      },
+      "gateway": {
+        "fake": "Test double",
+        "http": "Bank API"
+      },
+      "external": {
+        "fake": "Test double",
+        "http": "Tax authority client"
+      }
+    },
+    "adapterKnowsDomain": "The adapter for {port} knows the domain and implements the port",
+    "domainKnowsAdapter": "The domain imports the database client",
+    "tryBreaking": "Try making the domain import the database",
+    "ruleBroken": "Now the business rules cannot run without a database, and a change in how data is stored forces a change in the domain. The arrow must always point inwards."
   }
 }

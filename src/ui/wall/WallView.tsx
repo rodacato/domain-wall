@@ -8,6 +8,7 @@ import { listAllNotes, type NoteKind } from "../../domain/wall/Note";
 import { termPlacement } from "../../domain/wall/termPlacement";
 import type { WallState } from "../../domain/wall/WallState";
 import type { ProgrammingLanguageId } from "../../domain/language/ProgrammingLanguage";
+import { ArchitectureStage } from "../architecture/ArchitectureStage";
 import { CodeStage } from "../code/CodeStage";
 import { useI18n } from "../i18n/I18n";
 import { PipelineStage } from "../pipeline/PipelineStage";
@@ -124,6 +125,7 @@ export function WallView({ session, state, language }: WallViewProps): ReactNode
       {state.impact.model !== null && <ChangeImpactStage session={session} impact={state.impact} />}
       <CodeStage session={session} language={language} code={state.code} />
       <PipelineStage session={session} pipeline={state.pipeline} />
+      <ArchitectureStage session={session} architecture={state.architecture} />
       <WallLegend kindsOnWall={kindsOnWall} />
     </div>
   );

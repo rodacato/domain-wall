@@ -1,3 +1,4 @@
+import { HIDDEN_ARCHITECTURE } from "./ArchitectureStage";
 import { HIDDEN_CODE_STAGE } from "./CodeStage";
 import { HIDDEN_PIPELINE } from "./PipelineStage";
 import type { WallCommand } from "./WallCommand";
@@ -115,6 +116,7 @@ export function applyWallCommand(state: WallState, command: WallCommand): WallSt
       return {
         ...state,
         pipeline: HIDDEN_PIPELINE,
+        architecture: HIDDEN_ARCHITECTURE,
         code: {
           level: command.level,
           unit: command.unit,
@@ -128,6 +130,7 @@ export function applyWallCommand(state: WallState, command: WallCommand): WallSt
       return {
         ...state,
         code: HIDDEN_CODE_STAGE,
+        architecture: HIDDEN_ARCHITECTURE,
         pipeline: {
           view: command.view,
           failures: command.failures ?? {},
@@ -136,6 +139,13 @@ export function applyWallCommand(state: WallState, command: WallCommand): WallSt
       };
     case "hidePipeline":
       return { ...state, pipeline: HIDDEN_PIPELINE };
+    case "showArchitecture":
+      return {
+        ...state,
+        code: HIDDEN_CODE_STAGE,
+        pipeline: HIDDEN_PIPELINE,
+        architecture: { view: command.view },
+      };
     case "evolveModel":
       return { ...state, version: 2 };
   }
