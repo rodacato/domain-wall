@@ -20,11 +20,22 @@ interface CodeStageProps {
 
 /** The wall zoomed all the way in: the opened aggregate, or the code generated from it in the learner's language. */
 export function CodeStage(props: CodeStageProps): ReactNode {
+  const [previous, setPrevious] = useState(props.code);
+  const [fromNote, setFromNote] = useState(false);
+  if (previous !== props.code) {
+    setPrevious(props.code);
+    setFromNote(props.code.level === "code" && previous.level !== "code");
+  }
   if (props.code.level === "hidden") return null;
-  return <CodeStageBody key={JSON.stringify(props.code)} {...props} />;
+  return <CodeStageBody key={JSON.stringify(props.code)} {...props} fromNote={fromNote} />;
 }
 
-function CodeStageBody({ session, language, code }: CodeStageProps): ReactNode {
+function CodeStageBody({
+  session,
+  language,
+  code,
+  fromNote,
+}: CodeStageProps & { readonly fromNote: boolean }): ReactNode {
   const { t } = useI18n();
   const generated = useGeneratedCode(session, language);
   const [refusedBy, setRefusedBy] = useState<string | null>(null);
@@ -89,6 +100,7 @@ function CodeStageBody({ session, language, code }: CodeStageProps): ReactNode {
         file={file}
         language={language}
         focus={focus}
+        fromNote={fromNote}
       />
     </StageOverlay>
   );
