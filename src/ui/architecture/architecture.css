@@ -22,7 +22,7 @@
   flex-direction: column;
   gap: 2px;
   padding: 12px 16px;
-  border-radius: 10px;
+  border-radius: 3px;
   box-shadow: var(--note-shadow);
   color: var(--note-ink);
 }
@@ -59,9 +59,9 @@
   max-width: 760px;
   margin: 6px 0 0;
   padding: 10px 14px;
-  border-left: 4px solid #e03131;
-  border-radius: 6px;
-  background: color-mix(in srgb, #e03131 10%, var(--ui-surface));
+  border-left: 4px solid var(--danger);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--danger) 10%, var(--ui-surface));
   list-style: none;
 }
 
@@ -137,7 +137,7 @@
 .hexagon__unchanged {
   padding: 2px 10px;
   border-radius: 999px;
-  background: #2f9e44;
+  background: var(--success);
   color: #fff;
   font-size: 12px;
   font-weight: 700;
@@ -146,7 +146,7 @@
 .adapter {
   padding: 6px 12px;
   border: 1px solid var(--ui-border);
-  border-radius: 8px;
+  border-radius: 3px;
   background: var(--ui-surface);
   font-size: 13px;
 }
@@ -206,23 +206,23 @@
   max-width: 760px;
   margin: 0;
   padding: 8px 14px;
-  border-radius: 8px;
+  border-radius: 3px;
 }
 
 .rule__line--good {
-  background: color-mix(in srgb, #2f9e44 14%, var(--ui-surface));
+  background: color-mix(in srgb, var(--success) 14%, var(--ui-surface));
 }
 
 .rule__line--bad {
-  background: color-mix(in srgb, #e03131 14%, var(--ui-surface));
+  background: color-mix(in srgb, var(--danger) 14%, var(--ui-surface));
 }
 
 .rule__try {
   align-self: flex-start;
   padding: 6px 14px;
-  border: 1px solid #e03131;
-  border-radius: 8px;
+  border: 1px solid var(--danger);
+  border-radius: 3px;
   background: transparent;
-  color: #c92a2a;
+  color: var(--danger);
   cursor: pointer;
 }

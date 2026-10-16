@@ -18,7 +18,7 @@
 .generate__field select {
   padding: 6px 10px;
   border: 1px solid var(--ui-border);
-  border-radius: 8px;
+  border-radius: 3px;
   background: var(--ui-surface);
   font: inherit;
   font-weight: 400;
@@ -39,17 +39,17 @@
 .generate__success {
   margin: 0;
   padding: 10px 14px;
-  border-left: 4px solid #2f9e44;
-  border-radius: 6px;
-  background: color-mix(in srgb, #2f9e44 12%, var(--ui-surface));
+  border-left: 4px solid var(--success);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--success) 12%, var(--ui-surface));
 }
 
 .generate__failure {
   margin: 0;
   padding: 10px 14px;
-  border-left: 4px solid #e03131;
-  border-radius: 6px;
-  background: color-mix(in srgb, #e03131 10%, var(--ui-surface));
+  border-left: 4px solid var(--danger);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--danger) 10%, var(--ui-surface));
 }
 
 .passes {
@@ -67,7 +67,7 @@
   gap: 4px 14px;
   align-items: baseline;
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: 3px;
   background: var(--ui-surface);
   border: 1px dashed var(--ui-border);
 }
@@ -79,7 +79,7 @@
 
 .pass--answered {
   border-style: solid;
-  border-color: #2f9e44;
+  border-color: var(--success);
 }
 
 .pass strong {
@@ -92,7 +92,7 @@
 }
 
 .pass__refused {
-  color: #c92a2a;
+  color: var(--danger);
 }
 
 .gates {
@@ -114,8 +114,8 @@
 
 .gate--passed {
   border-style: solid;
-  border-color: #2f9e44;
-  color: #2b8a3e;
+  border-color: var(--success);
+  color: var(--success);
   font-weight: 700;
 }
 
@@ -124,14 +124,14 @@
 }
 
 .gate--failed {
-  border-color: #e03131;
-  color: #c92a2a;
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 .refusal {
   padding: 8px 12px;
   border-left: 4px solid #e8590c;
-  border-radius: 6px;
+  border-radius: 3px;
   background: color-mix(in srgb, #e8590c 8%, var(--ui-surface));
   font-size: 13px;
 }

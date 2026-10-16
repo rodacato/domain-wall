@@ -18,8 +18,8 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) 300px;
   align-content: start;
-  gap: 26px 40px;
-  padding: 40px 56px 56px;
+  gap: 20px 40px;
+  padding: 30px 48px 36px;
   background-color: var(--wall-background);
   background-image:
     radial-gradient(ellipse at center, transparent 60%, rgba(90, 60, 25, 0.18) 100%),
@@ -47,7 +47,7 @@
 .cover__title {
   margin: 0;
   font-variation-settings: var(--axes-note);
-  font-size: clamp(44px, 5.4vw, 78px);
+  font-size: clamp(40px, 4.4vw, 64px);
   font-weight: 1000;
   line-height: 0.98;
   letter-spacing: -0.02em;
@@ -213,10 +213,11 @@
 
 .cover__code {
   max-width: 460px;
+  max-height: 190px;
   margin: 0;
   padding: 12px 14px;
-  overflow-x: auto;
-  border-radius: 6px;
+  overflow: auto;
+  border-radius: 3px;
   background: var(--code-background);
   color: var(--code-text);
   box-shadow: 0 8px 14px -8px rgba(30, 20, 5, 0.6);
@@ -261,8 +262,8 @@
 
 .cover__start {
   position: absolute;
-  right: 56px;
-  bottom: 56px;
+  right: 48px;
+  bottom: 36px;
   width: 210px;
   min-height: 150px;
   padding: 14px;
