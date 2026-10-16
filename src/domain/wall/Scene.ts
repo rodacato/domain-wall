@@ -17,6 +17,11 @@ export const LOOK_AT_NOTES = [
   "factory",
   "domainService",
   "applicationService",
+  "constrainedTypes",
+  "statesAsTypes",
+  "illegalStates",
+  "pipeline",
+  "errorsAsValues",
 ] as const;
 export type LookAtNote = (typeof LOOK_AT_NOTES)[number];
 

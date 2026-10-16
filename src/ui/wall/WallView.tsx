@@ -10,6 +10,7 @@ import type { WallState } from "../../domain/wall/WallState";
 import type { ProgrammingLanguageId } from "../../domain/language/ProgrammingLanguage";
 import { CodeStage } from "../code/CodeStage";
 import { useI18n } from "../i18n/I18n";
+import { PipelineStage } from "../pipeline/PipelineStage";
 import { ChangeImpactStage } from "./ChangeImpactStage";
 import { GlossaryBoard } from "./GlossaryBoard";
 import { StickyNote } from "./StickyNote";
@@ -121,6 +122,7 @@ export function WallView({ session, state, language }: WallViewProps): ReactNode
       )}
       {state.impact.model !== null && <ChangeImpactStage session={session} impact={state.impact} />}
       <CodeStage session={session} language={language} code={state.code} />
+      <PipelineStage session={session} pipeline={state.pipeline} />
       <WallLegend kindsOnWall={kindsOnWall} />
     </div>
   );

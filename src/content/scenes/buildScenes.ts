@@ -3,6 +3,7 @@ import type { Scene } from "../../domain/wall/Scene";
 import { buildBoundedContextsScene } from "./boundedContextsScene";
 import { buildContextMapScene } from "./contextMapScene";
 import { buildEventStormingScene } from "./eventStormingScene";
+import { buildFunctionalScene } from "./functionalScene";
 import { buildSubdomainsScene } from "./subdomainsScene";
 import { buildTacticalScene } from "./tacticalScene";
 import { buildUbiquitousLanguageScene } from "./ubiquitousLanguageScene";
@@ -18,5 +19,6 @@ export function buildScenes(index: PackIndex): readonly Scene[] {
     buildContextMapScene(index),
     buildSubdomainsScene(index),
     buildTacticalScene(index),
+    buildFunctionalScene(index),
   ];
 }

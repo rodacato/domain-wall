@@ -1,5 +1,6 @@
 import type { CodeMode, CodeUnit } from "./CodeStage";
 import type { NoteId } from "./Note";
+import type { PipelineView } from "./PipelineStage";
 import type {
   ArrowStyle,
   CameraTarget,
@@ -43,4 +44,11 @@ export type WallCommand =
       readonly focus?: string;
       readonly mode?: CodeMode;
     }
-  | { readonly kind: "hideCode" };
+  | { readonly kind: "hideCode" }
+  | {
+      readonly kind: "showPipeline";
+      readonly view: Exclude<PipelineView, "hidden">;
+      readonly failures?: Readonly<Record<string, string>>;
+      readonly interactive?: boolean;
+    }
+  | { readonly kind: "hidePipeline" };

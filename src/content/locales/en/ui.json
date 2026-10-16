@@ -233,6 +233,46 @@
     },
     "applicationService": {
       "general": "The use case in four moves: load the aggregate, give it the command, save what comes back and publish its events. It holds no rules; the aggregate does."
+    },
+    "constrainedTypes": {
+      "general": "{subject} is not a bare string or number: it is a type that only admits legal values. The check happens once, where the value is built, and every function after that can trust it."
+    },
+    "statesAsTypes": {
+      "general": "Each step of the process has its own type, and the highlighted fields are what that step adds. An order that is not paid yet is a different thing from one that is, and the code says so."
+    },
+    "illegalStates": {
+      "general": "Make the illegal state impossible to write. A function that charges a payment only accepts a priced checkout, so charging a checkout nobody validated is not a bug to test for: it does not compile."
+    },
+    "pipeline": {
+      "general": "A business process as an assembly line: every stage takes the type the previous one produced and returns the next. Reading the stages in order reads the process."
+    },
+    "errorsAsValues": {
+      "general": "Expected failures, such as a declined card, are not exceptions: they are values returned on a second track. Break a stage and see that nothing after it runs and nothing is thrown."
     }
+  },
+  "pipeline": {
+    "title": {
+      "types": "Every stage turns the data into a new type",
+      "mismatch": "A stage only accepts the type it was written for",
+      "run": "Follow the data along the railway"
+    },
+    "primitive": {
+      "string": "text",
+      "integer": "number",
+      "boolean": "yes or no",
+      "date": "date",
+      "timestamp": "moment"
+    },
+    "kind": {
+      "validate": "Validate",
+      "compute": "Compute",
+      "callPort": "Ask the outside",
+      "commit": "Commit"
+    },
+    "inject": "Click an error to make that stage fail and watch where the data goes.",
+    "mismatch": "{stage} needs a {needs}, and what we have is a {got}. It does not even compile: the order of the stages is enforced by the types.",
+    "failedAt": "Stopped at: {stage}",
+    "errorIsValue": "The failure is a value that travels on the second track; the stages after it never run.",
+    "run": "Run again"
   }
 }

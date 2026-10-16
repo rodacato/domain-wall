@@ -1,4 +1,5 @@
 import { HIDDEN_CODE_STAGE } from "./CodeStage";
+import { HIDDEN_PIPELINE } from "./PipelineStage";
 import type { WallCommand } from "./WallCommand";
 import { EMPTY_WALL, type WallArrow, type WallState } from "./WallState";
 
@@ -113,6 +114,7 @@ export function applyWallCommand(state: WallState, command: WallCommand): WallSt
     case "showCode":
       return {
         ...state,
+        pipeline: HIDDEN_PIPELINE,
         code: {
           level: command.level,
           unit: command.unit,
@@ -122,6 +124,18 @@ export function applyWallCommand(state: WallState, command: WallCommand): WallSt
       };
     case "hideCode":
       return { ...state, code: HIDDEN_CODE_STAGE };
+    case "showPipeline":
+      return {
+        ...state,
+        code: HIDDEN_CODE_STAGE,
+        pipeline: {
+          view: command.view,
+          failures: command.failures ?? {},
+          interactive: command.interactive ?? false,
+        },
+      };
+    case "hidePipeline":
+      return { ...state, pipeline: HIDDEN_PIPELINE };
   }
 }
 

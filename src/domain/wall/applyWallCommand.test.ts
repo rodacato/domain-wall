@@ -109,3 +109,33 @@ describe("the wall reducer", () => {
     expect(state.code.level).toBe("hidden");
   });
 });
+
+describe("the stages that cover the wall", () => {
+  it("shows one at a time", () => {
+    const code = applyWallCommands(EMPTY_WALL, [
+      { kind: "showPipeline", view: "types" },
+      { kind: "showCode", level: "code", unit: { kind: "events" } },
+    ]);
+    const pipeline = applyWallCommands(code, [{ kind: "showPipeline", view: "run" }]);
+
+    expect(code.pipeline.view).toBe("hidden");
+    expect(pipeline.code.level).toBe("hidden");
+    expect(pipeline.pipeline.view).toBe("run");
+  });
+
+  it("keeps the failures and interactivity a pipeline step asks for", () => {
+    const state = applyWallCommand(EMPTY_WALL, {
+      kind: "showPipeline",
+      view: "run",
+      failures: { ChargePayment: "PaymentDeclined" },
+      interactive: true,
+    });
+
+    expect(state.pipeline).toEqual({
+      view: "run",
+      failures: { ChargePayment: "PaymentDeclined" },
+      interactive: true,
+    });
+    expect(applyWallCommand(state, { kind: "hidePipeline" }).pipeline.view).toBe("hidden");
+  });
+});

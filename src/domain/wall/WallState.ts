@@ -1,4 +1,5 @@
 import { HIDDEN_CODE_STAGE, type CodeStageState } from "./CodeStage";
+import { HIDDEN_PIPELINE, type PipelineStageState } from "./PipelineStage";
 import type { LayoutMode } from "./LayoutMode";
 import type { NoteId, NoteKind } from "./Note";
 
@@ -65,6 +66,7 @@ export interface WallState {
   readonly glossary: GlossaryState;
   readonly impact: ImpactState;
   readonly code: CodeStageState;
+  readonly pipeline: PipelineStageState;
 }
 
 export const EMPTY_WALL: WallState = {
@@ -77,6 +79,7 @@ export const EMPTY_WALL: WallState = {
   glossary: { entries: [], ambiguous: [], resolved: [] },
   impact: { model: null, revealed: 0 },
   code: HIDDEN_CODE_STAGE,
+  pipeline: HIDDEN_PIPELINE,
 };
 
 export function zoneKey(subdomainType: string): string {

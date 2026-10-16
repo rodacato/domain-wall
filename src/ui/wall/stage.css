@@ -1,0 +1,15 @@
+.stage-overlay {
+  position: absolute;
+  cursor: auto;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 24px;
+  overflow: auto;
+  background: color-mix(in srgb, var(--wall-background) 94%, transparent);
+}
+
+.stage-overlay--code {
+  overflow: hidden;
+}

@@ -233,6 +233,46 @@
     },
     "applicationService": {
       "general": "El caso de uso en cuatro movimientos: cargar el agregado, darle el comando, guardar lo que devuelve y publicar sus eventos. No tiene reglas; las tiene el agregado."
+    },
+    "constrainedTypes": {
+      "general": "{subject} no es un texto o un número sueltos: es un tipo que solo admite valores legales. La revisión ocurre una vez, donde se construye el valor, y todas las funciones que siguen pueden confiar en él."
+    },
+    "statesAsTypes": {
+      "general": "Cada paso del proceso tiene su propio tipo, y los campos resaltados son lo que ese paso agrega. Un pedido que aún no se paga es distinto de uno que sí, y el código lo dice."
+    },
+    "illegalStates": {
+      "general": "Haz imposible escribir el estado ilegal. Una función que cobra solo acepta una compra con precio, así que cobrar una compra que nadie validó no es un error que probar: no compila."
+    },
+    "pipeline": {
+      "general": "Un proceso de negocio como una línea de ensamblaje: cada etapa recibe el tipo que produjo la anterior y devuelve el siguiente. Leer las etapas en orden es leer el proceso."
+    },
+    "errorsAsValues": {
+      "general": "Los fallos esperados, como una tarjeta rechazada, no son excepciones: son valores devueltos por una segunda vía. Rompe una etapa y verás que nada después corre y nada se lanza."
     }
+  },
+  "pipeline": {
+    "title": {
+      "types": "Cada etapa convierte los datos en un tipo nuevo",
+      "mismatch": "Una etapa solo acepta el tipo para el que fue escrita",
+      "run": "Sigue los datos por la vía"
+    },
+    "primitive": {
+      "string": "texto",
+      "integer": "número",
+      "boolean": "sí o no",
+      "date": "fecha",
+      "timestamp": "momento"
+    },
+    "kind": {
+      "validate": "Validar",
+      "compute": "Calcular",
+      "callPort": "Pedir al exterior",
+      "commit": "Confirmar"
+    },
+    "inject": "Haz clic en un error para que esa etapa falle y mira a dónde van los datos.",
+    "mismatch": "{stage} necesita un {needs}, y lo que tenemos es un {got}. Ni siquiera compila: el orden de las etapas lo imponen los tipos.",
+    "failedAt": "Se detuvo en: {stage}",
+    "errorIsValue": "El fallo es un valor que viaja por la segunda vía; las etapas que siguen nunca corren.",
+    "run": "Correr de nuevo"
   }
 }
