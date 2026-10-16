@@ -54,7 +54,7 @@ interface BoardProps {
 }
 
 function Board({ session, kind, language, alreadySolved, onSolve }: BoardProps): ReactNode {
-  const { t } = useI18n();
+  const { t, has } = useI18n();
   const exercise = useMemo(() => deriveExercise(session.index, kind), [session.index, kind]);
   const [verdict, setVerdict] = useState<Verdict | null>(null);
 
@@ -71,7 +71,9 @@ function Board({ session, kind, language, alreadySolved, onSolve }: BoardProps):
           <span className="exercise__badge">{t("ui.exercise.solved")}</span>
         )}
       </header>
-      <p className="exercise__instructions">{t(`ui.exercise.instructions.${kind}`)}</p>
+      {has(`ui.exercise.instructions.${kind}`) && (
+        <p className="exercise__instructions">{t(`ui.exercise.instructions.${kind}`)}</p>
+      )}
       {exercise === undefined ? (
         <CodeBoard
           session={session}

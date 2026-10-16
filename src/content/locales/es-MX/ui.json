@@ -421,11 +421,7 @@
       "orderEvents": "Estas cosas pasan en un orden fijo. Ponlas en el orden en que las vive el negocio, con la primera arriba.",
       "assignNotesToContexts": "Cada nota pertenece al contexto cuyo idioma habla. Elige el contexto de cada una.",
       "implementAntiCorruptionLayer": "La capa de traducción convierte nuestro dominio en el documento del sistema externo. Di qué hace con cada campo de ese documento.",
-      "classifySubdomains": "¿Dónde invertirías a tu mejor gente? Clasifica cada contexto como núcleo, de apoyo o genérico.",
-      "implementTheRule": "",
-      "addPipelineStage": "",
-      "implementRepositoryAdapter": "",
-      "implementTheChange": ""
+      "classifySubdomains": "¿Dónde invertirías a tu mejor gente? Clasifica cada contexto como núcleo, de apoyo o genérico."
     },
     "group": {
       "business": "Lenguaje del negocio",

@@ -421,11 +421,7 @@
       "orderEvents": "These things happen in a fixed order. Put them in the order the business lives them, with the first at the top.",
       "assignNotesToContexts": "Each note belongs to the context whose language it speaks. Choose the context of each one.",
       "implementAntiCorruptionLayer": "The translation layer turns our domain into the outside system's document. Say what it does to each field of that document.",
-      "classifySubdomains": "Where would you invest your best people? Classify each context as core, supporting or generic.",
-      "implementTheRule": "",
-      "addPipelineStage": "",
-      "implementRepositoryAdapter": "",
-      "implementTheChange": ""
+      "classifySubdomains": "Where would you invest your best people? Classify each context as core, supporting or generic."
     },
     "group": {
       "business": "Business language",
