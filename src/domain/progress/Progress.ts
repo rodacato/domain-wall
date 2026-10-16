@@ -1,6 +1,12 @@
 import { z } from "zod";
 import { conceptIdSchema, type ConceptId, type ModuleId } from "../course/ConceptId";
-import { allConcepts, findModule, type Syllabus } from "../course/Syllabus";
+import {
+  allConcepts,
+  EXERCISE_KINDS,
+  findModule,
+  type ExerciseKind,
+  type Syllabus,
+} from "../course/Syllabus";
 import { err, ok, type Result } from "../shared/Result";
 
 export const PROGRESS_SCHEMA_VERSION = 1;
@@ -17,6 +23,8 @@ export type CompletionRecord = z.infer<typeof completionRecordSchema>;
 export const progressSchema = z.strictObject({
   schemaVersion: z.literal(PROGRESS_SCHEMA_VERSION),
   completions: z.record(conceptIdSchema, completionRecordSchema),
+  /** Exercises the learner has solved; absent in progress saved before exercises existed. */
+  exercises: z.partialRecord(z.enum(EXERCISE_KINDS), completionRecordSchema).default({}),
 });
 export type Progress = z.infer<typeof progressSchema>;
 
@@ -25,7 +33,11 @@ export interface ProgressError {
   readonly conceptId: string;
 }
 
-export const EMPTY_PROGRESS: Progress = { schemaVersion: PROGRESS_SCHEMA_VERSION, completions: {} };
+export const EMPTY_PROGRESS: Progress = {
+  schemaVersion: PROGRESS_SCHEMA_VERSION,
+  completions: {},
+  exercises: {},
+};
 
 /** Marks a concept completed. Completing it twice keeps the first record. */
 export function completeConcept(
@@ -65,4 +77,18 @@ export function moduleCompletion(
 /** The first concept of the syllabus, in order, that has not been completed; undefined when all are. */
 export function nextConcept(progress: Progress, syllabus: Syllabus): ConceptId | undefined {
   return allConcepts(syllabus).find((concept) => !isConceptCompleted(progress, concept.id))?.id;
+}
+
+/** Marks an exercise solved. Solving it again keeps the first record. */
+export function completeExercise(
+  progress: Progress,
+  kind: ExerciseKind,
+  record: CompletionRecord,
+): Progress {
+  if (progress.exercises[kind] !== undefined) return progress;
+  return { ...progress, exercises: { ...progress.exercises, [kind]: record } };
+}
+
+export function isExerciseCompleted(progress: Progress, kind: ExerciseKind): boolean {
+  return progress.exercises[kind] !== undefined;
 }

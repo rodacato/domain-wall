@@ -1,5 +1,6 @@
 import { HIDDEN_ARCHITECTURE, type ArchitectureStageState } from "./ArchitectureStage";
 import { HIDDEN_CODE_STAGE, type CodeStageState } from "./CodeStage";
+import { NO_EXERCISE, type ExerciseStageState } from "./ExerciseStage";
 import { HIDDEN_PIPELINE, type PipelineStageState } from "./PipelineStage";
 import type { LayoutMode } from "./LayoutMode";
 import type { NoteId, NoteKind } from "./Note";
@@ -69,6 +70,7 @@ export interface WallState {
   readonly code: CodeStageState;
   readonly pipeline: PipelineStageState;
   readonly architecture: ArchitectureStageState;
+  readonly exercise: ExerciseStageState;
   /** Which version of the model the notes come from: the original or the one after the evolution. */
   readonly version: 1 | 2;
 }
@@ -85,6 +87,7 @@ export const EMPTY_WALL: WallState = {
   code: HIDDEN_CODE_STAGE,
   pipeline: HIDDEN_PIPELINE,
   architecture: HIDDEN_ARCHITECTURE,
+  exercise: NO_EXERCISE,
   version: 1,
 };
 

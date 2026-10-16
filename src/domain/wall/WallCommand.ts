@@ -1,3 +1,4 @@
+import type { ExerciseKind } from "../course/Syllabus";
 import type { ArchitectureView } from "./ArchitectureStage";
 import type { CodeMode, CodeUnit } from "./CodeStage";
 import type { NoteId } from "./Note";
@@ -54,4 +55,5 @@ export type WallCommand =
     }
   | { readonly kind: "hidePipeline" }
   | { readonly kind: "showArchitecture"; readonly view: Exclude<ArchitectureView, "hidden"> }
+  | { readonly kind: "showExercise"; readonly exercise: ExerciseKind }
   | { readonly kind: "evolveModel" };

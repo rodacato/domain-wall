@@ -356,5 +356,54 @@
     "domainKnowsAdapter": "El dominio importa el cliente de la base de datos",
     "tryBreaking": "Intenta que el dominio importe la base de datos",
     "ruleBroken": "Ahora las reglas del negocio no corren sin una base de datos, y un cambio en cómo se guardan los datos obliga a cambiar el dominio. La flecha siempre debe apuntar hacia adentro."
+  },
+  "exercise": {
+    "solved": "Resuelto",
+    "check": "Revisar",
+    "correct": "Correcto. Muy bien.",
+    "incorrect": "{count} todavía no están en su lugar. Cámbialos y revisa de nuevo.",
+    "up": "Subir",
+    "down": "Bajar",
+    "codeSoon": "Este ejercicio se escribe en código y llega con el editor de código.",
+    "title": {
+      "locateTheRule": "¿Dónde vive la regla?",
+      "classifyPhrases": "¿Lenguaje del negocio o jerga?",
+      "orderEvents": "Pon los eventos en orden",
+      "assignNotesToContexts": "¿A qué contexto pertenece?",
+      "implementAntiCorruptionLayer": "¿Qué hace la traducción?",
+      "classifySubdomains": "¿Núcleo, de apoyo o genérico?",
+      "implementTheRule": "Implementa la regla",
+      "addPipelineStage": "Agrega una etapa al pipeline",
+      "implementRepositoryAdapter": "Escribe un adaptador de repositorio",
+      "implementTheChange": "Implementa el cambio"
+    },
+    "instructions": {
+      "locateTheRule": "En un modelo rico cada regla del negocio vive en un solo lugar. Para cada regla, elige dónde debe vivir.",
+      "classifyPhrases": "Clasifica estas frases: ¿cuáles diría el negocio en voz alta y cuáles son jerga de programadores?",
+      "orderEvents": "Estas cosas pasan en un orden fijo. Ponlas en el orden en que las vive el negocio, con la primera arriba.",
+      "assignNotesToContexts": "Cada nota pertenece al contexto cuyo idioma habla. Elige el contexto de cada una.",
+      "implementAntiCorruptionLayer": "La capa de traducción convierte nuestro dominio en el documento del sistema externo. Di qué hace con cada campo de ese documento.",
+      "classifySubdomains": "¿Dónde invertirías a tu mejor gente? Clasifica cada contexto como núcleo, de apoyo o genérico.",
+      "implementTheRule": "",
+      "addPipelineStage": "",
+      "implementRepositoryAdapter": "",
+      "implementTheChange": ""
+    },
+    "group": {
+      "business": "Lenguaje del negocio",
+      "technical": "Jerga"
+    },
+    "jargon": {
+      "dto": "DTO",
+      "foreignKey": "Llave foránea",
+      "controller": "Controlador",
+      "jsonPayload": "Payload JSON"
+    },
+    "acl": {
+      "rename": "Solo cambiarle el nombre",
+      "format": "Cambiar su formato",
+      "mapCode": "Traducir su código",
+      "constant": "Un valor fijo"
+    }
   }
 }

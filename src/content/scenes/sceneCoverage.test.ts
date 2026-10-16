@@ -28,6 +28,17 @@ describe("scene coverage of the syllabus", () => {
     },
   );
 
+  it("ends every module with the exercise the syllabus declares", () => {
+    for (const scene of scenes) {
+      const declared = syllabus.modules.find(
+        (candidate) => candidate.id === scene.module,
+      )?.exercises;
+      const last = scene.steps[scene.steps.length - 1]?.commands[0];
+
+      expect(last?.kind === "showExercise" ? [last.exercise] : []).toEqual(declared);
+    }
+  });
+
   it("builds scenes in syllabus order", () => {
     const order = syllabus.modules.map((courseModule) => courseModule.id as string);
 

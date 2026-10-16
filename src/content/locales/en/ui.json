@@ -356,5 +356,54 @@
     "domainKnowsAdapter": "The domain imports the database client",
     "tryBreaking": "Try making the domain import the database",
     "ruleBroken": "Now the business rules cannot run without a database, and a change in how data is stored forces a change in the domain. The arrow must always point inwards."
+  },
+  "exercise": {
+    "solved": "Solved",
+    "check": "Check",
+    "correct": "That is right. Well done.",
+    "incorrect": "{count} not in the right place yet. Change them and check again.",
+    "up": "Move up",
+    "down": "Move down",
+    "codeSoon": "This exercise is written in code and arrives with the code editor.",
+    "title": {
+      "locateTheRule": "Where does the rule live?",
+      "classifyPhrases": "Business language or jargon?",
+      "orderEvents": "Put the events in order",
+      "assignNotesToContexts": "Which context does it belong to?",
+      "implementAntiCorruptionLayer": "What does the translation do?",
+      "classifySubdomains": "Core, supporting or generic?",
+      "implementTheRule": "Implement the rule",
+      "addPipelineStage": "Add a stage to the pipeline",
+      "implementRepositoryAdapter": "Write a repository adapter",
+      "implementTheChange": "Implement the change"
+    },
+    "instructions": {
+      "locateTheRule": "In a rich model every business rule lives in one place. For each rule, choose where it should live.",
+      "classifyPhrases": "Sort these phrases: which ones would the business say out loud, and which are the programmers' jargon?",
+      "orderEvents": "These things happen in a fixed order. Put them in the order the business lives them, with the first at the top.",
+      "assignNotesToContexts": "Each note belongs to the context whose language it speaks. Choose the context of each one.",
+      "implementAntiCorruptionLayer": "The translation layer turns our domain into the outside system's document. Say what it does to each field of that document.",
+      "classifySubdomains": "Where would you invest your best people? Classify each context as core, supporting or generic.",
+      "implementTheRule": "",
+      "addPipelineStage": "",
+      "implementRepositoryAdapter": "",
+      "implementTheChange": ""
+    },
+    "group": {
+      "business": "Business language",
+      "technical": "Jargon"
+    },
+    "jargon": {
+      "dto": "DTO",
+      "foreignKey": "Foreign key",
+      "controller": "Controller",
+      "jsonPayload": "JSON payload"
+    },
+    "acl": {
+      "rename": "Just rename it",
+      "format": "Change its format",
+      "mapCode": "Translate its code",
+      "constant": "A fixed value"
+    }
   }
 }

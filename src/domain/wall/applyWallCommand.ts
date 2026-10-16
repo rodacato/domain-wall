@@ -1,5 +1,6 @@
 import { HIDDEN_ARCHITECTURE } from "./ArchitectureStage";
 import { HIDDEN_CODE_STAGE } from "./CodeStage";
+import { NO_EXERCISE } from "./ExerciseStage";
 import { HIDDEN_PIPELINE } from "./PipelineStage";
 import type { WallCommand } from "./WallCommand";
 import { EMPTY_WALL, type WallArrow, type WallState } from "./WallState";
@@ -30,6 +31,17 @@ function withArrows(
     });
   }
   return { ...state, arrows: [...state.arrows, ...added] };
+}
+
+/** The stages that cover the wall: showing one closes the others. */
+function withoutStages(state: WallState): WallState {
+  return {
+    ...state,
+    code: HIDDEN_CODE_STAGE,
+    pipeline: HIDDEN_PIPELINE,
+    architecture: HIDDEN_ARCHITECTURE,
+    exercise: NO_EXERCISE,
+  };
 }
 
 /** The wall's reducer: a pure function, so any scene step can be reached by replaying commands. */
@@ -114,9 +126,7 @@ export function applyWallCommand(state: WallState, command: WallCommand): WallSt
       return { ...state, impact: { model: null, revealed: 0 } };
     case "showCode":
       return {
-        ...state,
-        pipeline: HIDDEN_PIPELINE,
-        architecture: HIDDEN_ARCHITECTURE,
+        ...withoutStages(state),
         code: {
           level: command.level,
           unit: command.unit,
@@ -128,9 +138,7 @@ export function applyWallCommand(state: WallState, command: WallCommand): WallSt
       return { ...state, code: HIDDEN_CODE_STAGE };
     case "showPipeline":
       return {
-        ...state,
-        code: HIDDEN_CODE_STAGE,
-        architecture: HIDDEN_ARCHITECTURE,
+        ...withoutStages(state),
         pipeline: {
           view: command.view,
           failures: command.failures ?? {},
@@ -140,12 +148,9 @@ export function applyWallCommand(state: WallState, command: WallCommand): WallSt
     case "hidePipeline":
       return { ...state, pipeline: HIDDEN_PIPELINE };
     case "showArchitecture":
-      return {
-        ...state,
-        code: HIDDEN_CODE_STAGE,
-        pipeline: HIDDEN_PIPELINE,
-        architecture: { view: command.view },
-      };
+      return { ...withoutStages(state), architecture: { view: command.view } };
+    case "showExercise":
+      return { ...withoutStages(state), exercise: { kind: command.exercise } };
     case "evolveModel":
       return { ...state, version: 2 };
   }

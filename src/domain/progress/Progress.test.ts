@@ -3,10 +3,13 @@ import { loadSyllabus } from "../../../scripts/lib/loadSyllabus";
 import type { ConceptId, ModuleId } from "../course/ConceptId";
 import {
   completeConcept,
+  completeExercise,
   EMPTY_PROGRESS,
   isConceptCompleted,
+  isExerciseCompleted,
   moduleCompletion,
   nextConcept,
+  progressSchema,
   type CompletionRecord,
 } from "./Progress";
 
@@ -62,5 +65,22 @@ describe("progress", () => {
     expect(
       outcome.ok && moduleCompletion(outcome.value, syllabus, "ubiquitous-language" as ModuleId),
     ).toEqual({ completed: 1, total: 3 });
+  });
+});
+
+describe("exercise progress", () => {
+  it("records a solved exercise once, keeping the first record", () => {
+    const solved = completeExercise(EMPTY_PROGRESS, "orderEvents", record);
+    const again = completeExercise(solved, "orderEvents", { ...record, locale: "en" });
+
+    expect(isExerciseCompleted(solved, "orderEvents")).toBe(true);
+    expect(isExerciseCompleted(solved, "classifyPhrases")).toBe(false);
+    expect(again.exercises.orderEvents?.locale).toBe("es-MX");
+  });
+
+  it("reads progress saved before exercises existed", () => {
+    const parsed = progressSchema.safeParse({ schemaVersion: 1, completions: {} });
+
+    expect(parsed.success && parsed.data.exercises).toEqual({});
   });
 });

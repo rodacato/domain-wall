@@ -1,3 +1,4 @@
+import { heroAggregate } from "../../domain/pack/heroAggregate";
 import type { PackIndex } from "../../domain/pack/PackIndex";
 import type { Aggregate } from "../../domain/pack/schema/Aggregate";
 import type { FieldType } from "../../domain/pack/schema/FieldType";
@@ -28,12 +29,6 @@ function referencedValueObjects(type: FieldType): readonly string[] {
     case "entity":
       return [];
   }
-}
-
-function heroAggregate(index: PackIndex): Aggregate | undefined {
-  const trigger = index.commands.get(index.pack.workflow.trigger);
-  const handler = trigger === undefined ? undefined : index.aggregates.get(trigger.handledBy);
-  return handler ?? index.pack.aggregates[0];
 }
 
 /** A numeric scalar with constraints reads best ("at least 1"), so those come first. */
