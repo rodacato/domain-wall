@@ -1,0 +1,17 @@
+/// <reference lib="es2022" />
+// Generated from the "{{packId}}" domain pack. Do not edit by hand.
+{{#hasValueObjectImports}}
+import { {{#valueObjectImports}}{{name}}{{^last}}, {{/last}}{{/valueObjectImports}} } from "./value-objects";
+
+{{/hasValueObjectImports}}
+{{#events}}
+⟦anchor {{anchor}}⟧
+export interface {{name}} {
+  readonly type: "{{discriminator}}";
+{{#fields}}
+  readonly {{name}}: {{{type}}};
+{{/fields}}
+}
+⟦/anchor⟧
+
+{{/events}}

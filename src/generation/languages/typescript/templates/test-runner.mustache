@@ -1,0 +1,9 @@
+/// <reference lib="es2022" />
+// Generated from the "{{packId}}" domain pack. Do not edit by hand.
+import { runAll } from "./testing";
+import "./value-objects.test";
+{{#aggregates}}
+import "./{{module}}.test";
+{{/aggregates}}
+
+runAll();

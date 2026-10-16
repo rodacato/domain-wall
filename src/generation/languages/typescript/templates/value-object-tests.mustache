@@ -1,0 +1,21 @@
+/// <reference lib="es2022" />
+// Generated from the "{{packId}}" domain pack. Do not edit by hand.
+import { describe, expect, it, rejection } from "./testing";
+import { {{#imports}}{{name}}{{^last}}, {{/last}}{{/imports}} } from "./value-objects";
+
+describe("value objects", () => {
+{{#scalars}}
+  it("{{name}} accepts its valid examples", () => {
+{{#valid}}
+    expect({{name}}.create({{{literal}}}).ok).toEqual(true);
+{{/valid}}
+  });
+{{#invalid}}
+
+  it("{{name}} rejects invalid example {{number}} with {{code}}", () => {
+    expect({{name}}.create({{{literal}}})).toEqual(rejection("{{code}}"));
+  });
+{{/invalid}}
+
+{{/scalars}}
+});

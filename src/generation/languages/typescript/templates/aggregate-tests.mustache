@@ -1,0 +1,39 @@
+/// <reference lib="es2022" />
+// Generated from the "{{packId}}" domain pack. Do not edit by hand.
+import { describe, eventTypes, expect, invalidState, it, mustSucceed, rejection } from "./testing";
+import { {{name}} } from "./{{module}}";
+{{#hasValueObjectImports}}
+import { {{#valueObjectImports}}{{name}}{{^last}}, {{/last}}{{/valueObjectImports}} } from "./value-objects";
+{{/hasValueObjectImports}}
+
+describe("{{name}}", () => {
+  it("completes its happy path", () => {
+    let current = {{name}}.start({{{start}}});
+{{#walkthrough}}
+    const step{{number}} = mustSucceed({{{call}}});
+    current = step{{number}}.{{instance}};
+    expect(eventTypes(step{{number}}.events)).toEqual([{{{events}}}]);
+{{/walkthrough}}
+    expect(current.status).toEqual({{{finalStatus}}});
+  });
+{{#violations}}
+
+  it("{{title}}", () => {
+    let current = {{name}}.start({{{start}}});
+{{#given}}
+    current = mustSucceed({{{call}}}).{{instance}};
+{{/given}}
+    expect({{{when}}}).toEqual(rejection("{{code}}"));
+  });
+{{/violations}}
+{{#invalidStates}}
+
+  it("{{title}}", () => {
+    let current = {{name}}.start({{{start}}});
+{{#given}}
+    current = mustSucceed({{{call}}}).{{instance}};
+{{/given}}
+    expect({{{when}}}).toEqual(invalidState("{{command}}", {{{status}}}));
+  });
+{{/invalidStates}}
+});

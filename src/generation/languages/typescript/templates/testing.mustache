@@ -1,0 +1,67 @@
+/// <reference lib="es2022" />
+import type { Result } from "./result";
+
+declare const process: { exit(code: number): never };
+
+interface RegisteredTest {
+  readonly suite: string;
+  readonly name: string;
+  readonly body: () => void;
+}
+
+const registered: RegisteredTest[] = [];
+let currentSuite = "";
+
+export function describe(suite: string, body: () => void): void {
+  currentSuite = suite;
+  body();
+  currentSuite = "";
+}
+
+export function it(name: string, body: () => void): void {
+  registered.push({ suite: currentSuite, name, body });
+}
+
+export function expect(actual: unknown) {
+  return {
+    toEqual(expected: unknown): void {
+      if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+        throw new Error(`expected ${JSON.stringify(expected)} but got ${JSON.stringify(actual)}`);
+      }
+    },
+  };
+}
+
+export function mustSucceed<Value, Failure>(result: Result<Value, Failure>): Value {
+  if (!result.ok) throw new Error(`expected success but got ${JSON.stringify(result.error)}`);
+  return result.value;
+}
+
+export function rejection(code: string): unknown {
+  return { ok: false, error: { code } };
+}
+
+export function invalidState(command: string, status: string): unknown {
+  return { ok: false, error: { code: "InvalidStateForCommand", command, status } };
+}
+
+export function eventTypes(events: readonly { readonly type: string }[]): readonly string[] {
+  return events.map((event) => event.type);
+}
+
+/** Prints one JSON line per test and a summary, then exits with 1 if any test failed. */
+export function runAll(): void {
+  let failed = 0;
+  for (const test of registered) {
+    const label = `${test.suite} ${test.name}`.trim();
+    try {
+      test.body();
+      console.log(JSON.stringify({ type: "test", name: label, status: "passed" }));
+    } catch (failure) {
+      failed += 1;
+      console.log(JSON.stringify({ type: "test", name: label, status: "failed", message: String(failure) }));
+    }
+  }
+  console.log(JSON.stringify({ type: "summary", passed: registered.length - failed, failed }));
+  process.exit(failed === 0 ? 0 : 1);
+}

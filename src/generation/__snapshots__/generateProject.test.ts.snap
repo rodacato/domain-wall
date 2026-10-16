@@ -1,0 +1,162 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`generating the default pack in TypeScript > reads like hand-written code: the Order aggregate 1`] = `
+"/// <reference lib="es2022" />
+// Generated from the "hecho-a-mano" domain pack. Do not edit by hand.
+import { err, ok, type Result } from "./result";
+import { Address, BuyerId, CancellationReason, ListingId, Money, OrderId, Quantity, TrackingNumber } from "./value-objects";
+import type { OrderCancelled, OrderDelivered, OrderLineAdded, OrderPlaced, OrderShipped, PaymentConfirmed, ShippingAddressSet } from "./events";
+
+export type OrderStatus = "Draft" | "Placed" | "Paid" | "Shipped" | "Delivered" | "Cancelled";
+
+export type OrderError =
+  | { readonly code: "OrderMustHaveLines" }
+  | { readonly code: "ShippingAddressRequired" }
+  | { readonly code: "PaymentMustMatchTotal" }
+  | { readonly code: "OrderLinesWithinLimit" }
+  | { readonly code: "InvalidStateForCommand"; readonly command: string; readonly status: OrderStatus };
+
+export type OrderEvent = OrderCancelled | OrderDelivered | OrderLineAdded | OrderPlaced | OrderShipped | PaymentConfirmed | ShippingAddressSet;
+
+export interface OrderOutcome {
+  readonly order: Order;
+  readonly events: readonly OrderEvent[];
+}
+
+export interface OrderRepository {
+  find(orderId: OrderId): Order | undefined;
+  save(order: Order): void;
+}
+
+export class OrderLine {
+  constructor(readonly listingId: ListingId, readonly quantity: Quantity, readonly unitPrice: Money) {}
+
+  get subtotal(): Money {
+    return Money.trusted(this.unitPrice * this.quantity);
+  }
+}
+
+interface OrderState {
+  readonly status: OrderStatus;
+  readonly orderId: OrderId;
+  readonly buyerId: BuyerId;
+  readonly lines: readonly OrderLine[];
+  readonly shippingAddress: Address | undefined;
+  readonly trackingNumber: TrackingNumber | undefined;
+  readonly cancellationReason: CancellationReason | undefined;
+}
+
+export class Order {
+  private constructor(private readonly state: OrderState) {}
+
+  static start(orderId: OrderId, buyerId: BuyerId): Order {
+    return new Order({
+      status: "Draft",
+      orderId: orderId,
+      buyerId: buyerId,
+      lines: [],
+      shippingAddress: undefined,
+      trackingNumber: undefined,
+      cancellationReason: undefined,
+    });
+  }
+
+  get status(): OrderStatus {
+    return this.state.status;
+  }
+
+  get orderId(): OrderId {
+    return this.state.orderId;
+  }
+
+  get buyerId(): BuyerId {
+    return this.state.buyerId;
+  }
+
+  get lines(): readonly OrderLine[] {
+    return this.state.lines;
+  }
+
+  get shippingAddress(): Address | undefined {
+    return this.state.shippingAddress;
+  }
+
+  get trackingNumber(): TrackingNumber | undefined {
+    return this.state.trackingNumber;
+  }
+
+  get cancellationReason(): CancellationReason | undefined {
+    return this.state.cancellationReason;
+  }
+
+  get total(): Money {
+    return Money.trusted(this.state.lines.reduce((total, item) => total + item.subtotal, 0));
+  }
+
+  addOrderLine(listingId: ListingId, quantity: Quantity, unitPrice: Money): Result<OrderOutcome, OrderError> {
+    if (this.state.status !== "Draft") return this.rejectInvalidState("AddOrderLine");
+    return this.transition({ status: "Draft", lines: [...this.state.lines, new OrderLine(listingId, quantity, unitPrice)] }, (next) => [
+      { type: "OrderLineAdded", orderId: next.state.orderId, listingId: listingId, quantity: quantity },
+    ]);
+  }
+
+  setShippingAddress(address: Address): Result<OrderOutcome, OrderError> {
+    if (this.state.status !== "Draft") return this.rejectInvalidState("SetShippingAddress");
+    return this.transition({ status: "Draft", shippingAddress: address }, (next) => [
+      { type: "ShippingAddressSet", orderId: next.state.orderId, address: address },
+    ]);
+  }
+
+  placeOrder(): Result<OrderOutcome, OrderError> {
+    if (this.state.status !== "Draft") return this.rejectInvalidState("PlaceOrder");
+    if (this.state.lines.length === 0) return err({ code: "OrderMustHaveLines" });
+    if (this.state.shippingAddress === undefined) return err({ code: "ShippingAddressRequired" });
+    return this.transition({ status: "Placed" }, (next) => [
+      { type: "OrderPlaced", orderId: next.state.orderId, total: next.total },
+    ]);
+  }
+
+  confirmPayment(amount: Money): Result<OrderOutcome, OrderError> {
+    if (this.state.status !== "Placed") return this.rejectInvalidState("ConfirmPayment");
+    if (amount !== this.total) return err({ code: "PaymentMustMatchTotal" });
+    return this.transition({ status: "Paid" }, (next) => [
+      { type: "PaymentConfirmed", orderId: next.state.orderId, amount: amount },
+    ]);
+  }
+
+  markOrderShipped(trackingNumber: TrackingNumber): Result<OrderOutcome, OrderError> {
+    if (this.state.status !== "Paid") return this.rejectInvalidState("MarkOrderShipped");
+    return this.transition({ status: "Shipped", trackingNumber: trackingNumber }, (next) => [
+      { type: "OrderShipped", orderId: next.state.orderId, trackingNumber: trackingNumber },
+    ]);
+  }
+
+  markOrderDelivered(): Result<OrderOutcome, OrderError> {
+    if (this.state.status !== "Shipped") return this.rejectInvalidState("MarkOrderDelivered");
+    return this.transition({ status: "Delivered" }, (next) => [
+      { type: "OrderDelivered", orderId: next.state.orderId },
+    ]);
+  }
+
+  cancelOrder(reason: CancellationReason): Result<OrderOutcome, OrderError> {
+    if (!["Draft", "Placed", "Paid"].includes(this.state.status)) return this.rejectInvalidState("CancelOrder");
+    return this.transition({ status: "Cancelled", cancellationReason: reason }, (next) => [
+      { type: "OrderCancelled", orderId: next.state.orderId, reason: reason },
+    ]);
+  }
+
+  private transition(
+    changes: Partial<OrderState>,
+    emit: (next: Order) => readonly OrderEvent[],
+  ): Result<OrderOutcome, OrderError> {
+    const next = new Order({ ...this.state, ...changes });
+    if (next.state.lines.length > 5) return err({ code: "OrderLinesWithinLimit" });
+    return ok({ order: next, events: emit(next) });
+  }
+
+  private rejectInvalidState(command: string): Result<never, OrderError> {
+    return err({ code: "InvalidStateForCommand", command, status: this.state.status });
+  }
+}
+"
+`;

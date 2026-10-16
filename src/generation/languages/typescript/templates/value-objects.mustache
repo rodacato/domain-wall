@@ -1,0 +1,46 @@
+/// <reference lib="es2022" />
+// Generated from the "{{packId}}" domain pack. Do not edit by hand.
+import { err, ok, type Result } from "./result";
+
+{{#scalars}}
+⟦anchor {{anchor}}⟧
+export type {{name}}Error = {{#constraintCount}}{{#errors}}{ readonly code: "{{code}}" }{{^last}} | {{/last}}{{/errors}}{{/constraintCount}}{{^constraintCount}}never{{/constraintCount}};
+
+declare const {{brand}}: unique symbol;
+export type {{name}} = {{{baseType}}} & { readonly [{{brand}}]: true };
+
+export const {{name}} = {
+  create(value: {{{baseType}}}): Result<{{name}}, {{name}}Error> {
+{{#violations}}
+    if ({{{condition}}}) return err({ code: "{{code}}" });
+{{/violations}}
+    return ok(value as {{name}});
+  },
+  trusted(value: {{{baseType}}}): {{name}} {
+    return value as {{name}};
+  },
+};
+⟦/anchor⟧
+
+{{/scalars}}
+{{#enums}}
+⟦anchor {{anchor}}⟧
+export const {{name}} = {
+{{#members}}
+  {{name}}: "{{name}}",
+{{/members}}
+} as const;
+export type {{name}} = (typeof {{name}})[keyof typeof {{name}}];
+⟦/anchor⟧
+
+{{/enums}}
+{{#records}}
+⟦anchor {{anchor}}⟧
+export interface {{name}} {
+{{#fields}}
+  readonly {{name}}: {{{type}}};
+{{/fields}}
+}
+⟦/anchor⟧
+
+{{/records}}

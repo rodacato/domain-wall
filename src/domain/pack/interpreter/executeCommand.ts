@@ -78,7 +78,7 @@ export function executeCommand(
   return ok({ instance: nextInstance, transition, events: transition.emits });
 }
 
-function resolveArguments(
+export function resolveArguments(
   index: PackIndex,
   command: Command,
   call: CommandCall,

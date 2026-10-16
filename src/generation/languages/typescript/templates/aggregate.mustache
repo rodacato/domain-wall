@@ -1,0 +1,149 @@
+/// <reference lib="es2022" />
+// Generated from the "{{packId}}" domain pack. Do not edit by hand.
+import { err, ok, type Result } from "./result";
+{{#hasValueObjectImports}}
+import { {{#valueObjectImports}}{{name}}{{^last}}, {{/last}}{{/valueObjectImports}} } from "./value-objects";
+{{/hasValueObjectImports}}
+import type { {{#eventImports}}{{name}}{{^last}}, {{/last}}{{/eventImports}} } from "./events";
+
+export type {{statusType}} = {{#states}}⟦anchor {{anchor}}⟧{{{literal}}}⟦/anchor⟧{{^last}} | {{/last}}{{/states}};
+
+export type {{errorType}} =
+{{#errors}}
+  | { readonly code: "{{code}}" }
+{{/errors}}
+  | { readonly code: "InvalidStateForCommand"; readonly command: string; readonly status: {{statusType}} };
+
+export type {{eventType}} = {{#events}}{{type}}{{^last}} | {{/last}}{{/events}};
+
+export interface {{outcomeType}} {
+  readonly {{instance}}: {{name}};
+  readonly events: readonly {{eventType}}[];
+}
+
+export interface {{repositoryType}} {
+  find({{identityName}}: {{{identityType}}}): {{name}} | undefined;
+  save({{instance}}: {{name}}): void;
+}
+
+{{#entities}}
+⟦anchor {{anchor}}⟧
+export class {{name}} {
+  constructor({{#fields}}readonly {{name}}: {{{type}}}{{^last}}, {{/last}}{{/fields}}) {}
+{{#derived}}
+
+  get {{name}}(): {{{type}}} {
+    return {{{expression}}};
+  }
+{{/derived}}
+}
+⟦/anchor⟧
+
+{{/entities}}
+interface {{name}}State {
+  readonly status: {{statusType}};
+{{#stateFields}}
+  readonly {{name}}: {{{type}}};
+{{/stateFields}}
+}
+
+⟦anchor {{anchor}}⟧
+export class {{name}} {
+  private constructor(private readonly state: {{name}}State) {}
+
+  static start({{#startParams}}{{name}}: {{{type}}}{{^last}}, {{/last}}{{/startParams}}): {{name}} {
+    return new {{name}}({
+      status: {{{initialStatus}}},
+{{#stateFields}}
+      {{name}}: {{{initial}}},
+{{/stateFields}}
+    });
+  }
+
+  get status(): {{statusType}} {
+    return this.state.status;
+  }
+{{#stateFields}}
+
+  get {{name}}(): {{{type}}} {
+    return this.state.{{name}};
+  }
+{{/stateFields}}
+{{#derived}}
+
+  get {{name}}(): {{{type}}} {
+    return {{{expression}}};
+  }
+{{/derived}}
+{{#commands}}
+
+⟦anchor {{anchor}}⟧
+  {{method}}({{#params}}{{name}}: {{{type}}}{{^last}}, {{/last}}{{/params}}): Result<{{outcomeType}}, {{errorType}}> {
+{{#singleBranch}}
+{{#onlyBranch}}
+{{#singleFrom}}
+    if (this.state.status !== {{{onlyFrom}}}) return this.rejectInvalidState("{{commandName}}");
+{{/singleFrom}}
+{{^singleFrom}}
+    if (![{{{fromList}}}].includes(this.state.status)) return this.rejectInvalidState("{{commandName}}");
+{{/singleFrom}}
+{{#guards}}
+⟦anchor {{anchor}}⟧
+    if ({{{failure}}}) return err({ code: "{{code}}" });
+⟦/anchor⟧
+{{/guards}}
+⟦anchor {{anchor}}⟧
+    return this.transition({ {{#changes}}{{field}}: {{{value}}}{{^last}}, {{/last}}{{/changes}} }, (next) => [
+{{#events}}
+      { type: "{{discriminator}}"{{#fields}}, {{name}}: {{{value}}}{{/fields}} },
+{{/events}}
+    ]);
+⟦/anchor⟧
+{{/onlyBranch}}
+{{/singleBranch}}
+{{^singleBranch}}
+{{#branches}}
+{{#singleFrom}}
+    if (this.state.status === {{{onlyFrom}}}) {
+{{/singleFrom}}
+{{^singleFrom}}
+    if ([{{{fromList}}}].includes(this.state.status)) {
+{{/singleFrom}}
+{{#guards}}
+⟦anchor {{anchor}}⟧
+      if ({{{failure}}}) return err({ code: "{{code}}" });
+⟦/anchor⟧
+{{/guards}}
+⟦anchor {{anchor}}⟧
+      return this.transition({ {{#changes}}{{field}}: {{{value}}}{{^last}}, {{/last}}{{/changes}} }, (next) => [
+{{#events}}
+        { type: "{{discriminator}}"{{#fields}}, {{name}}: {{{value}}}{{/fields}} },
+{{/events}}
+      ]);
+⟦/anchor⟧
+    }
+{{/branches}}
+    return this.rejectInvalidState("{{commandName}}");
+{{/singleBranch}}
+  }
+⟦/anchor⟧
+{{/commands}}
+
+  private transition(
+    changes: Partial<{{name}}State>,
+    emit: (next: {{name}}) => readonly {{eventType}}[],
+  ): Result<{{outcomeType}}, {{errorType}}> {
+    const next = new {{name}}({ ...this.state, ...changes });
+{{#invariants}}
+⟦anchor {{anchor}}⟧
+    if ({{{failure}}}) return err({ code: "{{code}}" });
+⟦/anchor⟧
+{{/invariants}}
+    return ok({ {{instance}}: next, events: emit(next) });
+  }
+
+  private rejectInvalidState(command: string): Result<never, {{errorType}}> {
+    return err({ code: "InvalidStateForCommand", command, status: this.state.status });
+  }
+}
+⟦/anchor⟧
