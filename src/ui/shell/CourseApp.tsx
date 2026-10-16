@@ -4,7 +4,11 @@ import type { CodeRunner, SyntaxChecker } from "../../application/codeExercise";
 import { startCourse, type CourseSharedInput } from "../../application/CourseSession";
 import { conceptCompletedMessage, type HostBridge, type HostMessage } from "../../application/host";
 import type { LearnerState, LearnerStorage } from "../../application/learnerState";
-import type { GenerationServices } from "../../application/generationServices";
+import type {
+  GenerationServices,
+  LlmProvider,
+  PackRepository,
+} from "../../application/generationServices";
 import type { LlmSettings } from "../../application/llmSettings";
 import {
   packFor,
@@ -13,8 +17,6 @@ import {
   type GeneratedPack,
   type PackLibrary,
 } from "../../application/packLibrary";
-import type { LlmProvider } from "../../ports/LlmProvider";
-import type { PackRepository } from "../../ports/PackRepository";
 import type { ConceptId } from "../../domain/course/ConceptId";
 import type { LocaleCode } from "../../domain/locale/LocaleRegistry";
 import type { LearnerPreferences } from "../../domain/progress/LearnerPreferences";

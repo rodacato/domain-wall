@@ -16,3 +16,6 @@ export interface GenerationServices {
   readonly known: readonly GeneratedPack[];
   readonly hostOffersLlm: boolean;
 }
+
+export type { LlmProvider };
+export type { PackRepository } from "../ports/PackRepository";
