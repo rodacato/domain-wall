@@ -84,7 +84,7 @@ const GENERIC_WORDS = new Set([
 ]);
 
 function identifiersIn(text: string): readonly string[] {
-  const words = text.match(/[a-z_][A-Za-z0-9_]*/g) ?? [];
+  const words = text.replace(/"[^"]*"/g, "").match(/\b[a-z_][A-Za-z0-9_]*\b/g) ?? [];
   return [...new Set(words.filter((word) => !GENERIC_WORDS.has(word.toLowerCase())))];
 }
 
@@ -207,8 +207,8 @@ export async function checkCodeAnswer(
 ): Promise<CodeVerdict> {
   const unfinished = answer.includes(TODO_MARKER) || answer.trim() === "";
   const issues = await checker.check(exercise.language, assembleSource(exercise, answer));
-  const missing = exercise.required.filter((token) => !answer.includes(token));
-  if (exercise.oneOf.length > 0 && !exercise.oneOf.some((token) => answer.includes(token))) {
+  const missing = exercise.required.filter((token) => !mentions(answer, token));
+  if (exercise.oneOf.length > 0 && !exercise.oneOf.some((token) => mentions(answer, token))) {
     missing.push(exercise.oneOf.join(" | "));
   }
   return {
@@ -238,3 +238,10 @@ export function exerciseRunRequest(
 }
 
 export type { CodeRunner, RunRequest };
+
+/** Whether the answer uses the name as a word of its own, not as a piece of a longer one. */
+function mentions(answer: string, token: string): boolean {
+  return new RegExp(
+    `(?<![A-Za-z0-9_])${token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![A-Za-z0-9_])`,
+  ).test(answer);
+}
