@@ -1,4 +1,4 @@
-import { expect, test } from "./support";
+import { expect, goToLastStep, test } from "./support";
 
 // The stand-in host is served from the same server, since browsers block public pages from embedding local ones.
 const HOST_ORIGIN = "http://localhost:5192";
@@ -53,8 +53,7 @@ test("embedded in a host, the course takes its choices and runs tests there", as
     .getByRole("navigation", { name: "Course" })
     .getByRole("button", { name: /Tactical building blocks/ })
     .click();
-  const next = course.getByRole("button", { name: /^Next step/ });
-  while (await next.isEnabled()) await next.click();
+  await goToLastStep(course);
   await course.getByRole("button", { name: "Show the reference" }).click();
   const reference = await course.locator(".codeboard__reference code").innerText();
   await course.getByLabel("Your code").fill(reference);

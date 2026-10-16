@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { expect, test as base, type Page } from "@playwright/test";
+import { expect, test as base, type FrameLocator, type Page } from "@playwright/test";
 
 /** Every test fails when the page throws or logs an error, even if what it asserts still shows. */
 export const test = base.extend({
@@ -38,9 +38,16 @@ export async function openModule(page: Page, title: string | RegExp): Promise<vo
     .click();
 }
 
-export async function goToLastStep(page: Page): Promise<void> {
+/** Whether the player shows the last step of its module, in either language. */
+export async function atLastStep(page: Page | FrameLocator): Promise<boolean> {
+  const position = await page.locator(".player__position").innerText();
+  const [current, total] = (position.match(/\d+/g) ?? []).map(Number);
+  return current !== undefined && current === total;
+}
+
+export async function goToLastStep(page: Page | FrameLocator): Promise<void> {
   const next = page.getByRole("button", { name: /^Next step/ });
-  while (await next.isEnabled()) await next.click();
+  while (!(await atLastStep(page))) await next.click();
 }
 
 interface Labeled {

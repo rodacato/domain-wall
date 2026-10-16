@@ -1,6 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import type { Page } from "@playwright/test";
-import { expect, test } from "./support";
+import { atLastStep, expect, test } from "./support";
 
 async function violations(page: Page): Promise<string[]> {
   const result = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze();
@@ -58,7 +58,7 @@ test("every step of every module has none", async ({ page }) => {
       await page.waitForTimeout(1300);
       for (const violation of await violations(page))
         found.push(`module ${module + 1}, step ${step + 1}: ${violation.slice(0, 200)}`);
-      if (!(await next.isEnabled())) break;
+      if (await atLastStep(page)) break;
       await next.click();
     }
   }
@@ -81,7 +81,7 @@ test("in the dark theme, every step of the context map and the architecture has 
       await page.waitForTimeout(1300);
       for (const violation of await violations(page))
         found.push(`${title.source}, step ${step + 1}: ${violation.slice(0, 200)}`);
-      if (!(await next.isEnabled())) break;
+      if (await atLastStep(page)) break;
       await next.click();
     }
   }

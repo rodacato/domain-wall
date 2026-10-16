@@ -14,7 +14,39 @@ const responseSchema = z.object({
   choices: z.array(z.object({ message: z.object({ content: z.string().nullable() }) })).min(1),
 });
 
-/** Asks a chat-completions API for JSON that follows a schema. */
+const chunkSchema = z.object({
+  choices: z.array(z.object({ delta: z.object({ content: z.string().nullish() }) })),
+});
+
+/** Joins the content of a server-sent chat-completions stream; comments and `[DONE]` carry none. */
+export function contentOfStream(stream: string): string | null {
+  let content: string | null = null;
+  for (const line of stream.split("\n")) {
+    if (!line.startsWith("data:")) continue;
+    const data = line.slice("data:".length).trim();
+    if (data === "[DONE]") continue;
+    let chunk: unknown;
+    try {
+      chunk = JSON.parse(data);
+    } catch {
+      continue;
+    }
+    const parsed = chunkSchema.safeParse(chunk);
+    const piece = parsed.success ? parsed.data.choices[0]?.delta.content : undefined;
+    if (typeof piece === "string") content = (content ?? "") + piece;
+  }
+  return content;
+}
+
+async function contentOf(response: Response): Promise<string | null | undefined> {
+  if (response.headers.get("content-type")?.includes("text/event-stream") === true) {
+    return contentOfStream(await response.text());
+  }
+  const parsed = responseSchema.safeParse(await response.json());
+  return parsed.success ? parsed.data.choices[0]?.message.content : null;
+}
+
+/** Asks a chat-completions API for JSON that follows a schema, streamed so a proxy in front does not time out waiting for the first byte. */
 export class OpenAiCompatibleProvider implements LlmProvider {
   constructor(private readonly options: OpenAiCompatibleOptions) {}
 
@@ -30,6 +62,7 @@ export class OpenAiCompatibleProvider implements LlmProvider {
         },
         body: JSON.stringify({
           model: this.options.model,
+          stream: true,
           messages: [
             { role: "system", content: request.system },
             { role: "user", content: request.user },
@@ -54,8 +87,7 @@ export class OpenAiCompatibleProvider implements LlmProvider {
         message: `the server answered ${response.status}: ${await response.text()}`,
       });
     }
-    const parsed = responseSchema.safeParse(await response.json());
-    const content = parsed.success ? parsed.data.choices[0]?.message.content : null;
+    const content = await contentOf(response);
     if (content === null || content === undefined) {
       return err({ kind: "failed", message: "the answer had no content" });
     }

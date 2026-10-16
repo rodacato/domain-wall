@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { AnthropicProvider } from "./AnthropicProvider";
-import { OpenAiCompatibleProvider } from "./OpenAiCompatibleProvider";
+import { contentOfStream, OpenAiCompatibleProvider } from "./OpenAiCompatibleProvider";
 import { SimulatedLlmProvider } from "./SimulatedLlmProvider";
 import { loadDefaultPack } from "../../domain/pack/packFixtures";
 
@@ -62,6 +62,36 @@ describe("OpenAiCompatibleProvider", () => {
     });
 
     expect(await provider.generateStructured(request)).toEqual({ ok: true, value: { a: 1 } });
+  });
+
+  it("asks for a stream and joins the pieces it sends", async () => {
+    let sent: unknown;
+    const stream = [
+      ": keepalive",
+      'data: {"choices":[{"delta":{"role":"assistant"}}]}',
+      'data: {"choices":[{"delta":{"content":"{\\"a\\":"}}]}',
+      'data: {"choices":[{"delta":{"content":"1}"}}]}',
+      "data: [DONE]",
+      "",
+    ].join("\n");
+    const provider = new OpenAiCompatibleProvider({
+      apiKey: "k",
+      model: "claude-sonnet",
+      baseUrl: "https://shellm.example.test/v1",
+      fetch: (_url, init) => {
+        sent = JSON.parse(init?.body as string);
+        return Promise.resolve(
+          new Response(stream, { headers: { "content-type": "text/event-stream" } }),
+        );
+      },
+    });
+
+    expect(await provider.generateStructured(request)).toEqual({ ok: true, value: { a: 1 } });
+    expect(sent).toMatchObject({ stream: true, response_format: { type: "json_schema" } });
+  });
+
+  it("has no content for a stream that never sent any", () => {
+    expect(contentOfStream(": keepalive\n\ndata: [DONE]\n")).toBeNull();
   });
 
   it("fails clearly when the content is not JSON", async () => {
