@@ -29,6 +29,8 @@ export interface CodeExercise {
   readonly reference: string;
   /** What a plausible answer mentions: the error code of the rule and the data it reads. */
   readonly required: readonly string[];
+  /** Of these, a correct answer mentions at least one: the data a rule reads can be named in more than one way. */
+  readonly oneOf: readonly string[];
   /** The hole as the learner first sees it: the indentation and a note saying what to do. */
   readonly placeholder: string;
 }
@@ -181,7 +183,8 @@ export function deriveCodeExercise(
     before: `${lines.slice(0, anchor.startLine - 1).join("\n")}\n`,
     after: `${lines.slice(anchor.endLine).join("\n")}\n`,
     reference,
-    required: [...code, ...identifiersIn(reference)],
+    required: source.errorCode === null ? identifiersIn(reference) : code,
+    oneOf: source.errorCode === null ? [] : identifiersIn(reference),
     placeholder: `${indentation}${COMMENT_MARKER[language]} ${TODO_MARKER}: write the code here`,
   };
 }
@@ -205,6 +208,9 @@ export async function checkCodeAnswer(
   const unfinished = answer.includes(TODO_MARKER) || answer.trim() === "";
   const issues = await checker.check(exercise.language, assembleSource(exercise, answer));
   const missing = exercise.required.filter((token) => !answer.includes(token));
+  if (exercise.oneOf.length > 0 && !exercise.oneOf.some((token) => answer.includes(token))) {
+    missing.push(exercise.oneOf.join(" | "));
+  }
   return {
     issues,
     missing,

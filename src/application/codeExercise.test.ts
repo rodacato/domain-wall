@@ -133,3 +133,37 @@ describe("running a code exercise for real", () => {
     expect(request.files.filter((file) => file !== changed).length).toBe(exercise.files.length - 1);
   });
 });
+
+describe("an answer that differs from the reference", () => {
+  it("is accepted when it says the same thing with other words", async () => {
+    const exercise = deriveCodeExercise(
+      "implementTheRule",
+      index,
+      evolved,
+      "typescript",
+      templates,
+    );
+    if (exercise === undefined) throw new Error("no exercise");
+    const answer =
+      '    if (this.state.lines.length < 1) return err({ code: "OrderMustHaveLines" });';
+
+    expect((await checkCodeAnswer(exercise, answer, checker)).plausible).toBe(true);
+  });
+
+  it("is refused when it reads none of the data the rule is about", async () => {
+    const exercise = deriveCodeExercise(
+      "implementTheRule",
+      index,
+      evolved,
+      "typescript",
+      templates,
+    );
+    if (exercise === undefined) throw new Error("no exercise");
+    const answer = '    if (true) return err({ code: "OrderMustHaveLines" });';
+
+    const verdict = await checkCodeAnswer(exercise, answer, checker);
+
+    expect(verdict.plausible).toBe(false);
+    expect(verdict.missing.join(" ")).toContain("lines");
+  });
+});
