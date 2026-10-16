@@ -454,7 +454,12 @@
       "syntaxIssue": "line {line}: unexpected “{snippet}”",
       "mentions": "It mentions what the rule is about",
       "missing": "A correct answer mentions: {tokens}",
-      "runsInDojo": "The syntax and the shape are checked here; the generated tests run in Dojo."
+      "runsInDojo": "The syntax and the shape are checked here; the generated tests run in Dojo.",
+      "run": "Run the tests",
+      "runsHere": "The generated tests run in the host; this is the real result.",
+      "runFailed": "The host could not run the tests.",
+      "notExecuted": "The code was only parsed: no test ran.",
+      "testsSummary": "{passed} of {total} tests passed"
     }
   },
   "compare": {

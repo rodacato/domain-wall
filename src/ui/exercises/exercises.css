@@ -237,3 +237,30 @@
   font-family: var(--font-code);
   font-size: 13px;
 }
+
+.codeboard__outcome {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--ui-surface);
+}
+
+.codeboard__outcome p {
+  margin: 0 0 6px;
+}
+
+.codeboard__outcome .good {
+  color: #2b8a3e;
+  font-weight: 600;
+}
+
+.codeboard__outcome .bad {
+  color: #c92a2a;
+  font-weight: 600;
+}
+
+.codeboard__outcome ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+}

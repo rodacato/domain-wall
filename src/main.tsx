@@ -9,12 +9,16 @@ import {
   InMemoryPreferencesRepository,
   InMemoryProgressRepository,
 } from "./adapters/storage/InMemoryLearnerStorage";
+import { HostRunner } from "./adapters/host/HostRunner";
+import { NoHostBridge } from "./adapters/host/NoHostBridge";
+import { PostMessageHostBridge } from "./adapters/host/PostMessageHostBridge";
 import { TreeSitterSyntaxChecker } from "./adapters/syntax/TreeSitterSyntaxChecker";
 import pythonWasm from "tree-sitter-python/tree-sitter-python.wasm?url";
 import rubyWasm from "tree-sitter-ruby/tree-sitter-ruby.wasm?url";
 import typescriptWasm from "tree-sitter-typescript/tree-sitter-typescript.wasm?url";
 import runtimeWasm from "web-tree-sitter/web-tree-sitter.wasm?url";
 import type { CourseSharedInput } from "./application/CourseSession";
+import type { HostBridge } from "./application/host";
 import { loadCatalogs } from "./application/loadCatalogs";
 import { loadTemplates } from "./application/loadTemplates";
 import { loadPackLibrary, type PackLibrary } from "./application/packLibrary";
@@ -89,6 +93,17 @@ function buildApp(): Result<
   });
 }
 
+/** The channel to the page that embeds the course; only pages the address names as the host are trusted. */
+function openHostBridge(): HostBridge {
+  const origins = (new URLSearchParams(window.location.search).get("hostOrigin") ?? "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter((origin) => origin !== "");
+  const [first, ...rest] = origins;
+  if (window.parent === window || first === undefined) return new NoHostBridge();
+  return new PostMessageHostBridge({ listener: window, host: window.parent }, [first, ...rest]);
+}
+
 async function start(): Promise<void> {
   const built = buildApp();
   if (!built.ok) {
@@ -97,6 +112,7 @@ async function start(): Promise<void> {
   }
   const { library, shared } = built.value;
   const storage = await openStorage();
+  const bridge = openHostBridge();
   const initial = await loadLearnerState(storage, navigator.languages);
 
   const container = document.getElementById("root");
@@ -108,6 +124,8 @@ async function start(): Promise<void> {
         shared={shared}
         storage={storage}
         syntaxChecker={syntaxChecker}
+        bridge={bridge}
+        hostRunner={new HostRunner(bridge)}
         initial={initial}
       />
     </StrictMode>,

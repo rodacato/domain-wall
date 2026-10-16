@@ -10,13 +10,15 @@ import { useI18n } from "../i18n/I18n";
 import { NarrationPanel } from "../narration/NarrationPanel";
 import { WallView } from "../wall/WallView";
 import type { Learner } from "./useLearner";
-import { THEME_CHOICES, useTheme, type ThemeChoice } from "./useTheme";
+import { THEME_CHOICES, type ThemeChoice } from "./useTheme";
 import { useScenePlayer } from "./useScenePlayer";
 
 interface AppShellProps {
   readonly session: CourseSession;
   readonly learner: Learner;
   readonly onReopenOnboarding: () => void;
+  readonly theme: ThemeChoice;
+  readonly onThemeChange: (theme: ThemeChoice) => void;
 }
 
 const LOCALE_NAMES: Readonly<Record<LocaleCode, string>> = {
@@ -24,10 +26,15 @@ const LOCALE_NAMES: Readonly<Record<LocaleCode, string>> = {
   en: "English",
 };
 
-export function AppShell({ session, learner, onReopenOnboarding }: AppShellProps): ReactNode {
+export function AppShell({
+  session,
+  learner,
+  onReopenOnboarding,
+  theme,
+  onThemeChange,
+}: AppShellProps): ReactNode {
   const { locale, setLocale, t } = useI18n();
   const player = useScenePlayer(session.scenes);
-  const [theme, setTheme] = useTheme();
   const { reach } = learner;
   const conceptInView = player.step?.concept ?? null;
 
@@ -72,7 +79,7 @@ export function AppShell({ session, learner, onReopenOnboarding }: AppShellProps
           <select
             value={theme}
             onChange={(event) => {
-              setTheme(event.target.value as ThemeChoice);
+              onThemeChange(event.target.value as ThemeChoice);
             }}
           >
             {THEME_CHOICES.map((choice) => (

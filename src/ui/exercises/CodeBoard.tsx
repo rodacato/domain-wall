@@ -3,6 +3,7 @@ import {
   answerStartLine,
   checkCodeAnswer,
   deriveCodeExercise,
+  exerciseRunRequest,
   type CodeExercise,
   type CodeVerdict,
 } from "../../application/codeExercise";
@@ -14,6 +15,8 @@ import type { ProgrammingLanguageId } from "../../domain/language/ProgrammingLan
 import "../code/code.css";
 import { tokenizeLine } from "../code/highlight";
 import { useI18n } from "../i18n/I18n";
+import { allPassed, type RunOutcome } from "../../domain/execution/RunOutcome";
+import { useRunner } from "./RunnerContext";
 import { useSyntaxChecker } from "./SyntaxCheckerContext";
 
 interface CodeBoardProps {
@@ -24,6 +27,7 @@ interface CodeBoardProps {
 }
 
 const CONTEXT_LINES = 6;
+const RUN_TIMEOUT_MILLISECONDS = 20_000;
 
 function Lines({
   text,
@@ -100,6 +104,9 @@ function Editor({
   const [verdict, setVerdict] = useState<CodeVerdict | null>(null);
   const [checking, setChecking] = useState(false);
   const [revealed, setRevealed] = useState(false);
+  const runner = useRunner();
+  const [running, setRunning] = useState(false);
+  const [outcome, setOutcome] = useState<RunOutcome | "failed" | null>(null);
 
   const before = exercise.before.replace(/\n$/, "").split("\n");
   const shownBefore = before.slice(-CONTEXT_LINES);
@@ -113,6 +120,15 @@ function Editor({
     setChecking(false);
     setVerdict(next);
     if (next.plausible) onSolve();
+  };
+
+  const runTests = async (): Promise<void> => {
+    if (runner === null) return;
+    setRunning(true);
+    const result = await runner.run(exerciseRunRequest(exercise, answer, RUN_TIMEOUT_MILLISECONDS));
+    setRunning(false);
+    setOutcome(result.ok ? result.value : "failed");
+    if (result.ok && allPassed(result.value)) onSolve();
   };
 
   return (
@@ -144,6 +160,15 @@ function Editor({
         <button className="exercise__check" disabled={checking} onClick={() => void check()}>
           {t("ui.exercise.check")}
         </button>
+        {runner !== null && (
+          <button
+            className="exercise__check"
+            disabled={running || answer.includes("TODO")}
+            onClick={() => void runTests()}
+          >
+            {t("ui.exercise.code.run")}
+          </button>
+        )}
         <button
           className="codeboard__reveal"
           onClick={() => {
@@ -177,14 +202,44 @@ function Editor({
               ? t("ui.exercise.code.mentions")
               : t("ui.exercise.code.missing", { tokens: verdict.missing.join(", ") })}
           </li>
-          <li className="note">{t("ui.exercise.code.runsInDojo")}</li>
+          <li className="note">
+            {runner === null ? t("ui.exercise.code.runsInDojo") : t("ui.exercise.code.runsHere")}
+          </li>
         </ul>
       )}
+      {outcome !== null && <TestReport outcome={outcome} />}
       {revealed && (
         <pre className="codeboard__reference">
           <code>{exercise.reference}</code>
         </pre>
       )}
+    </div>
+  );
+}
+
+function TestReport({ outcome }: { readonly outcome: RunOutcome | "failed" }): ReactNode {
+  const { t } = useI18n();
+  if (outcome === "failed")
+    return <p className="codeboard__outcome bad">{t("ui.exercise.code.runFailed")}</p>;
+  if (outcome.kind === "syntaxChecked") {
+    return <p className="codeboard__outcome">{t("ui.exercise.code.notExecuted")}</p>;
+  }
+  const failing = outcome.tests.filter((test) => test.status === "failed");
+  return (
+    <div className="codeboard__outcome">
+      <p className={failing.length === 0 ? "good" : "bad"}>
+        {t("ui.exercise.code.testsSummary", {
+          passed: outcome.tests.length - failing.length,
+          total: outcome.tests.length,
+        })}
+      </p>
+      <ul>
+        {failing.slice(0, 5).map((test) => (
+          <li key={test.name}>
+            <strong>{test.name}</strong> {test.message ?? ""}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

@@ -6,7 +6,12 @@ import { PROGRAMMING_LANGUAGES } from "../domain/language/ProgrammingLanguage";
 import { buildPackIndex } from "../domain/pack/PackIndex";
 import { loadDefaultPack } from "../domain/pack/packFixtures";
 import { evolveIndex } from "../domain/pack/patch/evolveIndex";
-import { assembleSource, checkCodeAnswer, deriveCodeExercise } from "./codeExercise";
+import {
+  assembleSource,
+  checkCodeAnswer,
+  deriveCodeExercise,
+  exerciseRunRequest,
+} from "./codeExercise";
 import type { TemplatesByLanguage } from "./loadTemplates";
 
 const index = buildPackIndex(loadDefaultPack());
@@ -111,5 +116,20 @@ describe("code exercises", () => {
     expect(
       deriveCodeExercise("orderEvents", index, evolved, "typescript", templates),
     ).toBeUndefined();
+  });
+});
+
+describe("running a code exercise for real", () => {
+  it("sends every generated file with the answer in the one that had the hole", () => {
+    const exercise = deriveCodeExercise("implementTheRule", index, evolved, "python", templates);
+    if (exercise === undefined) throw new Error("no exercise");
+
+    const request = exerciseRunRequest(exercise, exercise.reference, 5000);
+    const changed = request.files.find((file) => file.path === exercise.path);
+
+    expect(request.testEntry).toBe("run_tests.py");
+    expect(request.files.length).toBe(exercise.files.length);
+    expect(changed?.content).toBe(assembleSource(exercise, exercise.reference));
+    expect(request.files.filter((file) => file !== changed).length).toBe(exercise.files.length - 1);
   });
 });

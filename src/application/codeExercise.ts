@@ -4,6 +4,7 @@ import type { ProgrammingLanguageId } from "../domain/language/ProgrammingLangua
 import { heroAggregate } from "../domain/pack/heroAggregate";
 import type { PackIndex } from "../domain/pack/PackIndex";
 import { namingFor } from "../generation/viewmodel/LanguageNaming";
+import type { CodeRunner, RunRequest } from "../ports/CodeRunner";
 import type { SyntaxChecker, SyntaxIssue } from "../ports/SyntaxChecker";
 import { sourceFileOf } from "./codeView";
 import { generateCode } from "./generateCode";
@@ -14,6 +15,9 @@ export interface CodeExercise {
   readonly kind: ExerciseKind;
   readonly language: ProgrammingLanguageId;
   readonly path: string;
+  /** Every file of the generated project and the one that runs its tests, to run the exercise for real. */
+  readonly files: readonly { readonly path: string; readonly content: string }[];
+  readonly entry: string;
   /** The anchor reference of the concept the hole implements. */
   readonly anchorRef: string;
   /** Whether the code comes from the model after the evolution. */
@@ -170,6 +174,8 @@ export function deriveCodeExercise(
     kind,
     language,
     path: file.path,
+    files: generated.value.files.map(({ path, content }) => ({ path, content })),
+    entry: generated.value.entry,
     anchorRef: anchor.ref,
     forEvolvedModel: source.index !== index,
     before: `${lines.slice(0, anchor.startLine - 1).join("\n")}\n`,
@@ -208,3 +214,21 @@ export async function checkCodeAnswer(
 }
 
 export type { SyntaxChecker, SyntaxIssue };
+
+/** The project to run: every generated file, with the learner's answer in the one that had the hole. */
+export function exerciseRunRequest(
+  exercise: CodeExercise,
+  answer: string,
+  timeoutMs: number,
+): RunRequest {
+  return {
+    language: exercise.language,
+    files: exercise.files.map((file) =>
+      file.path === exercise.path ? { ...file, content: assembleSource(exercise, answer) } : file,
+    ),
+    testEntry: exercise.entry,
+    timeoutMs,
+  };
+}
+
+export type { CodeRunner, RunRequest };

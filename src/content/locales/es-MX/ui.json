@@ -454,7 +454,12 @@
       "syntaxIssue": "línea {line}: «{snippet}» inesperado",
       "mentions": "Menciona de qué trata la regla",
       "missing": "Una respuesta correcta menciona: {tokens}",
-      "runsInDojo": "Aquí se revisan la sintaxis y la forma; las pruebas generadas se ejecutan en Dojo."
+      "runsInDojo": "Aquí se revisan la sintaxis y la forma; las pruebas generadas se ejecutan en Dojo.",
+      "run": "Correr las pruebas",
+      "runsHere": "Las pruebas generadas corren en el anfitrión; este es el resultado real.",
+      "runFailed": "El anfitrión no pudo correr las pruebas.",
+      "notExecuted": "El código solo se analizó: no corrió ninguna prueba.",
+      "testsSummary": "{passed} de {total} pruebas pasaron"
     }
   },
   "compare": {

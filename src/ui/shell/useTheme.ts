@@ -41,3 +41,17 @@ export function useTheme(): readonly [ThemeChoice, (choice: ThemeChoice) => void
 }
 
 export const THEME_CHOICES = CHOICES;
+
+const applied = new Set<string>();
+
+/** Applies design tokens the host sent as custom properties on the document, replacing the ones it sent before. */
+export function applyThemeTokens(tokens: Readonly<Record<string, string>>): void {
+  const style = document.documentElement.style;
+  for (const name of applied) style.removeProperty(name);
+  applied.clear();
+  for (const [name, value] of Object.entries(tokens)) {
+    if (!name.startsWith("--")) continue;
+    style.setProperty(name, value);
+    applied.add(name);
+  }
+}
