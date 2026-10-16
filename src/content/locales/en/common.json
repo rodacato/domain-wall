@@ -8,5 +8,13 @@
     "python": "Python",
     "ruby": "Ruby",
     "ruby-dry": "Ruby with dry-rb"
+  },
+  "source": {
+    "evans-blue-book": "Eric Evans, Domain-Driven Design",
+    "evans-reference": "Eric Evans, Domain-Driven Design Reference",
+    "wlaschin": "Scott Wlaschin, Domain Modeling Made Functional",
+    "vernon": "Vaughn Vernon, Implementing Domain-Driven Design",
+    "brandolini": "Alberto Brandolini, Introducing EventStorming",
+    "cockburn": "Alistair Cockburn, Hexagonal Architecture"
   }
 }

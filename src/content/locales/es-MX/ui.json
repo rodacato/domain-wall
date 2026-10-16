@@ -17,7 +17,10 @@
   "narration": {
     "functionalPerspective": "Perspectiva funcional",
     "concept": "Concepto",
-    "label": "Narración"
+    "label": "Narración",
+    "sources": "Para profundizar en este módulo",
+    "chapters": "cap. {chapters}",
+    "sourcesNote": "El curso explica con sus propias palabras; los negocios y sus reglas son ejemplos didácticos."
   },
   "term": {
     "neutralHint": "¿Cuál significado?",

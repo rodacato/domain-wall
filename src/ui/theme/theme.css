@@ -424,6 +424,28 @@ select {
   color: var(--ui-muted);
 }
 
+.sources {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--ui-border);
+  font-size: 13px;
+}
+
+.sources__title {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.sources__list {
+  margin: 8px 0;
+  padding-left: 18px;
+}
+
+.sources__note {
+  margin: 0;
+  color: var(--ui-muted);
+}
+
 .narration__tag {
   display: inline-block;
   margin-bottom: 8px;
