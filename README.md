@@ -1,5 +1,11 @@
 # Domain Wall
 
+[![CI · Test](https://github.com/rodacato/domain-wall/actions/workflows/ci.yml/badge.svg)](https://github.com/rodacato/domain-wall/actions/workflows/ci.yml)
+[![Site · Pages](https://github.com/rodacato/domain-wall/actions/workflows/site-pages.yml/badge.svg)](https://github.com/rodacato/domain-wall/actions/workflows/site-pages.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+**Play it in your browser: [rodacato.github.io/domain-wall](https://rodacato.github.io/domain-wall/)**
+
 **Muro** is an interactive Domain-Driven Design course that feels like a live workshop.
 Everything happens on an animated Event Storming wall: the domain is discovered, split into
 bounded contexts and finally turned into code.
