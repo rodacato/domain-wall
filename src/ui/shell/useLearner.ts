@@ -4,6 +4,7 @@ import {
   type LearnerState,
   type LearnerStorage,
 } from "../../application/learnerState";
+import { packIdOf } from "../../application/packLibrary";
 import type { ConceptId } from "../../domain/course/ConceptId";
 import type { Syllabus } from "../../domain/course/Syllabus";
 import type { LearnerPreferences } from "../../domain/progress/LearnerPreferences";
@@ -48,14 +49,14 @@ export function useLearner(
       setProgress((current) => {
         const completed = completeConcept(current, syllabus, conceptId, {
           completedAt: new Date().toISOString(),
-          packId: "default",
+          packId: packIdOf(preferences.pack),
           programmingLanguage: preferences.programmingLanguage,
           locale: preferences.locale,
         });
         return completed.ok ? completed.value : current;
       });
     },
-    [syllabus, preferences.programmingLanguage, preferences.locale],
+    [syllabus, preferences.programmingLanguage, preferences.locale, preferences.pack],
   );
 
   return { progress, preferences, onboarded, choose, reach };

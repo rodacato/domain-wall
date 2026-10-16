@@ -122,7 +122,6 @@
       "title": "Which business do we learn on?",
       "hint": "The course is the same for every business; only the domain changes.",
       "defaultBadge": "Hand-polished",
-      "presets": "Curated industries",
       "describe": "Describe your business",
       "describeHint": "A domain generated for you and validated before use.",
       "soon": "Coming soon"

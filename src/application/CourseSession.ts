@@ -24,12 +24,16 @@ export interface CourseSession {
   readonly templates: TemplatesByLanguage;
 }
 
-export interface StartCourseInput {
-  readonly pack: SemanticallyValidPack;
+/** What every session shares, whichever pack it renders over. */
+export interface CourseSharedInput {
   readonly syllabus: Syllabus;
   readonly catalogs: Readonly<Record<LocaleCode, FlatCatalog>>;
   readonly languageSamples: CourseSession["languageSamples"];
   readonly templates: TemplatesByLanguage;
+}
+
+export interface StartCourseInput extends CourseSharedInput {
+  readonly pack: SemanticallyValidPack;
 }
 
 /** Use case: start the course over a validated pack. */

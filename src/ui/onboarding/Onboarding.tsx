@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useState, type ReactNode } from "react";
 import type { CourseSession } from "../../application/CourseSession";
+import type { PackLibrary } from "../../application/packLibrary";
 import {
   PROGRAMMING_LANGUAGES,
   type ProgrammingLanguageId,
@@ -18,17 +19,18 @@ const LOCALE_NAMES: Readonly<Record<LocaleCode, string>> = {
 
 interface OnboardingProps {
   readonly session: CourseSession;
+  readonly library: PackLibrary;
   readonly initial: LearnerPreferences;
   readonly onFinish: (preferences: LearnerPreferences) => void;
 }
 
 /** Three choices made on a blank wall: the language of the course, the language of the code, the business. */
-export function Onboarding({ session, initial, onFinish }: OnboardingProps): ReactNode {
+export function Onboarding({ session, library, initial, onFinish }: OnboardingProps): ReactNode {
   const { setLocale, t } = useI18n();
   const [step, setStep] = useState(0);
   const [choice, setChoice] = useState(initial);
   const [previewed, setPreviewed] = useState<ProgrammingLanguageId>(initial.programmingLanguage);
-  const business = session.index.pack.business;
+  const business = library.defaultPack.business;
   const { locale } = choice;
 
   const chooseLocale = (next: LocaleCode): void => {
@@ -137,10 +139,21 @@ export function Onboarding({ session, initial, onFinish }: OnboardingProps): Rea
                     <span className="card__text">{business.description[locale]}</span>
                     <span className="card__badge">{t("ui.onboarding.industry.defaultBadge")}</span>
                   </button>
-                  <button className="card card--wide" disabled>
-                    <span className="card__title">{t("ui.onboarding.industry.presets")}</span>
-                    <span className="card__badge">{t("ui.onboarding.industry.soon")}</span>
-                  </button>
+                  {library.presets.map((preset) => (
+                    <button
+                      key={preset.packId}
+                      className="card card--wide"
+                      aria-pressed={
+                        choice.pack.kind === "preset" && choice.pack.packId === preset.packId
+                      }
+                      onClick={() => {
+                        setChoice({ ...choice, pack: { kind: "preset", packId: preset.packId } });
+                      }}
+                    >
+                      <span className="card__title">{preset.pack.business.name[locale]}</span>
+                      <span className="card__text">{preset.pack.business.description[locale]}</span>
+                    </button>
+                  ))}
                   <button className="card card--wide" disabled>
                     <span className="card__title">{t("ui.onboarding.industry.describe")}</span>
                     <span className="card__text">{t("ui.onboarding.industry.describeHint")}</span>

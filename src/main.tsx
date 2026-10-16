@@ -9,22 +9,20 @@ import {
   InMemoryPreferencesRepository,
   InMemoryProgressRepository,
 } from "./adapters/storage/InMemoryLearnerStorage";
-import { startCourse, type CourseSession } from "./application/CourseSession";
+import type { CourseSharedInput } from "./application/CourseSession";
 import { loadCatalogs } from "./application/loadCatalogs";
 import { loadTemplates } from "./application/loadTemplates";
+import { loadPackLibrary, type PackLibrary } from "./application/packLibrary";
 import { loadLearnerState, type LearnerStorage } from "./application/learnerState";
 import syllabusJson from "./content/syllabus.json";
 import { QUANTITY_SAMPLES } from "./content/onboarding/quantitySamples";
 import { parseSyllabus } from "./domain/course/Syllabus";
-import { assemblePackParts } from "./domain/pack/assemblePackParts";
-import { parseDomainPack } from "./domain/pack/parseDomainPack";
-import { validateSemantics } from "./domain/pack/validation/validateSemantics";
 import { ok, type Result } from "./domain/shared/Result";
 import type { ValidationIssue } from "./domain/shared/ValidationIssue";
 import { CourseApp } from "./ui/shell/CourseApp";
 import "./ui/theme/theme.css";
 
-const packParts = import.meta.glob("../packs/hecho-a-mano/*.json", {
+const packParts = import.meta.glob(["../packs/hecho-a-mano/*.json", "../packs/presets/*/*.json"], {
   eager: true,
   import: "default",
 });
@@ -62,34 +60,33 @@ function showIssues(issues: readonly ValidationIssue[]): void {
   container.style.padding = "24px";
 }
 
-function buildSession(): Result<CourseSession, readonly ValidationIssue[]> {
-  const assembled = assemblePackParts(packParts);
-  if (!assembled.ok) return assembled;
-  const parsed = parseDomainPack(assembled.value);
-  if (!parsed.ok) return parsed;
-  const validated = validateSemantics(parsed.value);
-  if (!validated.ok) return validated;
+function buildApp(): Result<
+  { readonly library: PackLibrary; readonly shared: CourseSharedInput },
+  readonly ValidationIssue[]
+> {
+  const library = loadPackLibrary(packParts);
+  if (!library.ok) return library;
   const syllabus = parseSyllabus(syllabusJson);
   if (!syllabus.ok) return syllabus;
 
-  return ok(
-    startCourse({
-      pack: validated.value,
+  return ok({
+    library: library.value,
+    shared: {
       syllabus: syllabus.value,
       catalogs: loadCatalogs(catalogFiles),
       languageSamples: QUANTITY_SAMPLES,
       templates: loadTemplates(templateFiles),
-    }),
-  );
+    },
+  });
 }
 
 async function start(): Promise<void> {
-  const built = buildSession();
+  const built = buildApp();
   if (!built.ok) {
     showIssues(built.error);
     return;
   }
-  const session = built.value;
+  const { library, shared } = built.value;
   const storage = await openStorage();
   const initial = await loadLearnerState(storage, navigator.languages);
 
@@ -97,7 +94,7 @@ async function start(): Promise<void> {
   if (container === null) throw new Error("the page has no #root element");
   createRoot(container).render(
     <StrictMode>
-      <CourseApp session={session} storage={storage} initial={initial} />
+      <CourseApp library={library} shared={shared} storage={storage} initial={initial} />
     </StrictMode>,
   );
 }
