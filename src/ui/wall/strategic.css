@@ -1,7 +1,7 @@
 .note--context {
   --note-color: var(--ui-surface);
   border: 3px solid var(--wall-ink);
-  border-radius: 14px;
+  border-radius: 3px;
   box-shadow: var(--note-shadow);
   font-size: 26px;
   font-weight: 700;
@@ -42,7 +42,7 @@
   padding: 16px 18px;
   overflow-y: auto;
   border: 1px solid var(--ui-border);
-  border-radius: 14px;
+  border-radius: 3px;
   background: color-mix(in srgb, var(--ui-surface) 94%, transparent);
   box-shadow: 0 12px 30px rgba(40, 30, 10, 0.16);
 }
@@ -70,7 +70,7 @@
 
 .glossary__entry {
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: 3px;
   background: var(--note-actor);
   color: var(--note-ink);
   box-shadow: var(--note-shadow);
@@ -164,7 +164,7 @@
   min-height: 108px;
   padding: 14px 16px;
   border: 2px solid var(--ui-border);
-  border-radius: 12px;
+  border-radius: 3px;
   background: var(--ui-surface);
   box-shadow: 0 6px 16px rgba(40, 30, 10, 0.1);
   transition:
@@ -173,8 +173,8 @@
 }
 
 .impact__place--touched {
-  border-color: #e03131;
-  background: color-mix(in srgb, #e03131 10%, var(--ui-surface));
+  border-color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 10%, var(--ui-surface));
 }
 
 .impact__place--forgotten {
@@ -184,8 +184,8 @@
 
 .impact__place--rich {
   width: min(520px, 100%);
-  border-color: #2f9e44;
-  background: color-mix(in srgb, #2f9e44 10%, var(--ui-surface));
+  border-color: var(--success);
+  background: color-mix(in srgb, var(--success) 10%, var(--ui-surface));
 }
 
 .impact__name {
@@ -204,7 +204,7 @@
 
 .impact__flag {
   margin-top: auto;
-  color: #c92a2a;
+  color: var(--danger);
   font-size: 13px;
   font-weight: 700;
 }
@@ -216,7 +216,7 @@
 .impact__counter {
   padding: 6px 18px;
   border-radius: 999px;
-  background: #c92a2a;
+  background: var(--danger);
   color: #fff;
   font-weight: 700;
 }
@@ -228,7 +228,7 @@
 .focus {
   padding: 14px 16px;
   border: 1px solid var(--ui-border);
-  border-radius: 12px;
+  border-radius: 3px;
   background: var(--ui-background);
 }
 

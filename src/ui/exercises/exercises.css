@@ -44,7 +44,7 @@
 .exercise__check {
   padding: 8px 22px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 3px;
   background: var(--ui-accent);
   color: var(--ui-accent-contrast);
   cursor: pointer;
@@ -61,13 +61,13 @@
   margin: 0;
   padding: 10px 14px;
   border-left: 4px solid #e8590c;
-  border-radius: 6px;
+  border-radius: 3px;
   background: color-mix(in srgb, #e8590c 10%, var(--ui-surface));
 }
 
 .exercise__verdict--good {
-  border-left-color: #2f9e44;
-  background: color-mix(in srgb, #2f9e44 12%, var(--ui-surface));
+  border-left-color: var(--success);
+  background: color-mix(in srgb, var(--success) 12%, var(--ui-surface));
 }
 
 .exercise__soon {
@@ -93,17 +93,17 @@
   gap: 8px 14px;
   padding: 8px 12px;
   border: 1px solid var(--ui-border);
-  border-radius: 10px;
+  border-radius: 3px;
   background: var(--ui-surface);
 }
 
 .classify__row--wrong {
-  border-color: #e03131;
-  background: color-mix(in srgb, #e03131 8%, var(--ui-surface));
+  border-color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 8%, var(--ui-surface));
 }
 
 .classify__row--right {
-  border-color: #2f9e44;
+  border-color: var(--success);
 }
 
 .classify__item {
@@ -147,7 +147,7 @@
 .ordering__moves button {
   width: 28px;
   border: 1px solid var(--ui-border);
-  border-radius: 6px;
+  border-radius: 3px;
   background: var(--ui-background);
   cursor: pointer;
 }
@@ -202,7 +202,7 @@
 .codeboard__reveal {
   padding: 8px 16px;
   border: 1px solid var(--ui-border);
-  border-radius: 8px;
+  border-radius: 3px;
   background: var(--ui-surface);
   cursor: pointer;
 }
@@ -213,20 +213,20 @@
   gap: 4px;
   margin: 0;
   padding: 10px 14px;
-  border-radius: 8px;
+  border-radius: 3px;
   background: var(--ui-surface);
   list-style: none;
 }
 
 .codeboard__verdict .good::before {
   content: "✓ ";
-  color: #2f9e44;
+  color: var(--success);
   font-weight: 700;
 }
 
 .codeboard__verdict .bad::before {
   content: "✗ ";
-  color: #e03131;
+  color: var(--danger);
   font-weight: 700;
 }
 
@@ -239,7 +239,7 @@
   margin: 0;
   padding: 10px 14px;
   overflow: auto;
-  border-radius: 8px;
+  border-radius: 3px;
   background: var(--code-background);
   color: var(--code-text);
   font-family: var(--font-code);
@@ -250,7 +250,7 @@
 .codeboard__outcome {
   margin: 0;
   padding: 10px 14px;
-  border-radius: 8px;
+  border-radius: 3px;
   background: var(--ui-surface);
 }
 
@@ -259,12 +259,12 @@
 }
 
 .codeboard__outcome .good {
-  color: #2b8a3e;
+  color: var(--success);
   font-weight: 600;
 }
 
 .codeboard__outcome .bad {
-  color: #c92a2a;
+  color: var(--danger);
   font-weight: 600;
 }
 
