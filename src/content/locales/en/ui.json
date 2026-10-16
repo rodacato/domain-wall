@@ -17,7 +17,10 @@
   "narration": {
     "functionalPerspective": "Functional perspective",
     "concept": "Concept",
-    "label": "Narration"
+    "label": "Narration",
+    "sources": "Further reading for this module",
+    "chapters": "ch. {chapters}",
+    "sourcesNote": "The course explains in its own words; the businesses and their rules are teaching examples."
   },
   "term": {
     "neutralHint": "Which meaning?",

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { CourseSession } from "../../application/CourseSession";
-import { allConcepts } from "../../domain/course/Syllabus";
+import { allConcepts, type CourseModule } from "../../domain/course/Syllabus";
 import type { ProgrammingLanguageId } from "../../domain/language/ProgrammingLanguage";
 import { dialogueSegments } from "../../domain/pack/dialogueSegments";
 import type { SceneStep } from "../../domain/wall/Scene";
@@ -27,6 +27,9 @@ export function NarrationPanel({ session, step, language }: NarrationPanelProps)
       ? undefined
       : allConcepts(session.syllabus).find((candidate) => candidate.id === step.concept);
   const lines = step.dialogue === null ? [] : session.index.pack.dialogues[step.dialogue];
+  const courseModule = session.syllabus.modules.find((candidate) =>
+    candidate.concepts.some((moduleConcept) => moduleConcept.id === step.concept),
+  );
 
   return (
     <aside
@@ -84,6 +87,26 @@ export function NarrationPanel({ session, step, language }: NarrationPanelProps)
           );
         })}
       </ul>
+      {courseModule !== undefined && <Sources references={courseModule.references} />}
     </aside>
+  );
+}
+
+function Sources({ references }: { readonly references: CourseModule["references"] }): ReactNode {
+  const { t } = useI18n();
+  return (
+    <details className="sources">
+      <summary className="sources__title">{t("ui.narration.sources")}</summary>
+      <ul className="sources__list">
+        {references.map((reference) => (
+          <li key={reference.source}>
+            <cite>{t(`common.source.${reference.source}`)}</cite>
+            {reference.chapters.length > 0 &&
+              `, ${t("ui.narration.chapters", { chapters: reference.chapters.join(", ") })}`}
+          </li>
+        ))}
+      </ul>
+      <p className="sources__note">{t("ui.narration.sourcesNote")}</p>
+    </details>
   );
 }
