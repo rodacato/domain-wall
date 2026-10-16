@@ -1,3 +1,4 @@
+import type { LayoutMode } from "./LayoutMode";
 import type { NoteId, NoteKind } from "./Note";
 
 export type NoteEmphasis = "normal" | "highlighted" | "dimmed" | "rejected";
@@ -7,38 +8,61 @@ export interface WallNote {
   readonly emphasis: NoteEmphasis;
 }
 
+import type { ContextPattern } from "../pack/schema/Strategy";
+
+export { CONTEXT_PATTERNS, type ContextPattern } from "../pack/schema/Strategy";
+
+/** How an arrow is drawn: a plain flow, a two-way bond, a severed link, or a flow guarded by a translation layer. */
+export type ArrowStyle = "plain" | "mutual" | "severed" | "shielded";
+
 export interface WallArrow {
   readonly from: NoteId;
   readonly to: NoteId;
+  readonly patterns: readonly ContextPattern[];
+  readonly style: ArrowStyle;
 }
 
-/** How the notes are arranged: one long timeline, or grouped into one region per bounded context. */
-export type LayoutMode = "timeline" | "byContext";
+export type { LayoutMode };
 
-/** Where the camera looks. The renderer turns a target into a viewport using the current layout. */
 export type CameraTarget =
   | { readonly kind: "overview" }
   | { readonly kind: "layer"; readonly layer: NoteKind }
-  | { readonly kind: "context"; readonly context: string }
+  | { readonly kind: "region"; readonly region: string }
   | { readonly kind: "notes"; readonly ids: readonly NoteId[] }
-  /** The camera visits each stop in turn, so a long timeline can be read at a legible scale. */
   | { readonly kind: "tour"; readonly stops: readonly CameraTarget[] };
 
-/** The floating note of the ambiguous term; its face depends on the context it currently sits in. */
+/** The floating note of the ambiguous term; null context while it is still the neutral, ambiguous word. */
 export interface TermNoteState {
   readonly shown: boolean;
-  /** The context whose meaning the note shows; null while it is still the neutral, ambiguous word. */
   readonly context: string | null;
 }
 
-/** Everything that can be seen on the wall at one moment. Pure data: animations derive from the difference between two states. */
+/** Concepts the living glossary has collected, which of them are ambiguous, and which have been split by context. */
+export interface GlossaryState {
+  readonly entries: readonly string[];
+  readonly ambiguous: readonly string[];
+  readonly resolved: readonly string[];
+}
+
+export type ImpactModel = "anemic" | "rich";
+
+/** The change-impact stage of module 1: which model is shown and how many of its places have lit up. */
+export interface ImpactState {
+  readonly model: ImpactModel | null;
+  readonly revealed: number;
+}
+
+/** Everything visible at one moment. Pure data: animations derive from the difference between two states. */
 export interface WallState {
   readonly notes: readonly WallNote[];
   readonly arrows: readonly WallArrow[];
+  /** Keys of regions whose hand-drawn border is visible: a context name or "zone:<type>". */
   readonly boundaries: readonly string[];
   readonly layout: LayoutMode;
   readonly camera: CameraTarget;
   readonly term: TermNoteState;
+  readonly glossary: GlossaryState;
+  readonly impact: ImpactState;
 }
 
 export const EMPTY_WALL: WallState = {
@@ -48,4 +72,10 @@ export const EMPTY_WALL: WallState = {
   layout: "timeline",
   camera: { kind: "overview" },
   term: { shown: false, context: null },
+  glossary: { entries: [], ambiguous: [], resolved: [] },
+  impact: { model: null, revealed: 0 },
 };
+
+export function zoneKey(subdomainType: string): string {
+  return `zone:${subdomainType}`;
+}

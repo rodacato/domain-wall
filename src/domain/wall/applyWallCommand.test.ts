@@ -28,7 +28,9 @@ describe("the wall reducer", () => {
       { kind: "removeNotes", ids: [id("event:A")] },
     ]);
 
-    expect(state.arrows).toEqual([{ from: "command:X", to: "event:B" }]);
+    expect(state.arrows).toEqual([
+      { from: "command:X", to: "event:B", patterns: [], style: "plain" },
+    ]);
   });
 
   it("ignores arrows between notes that are not on the wall, and duplicates", () => {
@@ -74,8 +76,8 @@ describe("the wall reducer", () => {
 
   it("draws each boundary once", () => {
     const state = applyWallCommands(EMPTY_WALL, [
-      { kind: "drawBoundary", context: "Ordering" },
-      { kind: "drawBoundary", context: "Ordering" },
+      { kind: "drawBoundary", region: "Ordering" },
+      { kind: "drawBoundary", region: "Ordering" },
     ]);
 
     expect(state.boundaries).toEqual(["Ordering"]);

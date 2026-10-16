@@ -18,3 +18,23 @@ export function labelOfConcept(index: PackIndex, codeName: string): LocalizedTex
     pack.readModels.find((readModel) => readModel.codeName === codeName)?.label
   );
 }
+
+/** The one-line description of a named concept, when the pack gives one. */
+export function descriptionOfConcept(
+  index: PackIndex,
+  codeName: string,
+): LocalizedText | undefined {
+  const { pack } = index;
+  return (
+    index.aggregates.get(codeName)?.description ??
+    index.entities.get(codeName)?.entity.description ??
+    index.valueObjects.get(codeName)?.description ??
+    index.events.get(codeName)?.description ??
+    index.commands.get(codeName)?.description ??
+    index.policies.get(codeName)?.description ??
+    index.contexts.get(codeName)?.description ??
+    index.actors.get(codeName)?.description ??
+    index.externalSystems.get(codeName)?.description ??
+    pack.readModels.find((readModel) => readModel.codeName === codeName)?.description
+  );
+}

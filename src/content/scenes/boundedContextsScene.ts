@@ -19,8 +19,8 @@ export function buildBoundedContextsScene(index: PackIndex): Scene {
     dialogue: null,
     commands: [
       ...(position === 0 ? ([{ kind: "hideTerm" }] as const) : []),
-      { kind: "drawBoundary", context: context.codeName },
-      { kind: "focusCamera", target: { kind: "context", context: context.codeName } },
+      { kind: "drawBoundary", region: context.codeName },
+      { kind: "focusCamera", target: { kind: "region", region: context.codeName } },
     ],
   }));
 
@@ -30,7 +30,7 @@ export function buildBoundedContextsScene(index: PackIndex): Scene {
     dialogue: null,
     commands: [
       { kind: "showTerm", context: meaning.context },
-      { kind: "focusCamera", target: { kind: "context", context: meaning.context } },
+      { kind: "focusCamera", target: { kind: "region", region: meaning.context } },
     ],
   }));
 

@@ -18,6 +18,19 @@ export const boundedContextSchema = z.strictObject({
 });
 export type BoundedContext = z.infer<typeof boundedContextSchema>;
 
+/** Evans' context-mapping patterns. */
+export const CONTEXT_PATTERNS = [
+  "CustomerSupplier",
+  "Conformist",
+  "AntiCorruptionLayer",
+  "OpenHostService",
+  "PublishedLanguage",
+  "SharedKernel",
+  "Partnership",
+  "SeparateWays",
+] as const;
+export type ContextPattern = (typeof CONTEXT_PATTERNS)[number];
+
 export const UPSTREAM_ROLES = ["OpenHostService", "PublishedLanguage"] as const;
 export const DOWNSTREAM_ROLES = ["AntiCorruptionLayer", "Conformist"] as const;
 

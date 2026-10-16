@@ -51,8 +51,8 @@ export function frameOf(target: CameraTarget, state: WallState, layout: WallLayo
       const ofLayer = placed.filter((entry) => kindOf(entry.id) === target.layer);
       return ofLayer.length === 0 ? overview() : boundsOf(ofLayer.map((entry) => entry.placement));
     }
-    case "context": {
-      const region = layout.regions.get(target.context);
+    case "region": {
+      const region = layout.regions.get(target.region);
       return region ?? overview();
     }
     case "notes": {

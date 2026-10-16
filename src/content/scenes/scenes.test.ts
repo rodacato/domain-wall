@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { buildPackIndex } from "../../domain/pack/PackIndex";
 import { loadDefaultPack } from "../../domain/pack/packFixtures";
-import { listAllNotes } from "../../domain/wall/Note";
+import { listAllNotes, notesIn } from "../../domain/wall/Note";
 import { wallAfterStep, wallBeforeScene, type Scene } from "../../domain/wall/Scene";
 import { buildScenes } from "./buildScenes";
 
@@ -69,16 +69,17 @@ describe("the Event Storming scene", () => {
   });
 
   it("ends with every note of the pack on the wall", () => {
-    expect(wallAfterStep(scene, lastStep(scene)).notes).toHaveLength(listAllNotes(index).length);
+    expect(wallAfterStep(scene, lastStep(scene)).notes).toHaveLength(
+      notesIn(index, "timeline").length,
+    );
   });
 
   it("draws an arrow from each command to its event", () => {
     const afterCommands = wallAfterStep(scene, 2);
 
-    expect(afterCommands.arrows).toContainEqual({
-      from: "command:PlaceOrder",
-      to: "event:OrderPlaced",
-    });
+    expect(afterCommands.arrows).toContainEqual(
+      expect.objectContaining({ from: "command:PlaceOrder", to: "event:OrderPlaced" }),
+    );
   });
 });
 
@@ -89,12 +90,12 @@ describe("the bounded contexts scene", () => {
     const start = wallBeforeScene(scene);
 
     expect(start.layout).toBe("timeline");
-    expect(start.notes).toHaveLength(listAllNotes(index).length);
+    expect(start.notes).toHaveLength(notesIn(index, "timeline").length);
   });
 
   it("keeps the prelude's notes through every step, as the scrubber replays them", () => {
     for (const [position] of scene.steps.entries()) {
-      expect(wallAfterStep(scene, position).notes).toHaveLength(listAllNotes(index).length);
+      expect(wallAfterStep(scene, position).notes).toHaveLength(notesIn(index, "timeline").length);
     }
   });
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { buildPackIndex } from "../pack/PackIndex";
 import { loadDefaultPack } from "../pack/packFixtures";
-import { listAllNotes } from "./Note";
+import { notesIn } from "./Note";
 import { layoutWall } from "./layoutWall";
 import type { Placement } from "./Placement";
 
@@ -26,7 +26,7 @@ describe.each(["timeline", "byContext"] as const)("the %s layout", (mode) => {
   const layout = layoutWall(index, mode);
 
   it("positions every note the pack can show", () => {
-    expect(layout.placements.size).toBe(listAllNotes(index).length);
+    expect(layout.placements.size).toBe(notesIn(index, mode).length);
   });
 
   it("never lets two notes overlap", () => {

@@ -1,6 +1,33 @@
 import type { WallCommand } from "./WallCommand";
-import type { WallArrow, WallState } from "./WallState";
-import { EMPTY_WALL } from "./WallState";
+import { EMPTY_WALL, type WallArrow, type WallState } from "./WallState";
+
+function appendMissing(
+  existing: readonly string[],
+  additions: readonly string[],
+): readonly string[] {
+  return [...existing, ...additions.filter((item) => !existing.includes(item))];
+}
+
+function withArrows(
+  state: WallState,
+  specs: Extract<WallCommand, { kind: "drawArrows" }>["arrows"],
+): WallState {
+  const present = new Set(state.notes.map((note) => note.id));
+  const known = new Set(state.arrows.map((arrow) => `${arrow.from}>${arrow.to}`));
+  const added: WallArrow[] = [];
+  for (const spec of specs) {
+    const key = `${spec.from}>${spec.to}`;
+    if (!present.has(spec.from) || !present.has(spec.to) || known.has(key)) continue;
+    known.add(key);
+    added.push({
+      from: spec.from,
+      to: spec.to,
+      patterns: spec.patterns ?? [],
+      style: spec.style ?? "plain",
+    });
+  }
+  return { ...state, arrows: [...state.arrows, ...added] };
+}
 
 /** The wall's reducer: a pure function, so any scene step can be reached by replaying commands. */
 export function applyWallCommand(state: WallState, command: WallCommand): WallState {
@@ -25,23 +52,11 @@ export function applyWallCommand(state: WallState, command: WallCommand): WallSt
     case "setLayout":
       return { ...state, layout: command.layout };
     case "drawBoundary":
-      return state.boundaries.includes(command.context)
-        ? state
-        : { ...state, boundaries: [...state.boundaries, command.context] };
+      return { ...state, boundaries: appendMissing(state.boundaries, [command.region]) };
     case "eraseBoundaries":
       return { ...state, boundaries: [] };
-    case "drawArrows": {
-      const present = new Set(state.notes.map((note) => note.id));
-      const known = new Set(state.arrows.map((arrow) => `${arrow.from}>${arrow.to}`));
-      const added: WallArrow[] = [];
-      for (const arrow of command.arrows) {
-        const key = `${arrow.from}>${arrow.to}`;
-        if (!present.has(arrow.from) || !present.has(arrow.to) || known.has(key)) continue;
-        known.add(key);
-        added.push({ from: arrow.from, to: arrow.to });
-      }
-      return { ...state, arrows: [...state.arrows, ...added] };
-    }
+    case "drawArrows":
+      return withArrows(state, command.arrows);
     case "eraseArrows":
       return { ...state, arrows: [] };
     case "emphasize": {
@@ -64,6 +79,36 @@ export function applyWallCommand(state: WallState, command: WallCommand): WallSt
       return { ...state, term: { shown: true, context: command.context } };
     case "hideTerm":
       return { ...state, term: { shown: false, context: null } };
+    case "addGlossaryEntries":
+      return {
+        ...state,
+        glossary: {
+          ...state.glossary,
+          entries: appendMissing(state.glossary.entries, command.concepts),
+        },
+      };
+    case "flagAmbiguous":
+      return {
+        ...state,
+        glossary: {
+          entries: appendMissing(state.glossary.entries, [command.concept]),
+          ambiguous: appendMissing(state.glossary.ambiguous, [command.concept]),
+          resolved: state.glossary.resolved.filter((concept) => concept !== command.concept),
+        },
+      };
+    case "resolveAmbiguity":
+      return {
+        ...state,
+        glossary: {
+          ...state.glossary,
+          ambiguous: state.glossary.ambiguous.filter((concept) => concept !== command.concept),
+          resolved: appendMissing(state.glossary.resolved, [command.concept]),
+        },
+      };
+    case "showImpact":
+      return { ...state, impact: { model: command.model, revealed: command.revealed } };
+    case "hideImpact":
+      return { ...state, impact: { model: null, revealed: 0 } };
   }
 }
 

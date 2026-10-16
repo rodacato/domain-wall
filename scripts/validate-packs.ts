@@ -24,8 +24,11 @@ function report(label: string, issues: readonly ValidationIssue[]): void {
   for (const issue of issues) console.error(`  [${issue.ruleId}] ${issue.path}: ${issue.message}`);
 }
 
+const requestedDirectories = process.argv.slice(2);
+const directories = requestedDirectories.length > 0 ? requestedDirectories : packDirectories();
+
 let failures = 0;
-for (const directory of packDirectories()) {
+for (const directory of directories) {
   const parsed = loadPackDirectory(directory);
   if (!parsed.ok) {
     report(directory, parsed.error);

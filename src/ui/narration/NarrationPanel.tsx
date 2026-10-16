@@ -4,6 +4,7 @@ import { allConcepts } from "../../domain/course/Syllabus";
 import { dialogueSegments } from "../../domain/pack/dialogueSegments";
 import type { SceneStep } from "../../domain/wall/Scene";
 import { useI18n } from "../i18n/I18n";
+import { FocusSection } from "./FocusSection";
 
 interface NarrationPanelProps {
   readonly session: CourseSession;
@@ -36,6 +37,7 @@ export function NarrationPanel({ session, step }: NarrationPanelProps): ReactNod
           <p>{t(`course.concepts.${concept.id}.summary`)}</p>
         </section>
       )}
+      {step.focus !== undefined && <FocusSection session={session} focus={step.focus} />}
       <ul className="dialogue">
         {lines.map((line, position) => {
           const expert = session.index.experts.get(line.speaker);

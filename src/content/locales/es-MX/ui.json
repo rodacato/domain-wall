@@ -25,7 +25,56 @@
     "policy": "Política",
     "externalSystem": "Sistema externo",
     "readModel": "Modelo de lectura",
-    "aggregate": "Agregado"
+    "aggregate": "Agregado",
+    "context": "Contexto acotado"
+  },
+  "pattern": {
+    "CustomerSupplier": { "name": "Customer / Supplier" },
+    "Conformist": { "name": "Conformista" },
+    "AntiCorruptionLayer": { "name": "Capa anticorrupción" },
+    "OpenHostService": { "name": "Open Host Service" },
+    "PublishedLanguage": { "name": "Lenguaje publicado" },
+    "SharedKernel": { "name": "Núcleo compartido" },
+    "Partnership": { "name": "Alianza" },
+    "SeparateWays": { "name": "Caminos separados" },
+    "inThisBusiness": "En este negocio",
+    "notInThisBusiness": "Este negocio no tiene un ejemplo de este patrón, así que aquí va la idea en abstracto.",
+    "upstream": "Upstream",
+    "downstream": "Downstream",
+    "externalSystem": "{system} se queda afuera; {context} traduce en la frontera."
+  },
+  "zone": {
+    "core": { "title": "Dominio core", "advice": "Aquí va tu mejor equipo y el modelo más rico" },
+    "supporting": { "title": "De soporte", "advice": "Constrúyelo sencillo y a la medida" },
+    "generic": { "title": "Genérico", "advice": "Compra o reutiliza; no lo reinventes" },
+    "why": "Por qué"
+  },
+  "impact": {
+    "anemicTitle": "Modelo anémico: la regla se copia en cada lugar donde se usa {aggregate}",
+    "richTitle": "Modelo rico: la regla vive en un solo lugar",
+    "placeLine": "revisa el estado antes de {command}",
+    "mustChange": "Hay que cambiarlo",
+    "forgotten": "Olvidado: ahora contradice a los demás",
+    "counter": "{count} lugares que cambiar",
+    "onePlace": "1 lugar que cambiar",
+    "transitionBefore": "Antes: {command} se permite desde {states}",
+    "transitionAfter": "Ahora: {command} se permite desde {states}",
+    "place": {
+      "web": "Pantalla web",
+      "service": "Servicio",
+      "adminTool": "Herramienta de administración",
+      "importJob": "Proceso de importación",
+      "api": "API pública",
+      "report": "Consulta de reportes"
+    },
+    "story": "El cambio"
+  },
+  "glossary": {
+    "title": "Glosario vivo",
+    "empty": "Los términos aparecen aquí cuando los expertos los dicen",
+    "ambiguous": "Ambiguo",
+    "resolved": "Resuelto por contexto",
+    "meaningIn": "En {context}"
   },
   "language": {
     "label": "Idioma",

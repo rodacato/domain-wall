@@ -1,6 +1,12 @@
 import type { ConceptId, ModuleId } from "../../domain/course/ConceptId";
 import type { PackIndex } from "../../domain/pack/PackIndex";
-import { listAllNotes, notesOfKind, type NoteId, type NoteKind } from "../../domain/wall/Note";
+import {
+  listAllNotes,
+  notesIn,
+  notesOfKind,
+  type NoteId,
+  type NoteKind,
+} from "../../domain/wall/Note";
 import { cameraTourOfLayer } from "../../domain/wall/cameraTour";
 import type { Scene, SceneStep } from "../../domain/wall/Scene";
 
@@ -110,7 +116,7 @@ export function everyNoteOnTheTimeline(index: PackIndex): Scene["prelude"] {
   return [
     { kind: "clearWall" },
     { kind: "setLayout", layout: "timeline" },
-    { kind: "placeNotes", ids: listAllNotes(index).map((note) => note.id) },
+    { kind: "placeNotes", ids: notesIn(index, "timeline").map((note) => note.id) },
     { kind: "focusCamera", target: { kind: "overview" } },
   ];
 }

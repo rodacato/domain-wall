@@ -25,7 +25,56 @@
     "policy": "Policy",
     "externalSystem": "External system",
     "readModel": "Read model",
-    "aggregate": "Aggregate"
+    "aggregate": "Aggregate",
+    "context": "Bounded context"
+  },
+  "pattern": {
+    "CustomerSupplier": { "name": "Customer / Supplier" },
+    "Conformist": { "name": "Conformist" },
+    "AntiCorruptionLayer": { "name": "Anticorruption layer" },
+    "OpenHostService": { "name": "Open Host Service" },
+    "PublishedLanguage": { "name": "Published language" },
+    "SharedKernel": { "name": "Shared kernel" },
+    "Partnership": { "name": "Partnership" },
+    "SeparateWays": { "name": "Separate ways" },
+    "inThisBusiness": "In this business",
+    "notInThisBusiness": "This business has no example of this pattern, so here is the idea in the abstract.",
+    "upstream": "Upstream",
+    "downstream": "Downstream",
+    "externalSystem": "{system} stays outside; {context} translates at the border."
+  },
+  "zone": {
+    "core": { "title": "Core domain", "advice": "Your best team and the richest model go here" },
+    "supporting": { "title": "Supporting", "advice": "Build it simple and to measure" },
+    "generic": { "title": "Generic", "advice": "Buy or reuse; do not reinvent it" },
+    "why": "Why"
+  },
+  "impact": {
+    "anemicTitle": "Anemic model: the rule is copied wherever {aggregate} is used",
+    "richTitle": "Rich model: the rule lives in one place",
+    "placeLine": "checks the state before {command}",
+    "mustChange": "Must change",
+    "forgotten": "Forgotten: it now disagrees with the rest",
+    "counter": "{count} places to change",
+    "onePlace": "1 place to change",
+    "transitionBefore": "Before: {command} is allowed from {states}",
+    "transitionAfter": "Now: {command} is allowed from {states}",
+    "place": {
+      "web": "Web screen",
+      "service": "Service",
+      "adminTool": "Admin tool",
+      "importJob": "Import job",
+      "api": "Public API",
+      "report": "Report query"
+    },
+    "story": "The change"
+  },
+  "glossary": {
+    "title": "Living glossary",
+    "empty": "Terms appear here as the experts say them",
+    "ambiguous": "Ambiguous",
+    "resolved": "Resolved by context",
+    "meaningIn": "In {context}"
   },
   "language": {
     "label": "Language",

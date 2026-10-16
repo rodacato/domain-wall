@@ -8,20 +8,25 @@ import { listAllNotes, type NoteKind } from "../../domain/wall/Note";
 import { termPlacement } from "../../domain/wall/termPlacement";
 import type { WallState } from "../../domain/wall/WallState";
 import { useI18n } from "../i18n/I18n";
+import { ChangeImpactStage } from "./ChangeImpactStage";
+import { GlossaryBoard } from "./GlossaryBoard";
 import { StickyNote } from "./StickyNote";
 import { TermNote } from "./TermNote";
 import { useElementSize } from "./useElementSize";
 import { useManualCamera } from "./useManualCamera";
 import { WallLegend } from "./WallLegend";
-import { WallLines } from "./WallLines";
+import { WallLines, type RegionLabel } from "./WallLines";
+import "./strategic.css";
 
 interface WallViewProps {
   readonly session: CourseSession;
   readonly state: WallState;
 }
 
+const ZONE_PREFIX = "zone:";
+
 export function WallView({ session, state }: WallViewProps): ReactNode {
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
   const [reference, viewSize] = useElementSize<HTMLDivElement>();
   const { index } = session;
 
@@ -38,8 +43,13 @@ export function WallView({ session, state }: WallViewProps): ReactNode {
   const dropOrderByKind = new Map<NoteKind, number>();
   const kindsOnWall = new Set<NoteKind>();
 
-  const contextLabel = (context: string): string =>
-    labelOfConcept(index, context)?.[locale] ?? context;
+  const regionLabel = (region: string): RegionLabel => {
+    if (region.startsWith(ZONE_PREFIX)) {
+      const zone = region.slice(ZONE_PREFIX.length);
+      return { title: t(`ui.zone.${zone}.title`), advice: t(`ui.zone.${zone}.advice`) };
+    }
+    return { title: labelOfConcept(index, region)?.[locale] ?? region, advice: null };
+  };
 
   return (
     <div className="wall" ref={reference} {...manualCamera.handlers}>
@@ -70,7 +80,12 @@ export function WallView({ session, state }: WallViewProps): ReactNode {
               }
         }
       >
-        <WallLines state={state} layout={layout} contextLabel={contextLabel} />
+        <WallLines
+          state={state}
+          layout={layout}
+          regionLabel={regionLabel}
+          patternName={(pattern) => t(`ui.pattern.${pattern}.name`)}
+        />
         <AnimatePresence>
           {state.notes.map((wallNote) => {
             const spec = specs.get(wallNote.id);
@@ -98,6 +113,10 @@ export function WallView({ session, state }: WallViewProps): ReactNode {
           )}
         </AnimatePresence>
       </motion.div>
+      {state.glossary.entries.length > 0 && (
+        <GlossaryBoard session={session} glossary={state.glossary} />
+      )}
+      {state.impact.model !== null && <ChangeImpactStage session={session} impact={state.impact} />}
       <WallLegend kindsOnWall={kindsOnWall} />
     </div>
   );

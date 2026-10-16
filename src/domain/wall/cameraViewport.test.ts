@@ -64,7 +64,7 @@ describe("frameOf", () => {
   it("frames a context region in the grouped layout", () => {
     const grouped = layoutWall(index, "byContext");
 
-    expect(frameOf({ kind: "context", context: "Shipping" }, withEvents, grouped)).toEqual(
+    expect(frameOf({ kind: "region", region: "Shipping" }, withEvents, grouped)).toEqual(
       grouped.regions.get("Shipping"),
     );
   });

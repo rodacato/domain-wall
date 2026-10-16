@@ -85,6 +85,30 @@ export function edgePoint(rectangle: Rectangle, toward: Point): Point {
 export interface ArrowPaths {
   readonly shaft: string;
   readonly head: string;
+  /** Arrowhead at the start, for two-way relations. */
+  readonly startHead: string;
+  /** Where a label sits: on the middle of the shaft. */
+  readonly labelAt: Point;
+  /** A hand-drawn cross on the middle of the shaft, for a severed link. */
+  readonly cross: string;
+  /** A short bar across the shaft near its end, for a translation layer. */
+  readonly bar: string;
+}
+
+function pointOnCurve(start: Point, control: Point, end: Point, along: number): Point {
+  const remaining = 1 - along;
+  return {
+    x: remaining * remaining * start.x + 2 * remaining * along * control.x + along * along * end.x,
+    y: remaining * remaining * start.y + 2 * remaining * along * control.y + along * along * end.y,
+  };
+}
+
+function tangentAt(start: Point, control: Point, end: Point, along: number): number {
+  const remaining = 1 - along;
+  return Math.atan2(
+    2 * remaining * (control.y - start.y) + 2 * along * (end.y - control.y),
+    2 * remaining * (control.x - start.x) + 2 * along * (end.x - control.x),
+  );
 }
 
 /** A hand-drawn curved arrow from one rectangle to another, with a two-stroke arrowhead. */
@@ -111,8 +135,41 @@ export function arrowBetween(from: Rectangle, to: Rectangle, seed: string): Arro
   });
   const left = wing(0.45);
   const right = wing(-0.45);
+  const headAt = (tip: Point, direction: number): string => {
+    const wingAt = (offset: number): Point => ({
+      x: tip.x - headLength * Math.cos(direction + offset),
+      y: tip.y - headLength * Math.sin(direction + offset),
+    });
+    const a = wingAt(0.45);
+    const b = wingAt(-0.45);
+    return `M ${round(a.x)} ${round(a.y)} L ${round(tip.x)} ${round(tip.y)} L ${round(b.x)} ${round(b.y)}`;
+  };
+  const strokeAcross = (center: Point, direction: number, reach: number): string => {
+    const normalAngle = direction + Math.PI / 2;
+    const a = {
+      x: center.x + reach * Math.cos(normalAngle),
+      y: center.y + reach * Math.sin(normalAngle),
+    };
+    const b = {
+      x: center.x - reach * Math.cos(normalAngle),
+      y: center.y - reach * Math.sin(normalAngle),
+    };
+    return `M ${round(a.x)} ${round(a.y)} L ${round(b.x)} ${round(b.y)}`;
+  };
+
+  const labelAt = pointOnCurve(start, control, end, 0.5);
+  const middleDirection = tangentAt(start, control, end, 0.5);
+  const crossReach = 14;
+  const slash = strokeAcross(labelAt, middleDirection + 0.6, crossReach);
+  const backslash = strokeAcross(labelAt, middleDirection - 0.6, crossReach);
+  const barAt = pointOnCurve(start, control, end, 0.78);
+
   return {
     shaft: `M ${round(start.x)} ${round(start.y)} Q ${round(control.x)} ${round(control.y)} ${round(end.x)} ${round(end.y)}`,
     head: `M ${round(left.x)} ${round(left.y)} L ${round(end.x)} ${round(end.y)} L ${round(right.x)} ${round(right.y)}`,
+    startHead: headAt(start, tangentAt(start, control, end, 0) + Math.PI),
+    labelAt,
+    cross: `${slash} ${backslash}`,
+    bar: strokeAcross(barAt, tangentAt(start, control, end, 0.78), 18),
   };
 }

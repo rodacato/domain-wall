@@ -1,19 +1,11 @@
 import type { PackIndex } from "../pack/PackIndex";
-import { listAllNotes, type NoteId, type NoteKind, type NoteSpec } from "./Note";
+import { layoutContextMap, layoutSubdomains } from "./layoutStrategic";
+import { boundsOf, NOTE_SIZE, tiltOf, type WallLayout } from "./layoutShared";
+import { notesIn, type NoteId, type NoteSpec } from "./Note";
 import type { Placement, Rectangle } from "./Placement";
 import type { LayoutMode } from "./WallState";
 
-export const NOTE_SIZE: Readonly<
-  Record<NoteKind, { readonly width: number; readonly height: number }>
-> = {
-  event: { width: 128, height: 96 },
-  command: { width: 128, height: 96 },
-  actor: { width: 112, height: 72 },
-  policy: { width: 128, height: 96 },
-  externalSystem: { width: 128, height: 96 },
-  readModel: { width: 128, height: 96 },
-  aggregate: { width: 240, height: 120 },
-};
+export { boundsOf, NOTE_SIZE, type WallLayout } from "./layoutShared";
 
 const BASE_COLUMN_WIDTH = 190;
 const SIDE_BY_SIDE_COMMAND_WIDTH = 150;
@@ -31,13 +23,6 @@ interface Column {
   readonly eventName: string | null;
   readonly left: number;
   readonly width: number;
-}
-
-/** A small deterministic tilt in [-3, 3] degrees derived from the note's id. */
-function tiltOf(id: string): number {
-  let hash = 0;
-  for (const character of id) hash = (hash * 31 + character.charCodeAt(0)) % 997;
-  return (hash % 7) - 3;
 }
 
 function firstEmittedEvent(index: PackIndex, commandName: string): string | null {
@@ -149,15 +134,11 @@ function isIssuerOf(index: PackIndex, note: NoteSpec, commandName: string): bool
   return note.issuesCommand === commandName;
 }
 
-export interface WallLayout {
-  readonly placements: ReadonlyMap<NoteId, Placement>;
-  /** One region per bounded context in the grouped layout; empty for the timeline. */
-  readonly regions: ReadonlyMap<string, Rectangle>;
-}
-
-/** Positions for every note the pack can show; the wall draws the subset that is currently placed. */
+/** Positions for every note the pack can show in the layout; the wall draws the subset that is currently placed. */
 export function layoutWall(index: PackIndex, mode: LayoutMode): WallLayout {
-  const notes = listAllNotes(index);
+  if (mode === "contextMap") return layoutContextMap(index);
+  if (mode === "subdomains") return layoutSubdomains(index);
+  const notes = notesIn(index, mode);
 
   if (mode === "timeline") {
     return { placements: layoutRegion(index, notes, 0, 0), regions: new Map() };
@@ -190,13 +171,4 @@ export function layoutWall(index: PackIndex, mode: LayoutMode): WallLayout {
     rowHeight = Math.max(rowHeight, region.height);
   });
   return { placements, regions };
-}
-
-export function boundsOf(rectangles: readonly Rectangle[]): Rectangle {
-  if (rectangles.length === 0) return { x: 0, y: 0, width: 0, height: 0 };
-  const left = Math.min(...rectangles.map((rectangle) => rectangle.x));
-  const top = Math.min(...rectangles.map((rectangle) => rectangle.y));
-  const right = Math.max(...rectangles.map((rectangle) => rectangle.x + rectangle.width));
-  const bottom = Math.max(...rectangles.map((rectangle) => rectangle.y + rectangle.height));
-  return { x: left, y: top, width: right - left, height: bottom - top };
 }
