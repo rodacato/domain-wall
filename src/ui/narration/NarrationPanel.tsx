@@ -11,18 +11,23 @@ interface NarrationPanelProps {
   readonly session: CourseSession;
   readonly step: SceneStep;
   readonly language: ProgrammingLanguageId;
+  /** The module the step belongs to; it speaks for the steps that teach no concept of their own. */
+  readonly courseModule: CourseModule | undefined;
 }
 
-export function NarrationPanel({ session, step, language }: NarrationPanelProps): ReactNode {
+export function NarrationPanel({
+  session,
+  step,
+  language,
+  courseModule,
+}: NarrationPanelProps): ReactNode {
   const { locale, t } = useI18n();
   const concept =
     step.concept === null
       ? undefined
       : allConcepts(session.syllabus).find((candidate) => candidate.id === step.concept);
   const lines = step.dialogue === null ? [] : session.index.pack.dialogues[step.dialogue];
-  const courseModule = session.syllabus.modules.find((candidate) =>
-    candidate.concepts.some((moduleConcept) => moduleConcept.id === step.concept),
-  );
+  const isExercise = step.commands.some((command) => command.kind === "showExercise");
 
   return (
     <aside
@@ -38,6 +43,16 @@ export function NarrationPanel({ session, step, language }: NarrationPanelProps)
           )}
           <h2>{t(`course.concepts.${concept.id}.title`)}</h2>
           <p>{t(`course.concepts.${concept.id}.summary`)}</p>
+        </section>
+      )}
+      {concept === undefined && courseModule !== undefined && (
+        <section className="narration__concept">
+          <span className="narration__tag">
+            {t("ui.narration.module", { number: courseModule.number })}
+          </span>
+          <h2>{t(`course.modules.${courseModule.id}.title`)}</h2>
+          <p>{t(`course.modules.${courseModule.id}.objective`)}</p>
+          {isExercise && <p>{t("ui.narration.exercise")}</p>}
         </section>
       )}
       {step.focus !== undefined && (

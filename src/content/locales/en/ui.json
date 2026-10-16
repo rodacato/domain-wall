@@ -20,7 +20,9 @@
     "label": "Narration",
     "sources": "Further reading for this module",
     "chapters": "ch. {chapters}",
-    "sourcesNote": "The course explains in its own words; the businesses and their rules are teaching examples."
+    "sourcesNote": "The course explains in its own words; the businesses and their rules are teaching examples.",
+    "module": "Module {number}",
+    "exercise": "Solve the exercise on the wall. Checking it tells you what is right and what is not yet; check as many times as you need."
   },
   "term": {
     "neutralHint": "Which meaning?",
@@ -116,6 +118,34 @@
   "preferences": {
     "open": "Change my choices",
     "modeling": "Today we model"
+  },
+  "tour": {
+    "open": "How to use the course",
+    "count": "Guide · {current} of {total}",
+    "skip": "Skip the guide",
+    "back": "Back",
+    "next": "Next",
+    "done": "Start",
+    "wall": {
+      "title": "The wall",
+      "body": "Each step sticks, moves or highlights notes here. Drag the wall to move around and use the mouse wheel to zoom; the next step brings the camera back. When a note looks small, hover it to read it."
+    },
+    "narration": {
+      "title": "What is happening",
+      "body": "These cards explain the step on the wall: the concept, what to notice and, at the bottom, further reading for the module."
+    },
+    "rail": {
+      "title": "The ten modules",
+      "body": "Jump to any module whenever you like. The number on the right counts the concepts you have visited, not the ones you have mastered."
+    },
+    "player": {
+      "title": "Moving through the course",
+      "body": "Go back and forward with these buttons or with the ← → keys. Demo moves on by itself every 7 seconds. Every module ends with an exercise: checking it tells you what is right, what is not and why."
+    },
+    "header": {
+      "title": "Your choices",
+      "body": "Change the language, the theme and the code language here, or the business under “Today we model”. Your progress stays when you change any of them. The “?” button opens this guide again."
+    }
   },
   "onboarding": {
     "cover": {

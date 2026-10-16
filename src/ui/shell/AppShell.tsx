@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { CourseSession } from "../../application/CourseSession";
 import {
   PROGRAMMING_LANGUAGES,
@@ -8,6 +8,8 @@ import { SUPPORTED_LOCALES, type LocaleCode } from "../../domain/locale/LocaleRe
 import { exerciseEvidence, moduleCompletion } from "../../domain/progress/Progress";
 import { useI18n } from "../i18n/I18n";
 import { NarrationPanel } from "../narration/NarrationPanel";
+import { Tour } from "../tour/Tour";
+import { opensByItself, rememberTourSeen, tourSeen } from "../tour/tourVisibility";
 import { WallView } from "../wall/WallView";
 import type { Learner } from "./useLearner";
 import { THEME_CHOICES, type ThemeChoice } from "./useTheme";
@@ -37,6 +39,8 @@ export function AppShell({
   const player = useScenePlayer(session.scenes);
   const { reach } = learner;
   const conceptInView = player.step?.concept ?? null;
+  const [touring, setTouring] = useState(() => opensByItself(window.location.search, tourSeen()));
+  const tourButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     document.documentElement.lang = locale;
@@ -110,6 +114,17 @@ export function AppShell({
             ))}
           </select>
         </label>
+        <button
+          ref={tourButton}
+          className="app__tour"
+          aria-label={t("ui.tour.open")}
+          title={t("ui.tour.open")}
+          onClick={() => {
+            setTouring(true);
+          }}
+        >
+          ?
+        </button>
       </header>
 
       <nav className="rail" aria-label={t("ui.rail.title")}>
@@ -166,6 +181,9 @@ export function AppShell({
           session={session}
           step={player.step}
           language={learner.preferences.programmingLanguage}
+          courseModule={session.syllabus.modules.find(
+            (candidate) => candidate.id === player.scene?.module,
+          )}
         />
       )}
 
@@ -210,6 +228,15 @@ export function AppShell({
           {t("ui.player.next")} →
         </button>
       </footer>
+      {touring && (
+        <Tour
+          onClose={() => {
+            rememberTourSeen();
+            setTouring(false);
+            tourButton.current?.focus();
+          }}
+        />
+      )}
     </div>
   );
 }

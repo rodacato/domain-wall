@@ -1,0 +1,116 @@
+.tour {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+
+.tour__spotlight {
+  position: fixed;
+  border: 3px solid var(--ui-accent);
+  border-radius: 6px;
+  box-shadow: 0 0 0 100vmax rgba(28, 18, 8, 0.62);
+  pointer-events: none;
+  transition:
+    left 0.35s ease,
+    top 0.35s ease,
+    width 0.35s ease,
+    height 0.35s ease;
+}
+
+.tour__card {
+  position: fixed;
+  padding: 22px 20px 16px 36px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 22px,
+      var(--paper-margin) 22px,
+      var(--paper-margin) 23.5px,
+      transparent 23.5px
+    ),
+    linear-gradient(
+        transparent 25px,
+        var(--paper-rule) 25px,
+        var(--paper-rule) 26px,
+        transparent 26px
+      )
+      0 14px / 100% 26px,
+    var(--ui-surface);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+  color: var(--ui-text);
+  line-height: 26px;
+  transition:
+    left 0.35s ease,
+    top 0.35s ease;
+}
+
+.tour__count {
+  margin: 0;
+  color: var(--ui-muted);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tour__title {
+  margin: 0;
+  font-family: var(--font-note);
+  font-variation-settings: var(--axes-note);
+  font-size: 24px;
+  line-height: 34px;
+}
+
+.tour__body {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+
+.tour__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tour__spacer {
+  flex: 1;
+}
+
+.tour__skip,
+.tour__back,
+.tour__next {
+  padding: 6px 14px;
+  border-radius: 3px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.tour__skip {
+  border: 0;
+  background: transparent;
+  color: var(--ui-muted);
+  text-decoration: underline;
+}
+
+.tour__back {
+  border: 1px solid var(--ui-border);
+  background: var(--ui-surface);
+  color: var(--ui-text);
+}
+
+.tour__next {
+  border: 0;
+  background: var(--ui-accent);
+  color: var(--ui-accent-contrast);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tour__spotlight,
+  .tour__card {
+    transition: none;
+  }
+}

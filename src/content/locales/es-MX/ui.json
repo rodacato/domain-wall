@@ -20,7 +20,9 @@
     "label": "Narración",
     "sources": "Para profundizar en este módulo",
     "chapters": "cap. {chapters}",
-    "sourcesNote": "El curso explica con sus propias palabras; los negocios y sus reglas son ejemplos didácticos."
+    "sourcesNote": "El curso explica con sus propias palabras; los negocios y sus reglas son ejemplos didácticos.",
+    "module": "Módulo {number}",
+    "exercise": "Resuelve el ejercicio del muro. Al revisarlo te dice qué está bien y qué todavía no; revisa las veces que necesites."
   },
   "term": {
     "neutralHint": "¿Cuál significado?",
@@ -116,6 +118,34 @@
   "preferences": {
     "open": "Cambiar mis elecciones",
     "modeling": "Hoy modelamos"
+  },
+  "tour": {
+    "open": "Cómo usar el curso",
+    "count": "Guía · {current} de {total}",
+    "skip": "Saltar la guía",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "done": "Empezar",
+    "wall": {
+      "title": "El muro",
+      "body": "Cada paso pega, mueve o resalta notas aquí. Arrastra el muro para moverte y usa la rueda del mouse para acercarte; al siguiente paso la cámara regresa sola. Si una nota se ve chica, pasa el cursor encima para leerla."
+    },
+    "narration": {
+      "title": "Qué está pasando",
+      "body": "Estas fichas explican el paso que ves en el muro: el concepto, en qué fijarte y, al final, lecturas para profundizar en el módulo."
+    },
+    "rail": {
+      "title": "Los diez módulos",
+      "body": "Salta a cualquier módulo cuando quieras. El número de la derecha cuenta los conceptos que ya recorriste, no los que ya dominas."
+    },
+    "player": {
+      "title": "Cómo avanzar",
+      "body": "Avanza y retrocede con estos botones o con las teclas ← →. Demo avanza solo cada 7 segundos. Cada módulo termina con un ejercicio: al revisarlo te dice qué está bien, qué no y por qué."
+    },
+    "header": {
+      "title": "Tus elecciones",
+      "body": "Aquí cambias el idioma, el tema y el lenguaje del código, o el negocio en «Hoy modelamos». Tu avance se queda aunque cambies cualquiera. El botón «?» vuelve a abrir esta guía."
+    }
   },
   "onboarding": {
     "cover": {

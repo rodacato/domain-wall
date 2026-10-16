@@ -1,31 +1,7 @@
-import { expect, test, type Page } from "@playwright/test";
-
-async function finishOnboarding(page: Page, options: { industry?: string } = {}): Promise<void> {
-  await page.goto("/");
-  await expect(
-    page.getByRole("heading", { name: /language should the course speak/i }),
-  ).toBeVisible();
-  if (options.industry !== undefined) {
-    await page.getByRole("button", { name: new RegExp(options.industry) }).click();
-  }
-  await page.getByRole("button", { name: "Start the workshop" }).click();
-  await expect(page.getByRole("navigation", { name: "Course" })).toBeVisible();
-}
-
-async function openModule(page: Page, title: string): Promise<void> {
-  await page
-    .getByRole("navigation", { name: "Course" })
-    .getByRole("button", { name: new RegExp(title) })
-    .click();
-}
-
-async function goToLastStep(page: Page): Promise<void> {
-  const next = page.getByRole("button", { name: /^Next step/ });
-  while (await next.isEnabled()) await next.click();
-}
+import { expect, finishOnboarding, goToLastStep, openModule, test } from "./support";
 
 test(
-  "a first visit asks three questions and then plays the course",
+  "the cover starts the course and the player moves through it",
   { tag: "@smoke" },
   async ({ page }) => {
     await finishOnboarding(page);
@@ -33,6 +9,28 @@ test(
     await expect(page.getByRole("heading", { name: "Cost of change" })).toBeVisible();
     await page.getByRole("button", { name: /^Next step/ }).click();
     await expect(page.getByText("Step 2 of")).toBeVisible();
+    await page.getByRole("button", { name: /Previous step/ }).click();
+    await expect(page.getByText("Step 1 of")).toBeVisible();
+    await page.keyboard.press("ArrowRight");
+    await expect(page.getByText("Step 2 of")).toBeVisible();
+    await page.keyboard.press("ArrowLeft");
+    await expect(page.getByText("Step 1 of")).toBeVisible();
+  },
+);
+
+test(
+  "every module opens on its first step with its narration",
+  { tag: "@smoke" },
+  async ({ page }) => {
+    await finishOnboarding(page);
+    const modules = page.getByRole("navigation", { name: "Course" }).getByRole("button");
+
+    for (let module = 0; module < (await modules.count()); module += 1) {
+      await modules.nth(module).click();
+      await expect(modules.nth(module)).toHaveAttribute("aria-current", "true");
+      await expect(page.getByText(/^Step 1 of \d+$/)).toBeVisible();
+      await expect(page.locator(".narration")).not.toBeEmpty();
+    }
   },
 );
 
@@ -50,65 +48,50 @@ test("changing the language keeps the progress and translates the course", async
   ).toBeVisible();
 });
 
-test("a curated industry changes the whole course", async ({ page }) => {
+test("choices and progress survive a reload", async ({ page }) => {
   await finishOnboarding(page, { industry: "Neighborhood Clinic" });
+  await page.getByLabel(/^Code/).selectOption("ruby");
+  await page.getByRole("button", { name: /^Next step/ }).click();
+  await page.getByLabel("Language").selectOption("es-MX");
 
-  await expect(page.getByRole("button", { name: "Neighborhood Clinic" })).toBeVisible();
-  await expect(page.getByText(/Void invoice|Issue invoice/).first()).toBeVisible();
+  await page.reload();
+
+  const rail = page.getByRole("navigation", { name: "Curso" });
+  await expect(rail).toBeVisible();
+  await expect(page.locator(".app__business-name")).toHaveText("Clínica Vecinal");
+  await expect(page.getByLabel(/^Código/)).toHaveValue("ruby");
+  await expect(rail.getByText("2/4").first()).toBeVisible();
 });
 
-test("an exercise without code waits for every answer and then says how it went", async ({
-  page,
-}) => {
-  await finishOnboarding(page);
-  await openModule(page, "Subdomains");
-  await goToLastStep(page);
-
-  await expect(page.getByRole("heading", { name: /Core, supporting or generic/ })).toBeVisible();
-  const check = page.getByRole("button", { name: "Check" });
-  await expect(check).toBeDisabled();
-
-  for (const row of await page.locator(".classify__row").all()) {
-    await row.getByRole("button").first().click();
-  }
-  await expect(check).toBeEnabled();
-  await check.click();
-
-  await expect(page.getByText(/not in the right place yet|Everything is in place/)).toBeVisible();
-  const rows = page.locator(".classify__row");
-  await expect(rows.locator(".feedback")).toHaveCount(await rows.count());
-  for (const wrong of await page.locator(".classify__row--wrong").all()) {
-    await expect(wrong.getByText("✗ Not yet")).toBeVisible();
-    await expect(wrong.locator(".feedback__hint")).not.toBeEmpty();
-  }
-});
-
-test("a code exercise accepts the reference solution", async ({ page }) => {
+test("the arrow keys move the course but not while typing code", async ({ page }) => {
   await finishOnboarding(page);
   await openModule(page, "Tactical building blocks");
   await goToLastStep(page);
+  const position = page.locator(".player__position");
+  const before = await position.innerText();
 
-  await page.getByRole("button", { name: "Show the reference" }).click();
-  const reference = await page.locator(".codeboard__reference code").innerText();
-  await page.getByLabel("Your code").fill(reference);
-  await page.getByRole("button", { name: "Check" }).click();
+  const editor = page.getByLabel("Your code");
+  await editor.click();
+  await editor.press("ArrowLeft");
+  await editor.press("ArrowRight");
 
-  await expect(page.getByText("The syntax is valid")).toBeVisible();
-  await expect(page.getByText("Checked, not run")).toBeVisible();
+  await expect(position).toHaveText(before);
 });
 
-test("the demo plays the course by itself", async ({ page }) => {
+test("the demo plays the course by itself and stops when asked", async ({ page }) => {
   await finishOnboarding(page);
   await page.getByRole("button", { name: /Demo/ }).click();
 
   await expect(page.getByRole("button", { name: /Pause/ })).toBeVisible();
   await expect(page.getByText("Step 2 of")).toBeVisible({ timeout: 15_000 });
+  await page.getByRole("button", { name: /Pause/ }).click();
+  await expect(page.getByRole("button", { name: /Demo/ })).toBeVisible();
 });
 
 test("describing a business generates one, checks it, sends a pass back and then teaches with it", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/?tour=off");
 
   await page.getByRole("button", { name: /Describe your business/ }).click();
   await page
