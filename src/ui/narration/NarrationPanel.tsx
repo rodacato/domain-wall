@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { CourseSession } from "../../application/CourseSession";
 import { allConcepts } from "../../domain/course/Syllabus";
+import type { ProgrammingLanguageId } from "../../domain/language/ProgrammingLanguage";
 import { dialogueSegments } from "../../domain/pack/dialogueSegments";
 import type { SceneStep } from "../../domain/wall/Scene";
 import { useI18n } from "../i18n/I18n";
@@ -9,6 +10,7 @@ import { FocusSection } from "./FocusSection";
 interface NarrationPanelProps {
   readonly session: CourseSession;
   readonly step: SceneStep;
+  readonly language: ProgrammingLanguageId;
 }
 
 /** A pastel colour derived from an expert's avatar seed, stable across sessions. */
@@ -18,7 +20,7 @@ function avatarColour(seed: string): string {
   return `hsl(${hash} 70% 82%)`;
 }
 
-export function NarrationPanel({ session, step }: NarrationPanelProps): ReactNode {
+export function NarrationPanel({ session, step, language }: NarrationPanelProps): ReactNode {
   const { locale, t } = useI18n();
   const concept =
     step.concept === null
@@ -37,7 +39,9 @@ export function NarrationPanel({ session, step }: NarrationPanelProps): ReactNod
           <p>{t(`course.concepts.${concept.id}.summary`)}</p>
         </section>
       )}
-      {step.focus !== undefined && <FocusSection session={session} focus={step.focus} />}
+      {step.focus !== undefined && (
+        <FocusSection session={session} focus={step.focus} language={language} />
+      )}
       <ul className="dialogue">
         {lines.map((line, position) => {
           const expert = session.index.experts.get(line.speaker);

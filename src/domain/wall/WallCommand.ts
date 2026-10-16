@@ -1,3 +1,4 @@
+import type { CodeMode, CodeUnit } from "./CodeStage";
 import type { NoteId } from "./Note";
 import type {
   ArrowStyle,
@@ -34,4 +35,12 @@ export type WallCommand =
   | { readonly kind: "flagAmbiguous"; readonly concept: string }
   | { readonly kind: "resolveAmbiguity"; readonly concept: string }
   | { readonly kind: "showImpact"; readonly model: ImpactModel; readonly revealed: number }
-  | { readonly kind: "hideImpact" };
+  | { readonly kind: "hideImpact" }
+  | {
+      readonly kind: "showCode";
+      readonly level: "aggregate" | "code";
+      readonly unit: CodeUnit;
+      readonly focus?: string;
+      readonly mode?: CodeMode;
+    }
+  | { readonly kind: "hideCode" };

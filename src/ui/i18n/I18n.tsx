@@ -11,6 +11,8 @@ interface I18n {
   readonly locale: LocaleCode;
   readonly setLocale: (locale: LocaleCode) => void;
   readonly t: Translate;
+  /** Whether the catalog of the current locale, or the canonical one, defines the key. */
+  readonly has: (key: string) => boolean;
 }
 
 const I18nContext = createContext<I18n | null>(null);
@@ -39,9 +41,14 @@ export function I18nProvider({
     [catalogs, locale],
   );
 
+  const has = useCallback(
+    (key: string) => key in catalogs[locale] || key in catalogs[CANONICAL_LOCALE],
+    [catalogs, locale],
+  );
+
   const value = useMemo(
-    () => ({ locale, setLocale: onLocaleChange, t }),
-    [locale, onLocaleChange, t],
+    () => ({ locale, setLocale: onLocaleChange, t, has }),
+    [locale, onLocaleChange, t, has],
   );
   return <I18nContext value={value}>{children}</I18nContext>;
 }

@@ -6,6 +6,7 @@ import type { LocaleCode } from "../domain/locale/LocaleRegistry";
 import { buildPackIndex, type PackIndex } from "../domain/pack/PackIndex";
 import type { SemanticallyValidPack } from "../domain/pack/validation/validateSemantics";
 import type { Scene } from "../domain/wall/Scene";
+import type { TemplatesByLanguage } from "./loadTemplates";
 
 /** Everything the UI needs to run the course: the pack it renders over, the syllabus, the scenes and the texts. */
 export interface CourseSession {
@@ -16,6 +17,8 @@ export interface CourseSession {
   readonly catalogs: Readonly<Record<LocaleCode, FlatCatalog>>;
   /** The same small value object in each programming language, shown while the learner chooses. */
   readonly languageSamples: Readonly<Record<ProgrammingLanguageId, string>>;
+  /** The generation templates of every programming language, bundled with the app. */
+  readonly templates: TemplatesByLanguage;
 }
 
 export interface StartCourseInput {
@@ -23,6 +26,7 @@ export interface StartCourseInput {
   readonly syllabus: Syllabus;
   readonly catalogs: Readonly<Record<LocaleCode, FlatCatalog>>;
   readonly languageSamples: CourseSession["languageSamples"];
+  readonly templates: TemplatesByLanguage;
 }
 
 /** Use case: start the course over a validated pack. */
@@ -34,5 +38,6 @@ export function startCourse(input: StartCourseInput): CourseSession {
     scenes: buildScenes(index),
     catalogs: input.catalogs,
     languageSamples: input.languageSamples,
+    templates: input.templates,
   };
 }

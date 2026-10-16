@@ -1,3 +1,4 @@
+import { HIDDEN_CODE_STAGE, type CodeStageState } from "./CodeStage";
 import type { LayoutMode } from "./LayoutMode";
 import type { NoteId, NoteKind } from "./Note";
 
@@ -63,6 +64,7 @@ export interface WallState {
   readonly term: TermNoteState;
   readonly glossary: GlossaryState;
   readonly impact: ImpactState;
+  readonly code: CodeStageState;
 }
 
 export const EMPTY_WALL: WallState = {
@@ -74,6 +76,7 @@ export const EMPTY_WALL: WallState = {
   term: { shown: false, context: null },
   glossary: { entries: [], ambiguous: [], resolved: [] },
   impact: { model: null, revealed: 0 },
+  code: HIDDEN_CODE_STAGE,
 };
 
 export function zoneKey(subdomainType: string): string {

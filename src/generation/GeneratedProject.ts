@@ -1,4 +1,5 @@
 import type { ProgrammingLanguageId } from "../domain/language/ProgrammingLanguage";
+import type { CodeUnit } from "../domain/wall/CodeStage";
 
 /** The lines (1-based, inclusive) of a generated file that came from one pack concept, for example "Order.rule.OrderMustHaveLines". */
 export interface Anchor {
@@ -14,6 +15,8 @@ export interface GeneratedFile {
   readonly role: FileRole;
   readonly content: string;
   readonly anchors: readonly Anchor[];
+  /** The domain unit a source file implements; null for tests and support files. */
+  readonly unit: CodeUnit | null;
 }
 
 export interface GeneratedProject {

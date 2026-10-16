@@ -11,6 +11,7 @@ import {
 } from "./adapters/storage/InMemoryLearnerStorage";
 import { startCourse, type CourseSession } from "./application/CourseSession";
 import { loadCatalogs } from "./application/loadCatalogs";
+import { loadTemplates } from "./application/loadTemplates";
 import { loadLearnerState, type LearnerStorage } from "./application/learnerState";
 import syllabusJson from "./content/syllabus.json";
 import { QUANTITY_SAMPLES } from "./content/onboarding/quantitySamples";
@@ -30,6 +31,11 @@ const packParts = import.meta.glob("../packs/hecho-a-mano/*.json", {
 const catalogFiles = import.meta.glob("./content/locales/*/*.json", {
   eager: true,
   import: "default",
+});
+const templateFiles = import.meta.glob("./generation/languages/*/templates/*.mustache", {
+  eager: true,
+  import: "default",
+  query: "?raw",
 });
 
 async function openStorage(): Promise<LearnerStorage> {
@@ -72,6 +78,7 @@ function buildSession(): Result<CourseSession, readonly ValidationIssue[]> {
       syllabus: syllabus.value,
       catalogs: loadCatalogs(catalogFiles),
       languageSamples: QUANTITY_SAMPLES,
+      templates: loadTemplates(templateFiles),
     }),
   );
 }

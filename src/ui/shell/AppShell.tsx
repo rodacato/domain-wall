@@ -118,9 +118,21 @@ export function AppShell({ session, learner, onReopenOnboarding }: AppShellProps
       </nav>
 
       <main className="stage">
-        {player.wall !== undefined && <WallView session={session} state={player.wall} />}
+        {player.wall !== undefined && (
+          <WallView
+            session={session}
+            state={player.wall}
+            language={learner.preferences.programmingLanguage}
+          />
+        )}
       </main>
-      {player.step !== undefined && <NarrationPanel session={session} step={player.step} />}
+      {player.step !== undefined && (
+        <NarrationPanel
+          session={session}
+          step={player.step}
+          language={learner.preferences.programmingLanguage}
+        />
+      )}
 
       <footer className="player">
         <button

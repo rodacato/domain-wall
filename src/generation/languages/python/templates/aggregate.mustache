@@ -35,10 +35,12 @@ class {{outcomeType}}:
     events: tuple[{{eventType}}, ...]
 
 
+⟦anchor {{anchor}}.repository⟧
 class {{repositoryType}}(Protocol):
     def find(self, {{identityName}}: {{{identityType}}}) -> {{name}} | None: ...
 
     def save(self, {{instance}}: {{name}}) -> None: ...
+⟦/anchor⟧
 
 {{#entities}}
 
@@ -71,6 +73,7 @@ class {{name}}:
     def __init__(self, state: _{{name}}State) -> None:
         self._state = state
 
+⟦anchor {{anchor}}.factory⟧
     @staticmethod
     def start({{#startParams}}{{name}}: {{{type}}}{{^last}}, {{/last}}{{/startParams}}) -> {{name}}:
         return {{name}}(
@@ -81,6 +84,7 @@ class {{name}}:
 {{/stateFields}}
             )
         )
+⟦/anchor⟧
 
     @property
     def status(self) -> {{statusType}}:

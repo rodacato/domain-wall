@@ -29,14 +29,30 @@
     "context": "Contexto acotado"
   },
   "pattern": {
-    "CustomerSupplier": { "name": "Customer / Supplier" },
-    "Conformist": { "name": "Conformista" },
-    "AntiCorruptionLayer": { "name": "Capa anticorrupción" },
-    "OpenHostService": { "name": "Open Host Service" },
-    "PublishedLanguage": { "name": "Lenguaje publicado" },
-    "SharedKernel": { "name": "Núcleo compartido" },
-    "Partnership": { "name": "Alianza" },
-    "SeparateWays": { "name": "Caminos separados" },
+    "CustomerSupplier": {
+      "name": "Customer / Supplier"
+    },
+    "Conformist": {
+      "name": "Conformista"
+    },
+    "AntiCorruptionLayer": {
+      "name": "Capa anticorrupción"
+    },
+    "OpenHostService": {
+      "name": "Open Host Service"
+    },
+    "PublishedLanguage": {
+      "name": "Lenguaje publicado"
+    },
+    "SharedKernel": {
+      "name": "Núcleo compartido"
+    },
+    "Partnership": {
+      "name": "Alianza"
+    },
+    "SeparateWays": {
+      "name": "Caminos separados"
+    },
     "inThisBusiness": "En este negocio",
     "notInThisBusiness": "Este negocio no tiene un ejemplo de este patrón, así que aquí va la idea en abstracto.",
     "upstream": "Upstream",
@@ -44,9 +60,18 @@
     "externalSystem": "{system} se queda afuera; {context} traduce en la frontera."
   },
   "zone": {
-    "core": { "title": "Dominio core", "advice": "Aquí va tu mejor equipo y el modelo más rico" },
-    "supporting": { "title": "De soporte", "advice": "Constrúyelo sencillo y a la medida" },
-    "generic": { "title": "Genérico", "advice": "Compra o reutiliza; no lo reinventes" },
+    "core": {
+      "title": "Dominio core",
+      "advice": "Aquí va tu mejor equipo y el modelo más rico"
+    },
+    "supporting": {
+      "title": "De soporte",
+      "advice": "Constrúyelo sencillo y a la medida"
+    },
+    "generic": {
+      "title": "Genérico",
+      "advice": "Compra o reutiliza; no lo reinventes"
+    },
     "why": "Por qué"
   },
   "impact": {
@@ -105,5 +130,109 @@
     "back": "Atrás",
     "next": "Siguiente",
     "start": "Empezar el curso"
+  },
+  "code": {
+    "unavailable": "No se pudo generar el código de este paso.",
+    "legendTitle": "Qué implementa cada bloque",
+    "hint": "Pasa el cursor por un bloque o una etiqueta: se ilumina la nota de la que nació.",
+    "showAll": "Mostrar todo",
+    "fileHeader": "{file} · generado desde tu muro",
+    "kind": {
+      "aggregate": "Agregado",
+      "command": "Comando",
+      "rule": "Regla",
+      "invariant": "Invariante",
+      "state": "Estado",
+      "entity": "Entidad",
+      "transition": "Transición",
+      "factory": "Fábrica",
+      "repository": "Repositorio",
+      "event": "Evento",
+      "valueObject": "Value object"
+    },
+    "anchor": {
+      "factory": "Crea un {aggregate} ya válido",
+      "repository": "Cómo se guarda y se busca {aggregate}"
+    }
+  },
+  "aggregate": {
+    "title": "Dentro de {aggregate}",
+    "invariants": "Siempre se cumple",
+    "start": "Empieza aquí",
+    "end": "Termina aquí",
+    "checks": "Revisa antes",
+    "announces": "Anuncia",
+    "transitions": "Qué lo mueve"
+  },
+  "breaker": {
+    "title": "Intenta romper {aggregate}",
+    "hint": "Elige un comando que rompa una regla. El intérprete de referencia lo juega al instante.",
+    "attack": "{command} contra «{rule}»",
+    "guard": "Se revisa antes de ejecutar el comando",
+    "invariant": "Se revisa después del comando, cada vez",
+    "refused": "Rechazado",
+    "answer": "El agregado responde",
+    "reset": "Probar otro"
+  },
+  "lookAt": {
+    "title": "En qué fijarte",
+    "valueObject": {
+      "general": "{subject} solo puede existir válido. Su constructor revisa las restricciones y responde con un valor de error en lugar de lanzar una excepción, así que quien lo tiene en la mano ya no necesita revisarlo.",
+      "typescript": "Es un tipo con marca: el compilador no lo confunde con ningún otro número o texto, y `create` es la única puerta de entrada.",
+      "python": "Hereda de `int` o `str`, así que se comporta como el valor simple, y `create` responde con `Ok` o `Err`.",
+      "ruby": "Es un módulo con `create` y `trusted`; el valor sigue siendo un Integer o String simple, revisado al entrar al dominio.",
+      "ruby-dry": "`Type` es la base de dry-types que usan los structs, y `create` responde con `Success` o `Failure` de dry-monads."
+    },
+    "entity": {
+      "general": "{subject} tiene identidad: dos renglones con los mismos datos son renglones distintos si sus ids son distintos. Lo que se deduce de sus datos, como un subtotal, vive junto a ella.",
+      "typescript": "Una clase con campos `readonly`; los valores derivados son getters.",
+      "python": "Un dataclass congelado; los valores derivados son propiedades.",
+      "ruby": "Un Struct con argumentos con nombre; los valores derivados son métodos normales.",
+      "ruby-dry": "Un `Dry::Struct`: atributos con tipo, inmutable una vez construido."
+    },
+    "aggregateOutline": {
+      "general": "Antes de cualquier código, esta es la forma de {subject}: los estados por los que pasa, qué lo mueve, qué revisa primero y qué anuncia. Las reglas que siempre se cumplen van arriba."
+    },
+    "aggregateCode": {
+      "general": "{subject} es la única puerta de entrada. Su estado es privado y un comando nunca lo cambia en el lugar: responde con el agregado nuevo y los eventos, o con la razón por la que rechazó.",
+      "typescript": "El estado está en un objeto `state` privado, y cada comando termina en `transition`, que además revisa las invariantes.",
+      "python": "El estado vive en `_state`, y cada comando devuelve `Ok` o `Err` a través de `_transition`.",
+      "ruby": "El estado vive en un Struct privado, y los comandos responden con `Result.ok` o `Result.err` a través de `transition`.",
+      "ruby-dry": "El estado es un `Dry::Struct` privado, y los comandos responden con `Success` o `Failure` a través de `transition`."
+    },
+    "invariant": {
+      "general": "Las guardas corren antes de una transición y las invariantes sobre su resultado, siempre. Rompe una y el agregado responde con un código de error en lugar de cambiar. Elige un ataque arriba y mira las líneas que lo detienen.",
+      "typescript": "Un rechazo es un valor: `return err({ code: \"…\" })`. No se lanza nada.",
+      "python": "Un rechazo es un valor: `return err(…Error(code=\"…\"))`. No se lanza nada.",
+      "ruby": "Un rechazo es un valor: `return reject(:code) if …`. No se lanza nada.",
+      "ruby-dry": "Un rechazo es un valor: `return reject(:code) if …`, que es un `Failure`. No se lanza nada."
+    },
+    "event": {
+      "general": "{subject} es un hecho en pasado. Lleva solo lo que otros necesitan para reaccionar, y el agregado lo entrega cuando la transición tiene éxito.",
+      "typescript": "Una interfaz con campos de solo lectura y una etiqueta `type`, así que una lista de eventos es una unión discriminada.",
+      "python": "Un dataclass congelado con una variable de clase `type`.",
+      "ruby": "Un Struct con un método `type`.",
+      "ruby-dry": "Un `Dry::Struct` con atributos con tipo y un método `type`."
+    },
+    "repository": {
+      "general": "El dominio solo dice qué necesita del almacenamiento, buscar y guardar, y deja el cómo a otro. Por eso puedes cambiar la base de datos sin tocar una sola regla.",
+      "typescript": "Una `interface`: el compilador obliga a cada implementación a cumplirla.",
+      "python": "Un `Protocol`: cualquier clase con esos métodos lo cumple.",
+      "ruby": "Un contrato documentado: Ruby se apoya en el duck typing, así que el módulo solo lo declara.",
+      "ruby-dry": "Un contrato documentado: Ruby se apoya en el duck typing, así que el módulo solo lo declara."
+    },
+    "factory": {
+      "general": "{subject} nace en un estado inicial válido. `start` pide solo lo que no puede faltar y deja lo demás en su valor inicial, así nadie más necesita saber cómo se construye uno.",
+      "typescript": "Un `static start(...)` en la clase.",
+      "python": "Un `@staticmethod` llamado `start`.",
+      "ruby": "Un método de clase `start` con argumentos con nombre, así la llamada se lee como una frase.",
+      "ruby-dry": "Un método de clase `start` con argumentos con nombre; el estado que construye lo revisa Dry::Struct."
+    },
+    "domainService": {
+      "general": "Cuando una regla involucra varios agregados y no pertenece a ninguno, va en un servicio de dominio: una operación simple con nombre del negocio y sin estado propio."
+    },
+    "applicationService": {
+      "general": "El caso de uso en cuatro movimientos: cargar el agregado, darle el comando, guardar lo que devuelve y publicar sus eventos. No tiene reglas; las tiene el agregado."
+    }
   }
 }

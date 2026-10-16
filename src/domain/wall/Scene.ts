@@ -5,11 +5,28 @@ import { applyWallCommands } from "./applyWallCommand";
 import type { WallCommand } from "./WallCommand";
 import { EMPTY_WALL, type ContextPattern, type WallState } from "./WallState";
 
+/** What a code step asks the learner to look at; each has a general text and one per programming language. */
+export const LOOK_AT_NOTES = [
+  "valueObject",
+  "entity",
+  "aggregateOutline",
+  "aggregateCode",
+  "invariant",
+  "event",
+  "repository",
+  "factory",
+  "domainService",
+  "applicationService",
+] as const;
+export type LookAtNote = (typeof LOOK_AT_NOTES)[number];
+
 /** Extra pack text the narration panel shows next to the concept of a step. */
 export type NarrationFocus =
   | { readonly kind: "zone"; readonly zone: SubdomainType }
   | { readonly kind: "pattern"; readonly pattern: ContextPattern }
-  | { readonly kind: "changeStory"; readonly scenario: "businessChange" | "evolution" };
+  | { readonly kind: "changeStory"; readonly scenario: "businessChange" | "evolution" }
+  /** What to notice in the code on screen; the subject is an anchor reference or an aggregate name. */
+  | { readonly kind: "lookAt"; readonly note: LookAtNote; readonly subject: string | null };
 
 /** One beat of a scene: what the wall does, which expert conversation plays and which concept is being taught. */
 export interface SceneStep {

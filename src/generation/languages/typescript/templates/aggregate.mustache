@@ -21,10 +21,12 @@ export interface {{outcomeType}} {
   readonly events: readonly {{eventType}}[];
 }
 
+⟦anchor {{anchor}}.repository⟧
 export interface {{repositoryType}} {
   find({{identityName}}: {{{identityType}}}): {{name}} | undefined;
   save({{instance}}: {{name}}): void;
 }
+⟦/anchor⟧
 
 {{#entities}}
 ⟦anchor {{anchor}}⟧
@@ -51,6 +53,7 @@ interface {{name}}State {
 export class {{name}} {
   private constructor(private readonly state: {{name}}State) {}
 
+⟦anchor {{anchor}}.factory⟧
   static start({{#startParams}}{{name}}: {{{type}}}{{^last}}, {{/last}}{{/startParams}}): {{name}} {
     return new {{name}}({
       status: {{{initialStatus}}},
@@ -59,6 +62,7 @@ export class {{name}} {
 {{/stateFields}}
     });
   }
+⟦/anchor⟧
 
   get status(): {{statusType}} {
     return this.state.status;

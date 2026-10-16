@@ -82,4 +82,30 @@ describe("the wall reducer", () => {
 
     expect(state.boundaries).toEqual(["Ordering"]);
   });
+
+  it("opens the code stage on a unit and closes it again", () => {
+    const opened = applyWallCommand(EMPTY_WALL, {
+      kind: "showCode",
+      level: "code",
+      unit: { kind: "aggregate", aggregate: "Order" },
+      focus: "Order.rule.OrderMustHaveLines",
+    });
+
+    expect(opened.code).toEqual({
+      level: "code",
+      unit: { kind: "aggregate", aggregate: "Order" },
+      focus: "Order.rule.OrderMustHaveLines",
+      mode: "read",
+    });
+    expect(applyWallCommand(opened, { kind: "hideCode" }).code.level).toBe("hidden");
+  });
+
+  it("hides the code stage when the wall is cleared", () => {
+    const state = applyWallCommands(EMPTY_WALL, [
+      { kind: "showCode", level: "aggregate", unit: { kind: "events" } },
+      { kind: "clearWall" },
+    ]);
+
+    expect(state.code.level).toBe("hidden");
+  });
 });

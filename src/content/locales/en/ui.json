@@ -29,14 +29,30 @@
     "context": "Bounded context"
   },
   "pattern": {
-    "CustomerSupplier": { "name": "Customer / Supplier" },
-    "Conformist": { "name": "Conformist" },
-    "AntiCorruptionLayer": { "name": "Anticorruption layer" },
-    "OpenHostService": { "name": "Open Host Service" },
-    "PublishedLanguage": { "name": "Published language" },
-    "SharedKernel": { "name": "Shared kernel" },
-    "Partnership": { "name": "Partnership" },
-    "SeparateWays": { "name": "Separate ways" },
+    "CustomerSupplier": {
+      "name": "Customer / Supplier"
+    },
+    "Conformist": {
+      "name": "Conformist"
+    },
+    "AntiCorruptionLayer": {
+      "name": "Anticorruption layer"
+    },
+    "OpenHostService": {
+      "name": "Open Host Service"
+    },
+    "PublishedLanguage": {
+      "name": "Published language"
+    },
+    "SharedKernel": {
+      "name": "Shared kernel"
+    },
+    "Partnership": {
+      "name": "Partnership"
+    },
+    "SeparateWays": {
+      "name": "Separate ways"
+    },
     "inThisBusiness": "In this business",
     "notInThisBusiness": "This business has no example of this pattern, so here is the idea in the abstract.",
     "upstream": "Upstream",
@@ -44,9 +60,18 @@
     "externalSystem": "{system} stays outside; {context} translates at the border."
   },
   "zone": {
-    "core": { "title": "Core domain", "advice": "Your best team and the richest model go here" },
-    "supporting": { "title": "Supporting", "advice": "Build it simple and to measure" },
-    "generic": { "title": "Generic", "advice": "Buy or reuse; do not reinvent it" },
+    "core": {
+      "title": "Core domain",
+      "advice": "Your best team and the richest model go here"
+    },
+    "supporting": {
+      "title": "Supporting",
+      "advice": "Build it simple and to measure"
+    },
+    "generic": {
+      "title": "Generic",
+      "advice": "Buy or reuse; do not reinvent it"
+    },
     "why": "Why"
   },
   "impact": {
@@ -105,5 +130,109 @@
     "back": "Back",
     "next": "Next",
     "start": "Start the course"
+  },
+  "code": {
+    "unavailable": "The code for this step could not be generated.",
+    "legendTitle": "What each block implements",
+    "hint": "Hover a block or a label: the note it came from lights up.",
+    "showAll": "Show everything",
+    "fileHeader": "{file} · generated from your wall",
+    "kind": {
+      "aggregate": "Aggregate",
+      "command": "Command",
+      "rule": "Rule",
+      "invariant": "Invariant",
+      "state": "State",
+      "entity": "Entity",
+      "transition": "Transition",
+      "factory": "Factory",
+      "repository": "Repository",
+      "event": "Event",
+      "valueObject": "Value object"
+    },
+    "anchor": {
+      "factory": "Creates a valid {aggregate}",
+      "repository": "How {aggregate} is stored and found"
+    }
+  },
+  "aggregate": {
+    "title": "Inside {aggregate}",
+    "invariants": "Always true",
+    "start": "Starts here",
+    "end": "Ends here",
+    "checks": "Checks first",
+    "announces": "Announces",
+    "transitions": "What moves it"
+  },
+  "breaker": {
+    "title": "Try to break {aggregate}",
+    "hint": "Pick a command that breaks a rule. The reference interpreter plays it right now.",
+    "attack": "{command} against “{rule}”",
+    "guard": "Checked before the command runs",
+    "invariant": "Checked after the command, every time",
+    "refused": "Refused",
+    "answer": "The aggregate answers",
+    "reset": "Try another"
+  },
+  "lookAt": {
+    "title": "What to notice",
+    "valueObject": {
+      "general": "{subject} can only exist valid. Its constructor checks the constraints and answers with an error value instead of throwing, so once you hold one nobody needs to check it again.",
+      "typescript": "It is a branded type: the compiler will not mix it up with any other number or string, and `create` is the only door in.",
+      "python": "It subclasses `int` or `str`, so it behaves like the plain value, and `create` answers with `Ok` or `Err`.",
+      "ruby": "It is a module with `create` and `trusted`; the value stays a plain Integer or String, checked when it enters the domain.",
+      "ruby-dry": "`Type` is the dry-types base used by the structs, and `create` answers with `Success` or `Failure` from dry-monads."
+    },
+    "entity": {
+      "general": "{subject} has an identity: two lines with the same data are different lines if their ids differ. Values that follow from its data, like a subtotal, live next to it.",
+      "typescript": "A class with `readonly` fields; derived values are getters.",
+      "python": "A frozen dataclass; derived values are properties.",
+      "ruby": "A Struct with keyword arguments; derived values are plain methods.",
+      "ruby-dry": "A `Dry::Struct`: typed attributes, immutable once built."
+    },
+    "aggregateOutline": {
+      "general": "Before any code, this is the shape of {subject}: the states it passes through, what moves it, what it checks first and what it announces. The rules that always hold sit on top."
+    },
+    "aggregateCode": {
+      "general": "{subject} is the only way in. Its state is private and a command never changes it in place: it answers with the new aggregate and the events, or with the reason it refused.",
+      "typescript": "The state sits in a private `state` object, and every command ends in `transition`, which also checks the invariants.",
+      "python": "The state lives in `_state`, and every command returns `Ok` or `Err` through `_transition`.",
+      "ruby": "The state lives in a private Struct, and commands answer with `Result.ok` or `Result.err` through `transition`.",
+      "ruby-dry": "The state is a private `Dry::Struct`, and commands answer with `Success` or `Failure` through `transition`."
+    },
+    "invariant": {
+      "general": "Guards run before a transition and invariants run on its result, every time. Break one and the aggregate answers with an error code instead of changing. Pick an attack above and watch the lines that stop it.",
+      "typescript": "A refusal is a value: `return err({ code: \"…\" })`. Nothing is thrown.",
+      "python": "A refusal is a value: `return err(…Error(code=\"…\"))`. Nothing is raised.",
+      "ruby": "A refusal is a value: `return reject(:code) if …`. Nothing is raised.",
+      "ruby-dry": "A refusal is a value: `return reject(:code) if …`, which is a `Failure`. Nothing is raised."
+    },
+    "event": {
+      "general": "{subject} is a fact in the past. It carries only what others need to react, and the aggregate hands it back when the transition succeeds.",
+      "typescript": "An interface with readonly fields and a `type` tag, so a list of events is a discriminated union.",
+      "python": "A frozen dataclass with a `type` class variable.",
+      "ruby": "A Struct with a `type` method.",
+      "ruby-dry": "A `Dry::Struct` with typed attributes and a `type` method."
+    },
+    "repository": {
+      "general": "The domain only says what it needs from storage, find and save, and leaves how to someone else. That is what lets you change the database without touching a single rule.",
+      "typescript": "An `interface`: the compiler holds every implementation to it.",
+      "python": "A `Protocol`: any class with those methods qualifies.",
+      "ruby": "A documented contract: Ruby relies on duck typing, so the module only states it.",
+      "ruby-dry": "A documented contract: Ruby relies on duck typing, so the module only states it."
+    },
+    "factory": {
+      "general": "{subject} is born in a valid initial state. `start` asks only for what it cannot live without and sets the rest to its starting value, so nobody else needs to know how to build one.",
+      "typescript": "A `static start(...)` on the class.",
+      "python": "A `@staticmethod` called `start`.",
+      "ruby": "A class method `start` with keyword arguments, so a call reads like a sentence.",
+      "ruby-dry": "A class method `start` with keyword arguments; the state it builds is checked by Dry::Struct."
+    },
+    "domainService": {
+      "general": "When a rule involves several aggregates and does not belong to any of them, it gets a domain service: a plain operation named in the business language, with no state of its own."
+    },
+    "applicationService": {
+      "general": "The use case in four moves: load the aggregate, give it the command, save what comes back and publish its events. It holds no rules; the aggregate does."
+    }
   }
 }

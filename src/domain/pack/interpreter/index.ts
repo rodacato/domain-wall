@@ -8,3 +8,4 @@ export {
   type WalkthroughResult,
 } from "./runScenario";
 export { firstBrokenConstraint, satisfiesConstraint, validateValue } from "./validateValue";
+export { attacksOn, type Attack } from "./attacks";

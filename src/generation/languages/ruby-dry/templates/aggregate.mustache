@@ -12,6 +12,14 @@ class {{errorType}} < Dry::Struct
   attribute? :command, Types::Strict::String
   attribute? :status, Types::Strict::Symbol
 end
+
+⟦anchor {{anchor}}.repository⟧
+# The repository a use case relies on, implemented outside the domain:
+#   find({{identityName}}) returns a {{name}} or nil
+#   save({{instance}}) stores it
+module {{repositoryType}}
+end
+⟦/anchor⟧
 {{#entities}}
 
 ⟦anchor {{anchor}}⟧
@@ -43,6 +51,7 @@ class {{name}}
   end
   private_constant :State
 
+⟦anchor {{anchor}}.factory⟧
   def self.start({{#startParams}}{{name}}:{{^last}}, {{/last}}{{/startParams}})
     new(
       State.new(
@@ -53,6 +62,7 @@ class {{name}}
       )
     )
   end
+⟦/anchor⟧
 
   def initialize(state)
     @state = state

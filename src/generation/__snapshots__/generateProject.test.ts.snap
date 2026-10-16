@@ -217,6 +217,12 @@ require_relative "value_objects"
 OrderError = Struct.new(:code, :command, :status, keyword_init: true)
 OrderOutcome = Struct.new(:order, :events, keyword_init: true)
 
+# The repository a use case relies on, implemented outside the domain:
+#   find(order_id) returns a Order or nil
+#   save(order) stores it
+module OrderRepository
+end
+
 OrderLine = Struct.new(:listing_id, :quantity, :unit_price, keyword_init: true) do
   def subtotal
     Money.trusted(unit_price * quantity)
@@ -383,6 +389,12 @@ class OrderError < Dry::Struct
   attribute :code, Types::Strict::Symbol
   attribute? :command, Types::Strict::String
   attribute? :status, Types::Strict::Symbol
+end
+
+# The repository a use case relies on, implemented outside the domain:
+#   find(order_id) returns a Order or nil
+#   save(order) stores it
+module OrderRepository
 end
 
 class OrderLine < Dry::Struct

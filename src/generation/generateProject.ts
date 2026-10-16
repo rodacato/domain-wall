@@ -1,5 +1,6 @@
 import type { PackIndex } from "../domain/pack/PackIndex";
 import { err, ok, type Result } from "../domain/shared/Result";
+import type { CodeUnit } from "../domain/wall/CodeStage";
 import type { FileRole, GeneratedFile, GeneratedProject } from "./GeneratedProject";
 import type { LanguageDescriptor, TemplateLibrary } from "./languages/LanguageDescriptor";
 import { renderTemplate } from "./rendering/renderTemplate";
@@ -25,11 +26,23 @@ export function generateProject(
     if (found === undefined) problems.push(`missing template "${name}" for ${descriptor.id}`);
     return found ?? "";
   };
-  const addRendered = (path: string, role: FileRole, templateName: string, view: object): void => {
+  const addRendered = (
+    path: string,
+    role: FileRole,
+    unit: CodeUnit | null,
+    templateName: string,
+    view: object,
+  ): void => {
     const rendered = renderTemplate(template(templateName), { packId, ...view }, templateName);
-    if (rendered.ok)
-      files.push({ path, role, content: rendered.value.content, anchors: rendered.value.anchors });
-    else problems.push(rendered.error);
+    if (rendered.ok) {
+      files.push({
+        path,
+        role,
+        content: rendered.value.content,
+        anchors: rendered.value.anchors,
+        unit,
+      });
+    } else problems.push(rendered.error);
   };
 
   for (const support of descriptor.supportFiles) {
@@ -38,24 +51,28 @@ export function generateProject(
       role: support.role,
       content: template(support.template),
       anchors: [],
+      unit: null,
     });
   }
 
   addRendered(
     descriptor.filePath(descriptor.moduleStem("ValueObjects"), "source"),
     "source",
+    { kind: "valueObjects" },
     descriptor.templates.valueObjects,
     buildValueObjectsView(index, descriptor),
   );
   addRendered(
     descriptor.filePath(descriptor.moduleStem("Events"), "source"),
     "source",
+    { kind: "events" },
     descriptor.templates.events,
     buildEventsView(index, descriptor),
   );
   addRendered(
     descriptor.filePath(descriptor.moduleStem("ValueObjects"), "test"),
     "test",
+    null,
     descriptor.templates.valueObjectTests,
     buildValueObjectTestsView(descriptor, buildValueObjectTestPlans(index)),
   );
@@ -66,6 +83,7 @@ export function generateProject(
     addRendered(
       descriptor.filePath(stem, "source"),
       "source",
+      { kind: "aggregate", aggregate: aggregate.codeName },
       descriptor.templates.aggregate,
       buildAggregateView(index, descriptor, aggregate),
     );
@@ -80,6 +98,7 @@ export function generateProject(
     addRendered(
       descriptor.filePath(stem, "test"),
       "test",
+      null,
       descriptor.templates.aggregateTests,
       buildAggregateTestsView(index, descriptor, plan, (state) =>
         stateLiteral(descriptor, namingFor(descriptor.id), aggregate, state),
@@ -88,7 +107,7 @@ export function generateProject(
     testedModules.push({ module: stem });
   }
 
-  addRendered(descriptor.testEntry, "test", descriptor.templates.testRunner, {
+  addRendered(descriptor.testEntry, "test", null, descriptor.templates.testRunner, {
     aggregates: testedModules,
   });
 

@@ -1,3 +1,4 @@
+import { HIDDEN_CODE_STAGE } from "./CodeStage";
 import type { WallCommand } from "./WallCommand";
 import { EMPTY_WALL, type WallArrow, type WallState } from "./WallState";
 
@@ -109,6 +110,18 @@ export function applyWallCommand(state: WallState, command: WallCommand): WallSt
       return { ...state, impact: { model: command.model, revealed: command.revealed } };
     case "hideImpact":
       return { ...state, impact: { model: null, revealed: 0 } };
+    case "showCode":
+      return {
+        ...state,
+        code: {
+          level: command.level,
+          unit: command.unit,
+          focus: command.focus ?? null,
+          mode: command.mode ?? "read",
+        },
+      };
+    case "hideCode":
+      return { ...state, code: HIDDEN_CODE_STAGE };
   }
 }
 
