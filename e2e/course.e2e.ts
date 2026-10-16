@@ -5,12 +5,10 @@ async function finishOnboarding(page: Page, options: { industry?: string } = {})
   await expect(
     page.getByRole("heading", { name: /language should the course speak/i }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Next" }).click();
-  await page.getByRole("button", { name: "Next" }).click();
   if (options.industry !== undefined) {
     await page.getByRole("button", { name: new RegExp(options.industry) }).click();
   }
-  await page.getByRole("button", { name: "Start the course" }).click();
+  await page.getByRole("button", { name: "Start the workshop" }).click();
   await expect(page.getByRole("navigation", { name: "Course" })).toBeVisible();
 }
 
@@ -105,8 +103,6 @@ test("describing a business generates one, checks it, sends a pass back and then
   page,
 }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Next" }).click();
-  await page.getByRole("button", { name: "Next" }).click();
 
   await page.getByRole("button", { name: /Describe your business/ }).click();
   await page
@@ -117,7 +113,7 @@ test("describing a business generates one, checks it, sends a pass back and then
   await expect(page.getByText(/Sent back to “Model”/)).toBeVisible({ timeout: 20_000 });
   await expect(page.getByText(/is ready: it passed every check/)).toBeVisible({ timeout: 30_000 });
   await page.getByRole("button", { name: "Learn with this business" }).click();
-  await page.getByRole("button", { name: "Start the course" }).click();
+  await page.getByRole("button", { name: "Start the workshop" }).click();
 
   await expect(page.getByRole("button", { name: "Neighborhood Clinic" })).toBeVisible();
 });

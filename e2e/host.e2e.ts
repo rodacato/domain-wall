@@ -80,5 +80,5 @@ test("a page that is not named as the host is ignored", async ({ page }) => {
   await expect(
     course.getByRole("heading", { name: /language should the course speak/i }),
   ).toBeVisible();
-  await expect(course.getByLabel("Code")).toHaveCount(0);
+  await expect(course.getByLabel("Code", { exact: true })).toHaveCount(0);
 });

@@ -118,26 +118,29 @@
     "modeling": "Hoy modelamos"
   },
   "onboarding": {
-    "step": "Paso {current} de {total}",
+    "cover": {
+      "title": "Del idioma del negocio a las reglas en código.",
+      "pitch": "Escuchas a quienes conocen el negocio, pegas notas en el muro, trazas fronteras y ves cómo cada regla termina protegida en tu lenguaje.",
+      "whoTitle": "Para quién es",
+      "who": "Para quien ya programa en alguno de estos lenguajes y quiere modelar con DDD. No necesitas saber DDD. Es un taller guiado: vas a tu ritmo y nadie más está en la sala.",
+      "startKicker": "Evento",
+      "later": "Puedes cambiar todo esto después"
+    },
     "language": {
-      "title": "¿En qué idioma quieres el curso?",
-      "hint": "Todo cambia a la vez: explicaciones, diálogos y las notas del muro."
+      "title": "¿En qué idioma quieres el curso?"
     },
     "programmingLanguage": {
       "title": "¿En qué lenguaje programas?",
-      "hint": "Pasa el cursor por una tarjeta para ver la misma idea escrita en cada lenguaje. El curso se adapta al que elijas; no es una comparación."
+      "hint": "Pasa el cursor por una nota para ver la misma idea en cada lenguaje. El curso se adapta al que elijas; no es una comparación."
     },
     "industry": {
       "title": "¿Con qué negocio aprendemos?",
-      "hint": "El curso es el mismo para todos los negocios; solo cambia el dominio.",
       "defaultBadge": "Pulido a mano",
       "describe": "Describe tu negocio",
-      "describeHint": "Un dominio generado para ti y validado antes de usarse.",
+      "describeHint": "Generamos un dominio para ti y, antes de usarlo, revisamos su estructura y su coherencia. Nadie de tu industria lo revisa.",
       "generatedBadge": "Generado para ti"
     },
-    "back": "Atrás",
-    "next": "Siguiente",
-    "start": "Empezar el curso"
+    "start": "Empezar el taller"
   },
   "code": {
     "unavailable": "No se pudo generar el código de este paso.",
