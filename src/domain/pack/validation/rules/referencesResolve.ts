@@ -12,8 +12,21 @@ export const referencesResolve: SemanticRule = {
   description: "all references resolve to a concept of the right kind",
   check: (index) => {
     const issues: ValidationIssue[] = [];
+    const kinds: readonly (readonly [string, ReadonlyMap<string, unknown>])[] = [
+      ["event", index.events],
+      ["command", index.commands],
+      ["value object", index.valueObjects],
+      ["aggregate", index.aggregates],
+      ["context", index.contexts],
+      ["actor", index.actors],
+    ];
     const missing = (path: readonly string[], kind: string, name: string): void => {
-      issues.push(issueAt(RULE_ID, path, `${kind} "${name}" does not exist`));
+      const actual = kinds.find(([other, table]) => other !== kind && table.has(name))?.[0];
+      const message =
+        actual === undefined
+          ? `${kind} "${name}" does not exist`
+          : `${kind} "${name}" does not exist: "${name}" is ${actual === "event" || actual === "actor" || actual === "aggregate" ? "an" : "a"} ${actual}`;
+      issues.push(issueAt(RULE_ID, path, message));
     };
     const requireIn = (
       table: ReadonlyMap<string, unknown>,

@@ -47,15 +47,22 @@ export const contextRelationSchema = z.discriminatedUnion("type", [
     upstreamRoles: z.array(z.enum(UPSTREAM_ROLES)),
     downstreamRoles: z.array(z.enum(DOWNSTREAM_ROLES)),
     customerSupplier: z.boolean(),
-    /** Events that travel from upstream to downstream. */
-    via: z.array(typeNameSchema),
+    via: z
+      .array(typeNameSchema)
+      .describe(
+        "Code names of events that travel from upstream to downstream; never value objects.",
+      ),
     description: localizedTextSchema,
   }),
   z.strictObject({
     type: z.enum(["partnership", "sharedKernel"]),
     a: typeNameSchema,
     b: typeNameSchema,
-    shared: z.array(typeNameSchema),
+    shared: z
+      .array(typeNameSchema)
+      .describe(
+        "Code names of value objects both contexts use, such as an identifier; never events.",
+      ),
     description: localizedTextSchema,
   }),
   z.strictObject({
