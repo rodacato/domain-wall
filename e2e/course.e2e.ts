@@ -144,3 +144,26 @@ test("describing a business opens on a card that Escape closes, back on the cove
   await expect(dialog).toHaveCount(0);
   await expect(describe).toBeFocused();
 });
+
+test("a business generated before survives a reload and is only generated again on purpose", async ({
+  page,
+}) => {
+  const describe = async (): Promise<void> => {
+    await page.getByRole("button", { name: /Describe your business/ }).click();
+    await page
+      .getByLabel("What does it do, and for whom?")
+      .fill("A neighborhood clinic where people book visits");
+    await page.getByRole("button", { name: "Generate", exact: true }).click();
+  };
+  await page.goto("/?tour=off");
+  await describe();
+  await expect(page.getByText(/is ready: it passed every check/)).toBeVisible({ timeout: 30_000 });
+
+  await page.reload();
+  await describe();
+
+  await expect(page.getByText(/You already generated this business/)).toBeVisible();
+  await expect(page.locator(".pass--running")).toHaveCount(0);
+  await page.getByRole("button", { name: /Generate it again \(spends tokens again\)/ }).click();
+  await expect(page.locator(".pass--running").first()).toBeVisible();
+});

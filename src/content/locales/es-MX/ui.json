@@ -603,6 +603,12 @@
     "exhausted": "El modelo no pudo producir un negocio válido (quedan {count} problemas).",
     "close": "Cerrar",
     "compatibleNote": "Funciona con cualquier servidor que hable chat completions de OpenAI con un esquema JSON: OpenAI mismo o un proxy tuyo. Si el servidor está en otro dominio, tiene que permitir {origin} (CORS). La llave se queda en este navegador y solo viaja a esa dirección.",
-    "unavailableHint": "Revisa la dirección y la llave. Si el servidor está en otro dominio, tiene que permitir {origin} (CORS); cuando no lo hace, el navegador solo dice «Failed to fetch»."
+    "unavailableHint": "Revisa la dirección y la llave. Si el servidor está en otro dominio, tiene que permitir {origin} (CORS); cuando no lo hace, el navegador solo dice «Failed to fetch».",
+    "kept": "Se guardó lo que el modelo ya respondió: {passes}. Continuar no lo vuelve a pedir.",
+    "resume": "Continuar con lo guardado",
+    "fresh": "Empezar de cero (vuelve a gastar tokens)",
+    "edit": "Cambiar la descripción",
+    "regenerate": "Generarlo de nuevo (vuelve a gastar tokens)",
+    "notDurable": "Este navegador no deja guardar datos (¿ventana privada?): lo que generes se pierde al cerrar la página."
   }
 }

@@ -61,6 +61,31 @@
   color: var(--ui-text);
 }
 
+.generate__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.generate__link {
+  padding: 8px 4px;
+  border: 0;
+  background: transparent;
+  color: var(--ui-muted);
+  cursor: pointer;
+  font: inherit;
+  text-decoration: underline;
+}
+
+.generate__warning {
+  margin: 0;
+  padding: 8px 12px;
+  border-left: 4px solid #e8590c;
+  background: color-mix(in srgb, #e8590c 10%, var(--ui-surface));
+  font-size: 14px;
+}
+
 .generate__note {
   margin: 0;
   color: var(--ui-muted);

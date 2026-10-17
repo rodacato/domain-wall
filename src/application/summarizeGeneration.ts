@@ -44,6 +44,7 @@ export function summarizeGeneration(events: readonly GenerationEvent[]): Generat
         passes[event.pass] = { ...passes[event.pass], status: "running", attempts: event.attempt };
         break;
       case "passAnswered":
+      case "passRestored":
         passes[event.pass] = {
           ...passes[event.pass],
           status: "answered",

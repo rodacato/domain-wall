@@ -10,6 +10,7 @@ import type {
   PackRepository,
 } from "../../application/generationServices";
 import type { LlmSettings } from "../../application/llmSettings";
+import type { PackDraft } from "../../domain/packGeneration/passes";
 import {
   packFor,
   packIdOf,
@@ -123,6 +124,19 @@ export function CourseApp({
       example: library.defaultPack,
       known: library.generated,
       hostOffersLlm: capabilities.llm,
+      durable: packRepository.durable,
+      drafts: {
+        load: async (key) => {
+          const loaded = await packRepository.loadDraft(key);
+          return loaded.ok && loaded.value !== null ? (loaded.value.draft as PackDraft) : null;
+        },
+        save: async (key, draft) => {
+          await packRepository.saveDraft({ key, updatedAt: new Date().toISOString(), draft });
+        },
+        remove: async (key) => {
+          await packRepository.removeDraft(key);
+        },
+      },
       save: async (entry: GeneratedPack, description: string) => {
         setLibrary((current) => withGeneratedPack(current, entry));
         await packRepository.save({
