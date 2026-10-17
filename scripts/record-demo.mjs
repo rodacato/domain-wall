@@ -1,14 +1,15 @@
-// Records the README demo from the production build: npm run demo. The steps live in demo-tour.mjs.
+// Records the README demo and the link preview image from the production build: pnpm demo. The steps live in demo-tour.mjs.
 import { spawn, execFileSync } from "node:child_process";
 import { mkdir, rm } from "node:fs/promises";
 import { chromium } from "@playwright/test";
 import * as course from "./demo-tour.mjs";
 
 const PORT = 5399;
-const URL = `http://localhost:${PORT}/`;
+const URL = `http://localhost:${PORT}/?tour=off`;
 const VIEWPORT = { width: 1440, height: 900 };
 const RAW_DIR = "test-results/demo";
 const OUT_DIR = "docs/media";
+const PREVIEW = { path: "public/og.png", clip: { x: 0, y: 0, width: 1440, height: 754 } };
 
 async function waitForServer() {
   for (let attempt = 0; attempt < 60; attempt++) {
@@ -67,6 +68,9 @@ try {
   await page.reload();
   await page.evaluate(() => document.fonts.ready);
   const skipSeconds = (Date.now() - started) / 1000;
+  await page.waitForTimeout(1200);
+  await mkdir("public", { recursive: true });
+  await page.screenshot(PREVIEW);
 
   await course.default(page);
 
@@ -75,7 +79,7 @@ try {
   await browser.close();
   await mkdir(OUT_DIR, { recursive: true });
   encode(video, skipSeconds);
-  console.log(`Wrote ${OUT_DIR}/demo.mp4 and ${OUT_DIR}/demo.gif`);
+  console.log(`Wrote ${OUT_DIR}/demo.mp4, ${OUT_DIR}/demo.gif and ${PREVIEW.path}`);
 } finally {
   server.kill();
 }
