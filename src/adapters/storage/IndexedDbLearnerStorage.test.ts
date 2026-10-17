@@ -90,4 +90,22 @@ describe("IndexedDbPackRepository", () => {
     const after = await repository.list();
     expect(after.ok && after.value.some((entry) => entry.key === "abc")).toBe(false);
   });
+
+  it("keeps the draft of an unfinished generation apart from finished packs", async () => {
+    const opened = await openLearnerDatabase();
+    if (!opened.ok) throw new Error("the database must open");
+    const repository = new IndexedDbPackRepository(opened.value);
+
+    await repository.saveDraft({ key: "half", updatedAt: "2026-10-16T00:00:00Z", draft: { a: 1 } });
+
+    expect(await repository.loadDraft("half")).toMatchObject({
+      ok: true,
+      value: { draft: { a: 1 } },
+    });
+    const listed = await repository.list();
+    expect(listed.ok && listed.value.some((entry) => entry.key === "half")).toBe(false);
+
+    await repository.removeDraft("half");
+    expect(await repository.loadDraft("half")).toEqual({ ok: true, value: null });
+  });
 });

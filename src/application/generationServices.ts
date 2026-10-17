@@ -15,6 +15,14 @@ export interface GenerationServices {
   /** Packs generated before, to reuse one when the request is the same. */
   readonly known: readonly GeneratedPack[];
   readonly hostOffersLlm: boolean;
+  /** What unfinished generations produced, by request, so a failure can be resumed instead of paid for again. */
+  readonly drafts: {
+    readonly load: (key: string) => Promise<PackDraft | null>;
+    readonly save: (key: string, draft: PackDraft) => Promise<void>;
+    readonly remove: (key: string) => Promise<void>;
+  };
+  /** Whether generated businesses outlive the page; false in a browser that offers no storage. */
+  readonly durable: boolean;
 }
 
 export type { LlmProvider };

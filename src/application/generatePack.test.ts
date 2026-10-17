@@ -6,6 +6,7 @@ import { PROGRAMMING_LANGUAGES } from "../domain/language/ProgrammingLanguage";
 import { loadDefaultPack } from "../domain/pack/packFixtures";
 import { err } from "../domain/shared/Result";
 import type { LlmProvider } from "../ports/LlmProvider";
+import type { PackDraft } from "../domain/packGeneration/passes";
 import { generatePack, type GenerationEvent } from "./generatePack";
 import type { TemplatesByLanguage } from "./loadTemplates";
 
@@ -97,5 +98,64 @@ describe("generating a pack", () => {
     expect(calls).toBe(3);
     expect(result.ok).toBe(false);
     expect(!result.ok && result.error.kind).toBe("exhausted");
+  });
+
+  it("keeps what each pass produced, and a resumed generation asks only for what is missing", async () => {
+    const simulated = new SimulatedLlmProvider(clinic);
+    const drafts: PackDraft[] = [];
+    const failing = await generatePack(input, {
+      provider: {
+        generateStructured: (request) =>
+          request.label === "strategy"
+            ? Promise.resolve(err({ kind: "unavailable", message: "the server went away" }))
+            : simulated.generateStructured(request),
+      },
+      templates,
+      example: loadDefaultPack(),
+      onDraft: (draft) => drafts.push(draft),
+    });
+    const saved = drafts.at(-1);
+
+    expect(failing.ok).toBe(false);
+    expect(saved?.events).toBeDefined();
+    expect(saved?.contexts).toBeUndefined();
+
+    const asked: string[] = [];
+    const events: GenerationEvent[] = [];
+    const resumed = await generatePack(input, {
+      provider: {
+        generateStructured: (request) => {
+          asked.push(request.label ?? "");
+          return simulated.generateStructured(request);
+        },
+      },
+      templates,
+      example: loadDefaultPack(),
+      ...(saved === undefined ? {} : { resumeFrom: saved }),
+      onEvent: (event) => events.push(event),
+    });
+
+    expect(resumed.ok).toBe(true);
+    expect(asked).toEqual(["strategy", "model", "narrative"]);
+    expect(events[0]).toMatchObject({ kind: "passRestored", pass: "storm" });
+  });
+
+  it("asks again for a saved part that no longer follows its schema", async () => {
+    const asked: string[] = [];
+    const simulated = new SimulatedLlmProvider(clinic);
+
+    await generatePack(input, {
+      provider: {
+        generateStructured: (request) => {
+          asked.push(request.label ?? "");
+          return simulated.generateStructured(request);
+        },
+      },
+      templates,
+      example: loadDefaultPack(),
+      resumeFrom: { ...clinic, events: "not a list" } as unknown as PackDraft,
+    });
+
+    expect(asked).toEqual(["storm"]);
   });
 });

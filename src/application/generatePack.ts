@@ -32,6 +32,11 @@ export type GenerationEvent =
       readonly counts: Readonly<Record<string, number>>;
     }
   | {
+      readonly kind: "passRestored";
+      readonly pass: PassId;
+      readonly counts: Readonly<Record<string, number>>;
+    }
+  | {
       readonly kind: "passRefused";
       readonly pass: PassId;
       readonly gate: "schema";
@@ -67,6 +72,10 @@ export interface GenerationDependencies {
   /** A known-good pack whose pieces show the model the shape of an answer. */
   readonly example: PackDraft;
   readonly onEvent?: (event: GenerationEvent) => void;
+  /** What an earlier, unfinished generation of the same request produced; each part is checked again before it is used. */
+  readonly resumeFrom?: PackDraft;
+  /** Called with everything produced so far each time a pass is answered, so a failure does not lose it. */
+  readonly onDraft?: (draft: PackDraft) => void;
   readonly signal?: AbortSignal;
   readonly attemptsPerPass?: number;
   readonly repairRounds?: number;
@@ -175,10 +184,17 @@ export async function generatePack(
   let attempts = 0;
 
   for (const pass of PASS_IDS) {
+    const restored = restoredPart(pass, dependencies.resumeFrom);
+    if (restored !== null) {
+      draft = { ...draft, ...restored };
+      onEvent?.({ kind: "passRestored", pass, counts: countsOf(restored) });
+      continue;
+    }
     attempts += 1;
     const outcome = await runPass(pass, input, draft, [], dependencies);
     if (!outcome.ok) return outcome;
     draft = outcome.value;
+    dependencies.onDraft?.(draft);
   }
 
   let lastIssues: readonly ValidationIssue[] = [];
@@ -221,8 +237,19 @@ export async function generatePack(
     );
     if (!outcome.ok) return outcome;
     draft = outcome.value;
+    dependencies.onDraft?.(draft);
   }
   return err({ kind: "exhausted", issues: lastIssues });
+}
+
+/** The part of a saved draft a pass owns, if all of it is there and still follows the pass's schema. */
+function restoredPart(pass: PassId, saved: PackDraft | undefined): PackDraft | null {
+  if (saved === undefined) return null;
+  const definition = passDefinition(pass);
+  if (definition.keys.some((key) => saved[key] === undefined)) return null;
+  const part = Object.fromEntries(definition.keys.map((key) => [key, saved[key]]));
+  const parsed = definition.schema.safeParse(part);
+  return parsed.success ? (parsed.data as PackDraft) : null;
 }
 
 /** The draft as it was before a pass ran, so the pass answers anew instead of patching its old answer. */
