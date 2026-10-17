@@ -113,6 +113,7 @@ export function GenerateBusiness({ services, onReady }: GenerateBusinessProps): 
           </>
         )}
       </div>
+      {!services.durable && <p className="generate__warning">{t("ui.generate.notDurable")}</p>}
       <p className="generate__note">
         {settings.provider === "simulated"
           ? t("ui.generate.simulatedNote")
@@ -145,7 +146,7 @@ function Progress({
   readonly generation: ReturnType<typeof useGeneration>;
   readonly onReady: (entry: GeneratedPack) => void;
 }): ReactNode {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const { state } = generation;
   const summary = summarizeGeneration(state.status === "idle" ? [] : state.events);
 
@@ -218,17 +219,29 @@ function Progress({
         <>
           <p className="generate__success">
             {t(state.reused ? "ui.generate.reused" : "ui.generate.ready", {
-              name: state.entry.pack.business.name.en,
+              name: state.entry.pack.business.name[locale],
             })}
           </p>
-          <button
-            className="generate__primary"
-            onClick={() => {
-              onReady(state.entry);
-            }}
-          >
-            {t("ui.generate.use")}
-          </button>
+          <div className="generate__actions">
+            <button
+              className="generate__primary"
+              onClick={() => {
+                onReady(state.entry);
+              }}
+            >
+              {t("ui.generate.use")}
+            </button>
+            {state.reused && (
+              <button
+                className="generate__secondary"
+                onClick={() => {
+                  generation.retry("fresh");
+                }}
+              >
+                {t("ui.generate.regenerate")}
+              </button>
+            )}
+          </div>
         </>
       )}
       {state.status === "failed" && (
@@ -245,9 +258,36 @@ function Progress({
               {t("ui.generate.unavailableHint", { origin: window.location.origin })}
             </p>
           )}
-          <button className="generate__secondary" onClick={generation.reset}>
-            {t("ui.generate.again")}
-          </button>
+          {state.kept.length > 0 && (
+            <p className="generate__note">
+              {t("ui.generate.kept", {
+                passes: state.kept.map((pass) => t(`ui.generate.pass.${pass}`)).join(", "),
+              })}
+            </p>
+          )}
+          <div className="generate__actions">
+            <button
+              className="generate__primary"
+              onClick={() => {
+                generation.retry("reuse");
+              }}
+            >
+              {t(state.kept.length > 0 ? "ui.generate.resume" : "ui.generate.again")}
+            </button>
+            {state.kept.length > 0 && (
+              <button
+                className="generate__secondary"
+                onClick={() => {
+                  generation.retry("fresh");
+                }}
+              >
+                {t("ui.generate.fresh")}
+              </button>
+            )}
+            <button className="generate__link" onClick={generation.reset}>
+              {t("ui.generate.edit")}
+            </button>
+          </div>
         </>
       )}
     </div>

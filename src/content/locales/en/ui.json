@@ -603,6 +603,12 @@
     "exhausted": "The model could not produce a valid business ({count} problems remain).",
     "close": "Close",
     "compatibleNote": "Works with any server that speaks OpenAI's chat completions with a JSON schema: OpenAI itself or a proxy of your own. A server on another domain has to allow {origin} (CORS). The key stays in this browser and only travels to that address.",
-    "unavailableHint": "Check the address and the key. If the server is on another domain, it has to allow {origin} (CORS); the browser only says “Failed to fetch” when it does not."
+    "unavailableHint": "Check the address and the key. If the server is on another domain, it has to allow {origin} (CORS); the browser only says “Failed to fetch” when it does not.",
+    "kept": "What the model already answered is kept: {passes}. Continuing does not ask for it again.",
+    "resume": "Continue with what is kept",
+    "fresh": "Start over (spends tokens again)",
+    "edit": "Change the description",
+    "regenerate": "Generate it again (spends tokens again)",
+    "notDurable": "This browser does not let the course keep data (a private window?): whatever you generate is lost when you close the page."
   }
 }
