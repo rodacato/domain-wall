@@ -1,11 +1,19 @@
 import { describe, expect, it } from "vitest";
+import { z } from "zod";
 import { loadDefaultPack } from "../pack/packFixtures";
 import { packIdFor } from "./assembleDraft";
 import { packCacheKey } from "./cacheKey";
-import { PASSES, passOwning, passToRetry } from "./passes";
+import { PASSES, passDefinition, passOwning, passToRetry } from "./passes";
 
 describe("the generation passes", () => {
   const pack = loadDefaultPack();
+
+  it("tell the model that a context map travels by events and shares value objects", () => {
+    const schema = JSON.stringify(z.toJSONSchema(passDefinition("strategy").schema));
+
+    expect(schema).toContain("Code names of events that travel from upstream to downstream");
+    expect(schema).toContain("Code names of value objects both contexts use");
+  });
 
   it("together cover every part of the pack once", () => {
     const covered = PASSES.flatMap((pass) => [...pass.keys]).sort();

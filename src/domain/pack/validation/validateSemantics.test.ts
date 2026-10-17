@@ -283,3 +283,22 @@ describe("semantic rules notice what is broken", () => {
     expect(ruleIdsReportedFor(mutate).has(ruleId)).toBe(true);
   });
 });
+
+describe("a reference to a concept of the wrong kind", () => {
+  it("names the kind the concept really is, so a generator can tell what it mixed up", () => {
+    const pack = mutablePack();
+    const relation = required(
+      pack.contextRelations.find((candidate) => candidate.type === "upstreamDownstream"),
+      "an upstream/downstream relation",
+    );
+    const valueObject = required(pack.valueObjects[0], "a value object").codeName;
+    relation.via.push(valueObject);
+
+    const outcome = validateSemantics(pack as SchemaValidPack);
+    const messages = outcome.ok ? [] : outcome.error.map((issue) => issue.message);
+
+    expect(messages).toContain(
+      `event "${valueObject}" does not exist: "${valueObject}" is a value object`,
+    );
+  });
+});
