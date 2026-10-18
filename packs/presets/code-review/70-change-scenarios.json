@@ -1,0 +1,420 @@
+{
+  "changeScenarios": {
+    "businessChange": {
+      "story": {
+        "es-MX": "Cambio de negocio: un pull request con cambios pedidos ya no se puede cerrar; la autora tiene que contestar la revisión primero.",
+        "en": "Business change: a pull request with changes requested can no longer be closed; the author has to answer the review first."
+      },
+      "patch": [
+        {
+          "op": "restrictTransition",
+          "aggregate": "PullRequest",
+          "command": "ClosePullRequest",
+          "removeFrom": ["ChangesRequested"]
+        }
+      ]
+    },
+    "evolution": {
+      "story": {
+        "es-MX": "Cola de merge: al hacer merge de un PR aprobado y en verde, entra a una cola; el CI corre contra la última versión de main y, si pasa dentro de una hora, se hace el merge.",
+        "en": "Merge queue: merging an approved, green PR puts it in a queue; CI runs against the latest main and, if it passes within an hour, the merge happens."
+      },
+      "patch": [
+        {
+          "op": "addValueObject",
+          "valueObject": {
+            "kind": "scalar",
+            "codeName": "QueueMinutes",
+            "label": {
+              "es-MX": "Minutos en la cola",
+              "en": "Queue minutes"
+            },
+            "description": {
+              "es-MX": "Cuánto tardó la corrida de CI de la cola contra la última versión de main.",
+              "en": "How long the queue's CI run against the latest main took."
+            },
+            "base": "integer",
+            "constraints": [
+              {
+                "kind": "min",
+                "value": 1,
+                "errorCode": "QueueMinutesMustBePositive",
+                "message": {
+                  "es-MX": "La corrida debe durar al menos 1 minuto.",
+                  "en": "The run must last at least 1 minute."
+                },
+                "invalidExamples": [0, -5]
+              },
+              {
+                "kind": "max",
+                "value": 1440,
+                "errorCode": "QueueMinutesTooLarge",
+                "message": {
+                  "es-MX": "La corrida no puede pasar de 24 horas.",
+                  "en": "The run cannot exceed 24 hours."
+                },
+                "invalidExamples": [1441]
+              }
+            ],
+            "examples": {
+              "valid": [18, 45]
+            }
+          }
+        },
+        {
+          "op": "addEvent",
+          "event": {
+            "codeName": "PullRequestQueued",
+            "label": {
+              "es-MX": "PR en la cola de merge",
+              "en": "PR added to merge queue"
+            },
+            "description": {
+              "es-MX": "El PR aprobado y en verde entró a la cola de merge.",
+              "en": "The approved, green PR entered the merge queue."
+            },
+            "context": "Reviewing",
+            "sequence": 8.5,
+            "payload": [
+              {
+                "codeName": "pullRequestId",
+                "label": {
+                  "es-MX": "Pull request",
+                  "en": "Pull request"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "PullRequestId"
+                }
+              },
+              {
+                "codeName": "headCommit",
+                "label": {
+                  "es-MX": "Último commit",
+                  "en": "Head commit"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "CommitSha"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addEvent",
+          "event": {
+            "codeName": "PullRequestDequeued",
+            "label": {
+              "es-MX": "PR sacado de la cola",
+              "en": "PR removed from merge queue"
+            },
+            "description": {
+              "es-MX": "El CI de la cola falló contra main y el PR regresó a revisión.",
+              "en": "The queue's CI failed against main and the PR went back to review."
+            },
+            "context": "Reviewing",
+            "sequence": 8.6,
+            "payload": [
+              {
+                "codeName": "pullRequestId",
+                "label": {
+                  "es-MX": "Pull request",
+                  "en": "Pull request"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "PullRequestId"
+                }
+              },
+              {
+                "codeName": "reason",
+                "label": {
+                  "es-MX": "Motivo",
+                  "en": "Reason"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "ReasonText"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addCommand",
+          "command": {
+            "codeName": "CompleteQueuedMerge",
+            "label": {
+              "es-MX": "Completar merge de la cola",
+              "en": "Complete queued merge"
+            },
+            "description": {
+              "es-MX": "El CI de la cola pasó contra main y se crea el commit de merge.",
+              "en": "The queue's CI passed against main and the merge commit is created."
+            },
+            "context": "Reviewing",
+            "issuedBy": {
+              "kind": "externalSystem",
+              "ref": "CiProvider"
+            },
+            "handledBy": "PullRequest",
+            "params": [
+              {
+                "codeName": "mergeCommit",
+                "label": {
+                  "es-MX": "Commit de merge",
+                  "en": "Merge commit"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "CommitSha"
+                }
+              },
+              {
+                "codeName": "queueMinutes",
+                "label": {
+                  "es-MX": "Minutos en la cola",
+                  "en": "Queue minutes"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "QueueMinutes"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addCommand",
+          "command": {
+            "codeName": "DequeuePullRequest",
+            "label": {
+              "es-MX": "Sacar de la cola",
+              "en": "Remove from queue"
+            },
+            "description": {
+              "es-MX": "El CI de la cola falló contra main; el PR regresa a revisión.",
+              "en": "The queue's CI failed against main; the PR goes back to review."
+            },
+            "context": "Reviewing",
+            "issuedBy": {
+              "kind": "externalSystem",
+              "ref": "CiProvider"
+            },
+            "handledBy": "PullRequest",
+            "params": [
+              {
+                "codeName": "reason",
+                "label": {
+                  "es-MX": "Motivo",
+                  "en": "Reason"
+                },
+                "type": {
+                  "kind": "valueObject",
+                  "ref": "ReasonText"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "op": "addState",
+          "aggregate": "PullRequest",
+          "state": {
+            "codeName": "Queued",
+            "label": {
+              "es-MX": "En la cola de merge",
+              "en": "In merge queue"
+            },
+            "description": {
+              "es-MX": "Espera que el CI pase contra la última versión de main.",
+              "en": "Waiting for CI to pass against the latest main."
+            },
+            "terminal": false,
+            "data": []
+          }
+        },
+        {
+          "op": "addRule",
+          "aggregate": "PullRequest",
+          "rule": {
+            "codeName": "QueueRunWithinLimit",
+            "label": {
+              "es-MX": "La cola tiene tiempo límite",
+              "en": "The queue has a time limit"
+            },
+            "description": {
+              "es-MX": "Si la corrida contra main tarda más de una hora, el merge no se hace.",
+              "en": "If the run against main takes more than an hour, the merge does not happen."
+            },
+            "predicate": {
+              "kind": "compare",
+              "left": {
+                "op": "arg",
+                "name": "queueMinutes"
+              },
+              "operator": "<=",
+              "right": {
+                "op": "literal",
+                "value": 60
+              }
+            },
+            "message": {
+              "es-MX": "La corrida de la cola tardó más de 60 minutos.",
+              "en": "The queue run took more than 60 minutes."
+            },
+            "violation": {
+              "given": [
+                {
+                  "command": "OpenPullRequest",
+                  "args": {
+                    "repositoryId": "repo_7k2m9x4q",
+                    "authorId": "usr_2m6q8v1c",
+                    "headCommit": "3f9a2c1",
+                    "changedFiles": 12,
+                    "requiredApprovals": 1
+                  }
+                },
+                {
+                  "command": "ApprovePullRequest",
+                  "args": {
+                    "reviewerId": "usr_9f4t7y3b"
+                  }
+                },
+                {
+                  "command": "RecordChecksPassed",
+                  "args": {
+                    "testedCommit": "3f9a2c1"
+                  }
+                },
+                {
+                  "command": "MergePullRequest",
+                  "args": {
+                    "mergeCommit": "e5d6c7b8a9f0"
+                  }
+                }
+              ],
+              "when": {
+                "command": "CompleteQueuedMerge",
+                "args": {
+                  "mergeCommit": "e5d6c7b8a9f0",
+                  "queueMinutes": 61
+                }
+              }
+            }
+          }
+        },
+        {
+          "op": "restrictTransition",
+          "aggregate": "PullRequest",
+          "command": "MergePullRequest",
+          "removeFrom": ["Open"]
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "PullRequest",
+          "transition": {
+            "command": "MergePullRequest",
+            "from": ["Open"],
+            "to": "Queued",
+            "guards": ["EnoughApprovals", "ChecksMustPass"],
+            "effects": [],
+            "emits": ["PullRequestQueued"]
+          }
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "PullRequest",
+          "transition": {
+            "command": "CompleteQueuedMerge",
+            "from": ["Queued"],
+            "to": "Merged",
+            "guards": ["QueueRunWithinLimit"],
+            "effects": [
+              {
+                "op": "set",
+                "field": "mergeCommit",
+                "value": {
+                  "op": "arg",
+                  "name": "mergeCommit"
+                }
+              }
+            ],
+            "emits": ["PullRequestMerged"]
+          }
+        },
+        {
+          "op": "addTransition",
+          "aggregate": "PullRequest",
+          "transition": {
+            "command": "DequeuePullRequest",
+            "from": ["Queued"],
+            "to": "Open",
+            "guards": [],
+            "effects": [
+              {
+                "op": "set",
+                "field": "approvals",
+                "value": {
+                  "op": "literal",
+                  "value": 0
+                }
+              },
+              {
+                "op": "set",
+                "field": "checksPassed",
+                "value": {
+                  "op": "literal",
+                  "value": false
+                }
+              }
+            ],
+            "emits": ["PullRequestDequeued"]
+          }
+        },
+        {
+          "op": "replaceWalkthrough",
+          "aggregate": "PullRequest",
+          "walkthrough": [
+            {
+              "command": "OpenPullRequest",
+              "args": {
+                "repositoryId": "repo_7k2m9x4q",
+                "authorId": "usr_2m6q8v1c",
+                "headCommit": "3f9a2c1",
+                "changedFiles": 12,
+                "requiredApprovals": 1
+              }
+            },
+            {
+              "command": "ApprovePullRequest",
+              "args": {
+                "reviewerId": "usr_9f4t7y3b"
+              }
+            },
+            {
+              "command": "RecordChecksPassed",
+              "args": {
+                "testedCommit": "3f9a2c1"
+              }
+            },
+            {
+              "command": "MergePullRequest",
+              "args": {
+                "mergeCommit": "e5d6c7b8a9f0"
+              }
+            },
+            {
+              "command": "CompleteQueuedMerge",
+              "args": {
+                "mergeCommit": "e5d6c7b8a9f0",
+                "queueMinutes": 18
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

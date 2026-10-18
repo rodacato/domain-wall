@@ -1,0 +1,294 @@
+{
+  "workflow": {
+    "codeName": "MergeWorkflow",
+    "label": {
+      "es-MX": "Flujo de merge",
+      "en": "Merge workflow"
+    },
+    "description": {
+      "es-MX": "El merge visto como una línea de ensamblaje: validar la petición, calcular lo que falta, crear el commit de merge y guardar.",
+      "en": "Merging seen as an assembly line: validate the request, compute what is missing, create the merge commit and save."
+    },
+    "trigger": "MergePullRequest",
+    "intermediateTypes": [
+      {
+        "codeName": "UnvalidatedMergeRequest",
+        "extends": null,
+        "fields": [
+          {
+            "codeName": "pullRequestId",
+            "label": {
+              "es-MX": "Pull request",
+              "en": "Pull request"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "headCommit",
+            "label": {
+              "es-MX": "Último commit",
+              "en": "Head commit"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "codeName": "requiredApprovals",
+            "label": {
+              "es-MX": "Aprobaciones requeridas",
+              "en": "Required approvals"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "integer"
+            }
+          },
+          {
+            "codeName": "approvals",
+            "label": {
+              "es-MX": "Aprobaciones",
+              "en": "Approvals"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "integer"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "ValidatedMergeRequest",
+        "extends": null,
+        "fields": [
+          {
+            "codeName": "pullRequestId",
+            "label": {
+              "es-MX": "Pull request",
+              "en": "Pull request"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "PullRequestId"
+            }
+          },
+          {
+            "codeName": "headCommit",
+            "label": {
+              "es-MX": "Último commit",
+              "en": "Head commit"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "CommitSha"
+            }
+          },
+          {
+            "codeName": "requiredApprovals",
+            "label": {
+              "es-MX": "Aprobaciones requeridas",
+              "en": "Required approvals"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "ApprovalCount"
+            }
+          },
+          {
+            "codeName": "approvals",
+            "label": {
+              "es-MX": "Aprobaciones",
+              "en": "Approvals"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "ApprovalCount"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "AssessedMergeRequest",
+        "extends": "ValidatedMergeRequest",
+        "fields": [
+          {
+            "codeName": "approvalsMissing",
+            "label": {
+              "es-MX": "Aprobaciones faltantes",
+              "en": "Missing approvals"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "ApprovalCount"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "MergedPullRequest",
+        "extends": "AssessedMergeRequest",
+        "fields": [
+          {
+            "codeName": "mergeCommit",
+            "label": {
+              "es-MX": "Commit de merge",
+              "en": "Merge commit"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "CommitSha"
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "SavedMerge",
+        "extends": "MergedPullRequest",
+        "fields": [
+          {
+            "codeName": "repositoryId",
+            "label": {
+              "es-MX": "Repositorio",
+              "en": "Repository"
+            },
+            "type": {
+              "kind": "valueObject",
+              "ref": "RepositoryId"
+            }
+          }
+        ]
+      }
+    ],
+    "stages": [
+      {
+        "codeName": "ValidateMergeRequest",
+        "label": {
+          "es-MX": "Validar la petición",
+          "en": "Validate the request"
+        },
+        "description": {
+          "es-MX": "Convierte los datos crudos en valores del dominio que no pueden ser inválidos.",
+          "en": "Turns raw data into domain values that cannot be invalid."
+        },
+        "input": "UnvalidatedMergeRequest",
+        "output": "ValidatedMergeRequest",
+        "kind": {
+          "type": "validate"
+        },
+        "errors": [
+          {
+            "codeName": "MergeRequestInvalid",
+            "message": {
+              "es-MX": "Algún dato de la petición de merge no es válido.",
+              "en": "Some merge request data is not valid."
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "CountMissingApprovals",
+        "label": {
+          "es-MX": "Contar lo que falta",
+          "en": "Count what is missing"
+        },
+        "description": {
+          "es-MX": "Resta las aprobaciones dadas a las requeridas para saber cuántas faltan.",
+          "en": "Subtracts the given approvals from the required ones to know how many are missing."
+        },
+        "input": "ValidatedMergeRequest",
+        "output": "AssessedMergeRequest",
+        "kind": {
+          "type": "compute",
+          "assigns": [
+            {
+              "field": "approvalsMissing",
+              "expression": {
+                "op": "arithmetic",
+                "operator": "subtract",
+                "left": {
+                  "op": "field",
+                  "name": "requiredApprovals"
+                },
+                "right": {
+                  "op": "field",
+                  "name": "approvals"
+                }
+              }
+            }
+          ]
+        },
+        "errors": []
+      },
+      {
+        "codeName": "CreateMergeCommit",
+        "label": {
+          "es-MX": "Crear el commit de merge",
+          "en": "Create the merge commit"
+        },
+        "description": {
+          "es-MX": "Le pide al servidor de Git que junte el cambio con la rama principal.",
+          "en": "Asks the Git server to combine the change with the main branch."
+        },
+        "input": "AssessedMergeRequest",
+        "output": "MergedPullRequest",
+        "kind": {
+          "type": "callPort",
+          "port": {
+            "codeName": "GitHostPort",
+            "operation": "createMergeCommit",
+            "description": {
+              "es-MX": "Crea el commit de merge sobre la rama principal.",
+              "en": "Creates the merge commit on the main branch."
+            }
+          }
+        },
+        "errors": [
+          {
+            "codeName": "MergeConflict",
+            "message": {
+              "es-MX": "El cambio choca con lo que ya está en la rama principal.",
+              "en": "The change conflicts with what is already on the main branch."
+            }
+          },
+          {
+            "codeName": "GitHostUnavailable",
+            "message": {
+              "es-MX": "El servidor de Git no responde.",
+              "en": "The Git server is not responding."
+            }
+          }
+        ]
+      },
+      {
+        "codeName": "SaveMerge",
+        "label": {
+          "es-MX": "Guardar el merge",
+          "en": "Save the merge"
+        },
+        "description": {
+          "es-MX": "Guarda el pull request con merge y publica sus eventos.",
+          "en": "Saves the merged pull request and publishes its events."
+        },
+        "input": "MergedPullRequest",
+        "output": "SavedMerge",
+        "kind": {
+          "type": "commit"
+        },
+        "errors": [
+          {
+            "codeName": "MergeCouldNotBeSaved",
+            "message": {
+              "es-MX": "No se pudo guardar el merge.",
+              "en": "The merge could not be saved."
+            }
+          }
+        ]
+      }
+    ],
+    "produces": ["PullRequestMerged"]
+  }
+}

@@ -36,7 +36,7 @@ exercise:
 | 10  | Evolution                      | Refactor toward deeper understanding when a new requirement arrives and recognize implicit concepts.                                               |
 
 The industry is a **domain pack**: the default _Made by Hand_, a marketplace of Mexican artisans,
-or one of four curated ones (clinic, logistics, fintech, education). Or describe your own business:
+or one of four curated ones (clinic, logistics, fintech, code review). Or describe your own business:
 the course generates a pack for it, validates it with the same checks as the curated packs, and
 falls back to the default pack if it cannot. Code is generated in TypeScript, Python, Ruby and Ruby
 with dry-rb; the course runs in English and Spanish. What is left is in

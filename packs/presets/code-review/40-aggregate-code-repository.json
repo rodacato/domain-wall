@@ -1,0 +1,286 @@
+{
+  "aggregates": [
+    {
+      "codeName": "CodeRepository",
+      "label": {
+        "es-MX": "Repositorio",
+        "en": "Repository"
+      },
+      "description": {
+        "es-MX": "El repositorio de un paquete y las reglas que protegen su rama principal.",
+        "en": "A package's repository and the rules that protect its main branch."
+      },
+      "context": "Repositories",
+      "identity": "repositoryId",
+      "fields": [
+        {
+          "codeName": "repositoryId",
+          "label": {
+            "es-MX": "Repositorio",
+            "en": "Repository"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RepositoryId"
+          }
+        },
+        {
+          "codeName": "ownerId",
+          "label": {
+            "es-MX": "Dueño",
+            "en": "Owner"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UserId"
+          }
+        },
+        {
+          "codeName": "packageName",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Package"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PackageName"
+          }
+        },
+        {
+          "codeName": "requiredApprovals",
+          "label": {
+            "es-MX": "Aprobaciones requeridas",
+            "en": "Required approvals"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ApprovalCount"
+          }
+        }
+      ],
+      "derived": [],
+      "entities": [],
+      "states": [
+        {
+          "codeName": "Setup",
+          "label": {
+            "es-MX": "Por crear",
+            "en": "Setup"
+          },
+          "description": {
+            "es-MX": "El repositorio todavía no existe.",
+            "en": "The repository does not exist yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Active",
+          "label": {
+            "es-MX": "Activo",
+            "en": "Active"
+          },
+          "description": {
+            "es-MX": "Se puede subir código y abrir pull requests.",
+            "en": "Code can be pushed and pull requests opened."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Archived",
+          "label": {
+            "es-MX": "Archivado",
+            "en": "Archived"
+          },
+          "description": {
+            "es-MX": "Quedó en solo lectura.",
+            "en": "It became read-only."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "archiveReason",
+              "label": {
+                "es-MX": "Motivo de archivo",
+                "en": "Archive reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ReasonText"
+              }
+            }
+          ]
+        }
+      ],
+      "initialState": "Setup",
+      "rules": [
+        {
+          "codeName": "RequiredApprovalsAtLeastOne",
+          "label": {
+            "es-MX": "Al menos una aprobación",
+            "en": "At least one approval"
+          },
+          "description": {
+            "es-MX": "Una rama protegida pide por lo menos una aprobación.",
+            "en": "A protected branch requires at least one approval."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "requiredApprovals"
+            },
+            "operator": ">=",
+            "right": {
+              "op": "literal",
+              "value": 1
+            }
+          },
+          "message": {
+            "es-MX": "Una rama protegida necesita al menos una aprobación.",
+            "en": "A protected branch needs at least one approval."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "CreateRepository",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "ProtectBranch",
+              "args": {
+                "requiredApprovals": 0
+              }
+            }
+          }
+        },
+        {
+          "codeName": "RequiredApprovalsWithinLimit",
+          "label": {
+            "es-MX": "Máximo seis aprobaciones",
+            "en": "At most six approvals"
+          },
+          "description": {
+            "es-MX": "Pedir más de seis aprobaciones frena al equipo sin dar más seguridad.",
+            "en": "Requiring more than six approvals slows the team without adding safety."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "requiredApprovals"
+            },
+            "operator": "<=",
+            "right": {
+              "op": "literal",
+              "value": 6
+            }
+          },
+          "message": {
+            "es-MX": "No se pueden pedir más de 6 aprobaciones.",
+            "en": "No more than 6 approvals can be required."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "CreateRepository",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "ProtectBranch",
+              "args": {
+                "requiredApprovals": 7
+              }
+            }
+          }
+        }
+      ],
+      "invariants": [],
+      "transitions": [
+        {
+          "command": "CreateRepository",
+          "from": ["Setup"],
+          "to": "Active",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "ownerId",
+              "value": {
+                "op": "arg",
+                "name": "ownerId"
+              }
+            },
+            {
+              "op": "set",
+              "field": "packageName",
+              "value": {
+                "op": "arg",
+                "name": "packageName"
+              }
+            }
+          ],
+          "emits": ["RepositoryCreated"]
+        },
+        {
+          "command": "ProtectBranch",
+          "from": ["Active"],
+          "to": "Active",
+          "guards": ["RequiredApprovalsAtLeastOne", "RequiredApprovalsWithinLimit"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "requiredApprovals",
+              "value": {
+                "op": "arg",
+                "name": "requiredApprovals"
+              }
+            }
+          ],
+          "emits": ["BranchProtected"]
+        },
+        {
+          "command": "ArchiveRepository",
+          "from": ["Active"],
+          "to": "Archived",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "archiveReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["RepositoryArchived"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "CreateRepository",
+          "args": {
+            "ownerId": "usr_2m6q8v1c",
+            "packageName": "domain-wall"
+          }
+        },
+        {
+          "command": "ProtectBranch",
+          "args": {
+            "requiredApprovals": 2
+          }
+        },
+        {
+          "command": "ArchiveRepository",
+          "args": {
+            "reason": "El paquete se movió a otro repositorio"
+          }
+        }
+      ]
+    }
+  ]
+}

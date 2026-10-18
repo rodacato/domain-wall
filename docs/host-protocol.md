@@ -48,7 +48,7 @@ Anything that does not match is dropped.
 
 `capabilities` in `host:init` says what the host can do: `{ remoteExecution?: boolean, llm?: boolean }`.
 If `host:init` gives both `locale` and `programmingLanguage`, the course skips its onboarding.
-`industry` is the id of a curated pack (`clinic`, `fintech`, `logistics`, `education`); anything else
+`industry` is the id of a curated pack (`clinic`, `fintech`, `logistics`, `code-review`); anything else
 selects the default one. Theme `tokens` are CSS custom properties; names that do not start with `--`
 are ignored.
 

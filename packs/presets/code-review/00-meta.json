@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "meta": {
+    "packId": "code-review",
+    "origin": "preset",
+    "locales": ["es-MX", "en"],
+    "generation": null
+  },
+  "business": {
+    "codeName": "CodeReview",
+    "name": {
+      "es-MX": "Revisión de Código",
+      "en": "Code Review"
+    },
+    "description": {
+      "es-MX": "Una plataforma donde los equipos abren pull requests, los revisan, corren CI y publican versiones de sus paquetes.",
+      "en": "A platform where teams open pull requests, review them, run CI and publish versions of their packages."
+    }
+  }
+}

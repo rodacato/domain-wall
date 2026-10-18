@@ -1,0 +1,519 @@
+{
+  "valueObjects": [
+    {
+      "kind": "scalar",
+      "codeName": "RepositoryId",
+      "label": {
+        "es-MX": "Repositorio",
+        "en": "Repository"
+      },
+      "description": {
+        "es-MX": "Identificador de un repositorio.",
+        "en": "Identifier of a repository."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "repo_[a-z0-9]{8}",
+          "errorCode": "RepositoryIdMalformed",
+          "message": {
+            "es-MX": "El identificador debe empezar con repo_ seguido de 8 caracteres en minúscula.",
+            "en": "The identifier must start with repo_ followed by 8 lowercase characters."
+          },
+          "invalidExamples": ["REPO_12345678", "repo_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["repo_7k2m9x4q"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "PullRequestId",
+      "label": {
+        "es-MX": "Pull request",
+        "en": "Pull request"
+      },
+      "description": {
+        "es-MX": "Identificador de un pull request.",
+        "en": "Identifier of a pull request."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "pr_[a-z0-9]{8}",
+          "errorCode": "PullRequestIdMalformed",
+          "message": {
+            "es-MX": "El identificador debe empezar con pr_ seguido de 8 caracteres en minúscula.",
+            "en": "The identifier must start with pr_ followed by 8 lowercase characters."
+          },
+          "invalidExamples": ["PR_12345678", "pr_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["pr_4n8w2c6v"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "UserId",
+      "label": {
+        "es-MX": "Usuario",
+        "en": "User"
+      },
+      "description": {
+        "es-MX": "Identificador de una persona del equipo.",
+        "en": "Identifier of a team member."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "usr_[a-z0-9]{8}",
+          "errorCode": "UserIdMalformed",
+          "message": {
+            "es-MX": "El identificador debe empezar con usr_ seguido de 8 caracteres en minúscula.",
+            "en": "The identifier must start with usr_ followed by 8 lowercase characters."
+          },
+          "invalidExamples": ["USR_12345678", "usr_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["usr_2m6q8v1c", "usr_9f4t7y3b"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "CheckRunId",
+      "label": {
+        "es-MX": "Corrida de CI",
+        "en": "Check run"
+      },
+      "description": {
+        "es-MX": "Identificador de una corrida de CI.",
+        "en": "Identifier of a CI run."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "run_[a-z0-9]{8}",
+          "errorCode": "CheckRunIdMalformed",
+          "message": {
+            "es-MX": "El identificador debe empezar con run_ seguido de 8 caracteres en minúscula.",
+            "en": "The identifier must start with run_ followed by 8 lowercase characters."
+          },
+          "invalidExamples": ["RUN_12345678", "run_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["run_5r1k8z2n"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ReleaseId",
+      "label": {
+        "es-MX": "Release",
+        "en": "Release"
+      },
+      "description": {
+        "es-MX": "Identificador de un release.",
+        "en": "Identifier of a release."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "rel_[a-z0-9]{8}",
+          "errorCode": "ReleaseIdMalformed",
+          "message": {
+            "es-MX": "El identificador debe empezar con rel_ seguido de 8 caracteres en minúscula.",
+            "en": "The identifier must start with rel_ followed by 8 lowercase characters."
+          },
+          "invalidExamples": ["REL_12345678", "rel_123"]
+        }
+      ],
+      "examples": {
+        "valid": ["rel_3d7w6h9s"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "CommitSha",
+      "label": {
+        "es-MX": "Commit",
+        "en": "Commit"
+      },
+      "description": {
+        "es-MX": "El hash de un commit en hexadecimal: de 7 a 40 caracteres.",
+        "en": "A commit hash in hexadecimal: 7 to 40 characters."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[0-9a-f]{7,40}",
+          "errorCode": "CommitShaMalformed",
+          "message": {
+            "es-MX": "El commit debe ser hexadecimal en minúscula, de 7 a 40 caracteres.",
+            "en": "The commit must be lowercase hexadecimal, 7 to 40 characters."
+          },
+          "invalidExamples": ["3f9a2c", "3F9A2C1", "zz9a2c1"]
+        }
+      ],
+      "examples": {
+        "valid": ["3f9a2c1", "b7e41d09", "e5d6c7b8a9f0"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "FileCount",
+      "label": {
+        "es-MX": "Archivos cambiados",
+        "en": "Changed files"
+      },
+      "description": {
+        "es-MX": "Cuántos archivos toca un cambio: de 0 a 5000.",
+        "en": "How many files a change touches: 0 to 5000."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 0,
+          "errorCode": "FileCountCannotBeNegative",
+          "message": {
+            "es-MX": "El número de archivos no puede ser negativo.",
+            "en": "The number of files cannot be negative."
+          },
+          "invalidExamples": [-1, -3]
+        },
+        {
+          "kind": "max",
+          "value": 5000,
+          "errorCode": "FileCountTooLarge",
+          "message": {
+            "es-MX": "Un cambio no puede tocar más de 5000 archivos.",
+            "en": "A change cannot touch more than 5000 files."
+          },
+          "invalidExamples": [5001]
+        }
+      ],
+      "examples": {
+        "valid": [12, 3, 0]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ApprovalCount",
+      "label": {
+        "es-MX": "Aprobaciones",
+        "en": "Approvals"
+      },
+      "description": {
+        "es-MX": "Cuántas aprobaciones se piden o se llevan: de 0 a 10.",
+        "en": "How many approvals are required or given: 0 to 10."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 0,
+          "errorCode": "ApprovalCountCannotBeNegative",
+          "message": {
+            "es-MX": "Las aprobaciones no pueden ser negativas.",
+            "en": "Approvals cannot be negative."
+          },
+          "invalidExamples": [-1, -2]
+        },
+        {
+          "kind": "max",
+          "value": 10,
+          "errorCode": "ApprovalCountTooLarge",
+          "message": {
+            "es-MX": "No puede haber más de 10 aprobaciones.",
+            "en": "There cannot be more than 10 approvals."
+          },
+          "invalidExamples": [11, 25]
+        }
+      ],
+      "examples": {
+        "valid": [1, 2, 0]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "DurationSeconds",
+      "label": {
+        "es-MX": "Duración en segundos",
+        "en": "Duration in seconds"
+      },
+      "description": {
+        "es-MX": "Cuánto tarda o puede tardar una corrida de CI: de 1 segundo a 24 horas.",
+        "en": "How long a CI run takes or may take: 1 second to 24 hours."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 1,
+          "errorCode": "DurationMustBePositive",
+          "message": {
+            "es-MX": "La duración debe ser de al menos 1 segundo.",
+            "en": "The duration must be at least 1 second."
+          },
+          "invalidExamples": [0, -30]
+        },
+        {
+          "kind": "max",
+          "value": 86400,
+          "errorCode": "DurationTooLong",
+          "message": {
+            "es-MX": "La duración no puede pasar de 24 horas.",
+            "en": "The duration cannot exceed 24 hours."
+          },
+          "invalidExamples": [86401]
+        }
+      ],
+      "examples": {
+        "valid": [240, 600, 1800]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ChangeCount",
+      "label": {
+        "es-MX": "Cambios incluidos",
+        "en": "Included changes"
+      },
+      "description": {
+        "es-MX": "Cuántos merges trae un release: de 0 a 500.",
+        "en": "How many merges a release carries: 0 to 500."
+      },
+      "base": "integer",
+      "constraints": [
+        {
+          "kind": "min",
+          "value": 0,
+          "errorCode": "ChangeCountCannotBeNegative",
+          "message": {
+            "es-MX": "El número de cambios no puede ser negativo.",
+            "en": "The number of changes cannot be negative."
+          },
+          "invalidExamples": [-1]
+        },
+        {
+          "kind": "max",
+          "value": 500,
+          "errorCode": "ChangeCountTooLarge",
+          "message": {
+            "es-MX": "Un release no puede traer más de 500 cambios.",
+            "en": "A release cannot carry more than 500 changes."
+          },
+          "invalidExamples": [501]
+        }
+      ],
+      "examples": {
+        "valid": [3, 1, 0]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "PackageName",
+      "label": {
+        "es-MX": "Nombre del paquete",
+        "en": "Package name"
+      },
+      "description": {
+        "es-MX": "El nombre con el que se publica el paquete: minúsculas, números y guiones.",
+        "en": "The name the package is published under: lowercase letters, digits and hyphens."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[a-z][a-z0-9-]{1,49}",
+          "errorCode": "PackageNameMalformed",
+          "message": {
+            "es-MX": "El nombre debe empezar con letra minúscula y usar sólo minúsculas, números y guiones.",
+            "en": "The name must start with a lowercase letter and use only lowercase letters, digits and hyphens."
+          },
+          "invalidExamples": ["Domain-Wall", "9lives", "a"]
+        }
+      ],
+      "examples": {
+        "valid": ["domain-wall", "left-pad"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "SemanticVersion",
+      "label": {
+        "es-MX": "Versión",
+        "en": "Version"
+      },
+      "description": {
+        "es-MX": "Una versión semver: mayor.menor.parche.",
+        "en": "A semver version: major.minor.patch."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "[0-9]+\\.[0-9]+\\.[0-9]+",
+          "errorCode": "SemanticVersionMalformed",
+          "message": {
+            "es-MX": "La versión debe tener el formato 1.4.0.",
+            "en": "The version must look like 1.4.0."
+          },
+          "invalidExamples": ["1.4", "v1.4.0", "1.4.0.2"]
+        }
+      ],
+      "examples": {
+        "valid": ["1.4.0", "2.0.0"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "Checksum",
+      "label": {
+        "es-MX": "Checksum",
+        "en": "Checksum"
+      },
+      "description": {
+        "es-MX": "La huella del paquete publicado, para verificar que nadie lo alteró.",
+        "en": "The fingerprint of the published package, to verify nobody tampered with it."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "pattern",
+          "value": "sha512-[A-Za-z0-9]{16,88}",
+          "errorCode": "ChecksumMalformed",
+          "message": {
+            "es-MX": "El checksum debe empezar con sha512- seguido de 16 a 88 caracteres.",
+            "en": "The checksum must start with sha512- followed by 16 to 88 characters."
+          },
+          "invalidExamples": ["md5-9Kx3mQ7vT2pL8wZr", "sha512-short"]
+        }
+      ],
+      "examples": {
+        "valid": ["sha512-9Kx3mQ7vT2pL8wZr4bN6yC1d"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ReasonText",
+      "label": {
+        "es-MX": "Motivo",
+        "en": "Reason"
+      },
+      "description": {
+        "es-MX": "Una explicación corta de por qué pasó algo.",
+        "en": "A short explanation of why something happened."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 3,
+          "errorCode": "ReasonTextTooShort",
+          "message": {
+            "es-MX": "Debe tener al menos 3 caracteres.",
+            "en": "It must have at least 3 characters."
+          },
+          "invalidExamples": ["aa"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 200,
+          "errorCode": "ReasonTextTooLong",
+          "message": {
+            "es-MX": "No puede pasar de 200 caracteres.",
+            "en": "It cannot exceed 200 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": ["Falta cubrir el caso de error", "El cambio ya no hace falta"]
+      }
+    },
+    {
+      "kind": "scalar",
+      "codeName": "ReleaseNotes",
+      "label": {
+        "es-MX": "Notas del release",
+        "en": "Release notes"
+      },
+      "description": {
+        "es-MX": "Lo que cambia en la versión, contado para quien la va a instalar.",
+        "en": "What changes in the version, written for whoever installs it."
+      },
+      "base": "string",
+      "constraints": [
+        {
+          "kind": "minLength",
+          "value": 10,
+          "errorCode": "ReleaseNotesTooShort",
+          "message": {
+            "es-MX": "Debe tener al menos 10 caracteres.",
+            "en": "It must have at least 10 characters."
+          },
+          "invalidExamples": ["aaaaaaaaa"]
+        },
+        {
+          "kind": "maxLength",
+          "value": 2000,
+          "errorCode": "ReleaseNotesTooLong",
+          "message": {
+            "es-MX": "No puede pasar de 2000 caracteres.",
+            "en": "It cannot exceed 2000 characters."
+          },
+          "invalidExamples": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      ],
+      "examples": {
+        "valid": [
+          "Corrige el cálculo de aprobaciones al subir commits nuevos.",
+          "Agrega la cola de merge."
+        ]
+      }
+    },
+    {
+      "kind": "enum",
+      "codeName": "ReleaseChannel",
+      "label": {
+        "es-MX": "Canal",
+        "en": "Channel"
+      },
+      "description": {
+        "es-MX": "Si la versión es estable o una versión previa para probar.",
+        "en": "Whether the version is stable or a prerelease for testing."
+      },
+      "members": [
+        {
+          "codeName": "Stable",
+          "label": {
+            "es-MX": "Estable",
+            "en": "Stable"
+          }
+        },
+        {
+          "codeName": "Prerelease",
+          "label": {
+            "es-MX": "Versión previa",
+            "en": "Prerelease"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,378 @@
+{
+  "aggregates": [
+    {
+      "codeName": "Release",
+      "label": {
+        "es-MX": "Release",
+        "en": "Release"
+      },
+      "description": {
+        "es-MX": "Una versión del paquete: desde el borrador hasta que queda publicada en el registro.",
+        "en": "A version of the package: from the draft until it is published to the registry."
+      },
+      "context": "Releasing",
+      "identity": "releaseId",
+      "fields": [
+        {
+          "codeName": "releaseId",
+          "label": {
+            "es-MX": "Release",
+            "en": "Release"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReleaseId"
+          }
+        },
+        {
+          "codeName": "packageName",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Package"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PackageName"
+          }
+        },
+        {
+          "codeName": "version",
+          "label": {
+            "es-MX": "Versión",
+            "en": "Version"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "SemanticVersion"
+          }
+        },
+        {
+          "codeName": "channel",
+          "label": {
+            "es-MX": "Canal",
+            "en": "Channel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReleaseChannel"
+          }
+        },
+        {
+          "codeName": "changeCount",
+          "label": {
+            "es-MX": "Cambios incluidos",
+            "en": "Included changes"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ChangeCount"
+          }
+        },
+        {
+          "codeName": "notes",
+          "label": {
+            "es-MX": "Notas del release",
+            "en": "Release notes"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "ReleaseNotes"
+            }
+          }
+        },
+        {
+          "codeName": "checksum",
+          "label": {
+            "es-MX": "Checksum",
+            "en": "Checksum"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "Checksum"
+            }
+          }
+        },
+        {
+          "codeName": "publishedOn",
+          "label": {
+            "es-MX": "Fecha de publicación",
+            "en": "Publication date"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "primitive",
+              "name": "date"
+            }
+          }
+        }
+      ],
+      "derived": [],
+      "entities": [],
+      "states": [
+        {
+          "codeName": "Pending",
+          "label": {
+            "es-MX": "Pendiente",
+            "en": "Pending"
+          },
+          "description": {
+            "es-MX": "Todavía no hay nada que publicar.",
+            "en": "There is nothing to publish yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Drafted",
+          "label": {
+            "es-MX": "En borrador",
+            "en": "Drafted"
+          },
+          "description": {
+            "es-MX": "La versión está armada y espera sus notas.",
+            "en": "The version is put together and waits for its notes."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Published",
+          "label": {
+            "es-MX": "Publicado",
+            "en": "Published"
+          },
+          "description": {
+            "es-MX": "La versión ya está en el registro.",
+            "en": "The version is in the registry."
+          },
+          "terminal": true,
+          "data": []
+        },
+        {
+          "codeName": "Discarded",
+          "label": {
+            "es-MX": "Descartado",
+            "en": "Discarded"
+          },
+          "description": {
+            "es-MX": "El borrador se tiró sin publicarse.",
+            "en": "The draft was thrown away unpublished."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "discardReason",
+              "label": {
+                "es-MX": "Motivo de descarte",
+                "en": "Discard reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ReasonText"
+              }
+            }
+          ]
+        }
+      ],
+      "initialState": "Pending",
+      "rules": [
+        {
+          "codeName": "ReleaseNeedsChanges",
+          "label": {
+            "es-MX": "El release debe traer cambios",
+            "en": "A release needs changes"
+          },
+          "description": {
+            "es-MX": "No se arma una versión sin ningún merge nuevo.",
+            "en": "No version is put together without any new merge."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "changeCount"
+            },
+            "operator": ">",
+            "right": {
+              "op": "literal",
+              "value": 0
+            }
+          },
+          "message": {
+            "es-MX": "No hay cambios nuevos para este release.",
+            "en": "There are no new changes for this release."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "DraftRelease",
+              "args": {
+                "changeCount": 0
+              }
+            }
+          }
+        },
+        {
+          "codeName": "ReleaseNotesRequired",
+          "label": {
+            "es-MX": "Las notas son obligatorias",
+            "en": "Notes are required"
+          },
+          "description": {
+            "es-MX": "Ninguna versión sale sin decir qué cambió.",
+            "en": "No version ships without saying what changed."
+          },
+          "predicate": {
+            "kind": "present",
+            "value": {
+              "op": "arg",
+              "name": "notes"
+            }
+          },
+          "message": {
+            "es-MX": "Escribe las notas del release antes de publicarlo.",
+            "en": "Write the release notes before publishing."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "DraftRelease",
+                "args": {
+                  "packageName": "domain-wall",
+                  "version": "1.4.0",
+                  "channel": "Stable",
+                  "changeCount": 3
+                }
+              }
+            ],
+            "when": {
+              "command": "PublishRelease",
+              "args": {
+                "checksum": "sha512-9Kx3mQ7vT2pL8wZr4bN6yC1d",
+                "publishedOn": "2026-10-20"
+              }
+            }
+          }
+        }
+      ],
+      "invariants": [],
+      "transitions": [
+        {
+          "command": "DraftRelease",
+          "from": ["Pending"],
+          "to": "Drafted",
+          "guards": ["ReleaseNeedsChanges"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "packageName",
+              "value": {
+                "op": "arg",
+                "name": "packageName"
+              }
+            },
+            {
+              "op": "set",
+              "field": "version",
+              "value": {
+                "op": "arg",
+                "name": "version"
+              }
+            },
+            {
+              "op": "set",
+              "field": "channel",
+              "value": {
+                "op": "arg",
+                "name": "channel"
+              }
+            },
+            {
+              "op": "set",
+              "field": "changeCount",
+              "value": {
+                "op": "arg",
+                "name": "changeCount"
+              }
+            }
+          ],
+          "emits": ["ReleaseDrafted"]
+        },
+        {
+          "command": "PublishRelease",
+          "from": ["Drafted"],
+          "to": "Published",
+          "guards": ["ReleaseNotesRequired"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "notes",
+              "value": {
+                "op": "arg",
+                "name": "notes"
+              }
+            },
+            {
+              "op": "set",
+              "field": "checksum",
+              "value": {
+                "op": "arg",
+                "name": "checksum"
+              }
+            },
+            {
+              "op": "set",
+              "field": "publishedOn",
+              "value": {
+                "op": "arg",
+                "name": "publishedOn"
+              }
+            }
+          ],
+          "emits": ["ReleasePublished"]
+        },
+        {
+          "command": "DiscardRelease",
+          "from": ["Drafted"],
+          "to": "Discarded",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "discardReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["ReleaseDiscarded"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "DraftRelease",
+          "args": {
+            "packageName": "domain-wall",
+            "version": "1.4.0",
+            "channel": "Stable",
+            "changeCount": 3
+          }
+        },
+        {
+          "command": "PublishRelease",
+          "args": {
+            "notes": "Corrige el cálculo de aprobaciones al subir commits nuevos.",
+            "checksum": "sha512-9Kx3mQ7vT2pL8wZr4bN6yC1d",
+            "publishedOn": "2026-10-20"
+          }
+        }
+      ]
+    }
+  ]
+}

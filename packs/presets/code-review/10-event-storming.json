@@ -1,0 +1,1801 @@
+{
+  "experts": [
+    {
+      "codeName": "Mariana",
+      "name": "Mariana López",
+      "role": {
+        "es-MX": "Líder de ingeniería",
+        "en": "Engineering manager"
+      },
+      "avatarSeed": "mariana"
+    },
+    {
+      "codeName": "Rodrigo",
+      "name": "Rodrigo Pérez",
+      "role": {
+        "es-MX": "Mantenedor del repositorio",
+        "en": "Repository maintainer"
+      },
+      "avatarSeed": "rodrigo"
+    },
+    {
+      "codeName": "Ximena",
+      "name": "Ximena Cruz",
+      "role": {
+        "es-MX": "Ingeniera de plataforma (CI)",
+        "en": "Platform engineer (CI)"
+      },
+      "avatarSeed": "ximena"
+    },
+    {
+      "codeName": "Julian",
+      "name": "Julián Ortega",
+      "role": {
+        "es-MX": "Responsable de releases",
+        "en": "Release manager"
+      },
+      "avatarSeed": "julian"
+    }
+  ],
+  "actors": [
+    {
+      "codeName": "Author",
+      "label": {
+        "es-MX": "Autora del cambio",
+        "en": "Change author"
+      },
+      "description": {
+        "es-MX": "Quien escribe el código y abre el pull request.",
+        "en": "The person who writes the code and opens the pull request."
+      }
+    },
+    {
+      "codeName": "Reviewer",
+      "label": {
+        "es-MX": "Revisor",
+        "en": "Reviewer"
+      },
+      "description": {
+        "es-MX": "Compañero que lee el cambio y lo aprueba o pide cambios.",
+        "en": "Teammate who reads the change and approves it or asks for changes."
+      }
+    },
+    {
+      "codeName": "Maintainer",
+      "label": {
+        "es-MX": "Mantenedor",
+        "en": "Maintainer"
+      },
+      "description": {
+        "es-MX": "Cuida el repositorio: protege la rama principal y hace merge.",
+        "en": "Looks after the repository: protects the main branch and merges."
+      }
+    },
+    {
+      "codeName": "ReleaseManager",
+      "label": {
+        "es-MX": "Responsable de releases",
+        "en": "Release manager"
+      },
+      "description": {
+        "es-MX": "Decide qué versión sale, con qué notas y en qué canal.",
+        "en": "Decides which version ships, with which notes and on which channel."
+      }
+    }
+  ],
+  "externalSystems": [
+    {
+      "codeName": "CiProvider",
+      "label": {
+        "es-MX": "Proveedor de CI",
+        "en": "CI provider"
+      },
+      "description": {
+        "es-MX": "Servicio externo que corre los pipelines y avisa si pasaron o fallaron.",
+        "en": "External service that runs the pipelines and reports whether they passed or failed."
+      }
+    },
+    {
+      "codeName": "PackageRegistry",
+      "label": {
+        "es-MX": "Registro de paquetes",
+        "en": "Package registry"
+      },
+      "description": {
+        "es-MX": "Registro externo, estilo npm, donde se publican las versiones.",
+        "en": "External registry, npm-like, where versions are published."
+      }
+    }
+  ],
+  "events": [
+    {
+      "codeName": "RepositoryCreated",
+      "label": {
+        "es-MX": "Repositorio creado",
+        "en": "Repository created"
+      },
+      "description": {
+        "es-MX": "Se creó el repositorio y ya se puede subir código.",
+        "en": "The repository was created and code can now be pushed."
+      },
+      "context": "Repositories",
+      "sequence": 1,
+      "payload": [
+        {
+          "codeName": "repositoryId",
+          "label": {
+            "es-MX": "Repositorio",
+            "en": "Repository"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RepositoryId"
+          }
+        },
+        {
+          "codeName": "ownerId",
+          "label": {
+            "es-MX": "Dueño",
+            "en": "Owner"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UserId"
+          }
+        },
+        {
+          "codeName": "packageName",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Package"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PackageName"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "BranchProtected",
+      "label": {
+        "es-MX": "Rama protegida",
+        "en": "Branch protected"
+      },
+      "description": {
+        "es-MX": "La rama principal ahora exige aprobaciones para hacer merge.",
+        "en": "The main branch now requires approvals before merging."
+      },
+      "context": "Repositories",
+      "sequence": 2,
+      "payload": [
+        {
+          "codeName": "repositoryId",
+          "label": {
+            "es-MX": "Repositorio",
+            "en": "Repository"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RepositoryId"
+          }
+        },
+        {
+          "codeName": "requiredApprovals",
+          "label": {
+            "es-MX": "Aprobaciones requeridas",
+            "en": "Required approvals"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ApprovalCount"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PullRequestOpened",
+      "label": {
+        "es-MX": "Pull request abierto",
+        "en": "Pull request opened"
+      },
+      "description": {
+        "es-MX": "La autora abrió el pull request y pide revisión.",
+        "en": "The author opened the pull request and asks for review."
+      },
+      "context": "Reviewing",
+      "sequence": 3,
+      "payload": [
+        {
+          "codeName": "pullRequestId",
+          "label": {
+            "es-MX": "Pull request",
+            "en": "Pull request"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PullRequestId"
+          }
+        },
+        {
+          "codeName": "repositoryId",
+          "label": {
+            "es-MX": "Repositorio",
+            "en": "Repository"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RepositoryId"
+          }
+        },
+        {
+          "codeName": "authorId",
+          "label": {
+            "es-MX": "Autora",
+            "en": "Author"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UserId"
+          }
+        },
+        {
+          "codeName": "headCommit",
+          "label": {
+            "es-MX": "Último commit",
+            "en": "Head commit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CommitSha"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CheckRunQueued",
+      "label": {
+        "es-MX": "Corrida de CI en cola",
+        "en": "Check run queued"
+      },
+      "description": {
+        "es-MX": "El commit quedó en la cola del CI.",
+        "en": "The commit is waiting in the CI queue."
+      },
+      "context": "Checks",
+      "sequence": 4,
+      "payload": [
+        {
+          "codeName": "checkRunId",
+          "label": {
+            "es-MX": "Corrida de CI",
+            "en": "Check run"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CheckRunId"
+          }
+        },
+        {
+          "codeName": "pullRequestId",
+          "label": {
+            "es-MX": "Pull request",
+            "en": "Pull request"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PullRequestId"
+          }
+        },
+        {
+          "codeName": "commitSha",
+          "label": {
+            "es-MX": "Commit",
+            "en": "Commit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CommitSha"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CheckRunStarted",
+      "label": {
+        "es-MX": "Corrida de CI iniciada",
+        "en": "Check run started"
+      },
+      "description": {
+        "es-MX": "El CI empezó a correr las pruebas.",
+        "en": "CI started running the tests."
+      },
+      "context": "Checks",
+      "sequence": 5,
+      "payload": [
+        {
+          "codeName": "checkRunId",
+          "label": {
+            "es-MX": "Corrida de CI",
+            "en": "Check run"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CheckRunId"
+          }
+        },
+        {
+          "codeName": "startedAt",
+          "label": {
+            "es-MX": "Inicio",
+            "en": "Started at"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "timestamp"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CheckRunPassed",
+      "label": {
+        "es-MX": "CI en verde",
+        "en": "Check run passed"
+      },
+      "description": {
+        "es-MX": "Las pruebas pasaron dentro del tiempo límite.",
+        "en": "The tests passed within the timeout."
+      },
+      "context": "Checks",
+      "sequence": 6,
+      "payload": [
+        {
+          "codeName": "checkRunId",
+          "label": {
+            "es-MX": "Corrida de CI",
+            "en": "Check run"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CheckRunId"
+          }
+        },
+        {
+          "codeName": "pullRequestId",
+          "label": {
+            "es-MX": "Pull request",
+            "en": "Pull request"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PullRequestId"
+          }
+        },
+        {
+          "codeName": "commitSha",
+          "label": {
+            "es-MX": "Commit",
+            "en": "Commit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CommitSha"
+          }
+        },
+        {
+          "codeName": "durationSeconds",
+          "label": {
+            "es-MX": "Duración (s)",
+            "en": "Duration (s)"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DurationSeconds"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PullRequestApproved",
+      "label": {
+        "es-MX": "Pull request aprobado",
+        "en": "Pull request approved"
+      },
+      "description": {
+        "es-MX": "Un revisor que no es la autora aprobó el cambio.",
+        "en": "A reviewer other than the author approved the change."
+      },
+      "context": "Reviewing",
+      "sequence": 7,
+      "payload": [
+        {
+          "codeName": "pullRequestId",
+          "label": {
+            "es-MX": "Pull request",
+            "en": "Pull request"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PullRequestId"
+          }
+        },
+        {
+          "codeName": "reviewerId",
+          "label": {
+            "es-MX": "Revisor",
+            "en": "Reviewer"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UserId"
+          }
+        },
+        {
+          "codeName": "approvals",
+          "label": {
+            "es-MX": "Aprobaciones",
+            "en": "Approvals"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ApprovalCount"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PullRequestChecksPassed",
+      "label": {
+        "es-MX": "Checks registrados en verde",
+        "en": "Checks recorded as passed"
+      },
+      "description": {
+        "es-MX": "El pull request sabe que su último commit pasó el CI.",
+        "en": "The pull request knows its head commit passed CI."
+      },
+      "context": "Reviewing",
+      "sequence": 8,
+      "payload": [
+        {
+          "codeName": "pullRequestId",
+          "label": {
+            "es-MX": "Pull request",
+            "en": "Pull request"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PullRequestId"
+          }
+        },
+        {
+          "codeName": "testedCommit",
+          "label": {
+            "es-MX": "Commit probado",
+            "en": "Tested commit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CommitSha"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PullRequestMerged",
+      "label": {
+        "es-MX": "Merge hecho",
+        "en": "Pull request merged"
+      },
+      "description": {
+        "es-MX": "El cambio entró a la rama principal.",
+        "en": "The change landed on the main branch."
+      },
+      "context": "Reviewing",
+      "sequence": 9,
+      "payload": [
+        {
+          "codeName": "pullRequestId",
+          "label": {
+            "es-MX": "Pull request",
+            "en": "Pull request"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PullRequestId"
+          }
+        },
+        {
+          "codeName": "repositoryId",
+          "label": {
+            "es-MX": "Repositorio",
+            "en": "Repository"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RepositoryId"
+          }
+        },
+        {
+          "codeName": "mergeCommit",
+          "label": {
+            "es-MX": "Commit de merge",
+            "en": "Merge commit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CommitSha"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ReleaseDrafted",
+      "label": {
+        "es-MX": "Release en borrador",
+        "en": "Release drafted"
+      },
+      "description": {
+        "es-MX": "Se armó el borrador de la siguiente versión.",
+        "en": "The draft of the next version was put together."
+      },
+      "context": "Releasing",
+      "sequence": 10,
+      "payload": [
+        {
+          "codeName": "releaseId",
+          "label": {
+            "es-MX": "Release",
+            "en": "Release"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReleaseId"
+          }
+        },
+        {
+          "codeName": "packageName",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Package"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PackageName"
+          }
+        },
+        {
+          "codeName": "version",
+          "label": {
+            "es-MX": "Versión",
+            "en": "Version"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "SemanticVersion"
+          }
+        },
+        {
+          "codeName": "channel",
+          "label": {
+            "es-MX": "Canal",
+            "en": "Channel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReleaseChannel"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ReleasePublished",
+      "label": {
+        "es-MX": "Release publicado",
+        "en": "Release published"
+      },
+      "description": {
+        "es-MX": "La versión ya está en el registro de paquetes.",
+        "en": "The version is now in the package registry."
+      },
+      "context": "Releasing",
+      "sequence": 11,
+      "payload": [
+        {
+          "codeName": "releaseId",
+          "label": {
+            "es-MX": "Release",
+            "en": "Release"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReleaseId"
+          }
+        },
+        {
+          "codeName": "packageName",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Package"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PackageName"
+          }
+        },
+        {
+          "codeName": "version",
+          "label": {
+            "es-MX": "Versión",
+            "en": "Version"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "SemanticVersion"
+          }
+        },
+        {
+          "codeName": "channel",
+          "label": {
+            "es-MX": "Canal",
+            "en": "Channel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReleaseChannel"
+          }
+        },
+        {
+          "codeName": "publishedOn",
+          "label": {
+            "es-MX": "Fecha de publicación",
+            "en": "Publication date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ChangesRequested",
+      "label": {
+        "es-MX": "Cambios pedidos",
+        "en": "Changes requested"
+      },
+      "description": {
+        "es-MX": "Un revisor pidió cambios y las aprobaciones se reiniciaron.",
+        "en": "A reviewer asked for changes and the approvals were reset."
+      },
+      "context": "Reviewing",
+      "sequence": 12,
+      "payload": [
+        {
+          "codeName": "pullRequestId",
+          "label": {
+            "es-MX": "Pull request",
+            "en": "Pull request"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PullRequestId"
+          }
+        },
+        {
+          "codeName": "reviewerId",
+          "label": {
+            "es-MX": "Revisor",
+            "en": "Reviewer"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UserId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CommitsPushed",
+      "label": {
+        "es-MX": "Commits nuevos",
+        "en": "Commits pushed"
+      },
+      "description": {
+        "es-MX": "La autora subió commits nuevos; las aprobaciones viejas ya no cuentan.",
+        "en": "The author pushed new commits; old approvals no longer count."
+      },
+      "context": "Reviewing",
+      "sequence": 13,
+      "payload": [
+        {
+          "codeName": "pullRequestId",
+          "label": {
+            "es-MX": "Pull request",
+            "en": "Pull request"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PullRequestId"
+          }
+        },
+        {
+          "codeName": "headCommit",
+          "label": {
+            "es-MX": "Último commit",
+            "en": "Head commit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CommitSha"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "CheckRunFailed",
+      "label": {
+        "es-MX": "CI en rojo",
+        "en": "Check run failed"
+      },
+      "description": {
+        "es-MX": "Las pruebas fallaron.",
+        "en": "The tests failed."
+      },
+      "context": "Checks",
+      "sequence": 14,
+      "payload": [
+        {
+          "codeName": "checkRunId",
+          "label": {
+            "es-MX": "Corrida de CI",
+            "en": "Check run"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CheckRunId"
+          }
+        },
+        {
+          "codeName": "pullRequestId",
+          "label": {
+            "es-MX": "Pull request",
+            "en": "Pull request"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PullRequestId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PullRequestClosed",
+      "label": {
+        "es-MX": "Pull request cerrado",
+        "en": "Pull request closed"
+      },
+      "description": {
+        "es-MX": "Se cerró el pull request sin hacer merge.",
+        "en": "The pull request was closed without merging."
+      },
+      "context": "Reviewing",
+      "sequence": 15,
+      "payload": [
+        {
+          "codeName": "pullRequestId",
+          "label": {
+            "es-MX": "Pull request",
+            "en": "Pull request"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PullRequestId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ReleaseDiscarded",
+      "label": {
+        "es-MX": "Release descartado",
+        "en": "Release discarded"
+      },
+      "description": {
+        "es-MX": "El borrador se descartó y no se publicó.",
+        "en": "The draft was discarded and never published."
+      },
+      "context": "Releasing",
+      "sequence": 16,
+      "payload": [
+        {
+          "codeName": "releaseId",
+          "label": {
+            "es-MX": "Release",
+            "en": "Release"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReleaseId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RepositoryArchived",
+      "label": {
+        "es-MX": "Repositorio archivado",
+        "en": "Repository archived"
+      },
+      "description": {
+        "es-MX": "El repositorio quedó en solo lectura.",
+        "en": "The repository became read-only."
+      },
+      "context": "Repositories",
+      "sequence": 17,
+      "payload": [
+        {
+          "codeName": "repositoryId",
+          "label": {
+            "es-MX": "Repositorio",
+            "en": "Repository"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RepositoryId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "codeName": "CreateRepository",
+      "label": {
+        "es-MX": "Crear repositorio",
+        "en": "Create repository"
+      },
+      "description": {
+        "es-MX": "Crear el repositorio del paquete.",
+        "en": "Create the package's repository."
+      },
+      "context": "Repositories",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Maintainer"
+      },
+      "handledBy": "CodeRepository",
+      "params": [
+        {
+          "codeName": "ownerId",
+          "label": {
+            "es-MX": "Dueño",
+            "en": "Owner"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UserId"
+          }
+        },
+        {
+          "codeName": "packageName",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Package"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PackageName"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ProtectBranch",
+      "label": {
+        "es-MX": "Proteger rama",
+        "en": "Protect branch"
+      },
+      "description": {
+        "es-MX": "Exigir un número de aprobaciones para hacer merge a la rama principal.",
+        "en": "Require a number of approvals to merge into the main branch."
+      },
+      "context": "Repositories",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Maintainer"
+      },
+      "handledBy": "CodeRepository",
+      "params": [
+        {
+          "codeName": "requiredApprovals",
+          "label": {
+            "es-MX": "Aprobaciones requeridas",
+            "en": "Required approvals"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ApprovalCount"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ArchiveRepository",
+      "label": {
+        "es-MX": "Archivar repositorio",
+        "en": "Archive repository"
+      },
+      "description": {
+        "es-MX": "Dejar el repositorio en solo lectura.",
+        "en": "Make the repository read-only."
+      },
+      "context": "Repositories",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Maintainer"
+      },
+      "handledBy": "CodeRepository",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "OpenPullRequest",
+      "label": {
+        "es-MX": "Abrir pull request",
+        "en": "Open pull request"
+      },
+      "description": {
+        "es-MX": "Pedir revisión de un cambio.",
+        "en": "Ask for review of a change."
+      },
+      "context": "Reviewing",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Author"
+      },
+      "handledBy": "PullRequest",
+      "params": [
+        {
+          "codeName": "repositoryId",
+          "label": {
+            "es-MX": "Repositorio",
+            "en": "Repository"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RepositoryId"
+          }
+        },
+        {
+          "codeName": "authorId",
+          "label": {
+            "es-MX": "Autora",
+            "en": "Author"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UserId"
+          }
+        },
+        {
+          "codeName": "headCommit",
+          "label": {
+            "es-MX": "Último commit",
+            "en": "Head commit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CommitSha"
+          }
+        },
+        {
+          "codeName": "changedFiles",
+          "label": {
+            "es-MX": "Archivos cambiados",
+            "en": "Changed files"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "FileCount"
+          }
+        },
+        {
+          "codeName": "requiredApprovals",
+          "label": {
+            "es-MX": "Aprobaciones requeridas",
+            "en": "Required approvals"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ApprovalCount"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ApprovePullRequest",
+      "label": {
+        "es-MX": "Aprobar",
+        "en": "Approve"
+      },
+      "description": {
+        "es-MX": "Dar el visto bueno al cambio.",
+        "en": "Sign off on the change."
+      },
+      "context": "Reviewing",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Reviewer"
+      },
+      "handledBy": "PullRequest",
+      "params": [
+        {
+          "codeName": "reviewerId",
+          "label": {
+            "es-MX": "Revisor",
+            "en": "Reviewer"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UserId"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RequestChanges",
+      "label": {
+        "es-MX": "Pedir cambios",
+        "en": "Request changes"
+      },
+      "description": {
+        "es-MX": "Regresar el cambio a la autora con comentarios.",
+        "en": "Send the change back to the author with comments."
+      },
+      "context": "Reviewing",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Reviewer"
+      },
+      "handledBy": "PullRequest",
+      "params": [
+        {
+          "codeName": "reviewerId",
+          "label": {
+            "es-MX": "Revisor",
+            "en": "Reviewer"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UserId"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PushCommits",
+      "label": {
+        "es-MX": "Subir commits",
+        "en": "Push commits"
+      },
+      "description": {
+        "es-MX": "Agregar commits nuevos al pull request.",
+        "en": "Add new commits to the pull request."
+      },
+      "context": "Reviewing",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Author"
+      },
+      "handledBy": "PullRequest",
+      "params": [
+        {
+          "codeName": "headCommit",
+          "label": {
+            "es-MX": "Último commit",
+            "en": "Head commit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CommitSha"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "RecordChecksPassed",
+      "label": {
+        "es-MX": "Registrar CI en verde",
+        "en": "Record checks passed"
+      },
+      "description": {
+        "es-MX": "Anotar en el pull request que su commit pasó el CI.",
+        "en": "Note on the pull request that its commit passed CI."
+      },
+      "context": "Reviewing",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "RecordChecksWhenCheckRunPassed"
+      },
+      "handledBy": "PullRequest",
+      "params": [
+        {
+          "codeName": "testedCommit",
+          "label": {
+            "es-MX": "Commit probado",
+            "en": "Tested commit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CommitSha"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "MergePullRequest",
+      "label": {
+        "es-MX": "Hacer merge",
+        "en": "Merge pull request"
+      },
+      "description": {
+        "es-MX": "Meter el cambio a la rama principal.",
+        "en": "Land the change on the main branch."
+      },
+      "context": "Reviewing",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Maintainer"
+      },
+      "handledBy": "PullRequest",
+      "params": [
+        {
+          "codeName": "mergeCommit",
+          "label": {
+            "es-MX": "Commit de merge",
+            "en": "Merge commit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CommitSha"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "ClosePullRequest",
+      "label": {
+        "es-MX": "Cerrar pull request",
+        "en": "Close pull request"
+      },
+      "description": {
+        "es-MX": "Cerrar el pull request sin hacer merge.",
+        "en": "Close the pull request without merging."
+      },
+      "context": "Reviewing",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "Author"
+      },
+      "handledBy": "PullRequest",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "QueueCheckRun",
+      "label": {
+        "es-MX": "Encolar corrida de CI",
+        "en": "Queue check run"
+      },
+      "description": {
+        "es-MX": "Mandar el commit a la cola del CI.",
+        "en": "Send the commit to the CI queue."
+      },
+      "context": "Checks",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "QueueCheckRunWhenPullRequestOpened"
+      },
+      "handledBy": "CheckRun",
+      "params": [
+        {
+          "codeName": "pullRequestId",
+          "label": {
+            "es-MX": "Pull request",
+            "en": "Pull request"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PullRequestId"
+          }
+        },
+        {
+          "codeName": "commitSha",
+          "label": {
+            "es-MX": "Commit",
+            "en": "Commit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CommitSha"
+          }
+        },
+        {
+          "codeName": "timeoutSeconds",
+          "label": {
+            "es-MX": "Tiempo límite (s)",
+            "en": "Timeout (s)"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DurationSeconds"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "StartCheckRun",
+      "label": {
+        "es-MX": "Iniciar corrida",
+        "en": "Start check run"
+      },
+      "description": {
+        "es-MX": "El CI toma el commit y empieza a probar.",
+        "en": "CI picks up the commit and starts testing."
+      },
+      "context": "Checks",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "CiProvider"
+      },
+      "handledBy": "CheckRun",
+      "params": [
+        {
+          "codeName": "startedAt",
+          "label": {
+            "es-MX": "Inicio",
+            "en": "Started at"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "timestamp"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PassCheckRun",
+      "label": {
+        "es-MX": "Marcar CI en verde",
+        "en": "Pass check run"
+      },
+      "description": {
+        "es-MX": "El CI reporta que todo pasó y cuánto tardó.",
+        "en": "CI reports that everything passed and how long it took."
+      },
+      "context": "Checks",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "CiProvider"
+      },
+      "handledBy": "CheckRun",
+      "params": [
+        {
+          "codeName": "durationSeconds",
+          "label": {
+            "es-MX": "Duración (s)",
+            "en": "Duration (s)"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DurationSeconds"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "FailCheckRun",
+      "label": {
+        "es-MX": "Marcar CI en rojo",
+        "en": "Fail check run"
+      },
+      "description": {
+        "es-MX": "El CI reporta que algo falló.",
+        "en": "CI reports that something failed."
+      },
+      "context": "Checks",
+      "issuedBy": {
+        "kind": "externalSystem",
+        "ref": "CiProvider"
+      },
+      "handledBy": "CheckRun",
+      "params": [
+        {
+          "codeName": "durationSeconds",
+          "label": {
+            "es-MX": "Duración (s)",
+            "en": "Duration (s)"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DurationSeconds"
+          }
+        },
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DraftRelease",
+      "label": {
+        "es-MX": "Armar borrador de release",
+        "en": "Draft release"
+      },
+      "description": {
+        "es-MX": "Preparar la siguiente versión con lo que ya entró.",
+        "en": "Prepare the next version with what has landed."
+      },
+      "context": "Releasing",
+      "issuedBy": {
+        "kind": "policy",
+        "ref": "DraftReleaseWhenPullRequestMerged"
+      },
+      "handledBy": "Release",
+      "params": [
+        {
+          "codeName": "packageName",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Package"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PackageName"
+          }
+        },
+        {
+          "codeName": "version",
+          "label": {
+            "es-MX": "Versión",
+            "en": "Version"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "SemanticVersion"
+          }
+        },
+        {
+          "codeName": "channel",
+          "label": {
+            "es-MX": "Canal",
+            "en": "Channel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReleaseChannel"
+          }
+        },
+        {
+          "codeName": "changeCount",
+          "label": {
+            "es-MX": "Cambios incluidos",
+            "en": "Included changes"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ChangeCount"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "PublishRelease",
+      "label": {
+        "es-MX": "Publicar release",
+        "en": "Publish release"
+      },
+      "description": {
+        "es-MX": "Subir la versión al registro con sus notas.",
+        "en": "Push the version to the registry with its notes."
+      },
+      "context": "Releasing",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "ReleaseManager"
+      },
+      "handledBy": "Release",
+      "params": [
+        {
+          "codeName": "notes",
+          "label": {
+            "es-MX": "Notas del release",
+            "en": "Release notes"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "ReleaseNotes"
+            }
+          }
+        },
+        {
+          "codeName": "checksum",
+          "label": {
+            "es-MX": "Checksum",
+            "en": "Checksum"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "Checksum"
+          }
+        },
+        {
+          "codeName": "publishedOn",
+          "label": {
+            "es-MX": "Fecha de publicación",
+            "en": "Publication date"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "date"
+          }
+        }
+      ]
+    },
+    {
+      "codeName": "DiscardRelease",
+      "label": {
+        "es-MX": "Descartar release",
+        "en": "Discard release"
+      },
+      "description": {
+        "es-MX": "Tirar el borrador sin publicarlo.",
+        "en": "Throw the draft away without publishing it."
+      },
+      "context": "Releasing",
+      "issuedBy": {
+        "kind": "actor",
+        "ref": "ReleaseManager"
+      },
+      "handledBy": "Release",
+      "params": [
+        {
+          "codeName": "reason",
+          "label": {
+            "es-MX": "Motivo",
+            "en": "Reason"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReasonText"
+          }
+        }
+      ]
+    }
+  ],
+  "policies": [
+    {
+      "codeName": "QueueCheckRunWhenPullRequestOpened",
+      "label": {
+        "es-MX": "Al abrir un PR, correr el CI",
+        "en": "When a PR opens, run CI"
+      },
+      "description": {
+        "es-MX": "Cada pull request nuevo manda su commit a la cola del CI.",
+        "en": "Every new pull request sends its commit to the CI queue."
+      },
+      "context": "Checks",
+      "when": "PullRequestOpened",
+      "then": "QueueCheckRun"
+    },
+    {
+      "codeName": "RecordChecksWhenCheckRunPassed",
+      "label": {
+        "es-MX": "CI en verde, avisar al PR",
+        "en": "When CI passes, tell the PR"
+      },
+      "description": {
+        "es-MX": "Cuando el CI pasa, el pull request lo anota para poder hacer merge.",
+        "en": "When CI passes, the pull request records it so it can be merged."
+      },
+      "context": "Reviewing",
+      "when": "CheckRunPassed",
+      "then": "RecordChecksPassed"
+    },
+    {
+      "codeName": "DraftReleaseWhenPullRequestMerged",
+      "label": {
+        "es-MX": "Tras el merge, armar el release",
+        "en": "After a merge, draft the release"
+      },
+      "description": {
+        "es-MX": "Cada merge a la rama principal alimenta el borrador del siguiente release.",
+        "en": "Every merge into the main branch feeds the draft of the next release."
+      },
+      "context": "Releasing",
+      "when": "PullRequestMerged",
+      "then": "DraftRelease"
+    }
+  ],
+  "readModels": [
+    {
+      "codeName": "ReviewQueue",
+      "label": {
+        "es-MX": "Cola de revisión",
+        "en": "Review queue"
+      },
+      "description": {
+        "es-MX": "Los pull requests que esperan revisión, con sus aprobaciones y su CI.",
+        "en": "The pull requests waiting for review, with their approvals and CI."
+      },
+      "context": "Reviewing",
+      "fields": [
+        {
+          "codeName": "pullRequestId",
+          "label": {
+            "es-MX": "Pull request",
+            "en": "Pull request"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PullRequestId"
+          }
+        },
+        {
+          "codeName": "authorId",
+          "label": {
+            "es-MX": "Autora",
+            "en": "Author"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UserId"
+          }
+        },
+        {
+          "codeName": "approvals",
+          "label": {
+            "es-MX": "Aprobaciones",
+            "en": "Approvals"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ApprovalCount"
+          }
+        },
+        {
+          "codeName": "checksPassed",
+          "label": {
+            "es-MX": "Checks en verde",
+            "en": "Checks passed"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "boolean"
+          }
+        }
+      ],
+      "fedBy": [
+        "PullRequestOpened",
+        "PullRequestApproved",
+        "ChangesRequested",
+        "CommitsPushed",
+        "PullRequestChecksPassed",
+        "PullRequestMerged",
+        "PullRequestClosed"
+      ],
+      "usedBy": ["Reviewer", "Maintainer"]
+    },
+    {
+      "codeName": "PipelineStatus",
+      "label": {
+        "es-MX": "Estado del pipeline",
+        "en": "Pipeline status"
+      },
+      "description": {
+        "es-MX": "Cómo va el CI de cada commit.",
+        "en": "How CI is going for each commit."
+      },
+      "context": "Checks",
+      "fields": [
+        {
+          "codeName": "checkRunId",
+          "label": {
+            "es-MX": "Corrida de CI",
+            "en": "Check run"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CheckRunId"
+          }
+        },
+        {
+          "codeName": "commitSha",
+          "label": {
+            "es-MX": "Commit",
+            "en": "Commit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CommitSha"
+          }
+        },
+        {
+          "codeName": "durationSeconds",
+          "label": {
+            "es-MX": "Duración (s)",
+            "en": "Duration (s)"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "DurationSeconds"
+            }
+          }
+        }
+      ],
+      "fedBy": ["CheckRunQueued", "CheckRunStarted", "CheckRunPassed", "CheckRunFailed"],
+      "usedBy": ["Author"]
+    },
+    {
+      "codeName": "ReleaseHistory",
+      "label": {
+        "es-MX": "Historial de releases",
+        "en": "Release history"
+      },
+      "description": {
+        "es-MX": "Qué versiones salieron, cuándo y en qué canal.",
+        "en": "Which versions shipped, when and on which channel."
+      },
+      "context": "Releasing",
+      "fields": [
+        {
+          "codeName": "releaseId",
+          "label": {
+            "es-MX": "Release",
+            "en": "Release"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReleaseId"
+          }
+        },
+        {
+          "codeName": "packageName",
+          "label": {
+            "es-MX": "Paquete",
+            "en": "Package"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PackageName"
+          }
+        },
+        {
+          "codeName": "version",
+          "label": {
+            "es-MX": "Versión",
+            "en": "Version"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "SemanticVersion"
+          }
+        },
+        {
+          "codeName": "channel",
+          "label": {
+            "es-MX": "Canal",
+            "en": "Channel"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ReleaseChannel"
+          }
+        }
+      ],
+      "fedBy": ["ReleaseDrafted", "ReleasePublished", "ReleaseDiscarded"],
+      "usedBy": ["ReleaseManager"]
+    }
+  ]
+}
