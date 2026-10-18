@@ -68,7 +68,7 @@ export interface PackEvent extends Labeled {
   readonly sequence: number;
 }
 
-export const PACKS = ["hecho-a-mano", "clinic", "education", "fintech", "logistics"].map(
+export const PACKS = ["hecho-a-mano", "clinic", "code-review", "fintech", "logistics"].map(
   (pack) => ({
     pack,
     name: (packFile(pack, "00-meta.json") as { business: { name: { en: string } } }).business.name

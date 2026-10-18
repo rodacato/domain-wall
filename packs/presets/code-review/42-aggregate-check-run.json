@@ -1,0 +1,318 @@
+{
+  "aggregates": [
+    {
+      "codeName": "CheckRun",
+      "label": {
+        "es-MX": "Corrida de CI",
+        "en": "Check run"
+      },
+      "description": {
+        "es-MX": "La prueba automática de un commit: en cola, corriendo y su resultado.",
+        "en": "The automated test of one commit: queued, running and its result."
+      },
+      "context": "Checks",
+      "identity": "checkRunId",
+      "fields": [
+        {
+          "codeName": "checkRunId",
+          "label": {
+            "es-MX": "Corrida de CI",
+            "en": "Check run"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CheckRunId"
+          }
+        },
+        {
+          "codeName": "pullRequestId",
+          "label": {
+            "es-MX": "Pull request",
+            "en": "Pull request"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PullRequestId"
+          }
+        },
+        {
+          "codeName": "commitSha",
+          "label": {
+            "es-MX": "Commit",
+            "en": "Commit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CommitSha"
+          }
+        },
+        {
+          "codeName": "timeoutSeconds",
+          "label": {
+            "es-MX": "Tiempo límite (s)",
+            "en": "Timeout (s)"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "DurationSeconds"
+          }
+        },
+        {
+          "codeName": "durationSeconds",
+          "label": {
+            "es-MX": "Duración (s)",
+            "en": "Duration (s)"
+          },
+          "type": {
+            "kind": "optional",
+            "of": {
+              "kind": "valueObject",
+              "ref": "DurationSeconds"
+            }
+          }
+        }
+      ],
+      "derived": [],
+      "entities": [],
+      "states": [
+        {
+          "codeName": "Pending",
+          "label": {
+            "es-MX": "Pendiente",
+            "en": "Pending"
+          },
+          "description": {
+            "es-MX": "Todavía no hay commit que probar.",
+            "en": "There is no commit to test yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Queued",
+          "label": {
+            "es-MX": "En cola",
+            "en": "Queued"
+          },
+          "description": {
+            "es-MX": "Espera un runner libre.",
+            "en": "Waiting for a free runner."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Running",
+          "label": {
+            "es-MX": "Corriendo",
+            "en": "Running"
+          },
+          "description": {
+            "es-MX": "El CI está probando el commit.",
+            "en": "CI is testing the commit."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Passed",
+          "label": {
+            "es-MX": "En verde",
+            "en": "Passed"
+          },
+          "description": {
+            "es-MX": "Todo pasó.",
+            "en": "Everything passed."
+          },
+          "terminal": true,
+          "data": []
+        },
+        {
+          "codeName": "Failed",
+          "label": {
+            "es-MX": "En rojo",
+            "en": "Failed"
+          },
+          "description": {
+            "es-MX": "Algo falló.",
+            "en": "Something failed."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "failureReason",
+              "label": {
+                "es-MX": "Motivo de la falla",
+                "en": "Failure reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ReasonText"
+              }
+            }
+          ]
+        }
+      ],
+      "initialState": "Pending",
+      "rules": [
+        {
+          "codeName": "RunWithinTimeout",
+          "label": {
+            "es-MX": "Dentro del tiempo límite",
+            "en": "Within the timeout"
+          },
+          "description": {
+            "es-MX": "Una corrida que se pasa de su tiempo límite no puede quedar en verde.",
+            "en": "A run that exceeds its timeout cannot pass."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "durationSeconds"
+            },
+            "operator": "<=",
+            "right": {
+              "op": "field",
+              "name": "timeoutSeconds"
+            }
+          },
+          "message": {
+            "es-MX": "La corrida se pasó del tiempo límite.",
+            "en": "The run exceeded its timeout."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "QueueCheckRun",
+                "args": {
+                  "pullRequestId": "pr_4n8w2c6v",
+                  "commitSha": "3f9a2c1",
+                  "timeoutSeconds": 600
+                }
+              },
+              {
+                "command": "StartCheckRun",
+                "args": {}
+              }
+            ],
+            "when": {
+              "command": "PassCheckRun",
+              "args": {
+                "durationSeconds": 1800
+              }
+            }
+          }
+        }
+      ],
+      "invariants": [],
+      "transitions": [
+        {
+          "command": "QueueCheckRun",
+          "from": ["Pending"],
+          "to": "Queued",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "pullRequestId",
+              "value": {
+                "op": "arg",
+                "name": "pullRequestId"
+              }
+            },
+            {
+              "op": "set",
+              "field": "commitSha",
+              "value": {
+                "op": "arg",
+                "name": "commitSha"
+              }
+            },
+            {
+              "op": "set",
+              "field": "timeoutSeconds",
+              "value": {
+                "op": "arg",
+                "name": "timeoutSeconds"
+              }
+            }
+          ],
+          "emits": ["CheckRunQueued"]
+        },
+        {
+          "command": "StartCheckRun",
+          "from": ["Queued"],
+          "to": "Running",
+          "guards": [],
+          "effects": [],
+          "emits": ["CheckRunStarted"]
+        },
+        {
+          "command": "PassCheckRun",
+          "from": ["Running"],
+          "to": "Passed",
+          "guards": ["RunWithinTimeout"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "durationSeconds",
+              "value": {
+                "op": "arg",
+                "name": "durationSeconds"
+              }
+            }
+          ],
+          "emits": ["CheckRunPassed"]
+        },
+        {
+          "command": "FailCheckRun",
+          "from": ["Running"],
+          "to": "Failed",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "durationSeconds",
+              "value": {
+                "op": "arg",
+                "name": "durationSeconds"
+              }
+            },
+            {
+              "op": "set",
+              "field": "failureReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["CheckRunFailed"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "QueueCheckRun",
+          "args": {
+            "pullRequestId": "pr_4n8w2c6v",
+            "commitSha": "3f9a2c1",
+            "timeoutSeconds": 600
+          }
+        },
+        {
+          "command": "StartCheckRun",
+          "args": {
+            "startedAt": "2026-10-14T16:05:00Z"
+          }
+        },
+        {
+          "command": "PassCheckRun",
+          "args": {
+            "durationSeconds": 240
+          }
+        }
+      ]
+    }
+  ]
+}

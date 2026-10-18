@@ -1,0 +1,290 @@
+{
+  "contexts": [
+    {
+      "codeName": "Repositories",
+      "label": {
+        "es-MX": "Repositorios",
+        "en": "Repositories"
+      },
+      "description": {
+        "es-MX": "Dónde vive el código y qué reglas protegen la rama principal.",
+        "en": "Where the code lives and which rules protect the main branch."
+      },
+      "subdomain": {
+        "type": "supporting",
+        "rationale": {
+          "es-MX": "Necesitamos repositorios bien configurados, pero crearlos y proteger ramas funciona igual que en cualquier lado.",
+          "en": "We need well-configured repositories, but creating them and protecting branches works the same everywhere."
+        }
+      }
+    },
+    {
+      "codeName": "Reviewing",
+      "label": {
+        "es-MX": "Revisión",
+        "en": "Review"
+      },
+      "description": {
+        "es-MX": "Desde que se abre un pull request hasta que se hace merge o se cierra.",
+        "en": "From the moment a pull request opens until it is merged or closed."
+      },
+      "subdomain": {
+        "type": "core",
+        "rationale": {
+          "es-MX": "Decidir cuándo un cambio es seguro para hacer merge es el corazón de la plataforma: ahí se gana o se pierde la confianza del equipo.",
+          "en": "Deciding when a change is safe to merge is the heart of the platform: that is where the team's trust is won or lost."
+        }
+      }
+    },
+    {
+      "codeName": "Checks",
+      "label": {
+        "es-MX": "Checks",
+        "en": "Checks"
+      },
+      "description": {
+        "es-MX": "Las corridas de CI que prueban cada commit.",
+        "en": "The CI runs that test each commit."
+      },
+      "subdomain": {
+        "type": "supporting",
+        "rationale": {
+          "es-MX": "El CI tiene que ser confiable y rápido, pero lo corre un proveedor externo; nosotros sólo orquestamos y leemos el resultado.",
+          "en": "CI has to be reliable and fast, but an external provider runs it; we only orchestrate and read the result."
+        }
+      }
+    },
+    {
+      "codeName": "Releasing",
+      "label": {
+        "es-MX": "Releases",
+        "en": "Releasing"
+      },
+      "description": {
+        "es-MX": "Armar versiones y publicarlas en el registro de paquetes.",
+        "en": "Putting versions together and publishing them to the package registry."
+      },
+      "subdomain": {
+        "type": "generic",
+        "rationale": {
+          "es-MX": "Publicar sigue semver y las reglas del registro, igual para todo el mundo; conviene aislarlo y no reinventarlo.",
+          "en": "Publishing follows semver and the registry's rules, the same for everyone; better to isolate it than to reinvent it."
+        }
+      }
+    }
+  ],
+  "contextRelations": [
+    {
+      "type": "upstreamDownstream",
+      "upstream": "Repositories",
+      "downstream": "Reviewing",
+      "upstreamRoles": ["OpenHostService", "PublishedLanguage"],
+      "downstreamRoles": [],
+      "customerSupplier": true,
+      "via": ["BranchProtected"],
+      "description": {
+        "es-MX": "Repositorios publica sus reglas de protección en un lenguaje estable y Revisión las consume; Revisión puede pedirle cambios.",
+        "en": "Repositories publishes its protection rules in a stable language and Review consumes them; Review can ask it for changes."
+      }
+    },
+    {
+      "type": "partnership",
+      "a": "Reviewing",
+      "b": "Checks",
+      "shared": ["CommitSha"],
+      "description": {
+        "es-MX": "Revisión y Checks avanzan juntos: abrir un PR dispara el CI y el CI en verde destraba el merge; ambos hablan del mismo commit.",
+        "en": "Review and Checks move together: opening a PR triggers CI and green CI unlocks the merge; both talk about the same commit."
+      }
+    },
+    {
+      "type": "upstreamDownstream",
+      "upstream": "Reviewing",
+      "downstream": "Releasing",
+      "upstreamRoles": ["PublishedLanguage"],
+      "downstreamRoles": ["Conformist"],
+      "customerSupplier": false,
+      "via": ["PullRequestMerged"],
+      "description": {
+        "es-MX": "Releases recibe los merges tal como Revisión los publica, sin negociar su formato.",
+        "en": "Releasing receives merges exactly as Review publishes them, without negotiating their format."
+      }
+    },
+    {
+      "type": "separateWays",
+      "a": "Checks",
+      "b": "Releasing",
+      "description": {
+        "es-MX": "Checks y Releases no necesitan hablarse: cada uno sigue su camino.",
+        "en": "Checks and Releasing do not need to talk to each other: each goes its own way."
+      }
+    }
+  ],
+  "ambiguousTerm": {
+    "codeName": "Review",
+    "label": {
+      "es-MX": "Revisión",
+      "en": "Review"
+    },
+    "meanings": [
+      {
+        "context": "Reviewing",
+        "concept": "PullRequest",
+        "definition": {
+          "es-MX": "La revisión humana: cuántas aprobaciones pide la rama y cuántas lleva el pull request.",
+          "en": "The human review: how many approvals the branch requires and how many the pull request has."
+        },
+        "showcaseFields": ["requiredApprovals", "approvals"]
+      },
+      {
+        "context": "Checks",
+        "concept": "CheckRun",
+        "definition": {
+          "es-MX": "La revisión automática de un commit: qué commit probó el CI y cuánto tardó.",
+          "en": "The automated check of one commit: which commit CI tested and how long it took."
+        },
+        "showcaseFields": ["commitSha", "durationSeconds"]
+      },
+      {
+        "context": "Releasing",
+        "concept": "Release",
+        "definition": {
+          "es-MX": "La revisión publicada, como “la revisión 1.4.0”: qué versión es y en qué canal salió.",
+          "en": "The published revision, as in “revision 1.4.0”: which version it is and on which channel it shipped."
+        },
+        "showcaseFields": ["version", "channel"]
+      }
+    ]
+  },
+  "antiCorruptionLayer": {
+    "context": "Releasing",
+    "externalSystem": "PackageRegistry",
+    "domainType": "Release",
+    "externalRoot": "RegistryPublishRequest",
+    "externalTypes": [
+      {
+        "codeName": "RegistryPublishRequest",
+        "label": {
+          "es-MX": "Solicitud de publicación",
+          "en": "Publish request"
+        },
+        "description": {
+          "es-MX": "El documento que pide el registro para publicar, con sus nombres en snake_case y sus propias etiquetas.",
+          "en": "The document the registry asks for to publish, with snake_case names and its own tags."
+        },
+        "wireName": "publish_request",
+        "fields": [
+          {
+            "codeName": "packageName",
+            "label": {
+              "es-MX": "Nombre del paquete",
+              "en": "Package name"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "package_name"
+          },
+          {
+            "codeName": "version",
+            "label": {
+              "es-MX": "Versión",
+              "en": "Version"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "version"
+          },
+          {
+            "codeName": "distTag",
+            "label": {
+              "es-MX": "Etiqueta de distribución",
+              "en": "Dist tag"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "dist_tag"
+          },
+          {
+            "codeName": "integrity",
+            "label": {
+              "es-MX": "Integridad",
+              "en": "Integrity"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "integrity"
+          },
+          {
+            "codeName": "access",
+            "label": {
+              "es-MX": "Acceso",
+              "en": "Access"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "access"
+          },
+          {
+            "codeName": "publishedAt",
+            "label": {
+              "es-MX": "Fecha de publicación",
+              "en": "Published at"
+            },
+            "type": {
+              "kind": "primitive",
+              "name": "string"
+            },
+            "wireName": "published_at"
+          }
+        ]
+      }
+    ],
+    "translation": [
+      {
+        "op": "rename",
+        "domainField": "packageName",
+        "externalField": "packageName"
+      },
+      {
+        "op": "rename",
+        "domainField": "version",
+        "externalField": "version"
+      },
+      {
+        "op": "mapCode",
+        "domainField": "channel",
+        "externalField": "distTag",
+        "table": {
+          "Stable": "latest",
+          "Prerelease": "next"
+        }
+      },
+      {
+        "op": "rename",
+        "domainField": "checksum",
+        "externalField": "integrity"
+      },
+      {
+        "op": "constant",
+        "externalField": "access",
+        "value": "public"
+      },
+      {
+        "op": "format",
+        "domainField": "publishedOn",
+        "externalField": "publishedAt",
+        "format": "isoDate"
+      }
+    ]
+  }
+}

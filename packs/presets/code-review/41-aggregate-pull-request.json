@@ -1,0 +1,669 @@
+{
+  "aggregates": [
+    {
+      "codeName": "PullRequest",
+      "label": {
+        "es-MX": "Pull request",
+        "en": "Pull request"
+      },
+      "description": {
+        "es-MX": "Un cambio propuesto a la rama principal: su revisión, su CI y si ya se puede hacer merge.",
+        "en": "A change proposed to the main branch: its review, its CI and whether it can be merged yet."
+      },
+      "context": "Reviewing",
+      "identity": "pullRequestId",
+      "fields": [
+        {
+          "codeName": "pullRequestId",
+          "label": {
+            "es-MX": "Pull request",
+            "en": "Pull request"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "PullRequestId"
+          }
+        },
+        {
+          "codeName": "repositoryId",
+          "label": {
+            "es-MX": "Repositorio",
+            "en": "Repository"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "RepositoryId"
+          }
+        },
+        {
+          "codeName": "authorId",
+          "label": {
+            "es-MX": "Autora",
+            "en": "Author"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "UserId"
+          }
+        },
+        {
+          "codeName": "headCommit",
+          "label": {
+            "es-MX": "Último commit",
+            "en": "Head commit"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "CommitSha"
+          }
+        },
+        {
+          "codeName": "changedFiles",
+          "label": {
+            "es-MX": "Archivos cambiados",
+            "en": "Changed files"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "FileCount"
+          }
+        },
+        {
+          "codeName": "requiredApprovals",
+          "label": {
+            "es-MX": "Aprobaciones requeridas",
+            "en": "Required approvals"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ApprovalCount"
+          }
+        },
+        {
+          "codeName": "approvals",
+          "label": {
+            "es-MX": "Aprobaciones",
+            "en": "Approvals"
+          },
+          "type": {
+            "kind": "valueObject",
+            "ref": "ApprovalCount"
+          }
+        },
+        {
+          "codeName": "checksPassed",
+          "label": {
+            "es-MX": "Checks en verde",
+            "en": "Checks passed"
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "boolean"
+          }
+        }
+      ],
+      "derived": [],
+      "entities": [],
+      "states": [
+        {
+          "codeName": "Draft",
+          "label": {
+            "es-MX": "Borrador",
+            "en": "Draft"
+          },
+          "description": {
+            "es-MX": "El cambio existe pero nadie lo ha pedido revisar.",
+            "en": "The change exists but nobody asked for review yet."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Open",
+          "label": {
+            "es-MX": "Abierto",
+            "en": "Open"
+          },
+          "description": {
+            "es-MX": "Espera revisión y CI.",
+            "en": "Waiting for review and CI."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "ChangesRequested",
+          "label": {
+            "es-MX": "Con cambios pedidos",
+            "en": "Changes requested"
+          },
+          "description": {
+            "es-MX": "Un revisor lo regresó a la autora.",
+            "en": "A reviewer sent it back to the author."
+          },
+          "terminal": false,
+          "data": []
+        },
+        {
+          "codeName": "Merged",
+          "label": {
+            "es-MX": "Con merge",
+            "en": "Merged"
+          },
+          "description": {
+            "es-MX": "El cambio ya está en la rama principal.",
+            "en": "The change is on the main branch."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "mergeCommit",
+              "label": {
+                "es-MX": "Commit de merge",
+                "en": "Merge commit"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "CommitSha"
+              }
+            }
+          ]
+        },
+        {
+          "codeName": "Closed",
+          "label": {
+            "es-MX": "Cerrado",
+            "en": "Closed"
+          },
+          "description": {
+            "es-MX": "Se cerró sin hacer merge.",
+            "en": "It was closed without merging."
+          },
+          "terminal": true,
+          "data": [
+            {
+              "codeName": "closeReason",
+              "label": {
+                "es-MX": "Motivo de cierre",
+                "en": "Close reason"
+              },
+              "type": {
+                "kind": "valueObject",
+                "ref": "ReasonText"
+              }
+            }
+          ]
+        }
+      ],
+      "initialState": "Draft",
+      "rules": [
+        {
+          "codeName": "PullRequestMustHaveChanges",
+          "label": {
+            "es-MX": "Debe traer cambios",
+            "en": "Must contain changes"
+          },
+          "description": {
+            "es-MX": "Un pull request sin archivos cambiados no tiene nada que revisar.",
+            "en": "A pull request with no changed files has nothing to review."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "changedFiles"
+            },
+            "operator": ">",
+            "right": {
+              "op": "literal",
+              "value": 0
+            }
+          },
+          "message": {
+            "es-MX": "El pull request no trae ningún archivo cambiado.",
+            "en": "The pull request does not change any file."
+          },
+          "violation": {
+            "given": [],
+            "when": {
+              "command": "OpenPullRequest",
+              "args": {
+                "changedFiles": 0
+              }
+            }
+          }
+        },
+        {
+          "codeName": "ReviewerIsNotAuthor",
+          "label": {
+            "es-MX": "Nadie se aprueba solo",
+            "en": "No self-approval"
+          },
+          "description": {
+            "es-MX": "La autora no puede aprobar su propio cambio.",
+            "en": "The author cannot approve her own change."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "reviewerId"
+            },
+            "operator": "!=",
+            "right": {
+              "op": "field",
+              "name": "authorId"
+            }
+          },
+          "message": {
+            "es-MX": "No puedes aprobar tu propio pull request.",
+            "en": "You cannot approve your own pull request."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenPullRequest",
+                "args": {
+                  "repositoryId": "repo_7k2m9x4q",
+                  "authorId": "usr_2m6q8v1c",
+                  "headCommit": "3f9a2c1",
+                  "changedFiles": 12,
+                  "requiredApprovals": 1
+                }
+              }
+            ],
+            "when": {
+              "command": "ApprovePullRequest",
+              "args": {
+                "reviewerId": "usr_2m6q8v1c"
+              }
+            }
+          }
+        },
+        {
+          "codeName": "ChecksMustMatchHead",
+          "label": {
+            "es-MX": "El CI debe ser del último commit",
+            "en": "CI must test the head commit"
+          },
+          "description": {
+            "es-MX": "Un CI en verde de un commit viejo no cuenta.",
+            "en": "Green CI on an old commit does not count."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "arg",
+              "name": "testedCommit"
+            },
+            "operator": "==",
+            "right": {
+              "op": "field",
+              "name": "headCommit"
+            }
+          },
+          "message": {
+            "es-MX": "Ese CI probó otro commit, no el último del pull request.",
+            "en": "That CI tested another commit, not the pull request's head."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenPullRequest",
+                "args": {
+                  "repositoryId": "repo_7k2m9x4q",
+                  "authorId": "usr_2m6q8v1c",
+                  "headCommit": "3f9a2c1",
+                  "changedFiles": 12,
+                  "requiredApprovals": 1
+                }
+              }
+            ],
+            "when": {
+              "command": "RecordChecksPassed",
+              "args": {
+                "testedCommit": "b7e41d09"
+              }
+            }
+          }
+        },
+        {
+          "codeName": "EnoughApprovals",
+          "label": {
+            "es-MX": "Aprobaciones suficientes",
+            "en": "Enough approvals"
+          },
+          "description": {
+            "es-MX": "Sólo se hace merge con las aprobaciones que pide la rama.",
+            "en": "Merging only happens with the approvals the branch requires."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "field",
+              "name": "approvals"
+            },
+            "operator": ">=",
+            "right": {
+              "op": "field",
+              "name": "requiredApprovals"
+            }
+          },
+          "message": {
+            "es-MX": "Faltan aprobaciones para hacer merge.",
+            "en": "More approvals are needed to merge."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenPullRequest",
+                "args": {
+                  "repositoryId": "repo_7k2m9x4q",
+                  "authorId": "usr_2m6q8v1c",
+                  "headCommit": "3f9a2c1",
+                  "changedFiles": 12,
+                  "requiredApprovals": 2
+                }
+              },
+              {
+                "command": "ApprovePullRequest",
+                "args": {
+                  "reviewerId": "usr_9f4t7y3b"
+                }
+              },
+              {
+                "command": "RecordChecksPassed",
+                "args": {
+                  "testedCommit": "3f9a2c1"
+                }
+              }
+            ],
+            "when": {
+              "command": "MergePullRequest",
+              "args": {
+                "mergeCommit": "e5d6c7b8a9f0"
+              }
+            }
+          }
+        },
+        {
+          "codeName": "ChecksMustPass",
+          "label": {
+            "es-MX": "El CI debe estar en verde",
+            "en": "Checks must pass"
+          },
+          "description": {
+            "es-MX": "Sólo se hace merge si el último commit pasó el CI.",
+            "en": "Merging only happens if the head commit passed CI."
+          },
+          "predicate": {
+            "kind": "compare",
+            "left": {
+              "op": "field",
+              "name": "checksPassed"
+            },
+            "operator": "==",
+            "right": {
+              "op": "literal",
+              "value": true
+            }
+          },
+          "message": {
+            "es-MX": "El CI todavía no está en verde.",
+            "en": "CI is not green yet."
+          },
+          "violation": {
+            "given": [
+              {
+                "command": "OpenPullRequest",
+                "args": {
+                  "repositoryId": "repo_7k2m9x4q",
+                  "authorId": "usr_2m6q8v1c",
+                  "headCommit": "3f9a2c1",
+                  "changedFiles": 12,
+                  "requiredApprovals": 1
+                }
+              },
+              {
+                "command": "ApprovePullRequest",
+                "args": {
+                  "reviewerId": "usr_9f4t7y3b"
+                }
+              }
+            ],
+            "when": {
+              "command": "MergePullRequest",
+              "args": {
+                "mergeCommit": "e5d6c7b8a9f0"
+              }
+            }
+          }
+        }
+      ],
+      "invariants": [],
+      "transitions": [
+        {
+          "command": "OpenPullRequest",
+          "from": ["Draft"],
+          "to": "Open",
+          "guards": ["PullRequestMustHaveChanges"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "repositoryId",
+              "value": {
+                "op": "arg",
+                "name": "repositoryId"
+              }
+            },
+            {
+              "op": "set",
+              "field": "authorId",
+              "value": {
+                "op": "arg",
+                "name": "authorId"
+              }
+            },
+            {
+              "op": "set",
+              "field": "headCommit",
+              "value": {
+                "op": "arg",
+                "name": "headCommit"
+              }
+            },
+            {
+              "op": "set",
+              "field": "changedFiles",
+              "value": {
+                "op": "arg",
+                "name": "changedFiles"
+              }
+            },
+            {
+              "op": "set",
+              "field": "requiredApprovals",
+              "value": {
+                "op": "arg",
+                "name": "requiredApprovals"
+              }
+            },
+            {
+              "op": "set",
+              "field": "approvals",
+              "value": {
+                "op": "literal",
+                "value": 0
+              }
+            },
+            {
+              "op": "set",
+              "field": "checksPassed",
+              "value": {
+                "op": "literal",
+                "value": false
+              }
+            }
+          ],
+          "emits": ["PullRequestOpened"]
+        },
+        {
+          "command": "ApprovePullRequest",
+          "from": ["Open"],
+          "to": "Open",
+          "guards": ["ReviewerIsNotAuthor"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "approvals",
+              "value": {
+                "op": "arithmetic",
+                "operator": "add",
+                "left": {
+                  "op": "field",
+                  "name": "approvals"
+                },
+                "right": {
+                  "op": "literal",
+                  "value": 1
+                }
+              }
+            }
+          ],
+          "emits": ["PullRequestApproved"]
+        },
+        {
+          "command": "RequestChanges",
+          "from": ["Open"],
+          "to": "ChangesRequested",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "approvals",
+              "value": {
+                "op": "literal",
+                "value": 0
+              }
+            }
+          ],
+          "emits": ["ChangesRequested"]
+        },
+        {
+          "command": "PushCommits",
+          "from": ["Open", "ChangesRequested"],
+          "to": "Open",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "headCommit",
+              "value": {
+                "op": "arg",
+                "name": "headCommit"
+              }
+            },
+            {
+              "op": "set",
+              "field": "approvals",
+              "value": {
+                "op": "literal",
+                "value": 0
+              }
+            },
+            {
+              "op": "set",
+              "field": "checksPassed",
+              "value": {
+                "op": "literal",
+                "value": false
+              }
+            }
+          ],
+          "emits": ["CommitsPushed"]
+        },
+        {
+          "command": "RecordChecksPassed",
+          "from": ["Open"],
+          "to": "Open",
+          "guards": ["ChecksMustMatchHead"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "checksPassed",
+              "value": {
+                "op": "literal",
+                "value": true
+              }
+            }
+          ],
+          "emits": ["PullRequestChecksPassed"]
+        },
+        {
+          "command": "MergePullRequest",
+          "from": ["Open"],
+          "to": "Merged",
+          "guards": ["EnoughApprovals", "ChecksMustPass"],
+          "effects": [
+            {
+              "op": "set",
+              "field": "mergeCommit",
+              "value": {
+                "op": "arg",
+                "name": "mergeCommit"
+              }
+            }
+          ],
+          "emits": ["PullRequestMerged"]
+        },
+        {
+          "command": "ClosePullRequest",
+          "from": ["Open", "ChangesRequested"],
+          "to": "Closed",
+          "guards": [],
+          "effects": [
+            {
+              "op": "set",
+              "field": "closeReason",
+              "value": {
+                "op": "arg",
+                "name": "reason"
+              }
+            }
+          ],
+          "emits": ["PullRequestClosed"]
+        }
+      ],
+      "walkthrough": [
+        {
+          "command": "OpenPullRequest",
+          "args": {
+            "repositoryId": "repo_7k2m9x4q",
+            "authorId": "usr_2m6q8v1c",
+            "headCommit": "3f9a2c1",
+            "changedFiles": 12,
+            "requiredApprovals": 1
+          }
+        },
+        {
+          "command": "ApprovePullRequest",
+          "args": {
+            "reviewerId": "usr_9f4t7y3b"
+          }
+        },
+        {
+          "command": "RecordChecksPassed",
+          "args": {
+            "testedCommit": "3f9a2c1"
+          }
+        },
+        {
+          "command": "MergePullRequest",
+          "args": {
+            "mergeCommit": "e5d6c7b8a9f0"
+          }
+        }
+      ]
+    }
+  ]
+}

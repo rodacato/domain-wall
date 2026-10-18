@@ -1,0 +1,301 @@
+{
+  "dialogues": {
+    "whyDdd.change": [
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Llegó un cambio: un pull request con cambios pedidos ya no se puede cerrar así nada más; la autora tiene que contestar la revisión primero.",
+          "en": "A change came in: a pull request with changes requested can no longer just be closed; the author has to answer the review first."
+        }
+      },
+      {
+        "speaker": "Rodrigo",
+        "text": {
+          "es-MX": "Por fin. Hoy la gente cierra el PR, abre otro igualito y mis comentarios se pierden.",
+          "en": "Finally. Today people close the PR, open an identical one and my comments get lost."
+        }
+      },
+      {
+        "speaker": "Ximena",
+        "text": {
+          "es-MX": "Suena a una sola regla. A ver en cuántos lugares del código vive hoy.",
+          "en": "Sounds like a single rule. Let's see in how many places of the code it lives today."
+        }
+      }
+    ],
+    "ubiquity.intro": [
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Antes de programar, hablemos igual. Rodrigo, ¿cómo le dices a lo que revisas todos los días?",
+          "en": "Before coding, let's speak the same way. Rodrigo, what do you call the thing you review every day?"
+        }
+      },
+      {
+        "speaker": "Rodrigo",
+        "text": {
+          "es-MX": "Un {{term:PullRequest}}: un cambio de una autora, con sus aprobaciones y su CI, que espera merge.",
+          "en": "A {{term:PullRequest}}: a change by one author, with its approvals and its CI, waiting to be merged."
+        }
+      },
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Va. Esa palabra entra al glosario y la usamos igual en las juntas y en el código.",
+          "en": "Good. That word goes into the glossary and we use it the same in meetings and in code."
+        }
+      }
+    ],
+    "ubiquity.ambiguity": [
+      {
+        "speaker": "Rodrigo",
+        "text": {
+          "es-MX": "Cuando digo “revisión” pienso en mis aprobaciones: cuántas pide la rama y cuántas lleva el PR.",
+          "en": "When I say “review” I think of my approvals: how many the branch requires and how many the PR has."
+        }
+      },
+      {
+        "speaker": "Ximena",
+        "text": {
+          "es-MX": "Para mí la revisión es el check automático: qué commit probó el CI y cuánto tardó.",
+          "en": "For me the review is the automated check: which commit CI tested and how long it took."
+        }
+      },
+      {
+        "speaker": "Julian",
+        "text": {
+          "es-MX": "Y para mí una revisión es una versión publicada: “la revisión 1.4.0”, en el canal estable.",
+          "en": "And for me a revision is a published version: “revision 1.4.0”, on the stable channel."
+        }
+      },
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Una palabra, tres significados: {{term:Review}} es ambigua. Cada contexto le pone su nombre: {{term:PullRequest}}, {{term:CheckRun}} y {{term:Release}}.",
+          "en": "One word, three meanings: {{term:Review}} is ambiguous. Each context gives it its own name: {{term:PullRequest}}, {{term:CheckRun}} and {{term:Release}}."
+        }
+      }
+    ],
+    "storming.kickoff": [
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Contemos la vida de un cambio con eventos, cosas que ya pasaron. ¿Qué pasa primero?",
+          "en": "Let's tell a change's life through events, things that already happened. What happens first?"
+        }
+      },
+      {
+        "speaker": "Rodrigo",
+        "text": {
+          "es-MX": "La autora abre el PR: {{term:PullRequestOpened}}. Luego alguien que no es ella lo aprueba: {{term:PullRequestApproved}}.",
+          "en": "The author opens the PR: {{term:PullRequestOpened}}. Then someone who is not her approves it: {{term:PullRequestApproved}}."
+        }
+      },
+      {
+        "speaker": "Julian",
+        "text": {
+          "es-MX": "Y lo que a mí me importa viene después: {{term:PullRequestMerged}} y, al final, {{term:ReleasePublished}}.",
+          "en": "And what I care about comes after: {{term:PullRequestMerged}} and, in the end, {{term:ReleasePublished}}."
+        }
+      }
+    ],
+    "storming.commands": [
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Cada evento viene de una decisión. ¿Quién pide {{term:MergePullRequest}}?",
+          "en": "Every event comes from a decision. Who asks for {{term:MergePullRequest}}?"
+        }
+      },
+      {
+        "speaker": "Rodrigo",
+        "text": {
+          "es-MX": "El {{term:Maintainer}}, pero sólo si hay aprobaciones suficientes y el CI está en verde. Y me choca que hoy un {{term:PushCommits}} deje las aprobaciones viejas vivas.",
+          "en": "The {{term:Maintainer}}, but only with enough approvals and green CI. And it bugs me that today a {{term:PushCommits}} keeps the old approvals alive."
+        }
+      },
+      {
+        "speaker": "Ximena",
+        "text": {
+          "es-MX": "Esas son reglas del dominio: commits nuevos tiran las aprobaciones y el CI. Las guardamos en el agregado, no en un botón de la UI.",
+          "en": "Those are domain rules: new commits dismiss approvals and CI. We keep them in the aggregate, not in a UI button."
+        }
+      }
+    ],
+    "contexts.split": [
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Ya vimos que “revisión” significa varias cosas. Pongamos fronteras donde cambia el significado.",
+          "en": "We saw that “review” means several things. Let's draw boundaries where the meaning changes."
+        }
+      },
+      {
+        "speaker": "Rodrigo",
+        "text": {
+          "es-MX": "En {{term:Reviewing}} es un {{term:PullRequest}}: aprobaciones requeridas y dadas.",
+          "en": "In {{term:Reviewing}} it is a {{term:PullRequest}}: approvals required and given."
+        }
+      },
+      {
+        "speaker": "Ximena",
+        "text": {
+          "es-MX": "En {{term:Checks}} es una {{term:CheckRun}}: un commit y su duración. Y el CI es flaky a veces; que eso no ensucie la revisión humana.",
+          "en": "In {{term:Checks}} it is a {{term:CheckRun}}: one commit and its duration. And CI is flaky sometimes; that must not leak into the human review."
+        }
+      },
+      {
+        "speaker": "Julian",
+        "text": {
+          "es-MX": "Y en {{term:Releasing}} es un {{term:Release}}: versión y canal.",
+          "en": "And in {{term:Releasing}} it is a {{term:Release}}: version and channel."
+        }
+      }
+    ],
+    "contexts.mapping": [
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "¿Cómo se hablan? {{term:Repositories}} publica sus reglas de protección y {{term:Reviewing}} las consume.",
+          "en": "How do they talk? {{term:Repositories}} publishes its protection rules and {{term:Reviewing}} consumes them."
+        }
+      },
+      {
+        "speaker": "Julian",
+        "text": {
+          "es-MX": "Con el {{term:PackageRegistry}} no se negocia: usa sus nombres en snake_case y su etiqueta latest, aunque nosotros digamos “estable”.",
+          "en": "There is no negotiating with the {{term:PackageRegistry}}: it uses snake_case names and its latest tag, even if we say “stable”."
+        }
+      },
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Eso pide una capa anticorrupción: traducimos en la frontera para que su modelo no se nos meta.",
+          "en": "That calls for an anticorruption layer: we translate at the boundary so its model does not leak into ours."
+        }
+      }
+    ],
+    "subdomains.focus": [
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "No todo merece el mismo esfuerzo. ¿Qué nos hace distintos?",
+          "en": "Not everything deserves the same effort. What sets us apart?"
+        }
+      },
+      {
+        "speaker": "Rodrigo",
+        "text": {
+          "es-MX": "Saber cuándo un cambio es seguro para hacer merge. Si ahí fallamos, nadie confía en la rama principal. Eso es {{term:Reviewing}}.",
+          "en": "Knowing when a change is safe to merge. If we fail there, nobody trusts the main branch. That is {{term:Reviewing}}."
+        }
+      },
+      {
+        "speaker": "Julian",
+        "text": {
+          "es-MX": "Publicar, en cambio, es igual para todos: semver y las reglas del registro. {{term:Releasing}} es genérico.",
+          "en": "Publishing, on the other hand, is the same for everyone: semver and the registry's rules. {{term:Releasing}} is generic."
+        }
+      }
+    ],
+    "tactical.aggregate": [
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Veamos el {{term:PullRequest}}. ¿Qué nunca debería pasar?",
+          "en": "Let's look at the {{term:PullRequest}}. What should never happen?"
+        }
+      },
+      {
+        "speaker": "Rodrigo",
+        "text": {
+          "es-MX": "Que la autora se apruebe sola, o que se haga merge con aprobaciones de un commit que ya no existe.",
+          "en": "The author approving herself, or a merge with approvals for a commit that no longer exists."
+        }
+      },
+      {
+        "speaker": "Ximena",
+        "text": {
+          "es-MX": "Son reglas del agregado: nadie se aprueba solo, el CI debe ser del último commit y sin verde no hay merge. Se cumplen siempre, venga de donde venga el comando.",
+          "en": "Those are aggregate rules: no self-approval, CI must test the head commit and no merge without green. They always hold, wherever the command comes from."
+        }
+      }
+    ],
+    "functional.pipeline": [
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Veamos el merge como una línea de ensamblaje: validar, contar lo que falta, crear el commit de merge y guardar.",
+          "en": "Let's see the merge as an assembly line: validate, count what is missing, create the merge commit and save."
+        }
+      },
+      {
+        "speaker": "Rodrigo",
+        "text": {
+          "es-MX": "Y si hay conflicto, el merge no sigue a medias: se detiene con un error claro.",
+          "en": "And if there is a conflict, the merge does not continue halfway: it stops with a clear error."
+        }
+      },
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Exacto. Cada etapa recibe un tipo y regresa otro, y los errores son parte del contrato.",
+          "en": "Exactly. Each stage takes one type and returns another, and errors are part of the contract."
+        }
+      }
+    ],
+    "architecture.ports": [
+      {
+        "speaker": "Ximena",
+        "text": {
+          "es-MX": "El dominio no debe saber qué proveedor de CI usamos. Sólo conoce un puerto que avisa si la corrida pasó.",
+          "en": "The domain must not know which CI provider we use. It only knows a port that reports whether the run passed."
+        }
+      },
+      {
+        "speaker": "Julian",
+        "text": {
+          "es-MX": "Entonces {{term:CiProvider}} y {{term:PackageRegistry}} son adaptadores: si mañana cambiamos de registro, el dominio ni se entera.",
+          "en": "So {{term:CiProvider}} and {{term:PackageRegistry}} are adapters: if we switch registries tomorrow, the domain does not notice."
+        }
+      },
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Y las dependencias apuntan hacia el dominio, nunca al revés.",
+          "en": "And dependencies point toward the domain, never the other way around."
+        }
+      }
+    ],
+    "evolution.request": [
+      {
+        "speaker": "Rodrigo",
+        "text": {
+          "es-MX": "Tengo un problema: dos PRs en verde, hago merge de los dos y la rama principal se rompe porque nunca se probaron juntos.",
+          "en": "I have a problem: two green PRs, I merge both and the main branch breaks because they were never tested together."
+        }
+      },
+      {
+        "speaker": "Ximena",
+        "text": {
+          "es-MX": "Necesitamos una cola de merge: tras aprobar y pasar el CI, el PR entra a la cola, el CI corre contra la última versión de main y luego se hace merge.",
+          "en": "We need a merge queue: after approval and green CI, the PR enters the queue, CI runs against the latest main and then it merges."
+        }
+      },
+      {
+        "speaker": "Julian",
+        "text": {
+          "es-MX": "Y que la corrida de la cola tenga límite: si tarda más de una hora, no entra. Así no me llega nada raro al tag latest.",
+          "en": "And the queue run needs a limit: if it takes more than an hour, it does not land. That way nothing odd reaches the latest tag."
+        }
+      },
+      {
+        "speaker": "Mariana",
+        "text": {
+          "es-MX": "Un concepto implícito que ahora hacemos explícito: {{term:PullRequest}} gana un estado nuevo. Refactoricemos el modelo.",
+          "en": "An implicit concept we now make explicit: {{term:PullRequest}} gains a new state. Let's refactor the model."
+        }
+      }
+    ]
+  }
+}
